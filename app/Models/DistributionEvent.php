@@ -2,23 +2,48 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class DistributionEvent extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'barangay_config_id',
         'event_name',
-        'description',
+        'relief_type',
         'event_date',
-        'start_time',
-        'end_time',
-        'location',
+        'description',
         'status',
+        'created_by',
     ];
 
-    public function distributionLogs()
+    protected $casts = [
+        'event_date' => 'date',
+    ];
+
+    public function creator()
     {
-        return $this->hasMany(DistributionLog::class);
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(DistributionLog::class, 'event_id');
+    }
+
+    public function scopeUpcoming($query)
+    {
+        return $query->where('status', 'upcoming');
+    }
+
+    public function scopeOngoing($query)
+    {
+        return $query->where('status', 'ongoing');
+    }
+
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'completed');
     }
 }

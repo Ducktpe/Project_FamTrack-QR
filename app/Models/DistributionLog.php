@@ -2,27 +2,39 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class DistributionLog extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'distribution_event_id',
+        'event_id',
         'household_id',
-        'items_distributed',
-        'quantity',
-        'distribution_date',
-        'received_by',
-        'notes',
+        'serial_code',
+        'distributed_by',
+        'distributed_at',
+        'goods_detail',
+        'remarks',
     ];
+
+    protected $casts = [
+        'distributed_at' => 'datetime',
+    ];
+
+    public function event()
+    {
+        return $this->belongsTo(DistributionEvent::class);
+    }
 
     public function household()
     {
         return $this->belongsTo(Household::class);
     }
 
-    public function event()
+    public function staff()
     {
-        return $this->belongsTo(DistributionEvent::class, 'distribution_event_id');
+        return $this->belongsTo(User::class, 'distributed_by');
     }
 }
