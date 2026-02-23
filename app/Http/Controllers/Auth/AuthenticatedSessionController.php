@@ -25,10 +25,40 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+
+        // Block inactive accounts
+        if ($user->status === 'inactive') {
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'Your account has been deactivated.',
+            ]);
+        }
+
+        // Update last login
+        $user->update(['last_login_at' => now()]);
+
+        // Log the login
+        \App\Models\AuditLog::create([
+            'user_id'    => $user->id,
+            'user_name'  => $user->name,
+            'action'     => 'login',
+            'model'      => 'User',
+            'record_id'  => $user->id,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
+        // Redirect by role
+        return match($user->role) {
+            'admin'   => redirect()->route('admin.dashboard'),
+            'encoder' => redirect()->route('encoder.dashboard'),
+            'staff'   => redirect()->route('staff.dashboard'),
+            'auditor' => redirect()->route('auditor.dashboard'),
+            default   => redirect('/'),
+        };
     }
 
     /**
