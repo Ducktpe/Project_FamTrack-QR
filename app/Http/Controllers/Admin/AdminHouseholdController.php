@@ -40,7 +40,12 @@ class AdminHouseholdController extends Controller
     public function show(Household $household)
     {
         $household->load('members', 'encoder', 'approver', 'qrCode');
-        return view('admin.households.show', compact('household'));
+
+            // Add counts for sidebar
+            $pendingCount = Household::pending()->count();
+            $approvedCount = Household::approved()->count();
+            $filter = 'all'; // Add this too
+        return view('admin.households.show', compact('household', 'pendingCount', 'approvedCount', 'filter'));
     }
 
     /**
@@ -49,8 +54,8 @@ class AdminHouseholdController extends Controller
     public function approve(Household $household)
     {
         // Already approved?
-        if ($household->isApproved()) {
-            return back()->withErrors(['error' => 'This household is already approved.']);
+        if ($household->serial_code !== null || $household->approved_by !== null) {
+            return back()->withErrors(['error' => 'This household is already approved with serial code: ' . $household->serial_code]);
         }
 
         try {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Household Details</title>
+    <title>Household Details - {{ $household->household_head_name }}</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; max-width: 1000px; }
         h1 { color: #0038A8; }
@@ -11,19 +11,19 @@
         .info-label { font-weight: bold; color: #666; font-size: 12px; }
         .info-value { font-size: 16px; margin-top: 5px; }
         .btn { padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block; margin: 5px; border: none; cursor: pointer; }
-        .btn-primary { background-color: #0038A8; color: white; }
-        .btn-success { background-color: #28a745; color: white; }
-        .btn-warning { background-color: #ffc107; color: black; }
-        .btn-danger { background-color: #dc3545; color: white; }
+        .btn-primary { background: #0038A8; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        .btn-danger { background: #dc3545; color: white; }
         .badge { padding: 8px 15px; border-radius: 4px; font-weight: bold; display: inline-block; }
-        .badge-success { background-color: #d4edda; color: #155724; }
-        .badge-warning { background-color: #fff3cd; color: #856404; }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-warning { background: #fff3cd; color: #856404; }
         .alert { padding: 15px; margin-bottom: 20px; border-radius: 4px; }
-        .alert-success { background-color: #d4edda; color: #155724; }
-        .alert-danger { background-color: #f8d7da; color: #721c24; }
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-danger { background: #f8d7da; color: #721c24; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background-color: #0038A8; color: white; }
+        th { background: #0038A8; color: white; }
         .qr-card { border: 2px solid #0038A8; padding: 20px; background: white; text-align: center; max-width: 300px; margin: 20px auto; border-radius: 8px; }
         .qr-image { width: 250px; height: 250px; }
         .actions { margin-top: 30px; padding-top: 20px; border-top: 2px solid #ddd; }
@@ -224,5 +224,10 @@
             </form>
         @endif
     </div>
+
+    <form method="POST" action="{{ route('logout') }}" style="margin-top: 30px;">
+        @csrf
+        <button type="submit" class="btn btn-warning">Logout</button>
+    </form>
 </body>
-</html> 
+</html>
