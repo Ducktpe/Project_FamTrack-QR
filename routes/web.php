@@ -187,4 +187,10 @@ Route::middleware(['auth', 'role:auditor'])->prefix('auditor')->name('auditor.')
 
     Route::get('/distribution/events/{event}/households', [\App\Http\Controllers\Auditor\AuditorDistributionLogController::class, 'eventHouseholds'])
         ->name('distribution.events.households');
+
+    Route::get('/households', [\App\Http\Controllers\Auditor\AuditorHouseholdController::class, 'index'])
+    ->name('households.index');
+
+    Route::get('/households/{household}', [\App\Http\Controllers\Auditor\AuditorHouseholdController::class, 'show'])
+    ->name('households.show');
 });

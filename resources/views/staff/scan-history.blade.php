@@ -366,7 +366,108 @@
         .empty-sub { font-size: 12px; color: var(--gray-400); margin-bottom: 18px; }
 
         /* ─── PAGINATION ─── */
-        .pagination-row { padding: 14px 20px; border-top: 1px solid var(--gray-100); background: var(--gray-50); }
+        .pagination-row {
+            padding: 14px 20px;
+            border-top: 1px solid var(--gray-100);
+            background: var(--gray-50);
+        }
+
+        /* ── Reset all SVGs inside pagination to a fixed small size ── */
+        .pagination-row svg {
+            width: 14px !important;
+            height: 14px !important;
+            flex-shrink: 0;
+            display: block;
+        }
+
+        /* Laravel Tailwind pagination nav wrapper */
+        .pagination-row nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Result count text */
+        .pagination-row p,
+        .pagination-row nav > p {
+            font-size: 12px;
+            color: var(--gray-400);
+            line-height: 1.5;
+        }
+        .pagination-row p strong {
+            color: var(--gray-600);
+            font-weight: 600;
+        }
+
+        /* The flex row of page buttons */
+        .pagination-row nav > div,
+        .pagination-row .flex,
+        .pagination-row span[role="group"] {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            flex-wrap: wrap;
+        }
+
+        /* Every anchor and disabled span in pagination */
+        .pagination-row nav a,
+        .pagination-row nav span > span,
+        .pagination-row nav > span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 10px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-600);
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 3px;
+            text-decoration: none;
+            line-height: 1;
+            transition: background 0.12s, color 0.12s, border-color 0.12s;
+            cursor: pointer;
+        }
+
+        /* Hover state */
+        .pagination-row nav a:hover {
+            background: var(--blue-pale);
+            color: var(--blue);
+            border-color: var(--blue-light);
+        }
+
+        /* Active / current page */
+        .pagination-row nav span[aria-current="page"] > span,
+        .pagination-row nav .active > span {
+            background: var(--blue);
+            color: var(--white);
+            border-color: var(--blue);
+            font-weight: 700;
+        }
+
+        /* Disabled prev / next */
+        .pagination-row nav span[aria-disabled="true"],
+        .pagination-row nav span[aria-disabled="true"] > span {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Ellipsis */
+        .pagination-row nav span.dots,
+        .pagination-row nav span[aria-hidden] {
+            border: none;
+            background: transparent;
+            color: var(--gray-400);
+            cursor: default;
+            min-width: unset;
+            padding: 0 4px;
+        }
 
         /* ─── FOOTER ─── */
         footer {
@@ -528,7 +629,7 @@
                 <rect x="9" y="3" width="6" height="4" rx="1"/>
                 <line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>
             </svg>
-            My Scan History
+            Scan History
         </a>
 
         <a href="{{ route('staff.active-event') }}" class="nav-item" onclick="closeSidebar()">

@@ -26,6 +26,10 @@
             --gray-600:   #5A6372;
             --gray-800:   #2C3340;
             --sidebar-w:  260px;
+            --purple:     #5B3FA6;
+            --purple-dark:#3D1F8A;
+            --purple-pale:#F5F0FF;
+            --purple-border:#D8CBF5;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -52,12 +56,7 @@
         }
 
         /* ─── TOP UTILITY BAR ─── */
-        .topbar {
-            grid-area: topbar;
-            background: var(--blue-dark);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px; z-index: 100;
-        }
+        .topbar { grid-area: topbar; background: var(--blue-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; }
         .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
         .clock-inline { font-size: 12px; font-weight: 600; color: var(--yellow); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
@@ -67,14 +66,7 @@
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         /* ─── HEADER ─── */
-        header {
-            grid-area: header;
-            background: var(--white);
-            border-bottom: 3px solid var(--yellow);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            display: flex; align-items: center;
-            padding: 0 28px; gap: 14px; z-index: 90;
-        }
+        header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; }
         .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
         .hamburger:hover { background: var(--blue-pale); }
         .hamburger svg { width: 22px; height: 22px; display: block; }
@@ -86,10 +78,20 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
-        .user-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
+        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--purple-pale); border: 1px solid var(--purple-border); border-radius: 4px; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--purple); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--purple-dark); }
+        .user-role { font-size: 10px; color: #7C5CBF; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ─── READ-ONLY BADGE ─── */
+        .readonly-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px; background: #FFFBEB;
+            border: 1px solid #FDE68A; border-radius: 3px;
+            font-size: 11px; font-weight: 700; color: #92400E;
+            text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;
+        }
+        .readonly-badge svg { width: 12px; height: 12px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
@@ -106,7 +108,6 @@
         .nav-item.active { background: var(--blue-pale); color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
         .nav-icon { width: 17px; height: 17px; flex-shrink: 0; color: inherit; opacity: 0.7; }
         .nav-item.active .nav-icon, .nav-item:hover .nav-icon { opacity: 1; }
-        .nav-badge { margin-left: auto; background: var(--red); color: var(--white); font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
         .sidebar-sep { border: none; border-top: 1px solid var(--gray-100); margin: 8px 0; }
         .sidebar-bottom { margin-top: auto; padding: 16px 20px; border-top: 1px solid var(--gray-200); }
         .logout-btn { width: 100%; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; background: var(--blue); color: var(--white); border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
@@ -123,11 +124,6 @@
         .back-btn { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--blue); text-decoration: none; padding: 8px 16px; border: 1px solid var(--gray-200); background: var(--white); border-radius: 4px; transition: background 0.15s; white-space: nowrap; flex-shrink: 0; }
         .back-btn:hover { background: var(--blue-pale); }
         .back-btn svg { width: 14px; height: 14px; }
-
-        /* Alerts */
-        .alert-success { background: var(--green-pale); border: 1px solid #BBF7D0; border-left: 4px solid var(--green); padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: var(--green-dark); display: flex; align-items: center; gap: 10px; }
-        .alert-success svg { width: 16px; height: 16px; flex-shrink: 0; }
-        .alert-danger { background: #FEF2F2; border: 1px solid #FECACA; border-left: 4px solid var(--red); padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: var(--red); }
 
         /* Stats row */
         .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
@@ -150,7 +146,6 @@
         .tab-link { padding: 10px 20px; font-size: 13px; font-weight: 500; color: var(--gray-600); text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -2px; display: flex; align-items: center; gap: 7px; transition: color 0.12s; white-space: nowrap; }
         .tab-link:hover { color: var(--blue); }
         .tab-link.active { color: var(--blue); font-weight: 700; border-bottom-color: var(--blue); }
-        .tab-count { background: var(--red); color: var(--white); font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
 
         /* ─── SEARCH BAR ─── */
         .search-bar { background: var(--white); border: 1px solid var(--gray-200); border-top: none; padding: 12px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
@@ -168,31 +163,12 @@
         .search-results-label { margin-left: auto; font-size: 12px; color: var(--gray-600); white-space: nowrap; }
         .search-results-label strong { color: var(--blue-dark); }
 
-        /* Events participated badge */
-        .events-count-zero { font-size: 11px; color: var(--gray-400); font-style: italic; }
-        .events-pill { display: inline-flex; align-items: center; gap: 4px; background: var(--blue-pale); color: var(--blue); border: 1px solid var(--gray-200); padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; }
-        .events-pill svg { width: 10px; height: 10px; }
-
         /* ─── QR SCAN COUNT ─── */
         .scan-count-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
-        .scan-count-badge {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 4px 10px; border-radius: 10px;
-            font-size: 12px; font-weight: 700;
-            line-height: 1;
-        }
+        .scan-count-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 10px; font-size: 12px; font-weight: 700; line-height: 1; }
         .scan-count-badge svg { width: 11px; height: 11px; flex-shrink: 0; }
-        .scan-count-badge.has-scans {
-            background: var(--green-pale);
-            color: var(--green-dark);
-            border: 1px solid #BBF7D0;
-        }
-        .scan-count-badge.no-scans {
-            background: var(--gray-100);
-            color: var(--gray-400);
-            border: 1px solid var(--gray-200);
-            font-weight: 600;
-        }
+        .scan-count-badge.has-scans { background: var(--green-pale); color: var(--green-dark); border: 1px solid #BBF7D0; }
+        .scan-count-badge.no-scans { background: var(--gray-100); color: var(--gray-400); border: 1px solid var(--gray-200); font-weight: 600; }
         .scan-count-sub { font-size: 10px; color: var(--gray-400); text-align: center; }
 
         /* Table */
@@ -215,7 +191,6 @@
 
         mark { background: #FEF08A; color: var(--gray-800); border-radius: 2px; padding: 0 1px; font-style: normal; }
 
-        /* Badges */
         .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
         .badge-approved { background: var(--green-pale); color: var(--green-dark); }
         .badge-pending  { background: var(--orange-pale); color: #92400E; }
@@ -223,16 +198,9 @@
         .serial-code { font-size: 12px; font-weight: 700; color: var(--blue); font-family: monospace; letter-spacing: 0.5px; }
         .serial-none { font-size: 11px; color: var(--gray-400); font-style: italic; }
 
-        /* Action buttons */
         .btn-view { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: var(--blue); color: var(--white); font-size: 11px; font-weight: 600; text-decoration: none; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s; white-space: nowrap; }
         .btn-view:hover { background: var(--blue-dark); }
         .btn-view svg { width: 12px; height: 12px; }
-        .btn-approve { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: var(--green); color: var(--white); font-size: 11px; font-weight: 600; border: none; border-radius: 3px; cursor: pointer; font-family: 'Open Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s; white-space: nowrap; }
-        .btn-approve:hover { background: var(--green-dark); }
-        .btn-approve svg { width: 12px; height: 12px; }
-        td:last-child { white-space: nowrap; }
-        .actions-cell { display: flex; align-items: center; gap: 6px; }
-        .actions-cell form { margin: 0; padding: 0; }
 
         /* Empty state */
         .empty-state { padding: 56px 40px; text-align: center; }
@@ -242,52 +210,16 @@
         .empty-sub { font-size: 12px; color: var(--gray-400); }
 
         /* ─── PAGINATION ─── */
-        .pagination-row {
-            padding: 14px 20px;
-            border-top: 1px solid var(--gray-100);
-            background: var(--gray-50);
-        }
-        .pagination-row svg {
-            width: 14px !important;
-            height: 14px !important;
-            flex-shrink: 0;
-            display: block;
-        }
-        .pagination-row nav {
-            display: flex; align-items: center;
-            justify-content: space-between; flex-wrap: wrap; gap: 10px;
-        }
-        .pagination-row p, .pagination-row nav > p {
-            font-size: 12px; color: var(--gray-400); line-height: 1.5;
-        }
+        .pagination-row { padding: 14px 20px; border-top: 1px solid var(--gray-100); background: var(--gray-50); }
+        .pagination-row svg { width: 14px !important; height: 14px !important; flex-shrink: 0; display: block; }
+        .pagination-row nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .pagination-row p, .pagination-row nav > p { font-size: 12px; color: var(--gray-400); line-height: 1.5; }
         .pagination-row p strong { color: var(--gray-600); font-weight: 600; }
-        .pagination-row nav > div,
-        .pagination-row .flex,
-        .pagination-row span[role="group"] {
-            display: flex; align-items: center; gap: 3px; flex-wrap: wrap;
-        }
-        .pagination-row nav a,
-        .pagination-row nav span > span,
-        .pagination-row nav > span {
-            display: inline-flex; align-items: center; justify-content: center;
-            min-width: 32px; height: 32px; padding: 0 10px;
-            font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600;
-            color: var(--gray-600); background: var(--white);
-            border: 1px solid var(--gray-200); border-radius: 3px;
-            text-decoration: none; line-height: 1;
-            transition: background 0.12s, color 0.12s, border-color 0.12s;
-        }
-        .pagination-row nav a:hover {
-            background: var(--blue-pale); color: var(--blue); border-color: var(--blue-light);
-        }
-        .pagination-row nav span[aria-current="page"] > span,
-        .pagination-row nav .active > span {
-            background: var(--blue); color: var(--white); border-color: var(--blue); font-weight: 700;
-        }
-        .pagination-row nav span[aria-disabled="true"],
-        .pagination-row nav span[aria-disabled="true"] > span {
-            opacity: 0.4; cursor: not-allowed; pointer-events: none;
-        }
+        .pagination-row nav > div, .pagination-row .flex, .pagination-row span[role="group"] { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+        .pagination-row nav a, .pagination-row nav span > span, .pagination-row nav > span { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 10px; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; color: var(--gray-600); background: var(--white); border: 1px solid var(--gray-200); border-radius: 3px; text-decoration: none; line-height: 1; transition: background 0.12s, color 0.12s, border-color 0.12s; }
+        .pagination-row nav a:hover { background: var(--blue-pale); color: var(--blue); border-color: var(--blue-light); }
+        .pagination-row nav span[aria-current="page"] > span, .pagination-row nav .active > span { background: var(--blue); color: var(--white); border-color: var(--blue); font-weight: 700; }
+        .pagination-row nav span[aria-disabled="true"], .pagination-row nav span[aria-disabled="true"] > span { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
 
         /* ─── FOOTER ─── */
         footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; gap: 8px; }
@@ -348,7 +280,12 @@
             .search-results-label { display: none; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
+            .readonly-badge { display: none; }
         }
+        .nav-badge-view { margin-left: auto; background: var(--gray-400); color: var(--white); font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px; }
+        .role-notice { margin: 12px 14px; background: var(--purple-pale); border: 1px solid var(--purple-border); border-left: 3px solid var(--purple); padding: 10px 12px; border-radius: 2px; }
+        .role-notice-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--purple-dark); margin-bottom: 3px; }
+        .role-notice-text { font-size: 11px; color: #4B3080; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -384,11 +321,17 @@
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
+        <span class="readonly-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+            Read-Only Access
+        </span>
         <div class="header-user-badge">
-            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+            <div class="user-avatar">A</div>
             <div>
-                <div class="user-name">{{ auth()->user()->name ?? 'Admin' }}</div>
-                <div class="user-role">Full Access</div>
+                <div class="user-name">Auditor</div>
+                <div class="user-role">View-Only Access</div>
             </div>
         </div>
     </header>
@@ -400,45 +343,77 @@
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
         </button>
-        <div class="nav-section-label">Admin Menu</div>
-        <a href="{{ route('admin.dashboard') }}" class="nav-item" onclick="closeSidebar()">
+        <div class="nav-section-label">Auditor Menu</div>
+
+        <a href="{{ route('auditor.dashboard') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-                <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
             </svg>
-            Dashboard Overview
+            Dashboard
         </a>
-        <a href="{{ route('admin.events.quick-create') }}" class="nav-item" onclick="closeSidebar()">
+
+        <hr class="sidebar-sep">
+        <div class="nav-section-label">View-Only Access</div>
+
+        <a href="{{ route('auditor.family-profiles') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
             </svg>
-            Distribution Events
+            Family Profiles
+            <span class="nav-badge-view">View</span>
         </a>
-        <a href="{{ route('admin.distribution.logs') }}" class="nav-item" onclick="closeSidebar()">
+
+        <a href="{{ route('auditor.distribution.logs') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
                 <rect x="9" y="3" width="6" height="4" rx="1"/>
-                <line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>
+                <line x1="9" y1="12" x2="15" y2="12"/>
+                <line x1="9" y1="16" x2="13" y2="16"/>
             </svg>
             Distribution Logs
+            <span class="nav-badge-view">View</span>
         </a>
-        <a href="{{ route('admin.residents.index') }}" class="nav-item" onclick="closeSidebar()">
+
+        <a href="{{ route('auditor.households.index') }}" class="nav-item active" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
-            </svg>
-            List of Residents
-        </a>
-        <a href="{{ route('admin.households.index') }}" class="nav-item active" onclick="closeSidebar()">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/>
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                <path d="M9 22V12h6v10"/>
             </svg>
             List of Households
-            @if($pendingCount > 0)
-                <span class="nav-badge">{{ $pendingCount }}</span>
-            @endif
+            <span class="nav-badge-view">View</span>
         </a>
-        <hr class="sidebar-sep">
+
+        <a href="#" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+            </svg>
+            Reports &amp; Exports
+            <span class="nav-badge-view">View</span>
+        </a>
+
+        <a href="#" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+                <path d="M15.54 8.46a5 5 0 010 7.07M8.46 8.46a5 5 0 000 7.07"/>
+            </svg>
+            Audit Trail Logs
+            <span class="nav-badge-view">View</span>
+        </a>
+
+        <div class="role-notice">
+            <div class="role-notice-title">&#9432; Read-Only Access</div>
+            <div class="role-notice-text">You have view-only access. No records can be added, edited, or deleted. Access may be time-limited by the Administrator.</div>
+        </div>
         <div class="sidebar-bottom">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -457,29 +432,15 @@
 
         <div class="page-titlebar">
             <div>
-                <div class="page-breadcrumb">Admin / <span>Household Management</span></div>
+                <div class="page-breadcrumb">Auditor / <span>Households</span></div>
                 <div class="page-h1">Household Management</div>
-                <div class="page-sub">Review, approve, and manage registered household profiles — RBI Framework</div>
+                <div class="page-sub">Read-only view of registered household profiles — RBI Framework</div>
             </div>
-            <a href="{{ route('admin.dashboard') }}" class="back-btn">
+            <a href="{{ route('auditor.dashboard') }}" class="back-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
                 Back to Dashboard
             </a>
         </div>
-
-        @if(session('success'))
-            <div class="alert-success">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
-                {{ session('success') }}
-            </div>
-        @endif
-        @if($errors->any())
-            <div class="alert-danger">
-                @foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach
-            </div>
-        @endif
 
         <!-- Stats -->
         <div class="stats-row">
@@ -505,19 +466,16 @@
 
         <!-- Tabs -->
         <div class="tabs-row">
-            <a href="{{ route('admin.households.index', ['filter' => 'all', 'search' => request('search')]) }}"
+            <a href="{{ route('auditor.households.index', ['filter' => 'all', 'search' => request('search')]) }}"
                class="tab-link {{ $filter === 'all' ? 'active' : '' }}">All Households</a>
-            <a href="{{ route('admin.households.index', ['filter' => 'pending', 'search' => request('search')]) }}"
-               class="tab-link {{ $filter === 'pending' ? 'active' : '' }}">
-                Pending
-                @if($pendingCount > 0)<span class="tab-count">{{ $pendingCount }}</span>@endif
-            </a>
-            <a href="{{ route('admin.households.index', ['filter' => 'approved', 'search' => request('search')]) }}"
+            <a href="{{ route('auditor.households.index', ['filter' => 'pending', 'search' => request('search')]) }}"
+               class="tab-link {{ $filter === 'pending' ? 'active' : '' }}">Pending</a>
+            <a href="{{ route('auditor.households.index', ['filter' => 'approved', 'search' => request('search')]) }}"
                class="tab-link {{ $filter === 'approved' ? 'active' : '' }}">Approved</a>
         </div>
 
         <!-- Search Bar -->
-        <form method="GET" action="{{ route('admin.households.index') }}" id="searchForm">
+        <form method="GET" action="{{ route('auditor.households.index') }}" id="searchForm">
             <input type="hidden" name="filter" value="{{ $filter }}">
             <div class="search-bar">
                 <div class="search-input-wrap">
@@ -538,7 +496,7 @@
                     Search
                 </button>
                 @if(request('search'))
-                    <a href="{{ route('admin.households.index', ['filter' => $filter]) }}" class="search-clear">
+                    <a href="{{ route('auditor.households.index', ['filter' => $filter]) }}" class="search-clear">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                         </svg>
@@ -577,14 +535,12 @@
                             <th>Status</th>
                             <th>Serial Code</th>
                             <th>QR Scans</th>
-                            <th>Actions</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($households as $household)
-                            @php
-                                $scanCount = $household->distributionLogs->count();
-                            @endphp
+                            @php $scanCount = $household->distributionLogs->count(); @endphp
                             <tr>
                                 <td class="td-name">
                                     <strong>{{ $household->household_head_name }}</strong>
@@ -626,33 +582,17 @@
                                             </svg>
                                             {{ $scanCount }}
                                         </span>
-                                        @if($scanCount > 0)
-                                            <span class="scan-count-sub">time{{ $scanCount !== 1 ? 's' : '' }} scanned</span>
-                                        @else
-                                            <span class="scan-count-sub">not scanned</span>
-                                        @endif
+                                        <span class="scan-count-sub">{{ $scanCount > 0 ? 'time'.($scanCount !== 1 ? 's' : '').' scanned' : 'not scanned' }}</span>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="actions-cell">
-                                        <a href="{{ route('admin.households.show', $household) }}" class="btn-view">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                                <circle cx="12" cy="12" r="3"/>
-                                            </svg>
-                                            View
-                                        </a>
-                                        @if(!$household->isApproved())
-                                            <form method="POST" action="{{ route('admin.households.approve', $household) }}">
-                                                @csrf
-                                                <button type="submit" class="btn-approve"
-                                                    onclick="return confirm('Approve this household and generate QR serial code?')">
-                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                                    Approve
-                                                </button>
-                                            </form>
-                                        @endif
-                                    </div>
+                                    <a href="{{ route('auditor.households.show', $household) }}" class="btn-view">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                            <circle cx="12" cy="12" r="3"/>
+                                        </svg>
+                                        View
+                                    </a>
                                 </td>
                             </tr>
                         @empty
@@ -673,7 +613,7 @@
                                         </div>
                                         <div class="empty-sub">
                                             @if(request('search'))
-                                                Try a different search term or <a href="{{ route('admin.households.index', ['filter' => $filter]) }}" style="color:var(--blue-light);">clear the search</a>.
+                                                Try a different search term or <a href="{{ route('auditor.households.index', ['filter' => $filter]) }}" style="color:var(--blue-light);">clear the search</a>.
                                             @else
                                                 No records match the selected filter.
                                             @endif

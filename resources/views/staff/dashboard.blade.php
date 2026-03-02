@@ -474,7 +474,7 @@
                 <line x1="9" y1="12" x2="15" y2="12"/>
                 <line x1="9" y1="16" x2="13" y2="16"/>
             </svg>
-            My Scan History
+            Scan History
         </a>
 
         <a href="{{ route('staff.active-event') }}" class="nav-item" onclick="closeSidebar()">

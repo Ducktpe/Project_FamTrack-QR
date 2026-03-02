@@ -52,13 +52,7 @@
             overflow: hidden;
         }
 
-        /* ─── TOP UTILITY BAR ─── */
-        .topbar {
-            grid-area: topbar;
-            background: var(--blue-dark);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px; z-index: 100;
-        }
+        .topbar { grid-area: topbar; background: var(--blue-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; }
         .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
         .clock-inline { font-size: 12px; font-weight: 600; color: var(--yellow); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
@@ -67,15 +61,7 @@
         .status-indicator::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #4CAF50; box-shadow: 0 0 5px #4CAF50; animation: blink 2s infinite; }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-        /* ─── HEADER ─── */
-        header {
-            grid-area: header;
-            background: var(--white);
-            border-bottom: 3px solid var(--yellow);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            display: flex; align-items: center;
-            padding: 0 28px; gap: 14px; z-index: 90;
-        }
+        header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; }
         .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
         .hamburger:hover { background: var(--blue-pale); }
         .hamburger svg { width: 22px; height: 22px; display: block; }
@@ -92,11 +78,13 @@
         .user-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
         .user-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* ─── SIDEBAR OVERLAY ─── */
+        /* ─── READ-ONLY BADGE ─── */
+        .readonly-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 3px; font-size: 11px; font-weight: 700; color: #92400E; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; }
+        .readonly-badge svg { width: 12px; height: 12px; }
+
         .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
         .sidebar-overlay.active { display: block !important; pointer-events: auto; }
 
-        /* ─── SIDEBAR ─── */
         .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
         .sidebar-close { display: none; position: absolute; top: 12px; right: 12px; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 4px; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s; }
         .sidebar-close:hover { background: #FEF2F2; color: #C0392B; }
@@ -112,33 +100,20 @@
         .logout-btn { width: 100%; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; background: var(--blue); color: var(--white); border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
         .logout-btn:hover { background: var(--red); }
 
-        /* ─── MAIN ─── */
         .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 28px 32px; }
 
-        /* ─── PAGE TITLEBAR ─── */
         .page-titlebar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); gap: 12px; }
         .page-breadcrumb { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
         .page-breadcrumb span { color: var(--blue-light); }
         .page-h1 { font-family: 'PT Serif', serif; font-size: 22px; font-weight: 700; color: var(--blue-dark); }
         .page-sub { font-size: 12px; color: var(--gray-600); margin-top: 3px; }
         .titlebar-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
-
-        /* ─── ALERTS ─── */
-        .alert-success { background: var(--green-pale); border: 1px solid #BBF7D0; border-left: 4px solid var(--green); padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: var(--green-dark); display: flex; align-items: center; gap: 10px; }
-        .alert-success svg { width: 16px; height: 16px; flex-shrink: 0; }
-        .alert-danger { background: var(--red-pale); border: 1px solid #FECACA; border-left: 4px solid var(--red); padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: var(--red); display: flex; align-items: flex-start; gap: 10px; }
-        .alert-danger svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--blue); text-decoration: none; padding: 8px 16px; border: 1px solid var(--gray-200); background: var(--white); border-radius: 4px; transition: background 0.15s; white-space: nowrap; }
+        .back-btn:hover { background: var(--blue-pale); }
+        .back-btn svg { width: 14px; height: 14px; }
 
         /* ─── HERO IDENTITY CARD ─── */
-        .household-hero {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-top: 4px solid var(--blue);
-            padding: 24px 28px;
-            display: flex; align-items: center; gap: 24px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
+        .household-hero { background: var(--white); border: 1px solid var(--gray-200); border-top: 4px solid var(--blue); padding: 24px 28px; display: flex; align-items: center; gap: 24px; margin-bottom: 20px; flex-wrap: wrap; }
         .hero-avatar { width: 64px; height: 64px; border-radius: 4px; background: var(--blue-pale); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .hero-avatar svg { width: 30px; height: 30px; color: var(--blue); }
         .hero-info { flex: 1; min-width: 0; }
@@ -150,28 +125,13 @@
         .serial-display { font-family: monospace; font-size: 16px; font-weight: 700; color: var(--blue); letter-spacing: 1.5px; background: var(--blue-pale); border: 1px solid #C7D9F3; padding: 6px 14px; border-radius: 3px; }
         .serial-unassigned { font-size: 12px; color: var(--gray-400); font-style: italic; background: var(--gray-50); border: 1px dashed var(--gray-200); padding: 6px 14px; border-radius: 3px; }
 
-        /* ─── HERO QR SCAN COUNTER ─── */
-        .hero-scan-counter {
-            display: flex; align-items: center; gap: 8px;
-            padding: 6px 12px;
-            border-radius: 3px;
-            border: 1px solid;
-        }
-        .hero-scan-counter.has-scans {
-            background: var(--green-pale);
-            border-color: #BBF7D0;
-            color: var(--green-dark);
-        }
-        .hero-scan-counter.no-scans {
-            background: var(--gray-100);
-            border-color: var(--gray-200);
-            color: var(--gray-400);
-        }
+        .hero-scan-counter { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 3px; border: 1px solid; }
+        .hero-scan-counter.has-scans { background: var(--green-pale); border-color: #BBF7D0; color: var(--green-dark); }
+        .hero-scan-counter.no-scans { background: var(--gray-100); border-color: var(--gray-200); color: var(--gray-400); }
         .hero-scan-counter svg { width: 13px; height: 13px; flex-shrink: 0; }
         .hero-scan-counter-number { font-family: 'PT Serif', serif; font-size: 20px; font-weight: 700; line-height: 1; }
         .hero-scan-counter-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; line-height: 1.3; }
 
-        /* ─── STATUS + SECTOR BADGES ROW ─── */
         .hero-badges { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
         .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
         .badge svg { width: 10px; height: 10px; }
@@ -180,39 +140,32 @@
         .badge-blue     { background: var(--blue-pale); color: var(--blue); }
         .badge-gray     { background: var(--gray-100); color: var(--gray-600); }
 
-        /* ─── TWO-COLUMN DETAIL LAYOUT ─── */
         .detail-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
         .detail-main { display: flex; flex-direction: column; gap: 20px; }
         .detail-side { display: flex; flex-direction: column; gap: 20px; }
 
-        /* ─── SECTION CARD ─── */
         .section-card { background: var(--white); border: 1px solid var(--gray-200); }
         .section-header { padding: 12px 20px; border-bottom: 1px solid var(--gray-100); background: var(--gray-50); display: flex; align-items: center; gap: 10px; }
         .ca-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); border: 2px solid var(--yellow-dark); flex-shrink: 0; }
         .section-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
         .section-body { padding: 20px; }
 
-        /* ─── INFO GRID ─── */
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .info-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
         .info-item { padding: 12px 14px; background: var(--gray-50); border: 1px solid var(--gray-100); border-left: 3px solid var(--blue-light); }
         .info-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-400); margin-bottom: 4px; }
         .info-value { font-size: 13px; color: var(--gray-800); font-weight: 500; line-height: 1.4; }
         .info-value.mono { font-family: monospace; font-size: 13px; color: var(--blue); font-weight: 700; letter-spacing: 0.5px; }
         .info-value em { color: var(--gray-400); font-style: italic; font-weight: 400; }
 
-        /* ─── ADDRESS BLOCK ─── */
         .address-block { padding: 14px; background: var(--gray-50); border: 1px solid var(--gray-100); border-left: 3px solid var(--blue-light); }
         .address-line1 { font-size: 14px; color: var(--gray-800); font-weight: 500; }
         .address-line2 { font-size: 12px; color: var(--gray-600); margin-top: 3px; }
 
-        /* ─── SECTOR FLAGS ─── */
         .sector-flags { display: flex; flex-wrap: wrap; gap: 8px; }
         .sector-flag { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; background: var(--green-pale); color: var(--green-dark); border: 1px solid #BBF7D0; border-radius: 3px; font-size: 12px; font-weight: 600; }
         .sector-flag svg { width: 13px; height: 13px; }
         .sector-none { font-size: 12px; color: var(--gray-400); font-style: italic; }
 
-        /* ─── MEMBERS TABLE ─── */
         .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
         .members-table { width: 100%; border-collapse: collapse; min-width: 560px; }
         .members-table thead th { padding: 10px 14px; background: var(--blue); color: var(--white); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; white-space: nowrap; }
@@ -235,8 +188,24 @@
         .qr-placeholder { padding: 32px 20px; text-align: center; background: var(--gray-50); border: 2px dashed var(--gray-200); }
         .qr-placeholder-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
         .qr-placeholder-icon svg { width: 22px; height: 22px; color: var(--gray-400); }
-        .qr-placeholder p { font-size: 12px; color: var(--gray-400); margin-bottom: 12px; }
-        .qr-must-approve { font-size: 12px; font-weight: 700; color: var(--red); }
+        .qr-placeholder p { font-size: 12px; color: var(--gray-400); margin-bottom: 4px; }
+
+        /* ─── READ-ONLY NOTICE CARD (replaces Actions) ─── */
+        .readonly-notice {
+            padding: 20px;
+            background: #FFFBEB;
+            border: 1px dashed #FDE68A;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 10px; text-align: center;
+        }
+        .readonly-notice-icon {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: #FEF3C7;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .readonly-notice-icon svg { width: 20px; height: 20px; color: #D97706; }
+        .readonly-notice-title { font-size: 13px; font-weight: 700; color: #92400E; }
+        .readonly-notice-sub { font-size: 11px; color: #B45309; line-height: 1.5; }
 
         /* ─── RECORD INFO CARD ─── */
         .record-info-stack { display: flex; flex-direction: column; gap: 0; }
@@ -245,36 +214,11 @@
         .record-info-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-400); flex-shrink: 0; }
         .record-info-value { font-size: 13px; color: var(--gray-800); font-weight: 500; text-align: right; }
 
-        /* QR scan count inside record info */
-        .scan-count-inline {
-            display: inline-flex; align-items: center; gap: 5px;
-            font-size: 13px; font-weight: 700;
-        }
+        .scan-count-inline { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; }
         .scan-count-inline.has-scans { color: var(--green-dark); }
         .scan-count-inline.no-scans  { color: var(--gray-400); font-weight: 500; }
         .scan-count-inline svg { width: 12px; height: 12px; }
 
-        /* ─── ACTIONS CARD ─── */
-        .actions-stack { padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
-        .btn-action { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px 16px; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border: none; border-radius: 3px; cursor: pointer; text-decoration: none; transition: background 0.15s, color 0.15s; }
-        .btn-action svg { width: 14px; height: 14px; flex-shrink: 0; }
-        .btn-action-approve  { background: var(--green); color: var(--white); }
-        .btn-action-approve:hover { background: var(--green-dark); }
-        .btn-action-unapprove { background: var(--orange-pale); color: var(--orange); border: 1px solid #FDE68A; }
-        .btn-action-unapprove:hover { background: #FDE68A; }
-        .btn-action-edit     { background: var(--orange); color: var(--white); }
-        .btn-action-edit:hover { background: #B45309; }
-        .btn-action-download { background: var(--blue-pale); color: var(--blue); border: 1px solid #C7D9F3; }
-        .btn-action-download:hover { background: #C7D9F3; }
-        .btn-action-delete   { background: var(--red-pale); color: var(--red); border: 1px solid #FECACA; }
-        .btn-action-delete:hover { background: #FECACA; }
-        .actions-divider { border: none; border-top: 1px solid var(--gray-100); margin: 4px 0; }
-
-        .back-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--blue); text-decoration: none; padding: 8px 16px; border: 1px solid var(--gray-200); background: var(--white); border-radius: 4px; transition: background 0.15s; white-space: nowrap; }
-        .back-btn:hover { background: var(--blue-pale); }
-        .back-btn svg { width: 14px; height: 14px; }
-
-        /* ─── FOOTER ─── */
         footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; z-index: 100; }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
         .footer-left strong { color: rgba(255,255,255,0.7); }
@@ -287,9 +231,6 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
-        /* ════════════════════════════════════════
-           RESPONSIVE
-           ════════════════════════════════════════ */
         @media (max-width: 1100px) {
             .detail-layout { grid-template-columns: 1fr; }
             .detail-side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -316,7 +257,6 @@
         }
         @media (max-width: 720px) {
             .info-grid { grid-template-columns: 1fr; }
-            .info-grid-3 { grid-template-columns: 1fr 1fr; }
         }
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
@@ -339,10 +279,10 @@
             .household-hero { padding: 16px; gap: 14px; }
             .hero-name { font-size: 18px; }
             .hero-right { align-items: flex-start; }
-            .info-grid-3 { grid-template-columns: 1fr; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
+            .readonly-badge { display: none; }
         }
     </style>
 </head>
@@ -379,11 +319,17 @@
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
+        <span class="readonly-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+            Read-Only Access
+        </span>
         <div class="header-user-badge">
-            <div class="user-avatar">A</div>
+            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">{{ auth()->user()->name ?? 'Admin' }}</div>
-                <div class="user-role">Administrator</div>
+                <div class="user-name">{{ auth()->user()->name }}</div>
+                <div class="user-role">Auditor</div>
             </div>
         </div>
     </header>
@@ -395,15 +341,8 @@
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
         </button>
-        <div class="nav-section-label">Admin Menu</div>
-        <a href="{{ route('admin.dashboard') }}" class="nav-item" onclick="closeSidebar()">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-                <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
-            </svg>
-            Dashboard
-        </a>
-        <a href="{{ route('admin.households.index') }}" class="nav-item active" onclick="closeSidebar()">
+        <div class="nav-section-label">Auditor Menu</div>
+        <a href="{{ route('auditor.households.index') }}" class="nav-item active" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
                 <path d="M9 22V12h6v10"/>
@@ -429,34 +368,17 @@
 
         <div class="page-titlebar">
             <div>
-                <div class="page-breadcrumb">Admin / <span>Households</span> / <span>Details</span></div>
+                <div class="page-breadcrumb">Auditor / <span>Households</span> / <span>Details</span></div>
                 <div class="page-h1">Household Details</div>
-                <div class="page-sub">RBI-aligned household profile — Barangay Family Track</div>
+                <div class="page-sub">RBI-aligned household profile — read-only view</div>
             </div>
             <div class="titlebar-actions">
-                <a href="{{ route('admin.households.index') }}" class="back-btn">
+                <a href="{{ route('auditor.households.index') }}" class="back-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
                     Back to List
                 </a>
             </div>
         </div>
-
-        @if(session('success'))
-            <div class="alert-success">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
-                {{ session('success') }}
-            </div>
-        @endif
-        @if($errors->any())
-            <div class="alert-danger">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-                <div>@foreach($errors->all() as $error)<div>{{ $error }}</div>@endforeach</div>
-            </div>
-        @endif
 
         @php $scanCount = $household->distributionLogs->count(); @endphp
 
@@ -496,8 +418,6 @@
                     @if($household->is_solo_parent)<span class="badge badge-blue">Solo Parent</span>@endif
                 </div>
             </div>
-
-            {{-- Right column: serial + scan counter --}}
             <div class="hero-right">
                 <div class="hero-serial">
                     @if($household->serial_code)
@@ -520,7 +440,6 @@
             </div>
         </div>
 
-        {{-- Two-column detail layout --}}
         <div class="detail-layout">
 
             <div class="detail-main">
@@ -601,9 +520,7 @@
                         <div class="section-title">DSWD / Listahanan Sector Flags</div>
                     </div>
                     <div class="section-body">
-                        @php
-                            $hasAnyFlag = $household->is_4ps_beneficiary || $household->is_pwd || $household->is_senior || $household->is_solo_parent;
-                        @endphp
+                        @php $hasAnyFlag = $household->is_4ps_beneficiary || $household->is_pwd || $household->is_senior || $household->is_solo_parent; @endphp
                         @if($hasAnyFlag)
                             <div class="sector-flags">
                                 @if($household->is_4ps_beneficiary)
@@ -673,7 +590,7 @@
 
             <div class="detail-side">
 
-                {{-- QR Code --}}
+                {{-- QR Code (view only — no download button) --}}
                 <div class="section-card">
                     <div class="section-header">
                         <div class="ca-dot"></div>
@@ -701,73 +618,25 @@
                                 </svg>
                             </div>
                             <p>QR Code not generated yet.</p>
-                            @if(!$household->isApproved())
-                                <p class="qr-must-approve">Approve household first</p>
-                            @endif
                         </div>
                     @endif
                 </div>
 
-                {{-- Actions --}}
+                {{-- Read-Only Notice (replaces Actions card) --}}
                 <div class="section-card">
                     <div class="section-header">
                         <div class="ca-dot"></div>
                         <div class="section-title">Actions</div>
                     </div>
-                    <div class="actions-stack">
-                        @if(!$household->isApproved())
-                            <form method="POST" action="{{ route('admin.households.approve', $household) }}">
-                                @csrf
-                                <button type="submit" class="btn-action btn-action-approve" onclick="return confirm('Approve this household?')">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                    Approve Household
-                                </button>
-                            </form>
-                        @else
-                            <form method="POST" action="{{ route('admin.households.unapprove', $household) }}">
-                                @csrf
-                                <button type="submit" class="btn-action btn-action-unapprove" onclick="return confirm('Remove approval from this household?')">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                    Unapprove
-                                </button>
-                            </form>
-                        @endif
-                        @if($household->isApproved() && !$household->qrCode)
-                            <form method="POST" action="{{ route('admin.households.qr.generate', $household) }}">
-                                @csrf
-                                <button type="submit" class="btn-action btn-action-approve" onclick="return confirm('Generate QR code for this household?')" style="background: var(--blue);">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                                        <rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="14" y2="21"/>
-                                        <line x1="14" y1="14" x2="21" y2="14"/>
-                                    </svg>
-                                    Generate QR Code
-                                </button>
-                            </form>
-                        @endif
-                        @if($household->qrCode)
-                            <a href="{{ route('admin.households.qr.download', $household) }}" class="btn-action btn-action-download">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-                                    <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                                </svg>
-                                Download QR Code
-                            </a>
-                        @endif
-                        @if(!$household->isApproved())
-                            <hr class="actions-divider">
-                            <form method="POST" action="{{ route('admin.households.destroy', $household) }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-action btn-action-delete" onclick="return confirm('Permanently delete this household? This cannot be undone.')">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
-                                        <path d="M10 11v6"/><path d="M14 11v6"/>
-                                    </svg>
-                                    Delete Household
-                                </button>
-                            </form>
-                        @endif
+                    <div class="readonly-notice">
+                        <div class="readonly-notice-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                                <path d="M7 11V7a5 5 0 0110 0v4"/>
+                            </svg>
+                        </div>
+                        <div class="readonly-notice-title">Read-Only Account</div>
+                        <div class="readonly-notice-sub">Auditor accounts cannot approve, modify, or delete household records.</div>
                     </div>
                 </div>
 
