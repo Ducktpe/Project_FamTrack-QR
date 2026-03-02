@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>MDRRMO Naic — Distribution Staff Dashboard</title>
+    <title>MDRRMO Naic — Active Distribution Event</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=PT+Serif:wght@700&display=swap" rel="stylesheet">
     <style>
@@ -23,6 +23,8 @@
             --gray-600:   #5A6372;
             --gray-800:   #2C3340;
             --red:        #C0392B;
+            --orange:     #EA580C;
+            --orange-pale:#FFF7ED;
             --sidebar-w:  260px;
         }
 
@@ -111,18 +113,15 @@
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay {
-            display: none !important; /* Force hide until activated */
-            position: fixed; 
-            inset: 0;
-            background: rgba(0,0,0,0.45); 
-            z-index: 200;
-            opacity: 0; 
-            transition: opacity 0.25s;
-            pointer-events: none; /* Don't block clicks when hidden */
+            display: none !important;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45); z-index: 200;
+            opacity: 0; transition: opacity 0.25s;
+            pointer-events: none;
         }
         .sidebar-overlay.active {
             display: block !important;
-            pointer-events: auto; /* Allow clicks when active */
+            pointer-events: auto;
         }
 
         /* ─── SIDEBAR ─── */
@@ -182,91 +181,165 @@
             border-bottom: 1px solid var(--gray-200); gap: 12px;
         }
         .page-breadcrumb { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .page-breadcrumb a { color: var(--gray-400); text-decoration: none; }
+        .page-breadcrumb a:hover { color: var(--blue-light); }
         .page-breadcrumb span { color: var(--blue-light); }
         .page-h1 { font-family: 'PT Serif', serif; font-size: 22px; font-weight: 700; color: var(--blue-dark); }
         .page-sub { font-size: 12px; color: var(--gray-600); margin-top: 3px; }
         .page-date { font-size: 12px; color: var(--gray-600); text-align: right; flex-shrink: 0; }
         .page-date strong { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
 
-        /* Welcome card */
-        .welcome-card { background: var(--blue); border-left: 5px solid var(--yellow); padding: 22px 28px; display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
-        .welcome-card img { width: 50px; height: 50px; object-fit: contain; flex-shrink: 0; }
-        .welcome-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.55); margin-bottom: 4px; }
-        .welcome-heading { font-family: 'PT Serif', serif; font-size: 20px; font-weight: 700; color: var(--white); }
-        .welcome-heading em { color: var(--yellow); font-style: normal; }
-        .welcome-desc { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
-
-        /* PRIMARY SCANNER CTA */
-        .scanner-cta {
-            background: var(--white); border: 1px solid var(--gray-200);
-            border-top: 4px solid var(--green); padding: 32px 28px;
-            display: flex; align-items: center; gap: 28px;
-            margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); flex-wrap: wrap;
+        /* ─── ACTIVE EVENT CARD ─── */
+        .event-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-top: 4px solid var(--green);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+            overflow: hidden;
         }
-        .scanner-cta-icon { width: 64px; height: 64px; background: var(--green-pale); border: 2px solid #BBF7D0; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .scanner-cta-icon svg { width: 32px; height: 32px; color: var(--green); }
-        .scanner-cta-content { flex: 1; min-width: 0; }
-        .scanner-cta-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--green); margin-bottom: 4px; }
-        .scanner-cta-title { font-family: 'PT Serif', serif; font-size: 20px; font-weight: 700; color: var(--blue-dark); margin-bottom: 6px; }
-        .scanner-cta-desc { font-size: 12px; color: var(--gray-600); line-height: 1.6; }
-        .scanner-cta-btn {
-            flex-shrink: 0; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 10px;
-            background: var(--green); 
-            color: var(--white); 
+
+        .event-card-header {
+            background: linear-gradient(135deg, #0F3D2A 0%, #166534 100%);
+            padding: 22px 28px;
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            flex-wrap: wrap;
+        }
+        .event-card-header-left { display: flex; align-items: center; gap: 16px; }
+        .event-pulse-dot {
+            width: 14px; height: 14px; border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 0 0 rgba(74,222,128,0.4);
+            animation: pulse-ring 1.8s ease-out infinite;
+            flex-shrink: 0;
+        }
+        @keyframes pulse-ring {
+            0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
+            70%  { box-shadow: 0 0 0 10px rgba(74,222,128,0); }
+            100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+        }
+        .event-live-tag {
+            background: rgba(74,222,128,0.15);
+            border: 1px solid rgba(74,222,128,0.4);
+            border-radius: 3px;
+            padding: 3px 10px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; color: #4ade80;
+        }
+        .event-header-name { font-family: 'PT Serif', serif; font-size: 21px; font-weight: 700; color: var(--white); margin-bottom: 3px; }
+        .event-header-sub { font-size: 12px; color: rgba(255,255,255,0.55); }
+        .event-header-sub strong { color: rgba(255,255,255,0.85); }
+        .event-elapsed-badge {
+            text-align: right; flex-shrink: 0;
+        }
+        .elapsed-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); margin-bottom: 4px; }
+        .elapsed-time { font-size: 26px; font-weight: 700; color: var(--yellow); font-variant-numeric: tabular-nums; letter-spacing: 1px; line-height: 1; }
+        .elapsed-unit { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 3px; letter-spacing: 0.5px; }
+
+        .event-card-body {
+            padding: 22px 28px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .event-stat {
+            padding: 14px 20px;
+            border-right: 1px solid var(--gray-100);
+        }
+        .event-stat:first-child { padding-left: 0; }
+        .event-stat:last-child { border-right: none; }
+        .event-stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .event-stat-label svg { width: 13px; height: 13px; color: var(--gray-400); flex-shrink: 0; }
+        .event-stat-value { font-size: 17px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
+        .event-stat-value.scan-count { font-size: 28px; color: var(--green); }
+        .event-stat-meta { font-size: 11px; color: var(--gray-400); margin-top: 3px; }
+
+        .event-card-footer {
+            padding: 16px 28px;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+            background: var(--gray-50);
+        }
+        .event-start-info { font-size: 12px; color: var(--gray-600); }
+        .event-start-info strong { color: var(--gray-800); }
+        .event-scan-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--green); color: var(--white);
             font-family: 'Open Sans', sans-serif;
-            font-size: 13px; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            text-decoration: none; 
-            padding: 14px 28px; 
-            border-radius: 4px; 
-            border: none;
-            transition: background 0.15s, transform 0.1s; 
-            cursor: pointer; 
-            white-space: nowrap;
-            /* ADD THESE LINES FOR MOBILE: */
+            font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            text-decoration: none; padding: 12px 24px; border-radius: 4px;
+            transition: background 0.15s, transform 0.1s; white-space: nowrap;
             -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            user-select: none;
-            position: relative;
-            z-index: 1;
         }
-        .scanner-cta-btn:hover { background: var(--green-dark); transform: translateY(-1px); }
-        .scanner-cta-btn svg { width: 18px; height: 18px; }
+        .event-scan-btn:hover { background: var(--green-dark); transform: translateY(-1px); }
+        .event-scan-btn svg { width: 16px; height: 16px; }
 
-        /* Access notice */
-        .access-notice { background: var(--white); border: 1px solid var(--gray-200); border-left: 4px solid var(--blue); padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 12px; }
-        .access-notice svg { width: 18px; height: 18px; color: var(--blue); flex-shrink: 0; margin-top: 1px; }
-        .access-notice-text { font-size: 12px; color: var(--gray-600); line-height: 1.6; }
-        .access-notice-text strong { color: var(--blue-dark); }
+        /* ─── NO EVENT STATE ─── */
+        .no-event-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-top: 4px solid var(--gray-400);
+            padding: 52px 40px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .no-event-icon {
+            width: 72px; height: 72px;
+            background: var(--gray-100); border: 2px solid var(--gray-200);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px;
+        }
+        .no-event-icon svg { width: 32px; height: 32px; color: var(--gray-400); }
+        .no-event-title { font-family: 'PT Serif', serif; font-size: 20px; font-weight: 700; color: var(--gray-600); margin-bottom: 8px; }
+        .no-event-desc { font-size: 13px; color: var(--gray-400); line-height: 1.6; max-width: 440px; }
 
-        /* Workflow */
-        .workflow-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-600); margin-bottom: 14px; }
-        .workflow-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-bottom: 28px; background: var(--white); border: 1px solid var(--gray-200); }
-        .step { padding: 18px 16px; border-right: 1px solid var(--gray-100); }
-        .step:last-child { border-right: none; }
-        .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--blue); color: var(--white); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; flex-shrink: 0; }
-        .step-title { font-size: 12px; font-weight: 600; color: var(--blue-dark); margin-bottom: 4px; }
-        .step-desc { font-size: 11px; color: var(--gray-600); line-height: 1.5; }
+        /* ─── RECENT SCANS TABLE ─── */
+        .section-title {
+            font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--gray-600); margin-bottom: 14px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
 
-        /* Alert boxes */
-        .alert-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
-        .alert-box { padding: 16px 18px; display: flex; align-items: flex-start; gap: 12px; border: 1px solid; }
-        .alert-box.cleared  { background: var(--green-pale); border-color: #BBF7D0; border-left: 4px solid var(--green); }
-        .alert-box.duplicate{ background: #FEF2F2; border-color: #FECACA; border-left: 4px solid var(--red); }
-        .alert-box svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
-        .alert-box.cleared svg  { color: var(--green); }
-        .alert-box.duplicate svg{ color: var(--red); }
-        .alert-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
-        .alert-box.cleared .alert-title  { color: var(--green-dark); }
-        .alert-box.duplicate .alert-title{ color: var(--red); }
-        .alert-desc { font-size: 11px; line-height: 1.5; }
-        .alert-box.cleared .alert-desc  { color: #166534; }
-        .alert-box.duplicate .alert-desc{ color: #7F1D1D; }
+        .scans-table-wrap {
+            background: var(--white); border: 1px solid var(--gray-200);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04); margin-bottom: 24px;
+            overflow-x: auto;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            padding: 11px 16px; text-align: left;
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--gray-400); background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200); white-space: nowrap;
+        }
+        tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--gray-50); }
+        tbody td { padding: 11px 16px; font-size: 12.5px; color: var(--gray-800); vertical-align: middle; }
+        .td-num { font-variant-numeric: tabular-nums; }
+        .td-household { font-weight: 600; color: var(--blue-dark); }
+        .td-time { color: var(--gray-600); font-variant-numeric: tabular-nums; }
+        .badge-released {
+            display: inline-block; padding: 2px 10px; border-radius: 10px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            background: var(--green-pale); color: var(--green-dark); border: 1px solid #BBF7D0;
+        }
+
+        .empty-table-row td {
+            text-align: center; padding: 40px 16px;
+            color: var(--gray-400); font-size: 12px; font-style: italic;
+        }
+
+        /* ─── INFO NOTICE ─── */
+        .info-notice {
+            background: var(--white); border: 1px solid var(--gray-200); border-left: 4px solid var(--blue);
+            padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 12px;
+        }
+        .info-notice svg { width: 18px; height: 18px; color: var(--blue); flex-shrink: 0; margin-top: 1px; }
+        .info-notice-text { font-size: 12px; color: var(--gray-600); line-height: 1.6; }
+        .info-notice-text strong { color: var(--blue-dark); }
 
         /* ─── FOOTER ─── */
         footer {
@@ -285,9 +358,7 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
-        /* ════════════════════════════════════════
-           RESPONSIVE
-           ════════════════════════════════════════ */
+        /* ─── RESPONSIVE ─── */
         @media (max-width: 900px) {
             .shell {
                 grid-template-rows: 36px auto 1fr 48px;
@@ -307,7 +378,6 @@
             .sidebar-close { display: flex; }
             .sidebar .nav-section-label { padding-top: 52px; }
             .hamburger { display: flex; }
-
             header { padding: 0 16px; gap: 10px; }
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
@@ -317,24 +387,17 @@
             .user-role { display: none; }
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
-
             .main-content { padding: 20px 16px; }
-
-            /* Workflow 5-col → 2-col */
-            .workflow-steps { grid-template-columns: 1fr 1fr; }
-            .step { border-right: none; border-bottom: 1px solid var(--gray-100); }
-            .step:last-child { border-bottom: none; }
-
-            /* CTA: button stretches full-width */
-            .scanner-cta { padding: 22px 20px; gap: 18px; }
-            .scanner-cta-btn { width: 100%; justify-content: center; }
+            .event-card-body { grid-template-columns: 1fr 1fr; }
+            .event-stat:nth-child(2) { border-right: none; }
+            .event-stat:nth-child(3) { padding-left: 0; border-top: 1px solid var(--gray-100); }
+            .event-stat:nth-child(4) { border-top: 1px solid var(--gray-100); }
         }
 
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
             .status-indicator { display: none; }
-
             header { padding: 0 12px; gap: 8px; }
             .header-logos img { height: 36px; width: 36px; }
             .logo-divider { display: none; }
@@ -344,38 +407,18 @@
             .header-user-badge { padding: 5px 8px; }
             .user-avatar { width: 28px; height: 28px; font-size: 11px; }
             .user-name { font-size: 11px; }
-
             .main-content { padding: 16px 12px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; }
             .page-h1 { font-size: 18px; }
             .page-date { text-align: left; }
-
-            .welcome-card { padding: 16px 18px; gap: 14px; }
-            .welcome-card img { width: 38px; height: 38px; }
-            .welcome-heading { font-size: 16px; }
-            .welcome-desc { display: none; }
-
-            .scanner-cta { padding: 18px 16px; gap: 14px; }
-            .scanner-cta-icon { width: 48px; height: 48px; }
-            .scanner-cta-icon svg { width: 24px; height: 24px; }
-            .scanner-cta-title { font-size: 16px; }
-            .scanner-cta-desc { display: none; }
-            
-            /* CRITICAL: Large touch target for mobile */
-            .scanner-cta-btn { 
-                width: 100%; 
-                justify-content: center;
-                min-height: 56px !important;
-                font-size: 15px;
-                padding: 18px 24px;
-            }
-
-            .access-notice { padding: 12px 14px; }
-            .access-notice-text { font-size: 11px; }
-
-            .workflow-steps { grid-template-columns: 1fr; }
-            .alert-row { grid-template-columns: 1fr; }
-
+            .event-card-header { padding: 18px 20px; }
+            .event-header-name { font-size: 17px; }
+            .elapsed-time { font-size: 20px; }
+            .event-card-body { padding: 16px 20px; grid-template-columns: 1fr 1fr; }
+            .event-stat { padding: 10px 12px; }
+            .event-stat:first-child { padding-left: 12px; }
+            .event-card-footer { padding: 14px 20px; }
+            .event-scan-btn { width: 100%; justify-content: center; min-height: 52px; font-size: 14px; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
@@ -423,7 +466,7 @@
         </div>
         <div class="header-spacer"></div>
         <div class="header-user-badge">
-            <div class="user-avatar">S</div>
+            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name }}</div>
                 <div class="user-role">Distribution Staff</div>
@@ -442,7 +485,7 @@
 
         <div class="nav-section-label">Staff Menu</div>
 
-        <a href="#" class="nav-item active" onclick="closeSidebar()">
+        <a href="{{ route('staff.dashboard') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="7" height="7" rx="1"/>
                 <rect x="14" y="3" width="7" height="7" rx="1"/>
@@ -477,7 +520,7 @@
             My Scan History
         </a>
 
-        <a href="{{ route('staff.active-event') }}" class="nav-item" onclick="closeSidebar()">
+        <a href="#" class="nav-item active" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
                 <circle cx="9" cy="7" r="4"/>
@@ -508,9 +551,12 @@
 
         <div class="page-titlebar">
             <div>
-                <div class="page-breadcrumb">Home / <span>Staff Dashboard</span></div>
-                <div class="page-h1">Distribution Staff Portal</div>
-                <div class="page-sub">Barangay Family Track QR System — Ayuda Distribution &amp; QR Scanning</div>
+                <div class="page-breadcrumb">
+                    <a href="{{ route('staff.dashboard') }}">Home</a> /
+                    <span>Active Distribution Event</span>
+                </div>
+                <div class="page-h1">Active Distribution Event</div>
+                <div class="page-sub">Live status and scan summary for the currently ongoing relief distribution.</div>
             </div>
             <div class="page-date">
                 <span>Today</span>
@@ -518,106 +564,183 @@
             </div>
         </div>
 
-        <div class="welcome-card">
-            <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO">
-            <div>
-                <div class="welcome-label">Welcome Back</div>
-                <div class="welcome-heading">Good day, <em>{{ auth()->user()->name }}!</em></div>
-                <div class="welcome-desc">You are logged in as Relief Distribution Staff. Select an active distribution event and begin scanning household QR codes.</div>
+        {{-- ══════════════════════════════════════════
+             STATE A: ACTIVE EVENTS EXIST
+             ══════════════════════════════════════════ --}}
+        @if(isset($activeEvents) && $activeEvents->isNotEmpty())
+
+        @foreach($activeEvents as $event)
+
+        <div class="event-card">
+
+            {{-- Header strip --}}
+            <div class="event-card-header">
+                <div class="event-card-header-left">
+                    <div class="event-pulse-dot"></div>
+                    <div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;">
+                            <span class="event-live-tag">&#9679; Live</span>
+                            <span style="font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.5px;">Event #{{ $event->id }}</span>
+                        </div>
+                        <div class="event-header-name">{{ $event->event_name }}</div>
+                        <div class="event-header-sub">
+                            Relief Type: <strong>{{ $event->relief_type }}</strong>
+                            &nbsp;&mdash;&nbsp;
+                            Barangay: <strong>{{ $event->target_barangay ?? 'N/A' }}</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="event-elapsed-badge">
+                    <div class="elapsed-label">Elapsed Time</div>
+                    <div class="elapsed-time" id="elapsed-{{ $event->id }}">00:00:00</div>
+                    <div class="elapsed-unit">HH : MM : SS</div>
+                </div>
+            </div>
+
+            {{-- Stats row --}}
+            <div class="event-card-body">
+                <div class="event-stat">
+                    <div class="event-stat-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 7 23 1 17 1"/><polyline points="1 17 1 23 7 23"/>
+                            <polyline points="23 17 23 23 17 23"/><polyline points="1 7 1 1 7 1"/>
+                            <rect x="8" y="8" width="8" height="8" rx="1"/>
+                        </svg>
+                        Households Served
+                    </div>
+                    <div class="event-stat-value scan-count">{{ $event->scan_count }}</div>
+                    <div class="event-stat-meta">confirmed releases</div>
+                </div>
+                <div class="event-stat">
+                    <div class="event-stat-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        Started At
+                    </div>
+                    <div class="event-stat-value" style="font-size:15px;">
+                        {{ $event->started_at ? $event->started_at->format('h:i A') : '—' }}
+                    </div>
+                    <div class="event-stat-meta">
+                        {{ $event->started_at ? $event->started_at->format('M d, Y') : '' }}
+                    </div>
+                </div>
+                <div class="event-stat">
+                    <div class="event-stat-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        Target Barangay
+                    </div>
+                    <div class="event-stat-value" style="font-size:15px;">{{ $event->target_barangay ?? '—' }}</div>
+                    <div class="event-stat-meta">service area</div>
+                </div>
+                <div class="event-stat">
+                    <div class="event-stat-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/>
+                            <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>
+                        </svg>
+                        Relief Type
+                    </div>
+                    <div class="event-stat-value" style="font-size:15px;">{{ $event->relief_type }}</div>
+                    <div class="event-stat-meta">goods category</div>
+                </div>
+            </div>
+
+            {{-- Footer action --}}
+            <div class="event-card-footer">
+                <div class="event-start-info">
+                    Event started by: <strong>{{ $event->creator->name ?? 'Administrator' }}</strong>
+                    &nbsp;&bull;&nbsp;
+                    Started <strong>{{ $event->started_at ? $event->started_at->diffForHumans() : '—' }}</strong>
+                </div>
+                <a href="{{ route('staff.scan') }}" class="event-scan-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="23 7 23 1 17 1"/><polyline points="1 17 1 23 7 23"/>
+                        <polyline points="23 17 23 23 17 23"/><polyline points="1 7 1 1 7 1"/>
+                        <rect x="8" y="8" width="8" height="8" rx="1"/>
+                    </svg>
+                    Open QR Scanner
+                </a>
             </div>
         </div>
 
-        <div class="scanner-cta">
-            <div class="scanner-cta-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="23 7 23 1 17 1"/>
-                    <polyline points="1 17 1 23 7 23"/>
-                    <polyline points="23 17 23 23 17 23"/>
-                    <polyline points="1 7 1 1 7 1"/>
-                    <rect x="8" y="8" width="8" height="8" rx="1"/>
-                </svg>
-            </div>
-            <div class="scanner-cta-content">
-                <div class="scanner-cta-label">Primary Action</div>
-                <div class="scanner-cta-title">QR Code Scanner</div>
-                <div class="scanner-cta-desc">Activate your device camera to scan household QR cards. The system will instantly validate the family, check for duplicate releases, and record the distribution upon confirmation.</div>
-            </div>
-            <a href="{{ route('staff.scan') }}" class="scanner-cta-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="23 7 23 1 17 1"/>
-                    <polyline points="1 17 1 23 7 23"/>
-                    <polyline points="23 17 23 23 17 23"/>
-                    <polyline points="1 7 1 1 7 1"/>
-                    <rect x="8" y="8" width="8" height="8" rx="1"/>
-                </svg>
-                Open Scanner
-            </a>
+        {{-- Recent scans table for this event --}}
+        <div class="section-title">My Recent Scans — {{ $event->event_name }}</div>
+        <div class="scans-table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Barangay</th>
+                        <th>Household Head</th>
+                        <th>Members</th>
+                        <th>Released At</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($event->recent_scans as $i => $log)
+                    <tr>
+                        <td class="td-num">{{ $i + 1 }}</td>
+                        <td class="td-household">{{ $log->household->barangay ?? '—' }}</td>
+                        <td>{{ $log->household->household_head_name ?? '—' }}</td>
+                        <td class="td-num">{{ $log->household->total_members ?? '—' }}</td>
+                        <td class="td-time">{{ $log->distributed_at ? $log->distributed_at->format('h:i:s A') : $log->created_at->format('h:i:s A') }}</td>
+                        <td><span class="badge-released">Released</span></td>
+                    </tr>
+                    @empty
+                    <tr class="empty-table-row">
+                        <td colspan="6">No scans recorded yet for this event. Open the scanner to begin.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
-        <div class="access-notice">
+        @endforeach
+
+        <div class="info-notice">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"/>
                 <line x1="12" y1="8" x2="12" y2="12"/>
                 <line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
-            <div class="access-notice-text">
-                <strong>Relief Distribution Staff — Scanner / Field Access.</strong> You may scan household QR codes using your device camera, view the family summary on scan (household head, members, last release date), and confirm receipt to log the distribution. You cannot edit family data, view other staff sessions, or export any records. Duplicate releases are automatically blocked by the system.
+            <div class="info-notice-text">
+                <strong>Showing your scans only.</strong> These tables reflect releases confirmed by your account per event session. For the full distribution log, please contact your administrator.
             </div>
         </div>
 
-        <div class="workflow-title">Distribution Workflow — Step by Step</div>
-        <div class="workflow-steps">
-            <div class="step">
-                <div class="step-num">1</div>
-                <div class="step-title">Select Event</div>
-                <div class="step-desc">Log in and select the active distribution event assigned to you.</div>
-            </div>
-            <div class="step">
-                <div class="step-num">2</div>
-                <div class="step-title">Open Scanner</div>
-                <div class="step-desc">Tap "Open Scanner" to activate your device camera via the browser.</div>
-            </div>
-            <div class="step">
-                <div class="step-num">3</div>
-                <div class="step-title">Scan QR Card</div>
-                <div class="step-desc">Hold the household QR card under the camera. System reads the serial code.</div>
-            </div>
-            <div class="step">
-                <div class="step-num">4</div>
-                <div class="step-title">Validate Family</div>
-                <div class="step-desc">System shows family name, member count, and last release. Verify details.</div>
-            </div>
-            <div class="step">
-                <div class="step-num">5</div>
-                <div class="step-title">Confirm Release</div>
-                <div class="step-desc">Tap Confirm. System logs your staff ID, timestamp, and goods automatically.</div>
-            </div>
-        </div>
+        {{-- ══════════════════════════════════════════
+             STATE B: NO ACTIVE EVENT
+             ══════════════════════════════════════════ --}}
+        @else
 
-        <div class="workflow-title">Possible Scan Results</div>
-        <div class="alert-row">
-            <div class="alert-box cleared">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-                    <polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
-                <div>
-                    <div class="alert-title">&#10003; Cleared — Confirm Release</div>
-                    <div class="alert-desc">Screen displays the family name, household head, member count, and a green CONFIRM RELEASE button. Tap confirm to record the distribution with your staff ID and timestamp.</div>
-                </div>
-            </div>
-            <div class="alert-box duplicate">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="no-event-card">
+            <div class="no-event-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <circle cx="12" cy="12" r="10"/>
-                    <line x1="15" y1="9" x2="9" y2="15"/>
-                    <line x1="9" y1="9" x2="15" y2="15"/>
+                    <line x1="8" y1="12" x2="16" y2="12"/>
                 </svg>
-                <div>
-                    <div class="alert-title">&#9888; Duplicate Alert — Already Received</div>
-                    <div class="alert-desc">Red warning screen shows ALREADY RECEIVED with the date, time, and name of the staff who confirmed the previous release. Re-release is automatically blocked.</div>
-                </div>
+            </div>
+            <div class="no-event-title">No Active Distribution Event</div>
+            <div class="no-event-desc">There is currently no ongoing relief distribution event. Please wait for an administrator to start an event, or check back later.</div>
+        </div>
+
+        <div class="info-notice">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <div class="info-notice-text">
+                <strong>Waiting for event.</strong> Distribution events are started by the MDRRMO administrator. Once an event goes live, this page will show the event details and you will be able to begin scanning household QR codes. You may also return to the <a href="{{ route('staff.dashboard') }}" style="color:var(--blue-light);">Dashboard</a> in the meantime.
             </div>
         </div>
+
+        @endif
 
     </main>
 
@@ -639,6 +762,7 @@
 
 <script>
     function pad(n){ return String(n).padStart(2,'0'); }
+
     function updateClock() {
         const now = new Date();
         const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -654,6 +778,30 @@
     updateClock();
     setInterval(updateClock, 1000);
     document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    /* ─── Elapsed time counters (one per active event) ─── */
+    @if(isset($activeEvents) && $activeEvents->isNotEmpty())
+    const eventTimers = {
+        @foreach($activeEvents as $event)
+        @if($event->started_at)
+        {{ $event->id }}: {{ $event->started_at->timestamp }} * 1000,
+        @endif
+        @endforeach
+    };
+    function updateAllElapsed() {
+        Object.entries(eventTimers).forEach(([id, startTs]) => {
+            const el = document.getElementById('elapsed-' + id);
+            if (!el) return;
+            const diff = Math.max(0, Date.now() - startTs);
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            el.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+        });
+    }
+    updateAllElapsed();
+    setInterval(updateAllElapsed, 1000);
+    @endif
 
     /* ─── Sidebar ─── */
     const sidebar = document.getElementById('sidebar');

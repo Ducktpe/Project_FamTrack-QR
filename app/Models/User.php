@@ -75,7 +75,7 @@ class User extends Authenticatable
 
     public function distributionLogs()
     {
-        return $this->hasMany(DistributionLog::class, 'distributed_by');
+        return $this->hasMany(DistributionLog::class, 'household_id');
     }
 
     public function auditLogs()

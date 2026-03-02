@@ -61,21 +61,10 @@
         }
         .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
-        .clock-inline {
-            font-size: 12px; font-weight: 600;
-            color: var(--yellow); letter-spacing: 1px;
-            font-variant-numeric: tabular-nums;
-        }
+        .clock-inline { font-size: 12px; font-weight: 600; color: var(--yellow); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
         .clock-date-inline { font-size: 11px; color: rgba(255,255,255,0.45); }
-        .status-indicator {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 11px; color: rgba(255,255,255,0.45);
-        }
-        .status-indicator::before {
-            content: ''; width: 6px; height: 6px; border-radius: 50%;
-            background: #4CAF50; box-shadow: 0 0 5px #4CAF50;
-            animation: blink 2s infinite;
-        }
+        .status-indicator { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.45); }
+        .status-indicator::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #4CAF50; box-shadow: 0 0 5px #4CAF50; animation: blink 2s infinite; }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         /* ─── HEADER ─── */
@@ -87,23 +76,9 @@
             display: flex; align-items: center;
             padding: 0 28px; gap: 14px; z-index: 90;
         }
-
-        /* Hamburger — hidden on desktop */
-        .hamburger {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 6px;
-            margin-left: -4px;
-            border-radius: 4px;
-            color: var(--blue-dark);
-            flex-shrink: 0;
-            transition: background 0.15s;
-        }
+        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
         .hamburger:hover { background: var(--blue-pale); }
         .hamburger svg { width: 22px; height: 22px; display: block; }
-
         .header-logos { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
         .header-logos img { height: 54px; width: 54px; object-fit: contain; }
         .logo-divider { width: 1px; height: 44px; background: var(--gray-200); }
@@ -112,150 +87,52 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 14px;
-            background: var(--blue-pale);
-            border: 1px solid var(--gray-200); border-radius: 4px;
-            flex-shrink: 0;
-        }
-        .user-avatar {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: var(--green);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--white); font-weight: 700; font-size: 13px;
-            flex-shrink: 0;
-        }
+        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; flex-shrink: 0; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
         .user-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
         .user-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.45);
-            z-index: 200;
-            opacity: 0;
-            transition: opacity 0.25s;
-        }
-        .sidebar-overlay.active { opacity: 1; }
+        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
+        .sidebar-overlay.active { display: block !important; pointer-events: auto; }
 
         /* ─── SIDEBAR ─── */
-        .sidebar {
-            grid-area: sidebar;
-            background: var(--white);
-            border-right: 1px solid var(--gray-200);
-            display: flex; flex-direction: column;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        /* Close button — only shown on mobile */
-        .sidebar-close {
-            display: none;
-            position: absolute;
-            top: 12px; right: 12px;
-            background: var(--gray-100);
-            border: 1px solid var(--gray-200);
-            border-radius: 4px;
-            width: 32px; height: 32px;
-            align-items: center; justify-content: center;
-            cursor: pointer; z-index: 10;
-            color: var(--gray-600);
-            transition: background 0.15s;
-        }
+        .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
+        .sidebar-close { display: none; position: absolute; top: 12px; right: 12px; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 4px; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s; }
         .sidebar-close:hover { background: #FEF2F2; color: #C0392B; }
         .sidebar-close svg { width: 16px; height: 16px; }
-
-        .nav-section-label {
-            padding: 18px 20px 8px;
-            font-size: 10px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 1.5px;
-            color: var(--gray-400);
-        }
-        .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 11px 20px;
-            font-size: 13.5px; font-weight: 500;
-            color: var(--gray-600); text-decoration: none;
-            border-left: 3px solid transparent;
-            transition: background 0.12s, color 0.12s, border-color 0.12s;
-        }
+        .nav-section-label { padding: 18px 20px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray-400); }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 20px; font-size: 13.5px; font-weight: 500; color: var(--gray-600); text-decoration: none; border-left: 3px solid transparent; transition: background 0.12s, color 0.12s, border-color 0.12s; }
         .nav-item:hover { background: var(--gray-50); color: var(--blue); border-left-color: var(--blue-light); }
         .nav-item.active { background: var(--blue-pale); color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
         .nav-icon { width: 17px; height: 17px; flex-shrink: 0; color: inherit; opacity: 0.7; }
         .nav-item.active .nav-icon, .nav-item:hover .nav-icon { opacity: 1; }
         .sidebar-sep { border: none; border-top: 1px solid var(--gray-100); margin: 8px 0; }
         .sidebar-bottom { margin-top: auto; padding: 16px 20px; border-top: 1px solid var(--gray-200); }
-        .logout-btn {
-            width: 100%; font-family: 'Open Sans', sans-serif;
-            font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
-            background: var(--blue); color: var(--white);
-            border: none; padding: 10px 16px; border-radius: 4px;
-            cursor: pointer; display: flex; align-items: center;
-            justify-content: center; gap: 8px; transition: background 0.15s;
-        }
+        .logout-btn { width: 100%; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; background: var(--blue); color: var(--white); border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
         .logout-btn:hover { background: var(--red); }
 
         /* ─── MAIN ─── */
-        .main-content {
-            grid-area: main;
-            background: var(--gray-50);
-            overflow-y: auto;
-            padding: 28px 32px;
-        }
+        .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 28px 32px; }
 
-        /* Page title bar */
-        .page-titlebar {
-            display: flex; align-items: flex-end;
-            justify-content: space-between;
-            margin-bottom: 20px; padding-bottom: 16px;
-            border-bottom: 1px solid var(--gray-200);
-            gap: 12px;
-        }
+        .page-titlebar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); gap: 12px; }
         .page-breadcrumb { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
         .page-breadcrumb span { color: var(--blue-light); }
         .page-h1 { font-family: 'PT Serif', serif; font-size: 22px; font-weight: 700; color: var(--blue-dark); }
         .page-sub { font-size: 12px; color: var(--gray-600); margin-top: 3px; }
-        .back-btn {
-            display: inline-flex; align-items: center; gap: 7px;
-            font-size: 12px; font-weight: 600;
-            color: var(--blue); text-decoration: none;
-            padding: 8px 16px;
-            border: 1px solid var(--gray-200);
-            background: var(--white); border-radius: 4px;
-            transition: background 0.15s;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
+        .back-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--blue); text-decoration: none; padding: 8px 16px; border: 1px solid var(--gray-200); background: var(--white); border-radius: 4px; transition: background 0.15s; white-space: nowrap; flex-shrink: 0; }
         .back-btn:hover { background: var(--blue-pale); }
         .back-btn svg { width: 14px; height: 14px; }
 
         /* Alert */
-        .alert-danger {
-            background: var(--red-pale);
-            border: 1px solid #FECACA; border-left: 4px solid var(--red);
-            padding: 14px 16px; margin-bottom: 20px;
-            font-size: 13px; color: var(--red);
-        }
+        .alert-danger { background: var(--red-pale); border: 1px solid #FECACA; border-left: 4px solid var(--red); padding: 14px 16px; margin-bottom: 20px; font-size: 13px; color: var(--red); }
         .alert-danger strong { display: block; margin-bottom: 6px; }
         .alert-danger ul { margin-left: 18px; }
         .alert-danger li { margin-bottom: 3px; }
 
         /* ─── FORM SECTION CARD ─── */
-        .form-section {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            margin-bottom: 20px;
-        }
-        .form-section-header {
-            padding: 13px 20px;
-            border-bottom: 1px solid var(--gray-100);
-            background: var(--gray-50);
-            display: flex; align-items: center; gap: 10px;
-            flex-wrap: wrap;
-        }
+        .form-section { background: var(--white); border: 1px solid var(--gray-200); margin-bottom: 20px; }
+        .form-section-header { padding: 13px 20px; border-bottom: 1px solid var(--gray-100); background: var(--gray-50); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .ca-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); border: 2px solid var(--yellow-dark); flex-shrink: 0; }
         .form-section-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
         .form-section-sub { font-size: 11px; color: var(--gray-400); margin-left: auto; }
@@ -270,11 +147,7 @@
         .form-row:last-child { margin-bottom: 0; }
 
         .form-group { display: flex; flex-direction: column; gap: 5px; }
-        .form-label {
-            font-size: 11px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            color: var(--gray-600);
-        }
+        .form-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); }
         .form-label .req { color: var(--red); margin-left: 2px; }
         .form-label .opt { color: var(--gray-400); font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 10px; margin-left: 4px; }
 
@@ -304,164 +177,59 @@
         }
         input::placeholder { color: var(--gray-400); }
         select { cursor: pointer; }
+        select:disabled { background: var(--gray-100); color: var(--gray-400); cursor: not-allowed; }
         textarea { resize: vertical; min-height: 72px; }
 
+        /* Cascade hint */
+        .cascade-hint { font-size: 10px; color: var(--gray-400); margin-top: 3px; font-style: italic; }
+
         /* Checkbox group */
-        .checkbox-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .checkbox-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 11px 14px;
-            border: 1px solid var(--gray-200);
-            border-radius: 3px;
-            cursor: pointer;
-            transition: background 0.12s, border-color 0.12s;
-        }
+        .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .checkbox-item { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 1px solid var(--gray-200); border-radius: 3px; cursor: pointer; transition: background 0.12s, border-color 0.12s; }
         .checkbox-item:hover { background: var(--blue-pale); border-color: var(--blue-light); }
-        .checkbox-item input[type="checkbox"] {
-            width: 16px; height: 16px; flex-shrink: 0;
-            accent-color: var(--blue); cursor: pointer;
-        }
+        .checkbox-item input[type="checkbox"] { width: 16px; height: 16px; flex-shrink: 0; accent-color: var(--blue); cursor: pointer; }
         .checkbox-item-label { font-size: 13px; color: var(--gray-800); cursor: pointer; line-height: 1.3; }
         .checkbox-item-label small { display: block; font-size: 11px; color: var(--gray-400); margin-top: 2px; }
 
         /* ─── FAMILY MEMBERS ─── */
         #members-container { margin-bottom: 16px; }
-
-        .member-card {
-            border: 1px solid var(--gray-200);
-            border-left: 4px solid var(--blue-light);
-            background: var(--gray-50);
-            margin-bottom: 14px;
-        }
-        .member-card-header {
-            padding: 11px 16px;
-            background: var(--blue-pale);
-            border-bottom: 1px solid var(--gray-200);
-            display: flex; align-items: center; justify-content: space-between;
-            gap: 8px;
-        }
-        .member-card-title {
-            font-size: 12px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            color: var(--blue);
-            display: flex; align-items: center; gap: 8px;
-        }
+        .member-card { border: 1px solid var(--gray-200); border-left: 4px solid var(--blue-light); background: var(--gray-50); margin-bottom: 14px; }
+        .member-card-header { padding: 11px 16px; background: var(--blue-pale); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .member-card-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--blue); display: flex; align-items: center; gap: 8px; }
         .member-card-title svg { width: 13px; height: 13px; flex-shrink: 0; }
         .member-card-body { padding: 18px 16px; }
         .member-card-body .form-row { margin-bottom: 14px; }
         .member-card-body .form-row:last-child { margin-bottom: 0; }
 
-        .btn-remove-member {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 5px 11px;
-            background: var(--red); color: var(--white);
-            border: none; border-radius: 3px; cursor: pointer;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 11px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            transition: background 0.15s;
-            flex-shrink: 0;
-        }
+        .btn-remove-member { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; background: var(--red); color: var(--white); border: none; border-radius: 3px; cursor: pointer; font-family: 'Open Sans', sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s; flex-shrink: 0; }
         .btn-remove-member:hover { background: #9B1C1C; }
         .btn-remove-member svg { width: 11px; height: 11px; }
 
-        .btn-add-member {
-            display: inline-flex; align-items: center; gap: 7px;
-            padding: 10px 18px;
-            background: var(--white); color: var(--blue);
-            border: 1px dashed var(--blue-light); border-radius: 3px; cursor: pointer;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 12px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            transition: background 0.15s, border-color 0.15s;
-            width: 100%;
-            justify-content: center;
-        }
+        .btn-add-member { display: inline-flex; align-items: center; gap: 7px; padding: 10px 18px; background: var(--white); color: var(--blue); border: 1px dashed var(--blue-light); border-radius: 3px; cursor: pointer; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s, border-color 0.15s; width: 100%; justify-content: center; }
         .btn-add-member:hover { background: var(--blue-pale); border-color: var(--blue); }
         .btn-add-member svg { width: 14px; height: 14px; }
 
-        /* Member checkbox inline */
-        .member-checkbox-row {
-            display: flex; gap: 12px; flex-wrap: wrap;
-        }
-        .member-checkbox-item {
-            display: flex; align-items: center; gap: 7px;
-            padding: 8px 14px;
-            border: 1px solid var(--gray-200);
-            border-radius: 3px;
-            cursor: pointer;
-            background: var(--white);
-            font-size: 13px; color: var(--gray-800);
-            transition: background 0.12s;
-        }
+        .member-checkbox-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .member-checkbox-item { display: flex; align-items: center; gap: 7px; padding: 8px 14px; border: 1px solid var(--gray-200); border-radius: 3px; cursor: pointer; background: var(--white); font-size: 13px; color: var(--gray-800); transition: background 0.12s; }
         .member-checkbox-item:hover { background: var(--blue-pale); }
-        .member-checkbox-item input[type="checkbox"] {
-            width: 14px; height: 14px; accent-color: var(--blue); cursor: pointer;
-        }
+        .member-checkbox-item input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--blue); cursor: pointer; }
 
         /* ─── SUBMIT BAR ─── */
-        .submit-bar {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-top: 3px solid var(--green);
-            padding: 18px 24px;
-            display: flex; align-items: center; gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-        .btn-submit {
-            display: inline-flex; align-items: center; gap: 7px;
-            padding: 11px 24px;
-            background: var(--green); color: var(--white);
-            border: none; border-radius: 4px; cursor: pointer;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 13px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            transition: background 0.15s;
-        }
+        .submit-bar { background: var(--white); border: 1px solid var(--gray-200); border-top: 3px solid var(--green); padding: 18px 24px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .btn-submit { display: inline-flex; align-items: center; gap: 7px; padding: 11px 24px; background: var(--green); color: var(--white); border: none; border-radius: 4px; cursor: pointer; font-family: 'Open Sans', sans-serif; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s; }
         .btn-submit:hover { background: var(--green-dark); }
         .btn-submit svg { width: 15px; height: 15px; }
-        .btn-cancel {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 10px 20px;
-            background: var(--white); color: var(--gray-600);
-            border: 1px solid var(--gray-200); border-radius: 4px;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 12px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            text-decoration: none;
-            transition: background 0.15s;
-        }
+        .btn-cancel { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; background: var(--white); color: var(--gray-600); border: 1px solid var(--gray-200); border-radius: 4px; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; text-decoration: none; transition: background 0.15s; }
         .btn-cancel:hover { background: var(--gray-100); }
-        .submit-note {
-            margin-left: auto;
-            font-size: 11px; color: var(--gray-400);
-            display: flex; align-items: center; gap: 6px;
-        }
+        .submit-note { margin-left: auto; font-size: 11px; color: var(--gray-400); display: flex; align-items: center; gap: 6px; }
         .submit-note svg { width: 13px; height: 13px; color: var(--orange); flex-shrink: 0; }
 
         /* ─── FOOTER ─── */
-        footer {
-            grid-area: footer;
-            background: var(--blue-dark);
-            border-top: 3px solid var(--yellow);
-            display: flex; align-items: center;
-            justify-content: space-between;
-            padding: 0 24px; gap: 8px; z-index: 100;
-        }
+        footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; z-index: 100; }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
         .footer-left strong { color: rgba(255,255,255,0.7); }
         .footer-center { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 1px; text-transform: uppercase; }
-        .fb-link {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 11px; color: rgba(255,255,255,0.4);
-            text-decoration: none; transition: color 0.15s;
-            white-space: nowrap;
-        }
+        .fb-link { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.15s; white-space: nowrap; }
         .fb-link:hover { color: var(--yellow); }
         .fb-link svg { width: 13px; height: 13px; }
 
@@ -469,39 +237,15 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
-        /* ════════════════════════════════════════
-           RESPONSIVE
-           ════════════════════════════════════════ */
+        /* ─── RESPONSIVE ─── */
         @media (max-width: 900px) {
-            .shell {
-                grid-template-rows: 36px auto 1fr 48px;
-                grid-template-columns: 1fr;
-                grid-template-areas:
-                    "topbar"
-                    "header"
-                    "main"
-                    "footer";
-                height: 100vh;
-                overflow: hidden;
-            }
-
-            .sidebar {
-                grid-area: unset;
-                position: fixed;
-                top: 0; left: 0; bottom: 0;
-                width: var(--sidebar-w);
-                z-index: 300;
-                transform: translateX(-100%);
-                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
-            }
+            .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; }
+            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
             .sidebar.open { transform: translateX(0); }
             .sidebar-overlay { display: block; }
             .sidebar-close { display: flex; }
             .sidebar .nav-section-label { padding-top: 52px; }
-
             .hamburger { display: flex; }
-
             header { padding: 0 16px; gap: 10px; }
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
@@ -509,29 +253,18 @@
             .header-user-badge { padding: 6px 10px; gap: 8px; }
             .user-name { font-size: 12px; }
             .user-role { display: none; }
-
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
-
             .main-content { padding: 20px 16px; }
-
-            /* Form grid collapses */
-            .form-row.cols-3,
-            .form-row.cols-4 { grid-template-columns: 1fr 1fr; }
-
+            .form-row.cols-3, .form-row.cols-4 { grid-template-columns: 1fr 1fr; }
             .checkbox-grid { grid-template-columns: 1fr; }
-
-            /* Member card 4-col → 2-col */
             .member-card-body .form-row.cols-4 { grid-template-columns: 1fr 1fr; }
-
             .submit-note { margin-left: 0; width: 100%; }
         }
-
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
             .status-indicator { display: none; }
-
             header { padding: 0 12px; gap: 8px; }
             .header-logos img { height: 36px; width: 36px; }
             .logo-divider { display: none; }
@@ -541,50 +274,28 @@
             .header-user-badge { padding: 5px 8px; }
             .user-avatar { width: 28px; height: 28px; font-size: 11px; }
             .user-name { font-size: 11px; }
-
             .main-content { padding: 16px 12px; }
-
             .page-titlebar { flex-direction: column; align-items: flex-start; gap: 10px; }
             .page-h1 { font-size: 18px; }
             .back-btn { align-self: flex-start; }
-
             .form-section-body { padding: 16px 14px; }
             .form-section-sub { display: none; }
-
-            /* All multi-col → single col on small screens */
-            .form-row.cols-2,
-            .form-row.cols-3,
-            .form-row.cols-4 { grid-template-columns: 1fr; }
-
-            .member-card-body .form-row.cols-4,
-            .member-card-body .form-row.cols-2 { grid-template-columns: 1fr; }
-
+            .form-row.cols-2, .form-row.cols-3, .form-row.cols-4 { grid-template-columns: 1fr; }
+            .member-card-body .form-row.cols-4, .member-card-body .form-row.cols-2 { grid-template-columns: 1fr; }
             .member-card-body { padding: 14px 12px; }
-            .member-card-header { padding: 10px 12px; }
-
             .member-checkbox-row { flex-direction: column; gap: 8px; }
             .member-checkbox-item { width: 100%; }
-
             .submit-bar { padding: 14px 16px; }
-            .btn-submit { width: 100%; justify-content: center; }
-            .btn-cancel { width: 100%; justify-content: center; }
-            .submit-note { font-size: 10px; }
-
+            .btn-submit, .btn-cancel { width: 100%; justify-content: center; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
-        }
-
-        @media (max-width: 380px) {
-            .main-content { padding: 12px 10px; }
-            .form-section-body { padding: 14px 12px; }
         }
     </style>
 </head>
 <body>
 <div class="shell">
 
-    <!-- SIDEBAR OVERLAY -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
     <!-- TOP UTILITY BAR -->
@@ -606,7 +317,6 @@
                 <line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
         </button>
-
         <div class="header-logos">
             <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO Logo">
             <div class="logo-divider"></div>
@@ -622,22 +332,20 @@
             <div class="user-avatar">E</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
-                <div class="user-role">Data Encoder</div>
+                <div class="user-role">Data Entry Access</div>
             </div>
         </div>
     </header>
 
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-        <button class="sidebar-close" onclick="closeSidebar()" aria-label="Close navigation">
+        <button class="sidebar-close" onclick="closeSidebar()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
         </button>
-
         <div class="nav-section-label">Encoder Menu</div>
-
         <a href="{{ route('encoder.dashboard') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="7" height="7" rx="1"/>
@@ -647,7 +355,6 @@
             </svg>
             Dashboard
         </a>
-
         <a href="{{ route('encoder.households.index') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
@@ -655,7 +362,6 @@
             </svg>
             My Households
         </a>
-
         <a href="{{ route('encoder.households.create') }}" class="nav-item active" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="12" y1="5" x2="12" y2="19"/>
@@ -663,9 +369,7 @@
             </svg>
             Register New Household
         </a>
-
         <hr class="sidebar-sep">
-
         <div class="sidebar-bottom">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -682,7 +386,6 @@
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
-        <!-- Page title -->
         <div class="page-titlebar">
             <div>
                 <div class="page-breadcrumb">Encoder / My Households / <span>Register New Household</span></div>
@@ -697,7 +400,6 @@
             </a>
         </div>
 
-        {{-- Validation errors --}}
         @if($errors->any())
             <div class="alert-danger">
                 <strong>Please fix the following errors before submitting:</strong>
@@ -712,7 +414,7 @@
         <form method="POST" action="{{ route('encoder.households.store') }}">
         @csrf
 
-            {{-- ── SECTION 1: Household Head (RBI) ── --}}
+            {{-- ── SECTION 1: Household Head ── --}}
             <div class="form-section">
                 <div class="form-section-header">
                     <div class="ca-dot"></div>
@@ -720,16 +422,12 @@
                     <div class="form-section-sub">Fields marked <span style="color:var(--red);">*</span> are required</div>
                 </div>
                 <div class="form-section-body">
-
                     <div class="form-row cols-1">
                         <div class="form-group">
                             <label class="form-label">Full Name (Last, First, MI) <span class="req">*</span></label>
-                            <input type="text" name="household_head_name"
-                                value="{{ old('household_head_name') }}"
-                                required placeholder="e.g. Dela Cruz, Juan A.">
+                            <input type="text" name="household_head_name" value="{{ old('household_head_name') }}" required placeholder="e.g. Dela Cruz, Juan A.">
                         </div>
                     </div>
-
                     <div class="form-row cols-3">
                         <div class="form-group">
                             <label class="form-label">Sex <span class="req">*</span></label>
@@ -754,7 +452,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="form-row cols-2">
                         <div class="form-group">
                             <label class="form-label">Contact Number <span class="opt">(optional)</span></label>
@@ -765,18 +462,17 @@
                             <input type="text" name="occupation" value="{{ old('occupation') }}" placeholder="e.g. Farmer, Vendor, Unemployed">
                         </div>
                     </div>
-
                 </div>
             </div>
 
-            {{-- ── SECTION 2: Address ── --}}
+            {{-- ── SECTION 2: Address with cascading dropdowns ── --}}
             <div class="form-section">
                 <div class="form-section-header">
                     <div class="ca-dot"></div>
                     <div class="form-section-title">Section 2 — Address</div>
+                    <div class="form-section-sub">Select Province first, then Municipality, then Barangay</div>
                 </div>
                 <div class="form-section-body">
-
                     <div class="form-row cols-2">
                         <div class="form-group">
                             <label class="form-label">House / Lot Number <span class="opt">(optional)</span></label>
@@ -787,22 +483,32 @@
                             <input type="text" name="street_purok" value="{{ old('street_purok') }}" placeholder="e.g. Purok 3, Sampaguita St.">
                         </div>
                     </div>
-
                     <div class="form-row cols-3">
-                        <div class="form-group">
-                            <label class="form-label">Barangay <span class="req">*</span></label>
-                            <input type="text" name="barangay" value="{{ old('barangay', 'Barangay Poblacion') }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Municipality / City <span class="req">*</span></label>
-                            <input type="text" name="municipality" value="{{ old('municipality', 'Naic') }}" required>
-                        </div>
+                        {{-- Province --}}
                         <div class="form-group">
                             <label class="form-label">Province <span class="req">*</span></label>
-                            <input type="text" name="province" value="{{ old('province', 'Cavite') }}" required>
+                            <select id="province" name="province" required onchange="onProvinceChange()">
+                                <option value="">— Select Province —</option>
+                            </select>
+                            <span class="cascade-hint">Select province first</span>
+                        </div>
+                        {{-- Municipality --}}
+                        <div class="form-group">
+                            <label class="form-label">Municipality / City <span class="req">*</span></label>
+                            <select id="municipality" name="municipality" required disabled onchange="onMunicipalityChange()">
+                                <option value="">— Select Municipality —</option>
+                            </select>
+                            <span class="cascade-hint" id="mun-hint">Select province first</span>
+                        </div>
+                        {{-- Barangay --}}
+                        <div class="form-group">
+                            <label class="form-label">Barangay <span class="req">*</span></label>
+                            <select id="barangay" name="barangay" required disabled>
+                                <option value="">— Select Barangay —</option>
+                            </select>
+                            <span class="cascade-hint" id="brgy-hint">Select municipality first</span>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -814,15 +520,13 @@
                     <div class="form-section-sub">Cross-reference with DSWD Listahanan for eligibility verification</div>
                 </div>
                 <div class="form-section-body">
-
-                    <div class="form-row cols-1" style="margin-bottom: 20px;">
+                    <div class="form-row cols-1" style="margin-bottom:20px;">
                         <div class="form-group">
                             <label class="form-label">Listahanan Household ID <span class="opt">(if enrolled in National Household Targeting System)</span></label>
-                            <input type="text" name="listahanan_id" value="{{ old('listahanan_id') }}" placeholder="e.g. 1234-5678-9012" style="max-width: 340px;">
+                            <input type="text" name="listahanan_id" value="{{ old('listahanan_id') }}" placeholder="e.g. 1234-5678-9012" style="max-width:340px;">
                         </div>
                     </div>
-
-                    <div class="form-label" style="margin-bottom: 10px;">Beneficiary Flags — Check all that apply to this household</div>
+                    <div class="form-label" style="margin-bottom:10px;">Beneficiary Flags — Check all that apply to this household</div>
                     <div class="checkbox-grid">
                         <label class="checkbox-item">
                             <input type="checkbox" name="is_4ps_beneficiary" value="1" {{ old('is_4ps_beneficiary') ? 'checked' : '' }}>
@@ -853,7 +557,6 @@
                             </div>
                         </label>
                     </div>
-
                 </div>
             </div>
 
@@ -865,9 +568,7 @@
                     <div class="form-section-sub">Excluding household head — can be added or updated later</div>
                 </div>
                 <div class="form-section-body">
-
                     <div id="members-container"></div>
-
                     <button type="button" onclick="addMember()" class="btn-add-member">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <line x1="12" y1="5" x2="12" y2="19"/>
@@ -875,7 +576,6 @@
                         </svg>
                         Add Family Member
                     </button>
-
                 </div>
             </div>
 
@@ -892,12 +592,11 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                     </svg>
-                    Record will be submitted for Barangay Admin approval. QR code is generated after approval.
+                    Record will be submitted for Administrator approval. QR code is generated after approval.
                 </div>
             </div>
 
         </form>
-
     </main>
 
     <!-- FOOTER -->
@@ -923,10 +622,8 @@
         const now = new Date();
         const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
         const shortM = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        document.getElementById('top-time').textContent =
-            pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
-        document.getElementById('top-date').textContent =
-            days[now.getDay()]+', '+pad(now.getDate())+' '+shortM[now.getMonth()]+' '+now.getFullYear();
+        document.getElementById('top-time').textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+        document.getElementById('top-date').textContent = days[now.getDay()]+', '+pad(now.getDate())+' '+shortM[now.getMonth()]+' '+now.getFullYear();
     }
     updateClock();
     setInterval(updateClock, 1000);
@@ -935,19 +632,186 @@
     /* ─── Sidebar ─── */
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
+    function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 
-    function openSidebar() {
-        sidebar.classList.add('open');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
+    /* ════════════════════════════════════════════
+       CASCADING LOCATION DATA (from ph-locations.js)
+       Province → Municipality → Barangay
+       ════════════════════════════════════════════ */
+
+    // Location data (inline — mirrors your ph-locations.js)
+    const locationData = {
+        "Cavite": {
+            "Alfonso":                    [],
+            "Amadeo":                     [],
+            "Bacoor":                     [],
+            "Carmona":                    [],
+            "Cavite City":                [],
+            "Dasmariñas":                 [],
+            "General Emilio Aguinaldo":   [],
+            "General Mariano Alvarez (GMA)": [],
+            "General Trias":              [],
+            "Imus":                       [],
+            "Indang":                     [],
+            "Kawit":                      [],
+            "Magallanes":                 [],
+            "Maragondon":                 [],
+            "Mendez":                     [],
+            "Naic": [
+                "Bancaan","Biga","Bucana Malaki","Bucana Sasahan","Calubcob",
+                "Gomez-Zamora (Barangay 1 Poblacion)","Halang","Humbac",
+                "Ibayo Silangan","Ilag","Labac","Latoria",
+                "Luzviminda (Barangay 5 Poblacion)","Mabolo","Makina",
+                "Malainen Bago","Malainen Luma","Molino","Muzon",
+                "Palangue 1 & 2 (Barangay 2 Poblacion)",
+                "Palangue 3 & Kanluran (Barangay 3 Poblacion)",
+                "Sabang","San Roque","Santulan (Barangay 4 Poblacion)",
+                "Sapa","Timalan Balsahan","Timalan Concepcion",
+                "Toclong","Tulay Silangan","Tulay Kanluran"
+            ],
+            "Noveleta":   [],
+            "Rosario":    [],
+            "Silang":     [],
+            "Tagaytay":   [],
+            "Tanza":      [],
+            "Ternate":    [],
+            "Trece Martires": []
+        },
+        "Metro Manila": {
+            "Caloocan": [], "Las Piñas": [], "Makati": [], "Malabon": [],
+            "Mandaluyong": [], "Manila": [], "Marikina": [], "Muntinlupa": [],
+            "Navotas": [], "Parañaque": [], "Pasay": [], "Pasig": [],
+            "Pateros": [], "Quezon City": [], "San Juan": [],
+            "Taguig": [], "Valenzuela": []
+        },
+        "Batangas": {
+            "Agoncillo":[],"Alitagtag":[],"Balayan":[],"Balete":[],"Batangas City":[],
+            "Bauan":[],"Calaca":[],"Calatagan":[],"Cuenca":[],"Ibaan":[],"Laurel":[],
+            "Lemery":[],"Lian":[],"Lipa City":[],"Lobo":[],"Mabini":[],"Malvar":[],
+            "Mataas na Kahoy":[],"Nasugbu":[],"Padre Garcia":[],"Rosario":[],"San Jose":[],
+            "San Juan":[],"San Luis":[],"San Nicolas":[],"San Pascual":[],"Santa Teresita":[],
+            "Santo Tomas":[],"Taal":[],"Talisay":[],"Taysan":[],"Tingloy":[],"Tuy":[]
+        },
+        "Laguna": {
+            "Alaminos":[],"Bay":[],"Biñan":[],"Cabuyao":[],"Calamba":[],"Calauan":[],
+            "Cavinti":[],"Famy":[],"Kalayaan":[],"Liliw":[],"Los Baños":[],"Luisiana":[],
+            "Lumban":[],"Mabitac":[],"Magdalena":[],"Majayjay":[],"Nagcarlan":[],"Paete":[],
+            "Pagsanjan":[],"Pakil":[],"Pangil":[],"Pila":[],"Rizal":[],"San Pablo City":[],
+            "San Pedro":[],"Santa Cruz":[],"Santa Maria":[],"Santa Rosa":[],"Siniloan":[],"Victoria":[]
+        }
+    };
+
+    // All provinces list
+    const allProvinces = [
+        "Abra","Agusan del Norte","Agusan del Sur","Aklan","Albay","Antique","Apayao","Aurora",
+        "Basilan","Bataan","Batanes","Batangas","Benguet","Biliran","Bohol","Bukidnon","Bulacan",
+        "Cagayan","Camarines Norte","Camarines Sur","Camiguin","Capiz","Catanduanes","Cavite","Cebu",
+        "Cotabato","Davao de Oro","Davao del Norte","Davao del Sur","Davao Occidental","Davao Oriental",
+        "Dinagat Islands","Eastern Samar","Guimaras","Ifugao","Ilocos Norte","Ilocos Sur","Iloilo",
+        "Isabela","Kalinga","La Union","Laguna","Lanao del Norte","Lanao del Sur","Leyte","Maguindanao",
+        "Marinduque","Masbate","Metro Manila","Misamis Occidental","Misamis Oriental","Mountain Province",
+        "Negros Occidental","Negros Oriental","Northern Samar","Nueva Ecija","Nueva Vizcaya",
+        "Occidental Mindoro","Oriental Mindoro","Palawan","Pampanga","Pangasinan","Quezon","Quirino",
+        "Rizal","Romblon","Samar","Sarangani","Siquijor","Sorsogon","South Cotabato","Southern Leyte",
+        "Sultan Kudarat","Sulu","Surigao del Norte","Surigao del Sur","Tarlac","Tawi-Tawi","Zambales",
+        "Zamboanga del Norte","Zamboanga del Sur","Zamboanga Sibugay"
+    ];
+
+    function populateSelect(selectEl, items, placeholder, oldVal) {
+        selectEl.innerHTML = `<option value="">${placeholder}</option>`;
+        items.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item;
+            opt.textContent = item;
+            if (oldVal && item === oldVal) opt.selected = true;
+            selectEl.appendChild(opt);
+        });
     }
-    function closeSidebar() {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
+
+    function onProvinceChange() {
+        const province  = document.getElementById('province').value;
+        const munSelect = document.getElementById('municipality');
+        const brgySelect= document.getElementById('barangay');
+        const munHint   = document.getElementById('mun-hint');
+        const brgyHint  = document.getElementById('brgy-hint');
+
+        // Reset downstream
+        munSelect.innerHTML  = '<option value="">— Select Municipality —</option>';
+        brgySelect.innerHTML = '<option value="">— Select Barangay —</option>';
+        munSelect.disabled   = true;
+        brgySelect.disabled  = true;
+
+        if (!province) {
+            munHint.textContent  = 'Select province first';
+            brgyHint.textContent = 'Select municipality first';
+            return;
+        }
+
+        const municipalities = locationData[province]
+            ? Object.keys(locationData[province])
+            : [];
+
+        if (municipalities.length > 0) {
+            populateSelect(munSelect, municipalities, '— Select Municipality —', null);
+            munSelect.disabled = false;
+            munHint.textContent = municipalities.length + ' municipalities available';
+        } else {
+            munHint.textContent = 'No municipality data yet for this province';
+        }
+        brgyHint.textContent = 'Select municipality first';
     }
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeSidebar();
+
+    function onMunicipalityChange() {
+        const province   = document.getElementById('province').value;
+        const mun        = document.getElementById('municipality').value;
+        const brgySelect = document.getElementById('barangay');
+        const brgyHint   = document.getElementById('brgy-hint');
+
+        brgySelect.innerHTML = '<option value="">— Select Barangay —</option>';
+        brgySelect.disabled  = true;
+
+        if (!mun || !province) { brgyHint.textContent = 'Select municipality first'; return; }
+
+        const barangays = (locationData[province] && locationData[province][mun])
+            ? locationData[province][mun]
+            : [];
+
+        if (barangays.length > 0) {
+            populateSelect(brgySelect, barangays, '— Select Barangay —', null);
+            brgySelect.disabled = false;
+            brgyHint.textContent = barangays.length + ' barangays available';
+        } else {
+            brgyHint.textContent = 'No barangay data for this municipality';
+        }
+    }
+
+    // Initialize dropdowns on page load (populate provinces + restore old() values)
+    document.addEventListener('DOMContentLoaded', function () {
+        const oldProvince = "{{ old('province', '') }}";
+        const oldMun      = "{{ old('municipality', '') }}";
+        const oldBrgy     = "{{ old('barangay', '') }}";
+
+        populateSelect(document.getElementById('province'), allProvinces, '— Select Province —', oldProvince || 'Cavite');
+
+        // If restoring old values after validation failure
+        if (oldProvince) {
+            onProvinceChange();
+            if (oldMun) {
+                document.getElementById('municipality').value = oldMun;
+                onMunicipalityChange();
+                if (oldBrgy) {
+                    document.getElementById('barangay').value = oldBrgy;
+                }
+            }
+        } else {
+            // Default: pre-select Cavite → Naic
+            document.getElementById('province').value = 'Cavite';
+            onProvinceChange();
+            document.getElementById('municipality').value = 'Naic';
+            onMunicipalityChange();
+        }
     });
 
     /* ─── Family Members ─── */
@@ -978,14 +842,12 @@
                 </button>
             </div>
             <div class="member-card-body">
-
                 <div class="form-row cols-1">
                     <div class="form-group">
                         <label class="form-label">Full Name (Last, First, MI) <span class="req">*</span></label>
                         <input type="text" name="members[${idx}][full_name]" required placeholder="e.g. Dela Cruz, Maria A.">
                     </div>
                 </div>
-
                 <div class="form-row cols-4">
                     <div class="form-group">
                         <label class="form-label">Relationship to Head <span class="req">*</span></label>
@@ -1025,7 +887,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="form-row cols-2">
                     <div class="form-group">
                         <label class="form-label">Occupation <span class="opt">(optional)</span></label>
@@ -1036,7 +897,6 @@
                         <input type="text" name="members[${idx}][philhealth_no]" placeholder="e.g. 12-345678901-2">
                     </div>
                 </div>
-
                 <div class="form-row cols-1">
                     <div class="form-group">
                         <label class="form-label">Flags</label>
@@ -1052,7 +912,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         `;
 
