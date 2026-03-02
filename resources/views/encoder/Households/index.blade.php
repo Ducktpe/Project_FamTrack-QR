@@ -87,7 +87,6 @@
             padding: 0 28px; gap: 14px; z-index: 90;
         }
 
-        /* Hamburger — hidden on desktop */
         .hamburger {
             display: none;
             background: none;
@@ -137,15 +136,19 @@
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay {
-            display: none;
+            display: none !important;
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.45);
             z-index: 200;
             opacity: 0;
             transition: opacity 0.25s;
+            pointer-events: none;
         }
-        .sidebar-overlay.active { opacity: 1; }
+        .sidebar-overlay.active {
+            display: block !important;
+            pointer-events: auto;
+        }
 
         /* ─── SIDEBAR ─── */
         .sidebar {
@@ -157,7 +160,6 @@
             position: relative;
         }
 
-        /* Close button — only shown on mobile */
         .sidebar-close {
             display: none;
             position: absolute;
@@ -192,7 +194,47 @@
         .nav-item.active { background: var(--blue-pale); color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
         .nav-icon { width: 17px; height: 17px; flex-shrink: 0; color: inherit; opacity: 0.7; }
         .nav-item.active .nav-icon, .nav-item:hover .nav-icon { opacity: 1; }
+
+        /* Nav badges — from dashboard */
+        .nav-badge {
+            margin-left: auto;
+            background: var(--blue);
+            color: var(--white);
+            font-size: 9px; font-weight: 700;
+            padding: 2px 8px; border-radius: 10px;
+            letter-spacing: 0.5px;
+        }
+        .nav-badge-warn {
+            margin-left: auto;
+            background: #D97706;
+            color: var(--white);
+            font-size: 9px; font-weight: 700;
+            padding: 2px 8px; border-radius: 10px;
+            letter-spacing: 0.5px;
+        }
+
         .sidebar-sep { border: none; border-top: 1px solid var(--gray-100); margin: 8px 0; }
+
+        /* Role notice box — from dashboard */
+        .role-notice {
+            margin: 12px 14px;
+            background: #FFFAE6;
+            border: 1px solid #F5C518;
+            border-left: 3px solid #D4A800;
+            padding: 10px 12px;
+            border-radius: 2px;
+        }
+        .role-notice-title {
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: #92400E; margin-bottom: 3px;
+        }
+        .role-notice-text {
+            font-size: 11px;
+            color: #78350F;
+            line-height: 1.5;
+        }
+
         .sidebar-bottom {
             margin-top: auto; padding: 16px 20px;
             border-top: 1px solid var(--gray-200);
@@ -217,7 +259,6 @@
             padding: 28px 32px;
         }
 
-        /* Page title bar */
         .page-titlebar {
             display: flex; align-items: flex-end;
             justify-content: space-between;
@@ -299,7 +340,6 @@
         .ca-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); border: 2px solid var(--yellow-dark); }
         .table-section-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
 
-        /* Responsive table wrapper */
         .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
         table { width: 100%; border-collapse: collapse; min-width: 720px; }
@@ -321,7 +361,6 @@
         .td-name small { font-size: 11px; color: var(--gray-400); margin-top: 2px; display: block; }
         .td-address small { font-size: 11px; color: var(--gray-400); display: block; margin-top: 1px; }
 
-        /* Badges */
         .badge {
             display: inline-flex; align-items: center; gap: 4px;
             padding: 3px 10px; border-radius: 10px;
@@ -336,7 +375,6 @@
         .serial-code { font-size: 12px; font-weight: 700; color: var(--blue); font-family: monospace; letter-spacing: 0.5px; }
         .serial-none { font-size: 11px; color: var(--gray-400); font-style: italic; }
 
-        /* ─── Action button group ─── */
         .action-group {
             display: flex;
             align-items: center;
@@ -369,7 +407,6 @@
         .btn-edit:hover { background: #B45309; }
         .btn-edit svg { width: 12px; height: 12px; }
 
-        /* Register CTA button */
         .btn-register {
             display: inline-flex; align-items: center; gap: 7px;
             padding: 10px 20px;
@@ -396,7 +433,6 @@
         .back-btn:hover { background: var(--blue-pale); }
         .back-btn svg { width: 14px; height: 14px; }
 
-        /* Encoder note banner */
         .encoder-note {
             background: var(--blue-pale);
             border: 1px solid #C7D9F3;
@@ -407,7 +443,6 @@
         }
         .encoder-note svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
 
-        /* Empty state */
         .empty-state { padding: 56px 40px; text-align: center; }
         .empty-icon {
             width: 48px; height: 48px; border-radius: 50%;
@@ -418,6 +453,191 @@
         .empty-icon svg { width: 22px; height: 22px; color: var(--gray-400); }
         .empty-title { font-size: 14px; font-weight: 600; color: var(--gray-600); margin-bottom: 5px; }
         .empty-sub { font-size: 12px; color: var(--gray-400); margin-bottom: 16px; }
+
+        /* Search bar */
+        .search-bar-wrap {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--gray-100);
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .search-form {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+        }
+        .search-input-wrap {
+            position: relative;
+            flex: 1;
+        }
+        .search-input-wrap svg {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px; height: 14px;
+            color: var(--gray-400);
+            pointer-events: none;
+        }
+        .search-input {
+            width: 100%;
+            padding: 8px 12px 8px 32px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 13px;
+            color: var(--gray-800);
+            border: 1px solid var(--gray-200);
+            border-radius: 3px;
+            background: var(--gray-50);
+            outline: none;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .search-input:focus {
+            border-color: var(--blue-light);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(36,89,168,0.08);
+        }
+        .search-input::placeholder { color: var(--gray-400); }
+        .btn-search {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 8px 14px;
+            background: var(--blue); color: var(--white);
+            font-family: 'Open Sans', sans-serif;
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            border: none; border-radius: 3px;
+            cursor: pointer; transition: background 0.15s;
+            white-space: nowrap;
+        }
+        .btn-search:hover { background: var(--blue-dark); }
+        .btn-search svg { width: 12px; height: 12px; }
+        .btn-clear-search {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 8px 12px;
+            background: var(--white); color: var(--gray-600);
+            font-family: 'Open Sans', sans-serif;
+            font-size: 11px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            border: 1px solid var(--gray-200); border-radius: 3px;
+            text-decoration: none; transition: background 0.15s, color 0.15s;
+            white-space: nowrap;
+        }
+        .btn-clear-search:hover { background: var(--gray-100); color: var(--red); border-color: var(--red); }
+        .btn-clear-search svg { width: 11px; height: 11px; }
+        .search-result-info {
+            font-size: 11px; color: var(--gray-400); margin-top: 6px;
+        }
+        .search-result-info strong { color: var(--blue); }
+
+        /* ─── FILTER PANEL ─── */
+        .btn-filter-toggle {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 7px 14px;
+            background: var(--white); color: var(--blue);
+            font-family: 'Open Sans', sans-serif;
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            border: 1px solid var(--blue-light); border-radius: 3px;
+            cursor: pointer; transition: background 0.15s, color 0.15s;
+        }
+        .btn-filter-toggle:hover, .btn-filter-toggle.active {
+            background: var(--blue); color: var(--white);
+        }
+        .btn-filter-toggle svg { width: 13px; height: 13px; }
+        .filter-active-pills {
+            display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex: 1;
+        }
+        .filter-pill {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 3px 9px;
+            background: var(--blue-pale); color: var(--blue);
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.4px;
+            border: 1px solid #C7D9F3; border-radius: 10px;
+        }
+        .filter-pill svg { width: 10px; height: 10px; opacity: 0.7; }
+
+        .filter-panel {
+            display: none;
+            padding: 18px 20px;
+            border-bottom: 2px solid var(--blue-pale);
+            background: var(--gray-50);
+        }
+        .filter-panel.open { display: block; }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
+            align-items: end;
+        }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; }
+        .filter-label {
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            color: var(--gray-400);
+        }
+        .filter-select, .filter-date {
+            padding: 7px 10px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 12px; color: var(--gray-800);
+            border: 1px solid var(--gray-200); border-radius: 3px;
+            background: var(--white); outline: none;
+            transition: border-color 0.15s;
+            width: 100%;
+        }
+        .filter-select:focus, .filter-date:focus {
+            border-color: var(--blue-light);
+            box-shadow: 0 0 0 3px rgba(36,89,168,0.08);
+        }
+
+        .filter-checkboxes {
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .filter-checkbox-label {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 12px; color: var(--gray-800);
+            cursor: pointer; user-select: none;
+        }
+        .filter-checkbox-label input[type="checkbox"] {
+            width: 14px; height: 14px;
+            accent-color: var(--blue);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .filter-checkbox-label:hover { color: var(--blue); }
+
+        .filter-actions {
+            display: flex; align-items: flex-end; gap: 8px; justify-content: flex-end;
+        }
+        .btn-apply-filter {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 7px 16px;
+            background: var(--blue); color: var(--white);
+            font-family: 'Open Sans', sans-serif;
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            border: none; border-radius: 3px;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .btn-apply-filter:hover { background: var(--blue-dark); }
+        .btn-apply-filter svg { width: 12px; height: 12px; }
+        .btn-reset-filter {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 7px 12px;
+            background: var(--white); color: var(--gray-600);
+            font-family: 'Open Sans', sans-serif;
+            font-size: 11px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            border: 1px solid var(--gray-200); border-radius: 3px;
+            text-decoration: none; transition: background 0.15s, color 0.15s;
+        }
+        .btn-reset-filter:hover { background: #FEF2F2; color: var(--red); border-color: var(--red); }
+        .btn-reset-filter svg { width: 11px; height: 11px; }
 
         /* Pagination */
         .pagination-row { padding: 14px 20px; border-top: 1px solid var(--gray-100); background: var(--gray-50); }
@@ -579,7 +799,7 @@
             <div class="user-avatar">E</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
-                <div class="user-role">Data Encoder</div>
+                <div class="user-role">Data Entry Access</div>
             </div>
         </div>
     </header>
@@ -603,25 +823,42 @@
                 <rect x="14" y="14" width="7" height="7" rx="1"/>
             </svg>
             Dashboard
+            <span class="nav-badge">Live</span>
         </a>
 
         <a href="{{ route('encoder.households.index') }}" class="nav-item active" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                <path d="M9 22V12h6v10"/>
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
             </svg>
-            My Households
-        </a>
-
-        <a href="{{ route('encoder.households.create') }}" class="nav-item" onclick="closeSidebar()">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="5" x2="12" y2="19"/>
-                <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            Register New Household
+            List of Households
         </a>
 
         <hr class="sidebar-sep">
+        <div class="nav-section-label">DSWD Integration</div>
+
+        <a href="#" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 11l3 3L22 4"/>
+                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+            </svg>
+            Listahanan Cross-Reference
+        </a>
+
+        <a href="#" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Flag Duplicate Records
+            <span class="nav-badge-warn">Action</span>
+        </a>
+
+        <div class="role-notice">
+            <div class="role-notice-title">&#9432; Encoder Access</div>
+            <div class="role-notice-text">You can create and update family profiles. QR code generation and distribution logs are managed by the Admin.</div>
+        </div>
 
         <div class="sidebar-bottom">
             <form method="POST" action="{{ route('logout') }}">
@@ -642,8 +879,8 @@
         <!-- Page title -->
         <div class="page-titlebar">
             <div>
-                <div class="page-breadcrumb">Encoder / <span>My Registered Households</span></div>
-                <div class="page-h1">My Registered Households</div>
+                <div class="page-breadcrumb">Encoder / <span>List of Registered Households</span></div>
+                <div class="page-h1">List of Registered Households</div>
                 <div class="page-sub">RBI-aligned household profiles submitted for admin approval — Barangay Family Track</div>
             </div>
             <div class="titlebar-actions">
@@ -680,7 +917,7 @@
                 <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
             <div>
-                <strong>Encoder Access:</strong> You can create and update household profiles following the RBI form fields, and cross-reference entries with DSWD Listahanan records. Pending records can be edited before admin approval. Once approved, the Barangay Admin will generate the household QR code and serial code. You cannot access distribution logs or generate QR codes.
+                <strong>Encoder Access:</strong> You can create and update household profiles following the RBI form fields, and cross-reference entries with DSWD Listahanan records. Pending records can be edited before admin approval. Once approved, the Administrator will generate the household QR code and serial code. You cannot access distribution logs or generate QR codes.
             </div>
         </div>
 
@@ -731,6 +968,177 @@
                     <div class="ca-dot"></div>
                     <div class="table-section-title">Household Records — RBI Framework</div>
                 </div>
+            </div>
+
+            {{-- Search + Filter bar --}}
+            @php
+                $hasFilters = request()->hasAny(['status', 'sex', 'date_from', 'date_to', 'is_4ps', 'is_pwd', 'is_senior', 'is_solo_parent']);
+            @endphp
+            <div class="search-bar-wrap">
+                <form method="GET" action="{{ route('encoder.households.index') }}" class="search-form">
+                    <div class="search-input-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input
+                            type="text"
+                            name="search"
+                            class="search-input"
+                            placeholder="Search by name, barangay, street, or serial code…"
+                            value="{{ request('search') }}"
+                            autocomplete="off"
+                        >
+                    </div>
+                    <button type="submit" class="btn-search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        Search
+                    </button>
+                    @if(request('search'))
+                        <a href="{{ route('encoder.households.index') }}" class="btn-clear-search">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                            Clear
+                        </a>
+                    @endif
+                </form>
+
+                {{-- Filter toggle button --}}
+                <button class="btn-filter-toggle {{ $hasFilters ? 'active' : '' }}" id="filterToggleBtn" onclick="toggleFilter()" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+                    </svg>
+                    Filters{{ $hasFilters ? ' (Active)' : '' }}
+                </button>
+
+                {{-- Active filter pills --}}
+                @if($hasFilters)
+                    <div class="filter-active-pills">
+                        @if(request('status'))
+                            <span class="filter-pill">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                                Status: {{ ucfirst(request('status')) }}
+                            </span>
+                        @endif
+                        @if(request('sex'))
+                            <span class="filter-pill">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                Sex: {{ request('sex') }}
+                            </span>
+                        @endif
+                        @if(request('date_from') || request('date_to'))
+                            <span class="filter-pill">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                Date: {{ request('date_from') ?: '…' }} → {{ request('date_to') ?: '…' }}
+                            </span>
+                        @endif
+                        @if(request('is_4ps'))
+                            <span class="filter-pill">4Ps Beneficiary</span>
+                        @endif
+                        @if(request('is_pwd'))
+                            <span class="filter-pill">PWD</span>
+                        @endif
+                        @if(request('is_senior'))
+                            <span class="filter-pill">Senior Citizen</span>
+                        @endif
+                        @if(request('is_solo_parent'))
+                            <span class="filter-pill">Solo Parent</span>
+                        @endif
+                        <a href="{{ route('encoder.households.index', array_filter(['search' => request('search')])) }}" class="btn-reset-filter">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                            Reset
+                        </a>
+                    </div>
+                @endif
+
+                @if(request('search'))
+                    <div class="search-result-info">
+                        Showing results for <strong>"{{ request('search') }}"</strong> — {{ $households->total() }} record(s) found
+                    </div>
+                @endif
+            </div>
+
+            {{-- Filter Panel --}}
+            <div class="filter-panel {{ $hasFilters ? 'open' : '' }}" id="filterPanel">
+                <form method="GET" action="{{ route('encoder.households.index') }}" id="filterForm">
+                    {{-- Preserve search query --}}
+                    @if(request('search'))
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                    @endif
+
+                    <div class="filter-grid">
+
+                        {{-- Approval Status --}}
+                        <div class="filter-group">
+                            <label class="filter-label">Approval Status</label>
+                            <select name="status" class="filter-select">
+                                <option value="">All Statuses</option>
+                                <option value="pending"  {{ request('status') === 'pending'  ? 'selected' : '' }}>Pending</option>
+                                <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved</option>
+                            </select>
+                        </div>
+
+                        {{-- Sex --}}
+                        <div class="filter-group">
+                            <label class="filter-label">Sex</label>
+                            <select name="sex" class="filter-select">
+                                <option value="">All</option>
+                                <option value="Male"   {{ request('sex') === 'Male'   ? 'selected' : '' }}>Male</option>
+                                <option value="Female" {{ request('sex') === 'Female' ? 'selected' : '' }}>Female</option>
+                            </select>
+                        </div>
+
+                        {{-- Date Registered From --}}
+                        <div class="filter-group">
+                            <label class="filter-label">Registered From</label>
+                            <input type="date" name="date_from" class="filter-date" value="{{ request('date_from') }}">
+                        </div>
+
+                        {{-- Date Registered To --}}
+                        <div class="filter-group">
+                            <label class="filter-label">Registered To</label>
+                            <input type="date" name="date_to" class="filter-date" value="{{ request('date_to') }}">
+                        </div>
+
+                        {{-- Sector checkboxes --}}
+                        <div class="filter-group">
+                            <label class="filter-label">Sector / Classification</label>
+                            <div class="filter-checkboxes">
+                                <label class="filter-checkbox-label">
+                                    <input type="checkbox" name="is_4ps" value="1" {{ request('is_4ps') ? 'checked' : '' }}>
+                                    4Ps Beneficiary
+                                </label>
+                                <label class="filter-checkbox-label">
+                                    <input type="checkbox" name="is_pwd" value="1" {{ request('is_pwd') ? 'checked' : '' }}>
+                                    PWD (Person w/ Disability)
+                                </label>
+                                <label class="filter-checkbox-label">
+                                    <input type="checkbox" name="is_senior" value="1" {{ request('is_senior') ? 'checked' : '' }}>
+                                    Senior Citizen
+                                </label>
+                                <label class="filter-checkbox-label">
+                                    <input type="checkbox" name="is_solo_parent" value="1" {{ request('is_solo_parent') ? 'checked' : '' }}>
+                                    Solo Parent
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- Apply / Reset --}}
+                        <div class="filter-group filter-actions">
+                            <button type="submit" class="btn-apply-filter">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+                                </svg>
+                                Apply Filters
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
             </div>
 
             <div class="table-wrapper">
@@ -882,6 +1290,14 @@
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeSidebar();
     });
+    /* ─── Filter panel toggle ─── */
+    function toggleFilter() {
+        const panel = document.getElementById('filterPanel');
+        const btn   = document.getElementById('filterToggleBtn');
+        const isOpen = panel.classList.contains('open');
+        panel.classList.toggle('open', !isOpen);
+        btn.classList.toggle('active', !isOpen);
+    }
 </script>
 </body>
 </html>

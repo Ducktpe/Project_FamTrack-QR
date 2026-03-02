@@ -9,9 +9,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // Call PSGC Seeder FIRST
+        $this->call(PSGCSeeder::class);
+
         // Create one account per role for testing
         User::create([
-            'name'     => 'Barangay Admin',
+            'name'     => 'Administrator',
             'email'    => 'admin@barangay.gov.ph',
             'password' => bcrypt('Admin@1234'),
             'role'     => 'admin',

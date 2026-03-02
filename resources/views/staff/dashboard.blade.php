@@ -467,17 +467,17 @@
         <hr class="sidebar-sep">
         <div class="nav-section-label">My Activity</div>
 
-        <a href="#" class="nav-item" onclick="closeSidebar()">
+        <a href="{{ route('staff.scan.history') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
                 <rect x="9" y="3" width="6" height="4" rx="1"/>
                 <line x1="9" y1="12" x2="15" y2="12"/>
                 <line x1="9" y1="16" x2="13" y2="16"/>
             </svg>
-            My Scan History
+            Scan History
         </a>
 
-        <a href="#" class="nav-item" onclick="closeSidebar()">
+        <a href="{{ route('staff.active-event') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
                 <circle cx="9" cy="7" r="4"/>

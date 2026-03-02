@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Services\QrCodeService;
 use App\Http\Controllers\Controller;
 use App\Models\Household;
-use App\Models\BarangayConfig;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
 
@@ -17,6 +16,7 @@ class AdminHouseholdController extends Controller
     public function index(Request $request)
     {
         $filter = $request->get('filter', 'all');
+        $search = $request->get('search');
 
         $query = Household::with('encoder', 'members');
 
@@ -26,12 +26,29 @@ class AdminHouseholdController extends Controller
             $query->approved();
         }
 
-        $households = $query->orderBy('created_at', 'desc')->paginate(20);
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('household_head_name', 'like', "%{$search}%")
+                  ->orWhere('barangay',           'like', "%{$search}%")
+                  ->orWhere('street_purok',        'like', "%{$search}%")
+                  ->orWhere('serial_code',         'like', "%{$search}%")
+                  ->orWhereHas('encoder', fn($eq) =>
+                      $eq->where('name', 'like', "%{$search}%")
+                  );
+            });
+        }
 
-        $pendingCount = Household::pending()->count();
+        $households    = $query->orderBy('created_at', 'desc')->paginate(20);
+        $pendingCount  = Household::pending()->count();
         $approvedCount = Household::approved()->count();
 
-        return view('admin.households.index', compact('households', 'filter', 'pendingCount', 'approvedCount'));
+        return view('admin.households.index', compact(
+            'households',
+            'filter',
+            'search',
+            'pendingCount',
+            'approvedCount'
+        ));
     }
 
     /**
@@ -41,10 +58,10 @@ class AdminHouseholdController extends Controller
     {
         $household->load('members', 'encoder', 'approver', 'qrCode');
 
-            // Add counts for sidebar
-            $pendingCount = Household::pending()->count();
-            $approvedCount = Household::approved()->count();
-            $filter = 'all'; // Add this too
+        $pendingCount  = Household::pending()->count();
+        $approvedCount = Household::approved()->count();
+        $filter        = 'all';
+
         return view('admin.households.show', compact('household', 'pendingCount', 'approvedCount', 'filter'));
     }
 
@@ -53,28 +70,42 @@ class AdminHouseholdController extends Controller
      */
     public function approve(Household $household)
     {
-        // Already approved?
         if ($household->serial_code !== null || $household->approved_by !== null) {
-            return back()->withErrors(['error' => 'This household is already approved with serial code: ' . $household->serial_code]);
+            return back()->withErrors([
+                'error' => 'This household is already approved with serial code: ' . $household->serial_code
+            ]);
         }
 
         try {
-            // Generate unique serial code
-            $serialCode = BarangayConfig::generateSerialCode();
+            \DB::beginTransaction();
 
-            // Update household
-            $household->update([
-                'serial_code' => $serialCode,
-                'approved_by' => auth()->id(),
-            ]);
+            $year = date('Y');
 
-            // Audit log
+            $lastHousehold = \DB::table('households')
+                ->where('serial_code', 'like', "NIC-$year-%")
+                ->orderBy('serial_code', 'desc')
+                ->lockForUpdate()
+                ->first();
+
+            if ($lastHousehold) {
+                $lastNumber = (int) substr($lastHousehold->serial_code, -5);
+                $nextNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+            } else {
+                $nextNumber = '00001';
+            }
+
+            $serialCode = "NIC-$year-$nextNumber";
+
+            $household->serial_code = $serialCode;
+            $household->approved_by = auth()->id();
+            $household->save();
+
             AuditLog::create([
-                'user_id' => auth()->id(),
-                'user_name' => auth()->user()->name,
-                'action' => 'approved',
-                'model' => 'Household',
-                'record_id' => $household->id,
+                'user_id'    => auth()->id(),
+                'user_name'  => auth()->user()->name,
+                'action'     => 'approved',
+                'model'      => 'Household',
+                'record_id'  => $household->id,
                 'new_values' => [
                     'serial_code' => $serialCode,
                     'approved_by' => auth()->id(),
@@ -83,11 +114,16 @@ class AdminHouseholdController extends Controller
                 'user_agent' => request()->userAgent(),
             ]);
 
+            \DB::commit();
+
             return redirect()->route('admin.households.show', $household)
                 ->with('success', "Household approved! Serial Code: {$serialCode}");
 
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to approve household: ' . $e->getMessage()]);
+            \DB::rollBack();
+            return back()->withErrors([
+                'error' => 'Failed to approve household: ' . $e->getMessage()
+            ]);
         }
     }
 
@@ -100,22 +136,20 @@ class AdminHouseholdController extends Controller
             return back()->withErrors(['error' => 'This household is not yet approved.']);
         }
 
-        // Check if QR code already generated
         if ($household->qrCode) {
             return back()->withErrors(['error' => 'Cannot unapprove — QR code already generated. Contact system admin.']);
         }
 
-        $household->update([
-            'serial_code' => null,
-            'approved_by' => null,
-        ]);
+        $household->serial_code = null;
+        $household->approved_by = null;
+        $household->save();
 
         AuditLog::create([
-            'user_id' => auth()->id(),
-            'user_name' => auth()->user()->name,
-            'action' => 'unapproved',
-            'model' => 'Household',
-            'record_id' => $household->id,
+            'user_id'    => auth()->id(),
+            'user_name'  => auth()->user()->name,
+            'action'     => 'unapproved',
+            'model'      => 'Household',
+            'record_id'  => $household->id,
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
         ]);
@@ -136,11 +170,11 @@ class AdminHouseholdController extends Controller
         $household->delete();
 
         AuditLog::create([
-            'user_id' => auth()->id(),
-            'user_name' => auth()->user()->name,
-            'action' => 'deleted',
-            'model' => 'Household',
-            'record_id' => $household->id,
+            'user_id'    => auth()->id(),
+            'user_name'  => auth()->user()->name,
+            'action'     => 'deleted',
+            'model'      => 'Household',
+            'record_id'  => $household->id,
             'old_values' => ['household_head_name' => $householdName],
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
@@ -152,12 +186,10 @@ class AdminHouseholdController extends Controller
 
     public function generateQrCode(Household $household, QrCodeService $qrService)
     {
-        // Must be approved first
         if (!$household->isApproved()) {
             return back()->withErrors(['error' => 'Household must be approved before generating QR code.']);
         }
 
-        // Already has QR?
         if ($household->qrCode) {
             return back()->withErrors(['error' => 'QR code already exists for this household.']);
         }
@@ -165,16 +197,16 @@ class AdminHouseholdController extends Controller
         try {
             $qrCode = $qrService->generateForHousehold($household);
 
-            \App\Models\AuditLog::create([
-                'user_id' => auth()->id(),
-                'user_name' => auth()->user()->name,
-                'action' => 'generated_qr',
-                'model' => 'QrCode',
-                'record_id' => $qrCode->id,
+            AuditLog::create([
+                'user_id'    => auth()->id(),
+                'user_name'  => auth()->user()->name,
+                'action'     => 'generated_qr',
+                'model'      => 'QrCode',
+                'record_id'  => $qrCode->id,
                 'new_values' => [
                     'household_id' => $household->id,
-                    'serial_code' => $household->serial_code,
-                    'file_name' => $qrCode->file_name,
+                    'serial_code'  => $household->serial_code,
+                    'file_name'    => $qrCode->file_name,
                 ],
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
@@ -205,5 +237,4 @@ class AdminHouseholdController extends Controller
 
         return response()->download($filePath, $household->serial_code . '.svg');
     }
-
 }

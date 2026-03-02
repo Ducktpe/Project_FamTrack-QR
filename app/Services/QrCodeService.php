@@ -51,6 +51,10 @@ $qrSvg = QrCodeGenerator::format('svg')
             'generated_at' => now(),
         ]);
 
+        // Update household with QR code path (use direct assignment to avoid mass-assignment issues)
+        $household->qr_code_path = $filePath;
+        $household->save();
+
         return $qrCode;
     }
 

@@ -20,6 +20,7 @@
             --gray-600:   #5A6372;
             --gray-800:   #2C3340;
             --red:        #C0392B;
+            --green:      #16A34A;
             --sidebar-w:  260px;
         }
 
@@ -163,15 +164,17 @@
             border-radius: 4px;
             flex-shrink: 0;
         }
-        .user-avatar {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            background: var(--blue);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--white);
-            font-weight: 700; font-size: 13px;
-            flex-shrink: 0;
-        }
+        .user-avatar { width: 32px; 
+        height: 32px; 
+        border-radius: 50%; 
+        background: var(--green); 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        color: var(--white); 
+        font-weight: 700; 
+        font-size: 13px; 
+        flex-shrink: 0; }
         .user-name {
             font-size: 13px; font-weight: 600;
             color: var(--blue-dark); line-height: 1.2;
@@ -183,15 +186,19 @@
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay {
-            display: none;
-            position: fixed;
+            display: none !important; /* Force hide until activated */
+            position: fixed; 
             inset: 0;
-            background: rgba(0,0,0,0.45);
+            background: rgba(0,0,0,0.45); 
             z-index: 200;
-            opacity: 0;
+            opacity: 0; 
             transition: opacity 0.25s;
+            pointer-events: none; /* Don't block clicks when hidden */
         }
-        .sidebar-overlay.active { opacity: 1; }
+        .sidebar-overlay.active {
+            display: block !important;
+            pointer-events: auto; /* Allow clicks when active */
+        }
 
         /* ─── SIDEBAR ─── */
         .sidebar {
@@ -615,7 +622,7 @@
         <div class="header-user-badge">
             <div class="user-avatar">E</div>
             <div>
-                <div class="user-name">Encoder</div>
+                <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
                 <div class="user-role">Data Entry Access</div>
             </div>
         </div>
@@ -647,15 +654,7 @@
                 <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
                 <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
             </svg>
-            Household Management
-        </a>
-
-        <a href="#" class="nav-item" onclick="closeSidebar()">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                <path d="M9 22V12h6v10"/>
-            </svg>
-            View Submitted Records
+            List of Households
         </a>
 
         <hr class="sidebar-sep">
@@ -728,7 +727,7 @@
                 <line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
             <div class="access-notice-text">
-                <strong>Encoder Role — Data Entry Access.</strong> You may create and update family profiles following the RBI form, add or edit household members, and cross-reference entries with DSWD Listahanan. Submitted records will be reviewed and approved by the Barangay Admin before QR codes are generated. You do not have access to distribution logs or QR code management.
+                <strong>Encoder Role — Data Entry Access.</strong> You may create and update family profiles following the RBI form, add or edit household members, and cross-reference entries with DSWD Listahanan. Submitted records will be reviewed and approved by the Administrator before QR codes are generated. You do not have access to distribution logs or QR code management.
             </div>
         </div>
 

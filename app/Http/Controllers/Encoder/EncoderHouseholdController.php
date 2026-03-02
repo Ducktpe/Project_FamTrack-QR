@@ -14,12 +14,40 @@ class EncoderHouseholdController extends Controller
     /**
      * Display a listing of households created by this encoder
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search     = $request->input('search');
+        $status     = $request->input('status');
+        $sex        = $request->input('sex');
+        $dateFrom   = $request->input('date_from');
+        $dateTo     = $request->input('date_to');
+        $is4ps      = $request->boolean('is_4ps');
+        $isPwd      = $request->boolean('is_pwd');
+        $isSenior   = $request->boolean('is_senior');
+        $isSoloParent = $request->boolean('is_solo_parent');
+
         $households = Household::where('encoded_by', auth()->id())
             ->with('members')
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('household_head_name', 'like', "%{$search}%")
+                      ->orWhere('barangay', 'like', "%{$search}%")
+                      ->orWhere('street_purok', 'like', "%{$search}%")
+                      ->orWhere('serial_code', 'like', "%{$search}%");
+                });
+            })
+            ->when($status === 'pending', fn($q) => $q->whereNull('approved_by'))
+            ->when($status === 'approved', fn($q) => $q->whereNotNull('approved_by'))
+            ->when($sex, fn($q, $sex) => $q->where('sex', $sex))
+            ->when($dateFrom, fn($q, $d) => $q->whereDate('created_at', '>=', $d))
+            ->when($dateTo,   fn($q, $d) => $q->whereDate('created_at', '<=', $d))
+            ->when($is4ps,      fn($q) => $q->where('is_4ps_beneficiary', true))
+            ->when($isPwd,      fn($q) => $q->where('is_pwd', true))
+            ->when($isSenior,   fn($q) => $q->where('is_senior', true))
+            ->when($isSoloParent, fn($q) => $q->where('is_solo_parent', true))
             ->orderBy('created_at', 'desc')
-            ->paginate(20);
+            ->paginate(20)
+            ->withQueryString();
 
         return view('encoder.households.index', compact('households'));
     }

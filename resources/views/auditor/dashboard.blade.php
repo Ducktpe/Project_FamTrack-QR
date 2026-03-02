@@ -185,15 +185,19 @@
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay {
-            display: none;
-            position: fixed;
+            display: none !important; /* Force hide until activated */
+            position: fixed; 
             inset: 0;
-            background: rgba(0,0,0,0.45);
+            background: rgba(0,0,0,0.45); 
             z-index: 200;
-            opacity: 0;
+            opacity: 0; 
             transition: opacity 0.25s;
+            pointer-events: none; /* Don't block clicks when hidden */
         }
-        .sidebar-overlay.active { opacity: 1; }
+        .sidebar-overlay.active {
+            display: block !important;
+            pointer-events: auto; /* Allow clicks when active */
+        }
 
         /* ─── SIDEBAR ─── */
         .sidebar {
@@ -602,7 +606,7 @@
 
     <!-- HEADER -->
     <header>
-        <button class="hamburger" onclick="openSidebar()" aria-label="Open navigation">
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <line x1="3" y1="6" x2="21" y2="6"/>
                 <line x1="3" y1="12" x2="21" y2="12"/>
@@ -654,7 +658,7 @@
         <hr class="sidebar-sep">
         <div class="nav-section-label">View-Only Access</div>
 
-        <a href="#" class="nav-item" onclick="closeSidebar()">
+        <a href="{{ route('auditor.family-profiles') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
                 <circle cx="9" cy="7" r="4"/>
@@ -664,7 +668,7 @@
             <span class="nav-badge-view">View</span>
         </a>
 
-        <a href="#" class="nav-item" onclick="closeSidebar()">
+        <a href="{{ route('auditor.distribution.logs') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
                 <rect x="9" y="3" width="6" height="4" rx="1"/>
@@ -675,12 +679,12 @@
             <span class="nav-badge-view">View</span>
         </a>
 
-        <a href="#" class="nav-item" onclick="closeSidebar()">
+        <a href="{{ route('auditor.households.index') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
                 <path d="M9 22V12h6v10"/>
             </svg>
-            Household Records
+            List of Households
             <span class="nav-badge-view">View</span>
         </a>
 
@@ -708,7 +712,7 @@
 
         <div class="role-notice">
             <div class="role-notice-title">&#9432; Read-Only Access</div>
-            <div class="role-notice-text">You have view-only access. No records can be added, edited, or deleted. Access may be time-limited by the Barangay Admin.</div>
+            <div class="role-notice-text">You have view-only access. No records can be added, edited, or deleted. Access may be time-limited by the Administrator.</div>
         </div>
 
         <div class="sidebar-bottom">
@@ -755,12 +759,12 @@
                 <line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
             <div class="access-notice-text">
-                <strong>Read-Only Viewer / Auditor Role.</strong> You may view all family profiles, distribution logs, household records, and generated reports. You cannot add, edit, delete, or export any records, and you cannot generate QR codes. This account is suitable for DSWD field officers, Sangguniang Barangay members, LGU auditors, and COA inspectors. Access may be time-limited and set by the Barangay Admin.
+                <strong>Read-Only Viewer / Auditor Role.</strong> You may view all family profiles, distribution logs, household records, and generated reports. You cannot add, edit, delete, or export any records, and you cannot generate QR codes. This account is suitable for DSWD field officers, Sangguniang Barangay members, LGU auditors, and COA inspectors. Access may be time-limited and set by the Administrator.
             </div>
         </div>
 
         <div class="quick-nav">
-            <a href="#" class="qnav-card">
+            <a href="{{ route('auditor.family-profiles') }}" class="qnav-card">
                 <span class="qnav-readonly">Read Only</span>
                 <div class="qnav-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -864,20 +868,19 @@
     // ─── Sidebar ───
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
 
-    function openSidebar() {
+    hamburgerBtn.addEventListener('click', function () {
         sidebar.classList.add('open');
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
-    }
+    });
+
     function closeSidebar() {
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
         document.body.style.overflow = '';
     }
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeSidebar();
-    });
 </script>
 </body>
 </html>

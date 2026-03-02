@@ -10,8 +10,6 @@ class Household extends Model
     use HasFactory;
 
     protected $fillable = [
-        'serial_code',
-        'qr_code_path',
         'household_head_name',
         'sex',
         'birthday',
@@ -30,6 +28,7 @@ class Household extends Model
         'status',
         'encoded_by',
         'approved_by',
+        'qr_code_path',
     ];
 
     protected $casts = [
@@ -64,7 +63,7 @@ class Household extends Model
 
     public function distributionLogs()
     {
-        return $this->hasMany(DistributionLog::class);
+        return $this->hasMany(DistributionLog::class, 'household_id');  
     }
 
     // ── Helper Methods ───────────────────────────────────
