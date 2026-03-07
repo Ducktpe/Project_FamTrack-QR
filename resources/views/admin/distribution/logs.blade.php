@@ -135,12 +135,12 @@
         .btn-clear:hover { background: var(--gray-100); }
 
         /* ─── TABLE ─── */
-        .table-wrap { background: var(--white); border: 1px solid var(--gray-200); overflow: hidden; }
+        .table-wrap { background: var(--white); border: 1px solid var(--gray-200); overflow-x: auto; }
         .table-header { padding: 13px 20px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; gap: 10px; justify-content: space-between; }
         .table-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); display: flex; align-items: center; gap: 8px; }
         .ca-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); border: 2px solid var(--yellow-dark); flex-shrink: 0; }
         .table-count { font-size: 11px; color: var(--gray-400); }
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
         th, td { padding: 11px 16px; border-bottom: 1px solid var(--gray-100); text-align: left; font-size: 13px; }
         th { background: var(--gray-50); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-600); border-bottom: 1px solid var(--gray-200); }
         tbody tr { transition: background 0.1s; }
@@ -377,6 +377,9 @@
         </div>
 
         {{-- Summary Cards --}}
+        {{-- NOTE: $statusCounts must be passed from the controller, e.g.:
+             $statusCounts = DistributionEvent::selectRaw('status, count(*) as total')->groupBy('status')->pluck('total','status');
+        --}}
         <div class="summary-row">
             <div class="summary-card">
                 <div class="summary-label">Total Events</div>
@@ -384,15 +387,15 @@
             </div>
             <div class="summary-card green">
                 <div class="summary-label">Ongoing</div>
-                <div class="summary-value">{{ $events->where('status','ongoing')->count() }}</div>
+                <div class="summary-value">{{ $statusCounts['ongoing'] ?? 0 }}</div>
             </div>
             <div class="summary-card orange">
                 <div class="summary-label">Upcoming</div>
-                <div class="summary-value">{{ $events->where('status','upcoming')->count() }}</div>
+                <div class="summary-value">{{ $statusCounts['upcoming'] ?? 0 }}</div>
             </div>
             <div class="summary-card yellow">
                 <div class="summary-label">Completed</div>
-                <div class="summary-value">{{ $events->where('status','completed')->count() }}</div>
+                <div class="summary-value">{{ $statusCounts['completed'] ?? 0 }}</div>
             </div>
         </div>
 
@@ -483,7 +486,7 @@
                                         <div style="font-size:10px; color:var(--red); margin-top:2px;">✕ Cancelled: {{ $event->cancelled_at->format('M d, Y H:i') }}</div>
                                     @endif
                                 </td>
-                                <td style="font-size:12px; color:var(--gray-600);">{{ $event->relief_type ?? '—' }}</td>
+                                <td style="font-size:12px; color:var(--gray-600);">{{ is_array($event->relief_type) ? implode(', ', $event->relief_type) : ($event->relief_type ?? '—') }}</td>
                                 <td style="font-size:12px; white-space:nowrap;">
                                     {{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }}
                                 </td>
@@ -501,7 +504,7 @@
                                     <div style="display:flex; gap:5px; flex-wrap:wrap;">
                                         {{-- View Button --}}
                                         <button class="btn-view" onclick="openModal(
-                                            '{{ route('admin.distribution.events.households', $event) }}',
+                                            {{ $event->id }},
                                             '{{ htmlspecialchars(addslashes($event->event_name), ENT_QUOTES) }}',
                                             '{{ ucfirst(strtolower($event->status)) }}'
                                         )">
@@ -533,7 +536,75 @@
                     </div>
                 @endif
             @endif
-        </div>
+        </div>{{-- /.table-wrap --}}
+
+        {{-- Hidden inline panels — outside table-wrap so browser doesn't strip them --}}
+        @if(!$events->isEmpty())
+            @foreach($events as $event)
+                <div class="event-panel" data-id="{{ $event->id }}" style="display:none;">
+                        <div style="margin-bottom:14px;">
+                            <input type="text" class="modal-search-input" placeholder="Search household name, barangay, or serial code…"
+                                style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:4px;font-size:13px;font-family:'Open Sans',sans-serif;outline:none;">
+                        </div>
+                        @php $dlogs = $event->logs ?? collect(); @endphp
+                        @if($dlogs->isEmpty())
+                            <div style="text-align:center;padding:40px;color:var(--gray-400);font-size:13px;font-style:italic;">
+                                No households distributed to yet for this event.
+                            </div>
+                        @else
+                            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                                <thead>
+                                    <tr style="background:var(--blue);color:#fff;">
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">#</th>
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Household Head</th>
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Barangay</th>
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Serial Code</th>
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Items Received</th>
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Date Distributed</th>
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Staff</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($dlogs as $li => $dlog)
+                                        <tr class="modal-hh-row"
+                                            data-search="{{ strtolower(($dlog->household->household_head_name ?? '') . ' ' . ($dlog->household->barangay ?? '') . ' ' . ($dlog->serial_code ?? '')) }}"
+                                            style="border-bottom:1px solid var(--gray-100);">
+                                            <td style="padding:10px 12px;color:var(--gray-400);font-size:12px;">{{ $li + 1 }}</td>
+                                            <td style="padding:10px 12px;font-weight:600;color:var(--blue-dark);">
+                                                {{ $dlog->household->household_head_name ?? '—' }}
+                                            </td>
+                                            <td style="padding:10px 12px;font-size:12px;color:var(--gray-600);">
+                                                {{ $dlog->household->barangay ?? '—' }}
+                                            </td>
+                                            <td style="padding:10px 12px;font-size:12px;font-family:monospace;color:var(--blue);font-weight:700;letter-spacing:.5px;">
+                                                {{ $dlog->serial_code ?? '—' }}
+                                            </td>
+                                            <td style="padding:10px 12px;font-size:12px;color:var(--gray-600);">
+                                                @if(!empty($dlog->items_received) && is_array($dlog->items_received))
+                                                    {{ implode(', ', array_map(fn($k) => ucwords(str_replace('_',' ',$k)), array_keys($dlog->items_received))) }}
+                                                @elseif(!empty($dlog->goods_detail))
+                                                    {{ $dlog->goods_detail }}
+                                                @else
+                                                    —
+                                                @endif
+                                            </td>
+                                            <td style="padding:10px 12px;font-size:12px;white-space:nowrap;">
+                                                {{ $dlog->distributed_at ? \Carbon\Carbon::parse($dlog->distributed_at)->setTimezone('Asia/Manila')->format('M d, Y h:i A') : '—' }}
+                                            </td>
+                                            <td style="padding:10px 12px;font-size:12px;color:var(--gray-600);">
+                                                {{ $dlog->staff->name ?? ('User #' . ($dlog->distributed_by ?? '—')) }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <div style="margin-top:10px;font-size:11px;color:var(--gray-400);text-align:right;">
+                                {{ $dlogs->count() }} household(s) distributed
+                            </div>
+                        @endif
+                    </div>
+            @endforeach
+        @endif
 
     </main>
 
@@ -631,7 +702,6 @@
 <div id="cancelRouteBase" data-url="{{ url('admin/distribution/events') }}" style="display:none;"></div>
 
 <script>
-    console.log('SCRIPT STARTED');  // add this as very first line
     /* ─── Clock ─── */
     function pad(n){ return String(n).padStart(2,'0'); }
     function updateClock() {
@@ -649,69 +719,39 @@
     const overlay = document.getElementById('sidebarOverlay');
     function openSidebar()  { sidebar.classList.add('open');    overlay.classList.add('active');    document.body.style.overflow='hidden'; }
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow=''; }
-    document.addEventListener('keydown', e => { if(e.key==='Escape') { closeSidebar(); closeModal(); } });
+    document.addEventListener('keydown', e => { if(e.key==='Escape') { closeSidebar(); closeModal(); closeCancelModal(); } });
 
-    /* ─── Modal ─── */
-    let currentModalUrl = '';
+    /* ─── Modal — inline panels, no fetch needed ─── */
+    const eventPanels = {};
+    document.querySelectorAll('.event-panel').forEach(el => {
+        eventPanels[el.dataset.id] = el.innerHTML;
+    });
 
-    function openModal(url, eventName, status) {
-        currentModalUrl = url;
+    function openModal(eventId, eventName, status) {
         document.getElementById('modalTitle').textContent = eventName;
-        document.getElementById('modalSub').textContent = 'Status: ' + status + ' — Household recipients';
+        document.getElementById('modalSub').textContent   = 'Status: ' + status + ' — Household recipients';
+        document.getElementById('modalBody').innerHTML    = eventPanels[eventId]
+            ?? '<p style="color:var(--gray-400);padding:20px;text-align:center;">No household data available.</p>';
         document.getElementById('modalOverlay').classList.add('active');
         document.body.style.overflow = 'hidden';
-        window.loadModalContent(url);
-    }
 
-    window.loadModalContent = function(url) {
-        console.log('loadModalContent called:', url);
-        document.getElementById('modalBody').innerHTML = '<div class="modal-loading"><div class="spinner"></div> Loading households…</div>';
-
-        fetch(url)
-            .then(r => r.text())
-            .then(html => {
-                const doc = new DOMParser().parseFromString(html, 'text/html');
-                const content = doc.querySelector('.modal-body');
-                document.getElementById('modalBody').innerHTML = content
-                    ? content.innerHTML
-                    : '<p style="color:var(--red); padding:20px;">Could not load content.</p>';
-
-                // Bind ONCE after content is injected
-                const btn = document.getElementById('modalSearchBtn');
-                const input = document.getElementById('modalSearchInput');
-
-                console.log('btn found:', btn);   // <-- add this
-                console.log('input found:', input);
-
-                btn?.addEventListener('click', function() {
-                    window.modalSearch();
+        // Re-query after innerHTML is set; cloneNode replaces the element to drop any stale listeners
+        const oldInput = document.querySelector('#modalBody .modal-search-input');
+        if (oldInput) {
+            const newInput = oldInput.cloneNode(true);
+            oldInput.parentNode.replaceChild(newInput, oldInput);
+            newInput.addEventListener('input', function () {
+                const q = this.value.toLowerCase();
+                document.querySelectorAll('#modalBody .modal-hh-row').forEach(row => {
+                    row.style.display = row.dataset.search.includes(q) ? '' : 'none';
                 });
-
-                input?.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') window.modalSearch();
-                });
-            })
-            .catch(() => {
-                document.getElementById('modalBody').innerHTML = '<p style="color:var(--red); padding:20px;">Error loading households. Please try again.</p>';
             });
-    }
-
-    window.modalSearch = function() {
-        const search = document.getElementById('modalSearchInput')?.value ?? '';
-        console.log('Search value:', search);
-        console.log('Current URL:', currentModalUrl);
-        
-        const url = new URL(currentModalUrl, window.location.origin);
-        url.searchParams.set('search', search);
-        
-        console.log('Final URL:', url.toString());
-        window.loadModalContent(url.toString());
+        }
     }
 
     function closeModal() {
         document.getElementById('modalOverlay').classList.remove('active');
         document.body.style.overflow = '';
-        currentModalUrl = '';
     }
 
         /* ─── Cancel Modal ─── */

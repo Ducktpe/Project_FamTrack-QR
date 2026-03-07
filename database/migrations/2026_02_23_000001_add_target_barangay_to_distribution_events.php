@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('distribution_events', function (Blueprint $table) {
-            $table->string('target_barangay', 100)->after('relief_type')->nullable();
-        });
+        if (!Schema::hasColumn('distribution_events', 'target_barangay')) {
+            Schema::table('distribution_events', function (Blueprint $table) {
+                $table->string('target_barangay', 100)->after('relief_type')->nullable();
+            });
+        }
     }
 
     /**

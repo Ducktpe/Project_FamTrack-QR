@@ -24,8 +24,8 @@
             --green:      #1A7A4A;
             --green-pale: #EAF5EF;
             --green-border:#A8D8BE;
-            --orange:     #BF6000;
-            --orange-pale:#FFF3E0;
+            --orange:     #D97706;
+            --orange-pale:#FFFBEB;
             --sidebar-w:  260px;
         }
 
@@ -64,10 +64,12 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid #C5D9F5; border-radius: 4px; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: var(--blue-light); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ─── PROFILE BADGE — ORANGE ─── */
+        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--orange-pale); border: 1px solid var(--orange); border-radius: 4px; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--orange); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--gray-800); line-height: 1.2; }
+        .user-role { font-size: 10px; color: var(--orange); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
@@ -136,7 +138,6 @@
         .field-val.mono { font-family: monospace; font-size: 12px; }
         .field-val.empty { color: var(--gray-400); font-style: italic; }
 
-        /* Serial code chip */
         .serial-chip { display: inline-block; font-family: monospace; font-size: 13px; font-weight: 700; color: var(--blue); background: var(--blue-pale); padding: 4px 12px; border-radius: 3px; border: 1px solid #C5D9F5; }
 
         /* ─── BADGES ─── */
@@ -147,7 +148,6 @@
         .badge-solo   { background: #F5F0FF; color: #3D1F8A; border: 1px solid #D8CBF5; }
         .badge-none   { background: var(--gray-100); color: var(--gray-400); border: 1px solid var(--gray-200); font-style: italic; }
 
-        /* Status */
         .status-active   { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--green); }
         .status-active::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
         .status-inactive { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--gray-400); }
@@ -164,7 +164,6 @@
         tbody td { padding: 11px 14px; font-size: 13px; color: var(--gray-800); vertical-align: middle; }
         .member-name { font-weight: 600; color: var(--blue-dark); }
 
-        /* Empty members */
         .empty-members { padding: 32px; text-align: center; color: var(--gray-400); font-size: 12px; }
 
         /* ─── META INFO ─── */
@@ -254,7 +253,7 @@
             <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
-                <div class="user-role">Encoder</div>
+                <div class="user-role">Data Entry Access</div>
             </div>
         </div>
     </header>
@@ -339,14 +338,12 @@
             </div>
         </div>
 
-        {{-- Flash messages --}}
         @if(session('success'))
         <div style="background:var(--green-pale);border:1px solid var(--green-border);border-left:4px solid var(--green);padding:12px 18px;margin-bottom:16px;font-size:12px;color:#0D4D2A;">
             {{ session('success') }}
         </div>
         @endif
 
-        {{-- Approval Status Banner --}}
         @if($household->approved_by)
         <div class="approval-banner approved">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -373,7 +370,6 @@
         </div>
         @endif
 
-        {{-- Household Head Info --}}
         <div class="card">
             <div class="card-header">
                 <div class="card-dot"></div>
@@ -433,7 +429,6 @@
             </div>
         </div>
 
-        {{-- Address --}}
         <div class="card">
             <div class="card-header">
                 <div class="card-dot"></div>
@@ -465,7 +460,6 @@
             </div>
         </div>
 
-        {{-- Beneficiary Classification --}}
         <div class="card">
             <div class="card-header">
                 <div class="card-dot"></div>
@@ -483,7 +477,6 @@
             </div>
         </div>
 
-        {{-- Family Members --}}
         <div class="card">
             <div class="card-header">
                 <div class="card-dot"></div>
@@ -531,7 +524,6 @@
             <div class="empty-members">No family members recorded for this household.</div>
             @endif
 
-            {{-- Meta info --}}
             <div class="meta-row">
                 <span>Encoded by: <strong>{{ $household->encoder->name ?? 'Unknown' }}</strong></span>
                 <span>Date encoded: <strong>{{ $household->created_at ? $household->created_at->format('F d, Y') : '—' }}</strong></span>
@@ -565,7 +557,6 @@
     function updateClock() {
         const now = new Date();
         const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-        const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
         const shortM = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         document.getElementById('top-time').textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
         document.getElementById('top-date').textContent = days[now.getDay()]+', '+pad(now.getDate())+' '+shortM[now.getMonth()]+' '+now.getFullYear();

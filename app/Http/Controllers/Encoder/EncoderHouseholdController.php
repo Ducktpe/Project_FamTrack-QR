@@ -93,6 +93,31 @@ class EncoderHouseholdController extends Controller
             'members.*.is_student' => 'boolean',
             'members.*.occupation' => 'nullable|string|max:100',
             'members.*.educational_attainment' => 'nullable|string|max:50',
+
+            // Nuclear family (spouse/deceased spouse + children)
+            'nuclear.spouse.full_name'                   => 'required_if:civil_status,Married|nullable|string|max:150',
+            'nuclear.spouse.sex'                        => 'required_if:civil_status,Married|nullable|in:Male,Female',
+            'nuclear.spouse.birthday'                   => 'required_if:civil_status,Married|nullable|date|before:today',
+            'nuclear.spouse.occupation'                 => 'nullable|string|max:100',
+            'nuclear.spouse.educational_attainment'     => 'nullable|string|max:50',
+            'nuclear.spouse.philhealth_no'              => 'nullable|string|max:30',
+            'nuclear.spouse.is_pwd'                     => 'boolean',
+            'nuclear.deceased_spouse.full_name'         => 'required_if:civil_status,Widowed|nullable|string|max:150',
+            'nuclear.deceased_spouse.sex'               => 'required_if:civil_status,Widowed|nullable|in:Male,Female',
+            'nuclear.deceased_spouse.birthday'          => 'required_if:civil_status,Widowed|nullable|date|before:today',
+            'nuclear.deceased_spouse.occupation'        => 'nullable|string|max:100',
+            'nuclear.deceased_spouse.educational_attainment' => 'nullable|string|max:50',
+            'nuclear.deceased_spouse.philhealth_no'     => 'nullable|string|max:30',
+            'nuclear.deceased_spouse.is_pwd'            => 'boolean',
+            'nuclear.children'                  => 'nullable|array',
+            'nuclear.children.*.full_name'      => 'required|string|max:150',
+            'nuclear.children.*.relationship'   => 'required|in:Son,Daughter',
+            'nuclear.children.*.birthday'       => 'required|date|before:today',
+            'nuclear.children.*.occupation'              => 'nullable|string|max:100',
+            'nuclear.children.*.educational_attainment'  => 'nullable|string|max:50',
+            'nuclear.children.*.philhealth_no'           => 'nullable|string|max:30',
+            'nuclear.children.*.is_pwd'                  => 'boolean',
+            'nuclear.children.*.is_student'              => 'boolean',
         ]);
 
         DB::beginTransaction();
@@ -136,16 +161,67 @@ class EncoderHouseholdController extends Controller
                 }
             }
 
+            // Add nuclear family members
+            $nuclear = $request->input('nuclear', []);
+            $civilStatus = $validated['civil_status'];
+
+            // Spouse (Married)
+            if ($civilStatus === 'Married' && !empty($nuclear['spouse']['full_name'])) {
+                FamilyMember::create([
+                    'household_id'           => $household->id,
+                    'full_name'              => $nuclear['spouse']['full_name'],
+                    'relationship'           => 'Spouse',
+                    'sex'                    => $nuclear['spouse']['sex'] ?? ($validated['sex'] === 'Male' ? 'Female' : 'Male'),
+                    'birthday'               => $nuclear['spouse']['birthday'],
+                    'occupation'             => $nuclear['spouse']['occupation'] ?? null,
+                    'educational_attainment' => $nuclear['spouse']['educational_attainment'] ?? null,
+                    'philhealth_no'          => $nuclear['spouse']['philhealth_no'] ?? null,
+                    'is_pwd'                 => isset($nuclear['spouse']['is_pwd']) && $nuclear['spouse']['is_pwd'],
+                    'is_student'             => false,
+                ]);
+            }
+
+            // Deceased Spouse (Widowed)
+            if ($civilStatus === 'Widowed' && !empty($nuclear['deceased_spouse']['full_name'])) {
+                FamilyMember::create([
+                    'household_id'           => $household->id,
+                    'full_name'              => $nuclear['deceased_spouse']['full_name'],
+                    'relationship'           => 'Deceased Spouse',
+                    'sex'                    => $nuclear['deceased_spouse']['sex'] ?? ($validated['sex'] === 'Male' ? 'Female' : 'Male'),
+                    'birthday'               => $nuclear['deceased_spouse']['birthday'],
+                    'occupation'             => $nuclear['deceased_spouse']['occupation'] ?? null,
+                    'educational_attainment' => $nuclear['deceased_spouse']['educational_attainment'] ?? null,
+                    'philhealth_no'          => $nuclear['deceased_spouse']['philhealth_no'] ?? null,
+                    'is_pwd'                 => isset($nuclear['deceased_spouse']['is_pwd']) && $nuclear['deceased_spouse']['is_pwd'],
+                    'is_student'             => false,
+                ]);
+            }
+
+            // Children (Married, Widowed, or Separated w/ custody)
+            if (!empty($nuclear['children'])) {
+                foreach ($nuclear['children'] as $child) {
+                    FamilyMember::create([
+                        'household_id'           => $household->id,
+                        'full_name'              => $child['full_name'],
+                        'relationship'           => $child['relationship'],
+                        'sex'                    => $child['relationship'] === 'Son' ? 'Male' : 'Female',
+                        'birthday'               => $child['birthday'],
+                        'occupation'             => $child['occupation'] ?? null,
+                        'educational_attainment' => $child['educational_attainment'] ?? null,
+                        'philhealth_no'          => $child['philhealth_no'] ?? null,
+                        'is_pwd'                 => isset($child['is_pwd']) && $child['is_pwd'],
+                        'is_student'             => isset($child['is_student']) && $child['is_student'],
+                    ]);
+                }
+            }
+
             // Audit log
-            AuditLog::create([
-                'user_id' => auth()->id(),
-                'user_name' => auth()->user()->name,
-                'action' => 'created',
-                'model' => 'Household',
-                'record_id' => $household->id,
-                'new_values' => $household->toArray(),
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
+            AuditLog::log('created_household', [
+                'model'         => 'Household',
+                'record_id'     => $household->id,
+                'affected_name' => $household->household_head_name,
+                'description'   => "Registered new household for {$household->household_head_name} in {$household->barangay}",
+                'new_values'    => $household->toArray(),
             ]);
 
             DB::commit();
@@ -221,15 +297,12 @@ class EncoderHouseholdController extends Controller
 
         $household->update($validated);
 
-        AuditLog::create([
-            'user_id' => auth()->id(),
-            'user_name' => auth()->user()->name,
-            'action' => 'updated',
-            'model' => 'Household',
-            'record_id' => $household->id,
-            'new_values' => $household->toArray(),
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
+        AuditLog::log('updated_household', [
+            'model'         => 'Household',
+            'record_id'     => $household->id,
+            'affected_name' => $household->household_head_name,
+            'description'   => "Updated household record of {$household->household_head_name}",
+            'new_values'    => $household->toArray(),
         ]);
 
         return redirect()->route('encoder.households.show', $household)

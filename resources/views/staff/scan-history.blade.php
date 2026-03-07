@@ -355,6 +355,78 @@
         .badge-success { background: var(--green-pale); color: var(--green-dark); }
         .badge svg { width: 10px; height: 10px; }
 
+        /* ─── DETAILS BUTTON ─── */
+        .btn-details {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 12px; font-family: 'Open Sans', sans-serif;
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--blue); background: var(--blue-pale);
+            border: 1px solid #C7D9F5; border-radius: 3px;
+            cursor: pointer; transition: background 0.15s, color 0.15s;
+        }
+        .btn-details:hover { background: var(--blue); color: var(--white); border-color: var(--blue); }
+        .btn-details svg { width: 12px; height: 12px; }
+
+        /* ─── MODAL ─── */
+        .modal-backdrop {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5); z-index: 1000;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-backdrop.open { display: flex; }
+        .modal {
+            background: var(--white); width: 100%; max-width: 520px;
+            border-top: 4px solid var(--blue); box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            animation: modal-in 0.18s ease;
+        }
+        @keyframes modal-in { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px; border-bottom: 1px solid var(--gray-100);
+        }
+        .modal-title { font-family: 'PT Serif', serif; font-size: 16px; font-weight: 700; color: var(--blue-dark); }
+        .modal-close {
+            background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 3px;
+            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--gray-600); transition: background 0.15s;
+        }
+        .modal-close:hover { background: #FEF2F2; color: var(--red); border-color: #FECACA; }
+        .modal-close svg { width: 14px; height: 14px; }
+        .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 0; }
+        .modal-row {
+            display: grid; grid-template-columns: 140px 1fr; gap: 8px;
+            padding: 10px 0; border-bottom: 1px solid var(--gray-100);
+        }
+        .modal-row:last-child { border-bottom: none; }
+        .modal-row-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); padding-top: 2px; }
+        .modal-row-value { font-size: 13px; color: var(--gray-800); line-height: 1.5; }
+        .modal-row-value strong { color: var(--blue-dark); }
+        .modal-tag {
+            display: inline-block; padding: 2px 9px; border-radius: 10px; margin: 2px 3px 2px 0;
+            font-size: 11px; font-weight: 600; background: var(--blue-pale); color: var(--blue);
+            border: 1px solid #C7D9F5;
+        }
+        .modal-tag-green { background: var(--green-pale); color: var(--green-dark); border-color: #BBF7D0; }
+        .relief-items-list { display: flex; flex-direction: column; gap: 5px; padding-top: 2px; }
+        .relief-item-row {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 10px; background: var(--green-pale);
+            border: 1px solid #BBF7D0; border-radius: 4px;
+        }
+        .relief-item-num {
+            width: 18px; height: 18px; border-radius: 50%;
+            background: var(--green); color: var(--white);
+            font-size: 10px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .relief-item-name { font-size: 12px; font-weight: 600; color: var(--green-dark); flex: 1; }
+        .relief-item-qty {
+            font-size: 11px; color: var(--green-dark); opacity: 0.75;
+            background: #BBF7D0; padding: 1px 7px; border-radius: 10px;
+            font-weight: 600; white-space: nowrap;
+        }
+
         /* ─── EMPTY STATE ─── */
         .empty-state { padding: 56px 40px; text-align: center; }
         .empty-icon {
@@ -866,21 +938,44 @@
                             <th>Household</th>
                             <th>Serial Code</th>
                             <th>Distribution Event</th>
-                            <th>Goods / Relief</th>
                             <th>Distributed At</th>
-                            <th>Remarks</th>
+                            <th>Details</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($logs as $log)
                             <tr>
+                                @php
+                                        $toStr = fn($v) => is_null($v) ? '' : (is_array($v) ? implode(', ', array_map(fn($i) => is_array($i) ? json_encode($i) : (string)$i, $v)) : (string)$v);
+                                        $reliefTypeStr  = $toStr($log->event->relief_type  ?? null);
+                                        $goodsDetailStr = $toStr($log->goods_detail        ?? null);
+                                        $remarksStr     = $toStr($log->remarks             ?? null);
+                                        $barangayStr    = $toStr($log->household->barangay ?? null);
+
+                                        // Format relief_items as "Name (qty unit)" strings
+                                        $rawItems = $log->event->relief_items ?? null;
+                                        if (is_array($rawItems)) {
+                                            $formattedItems = array_map(function($item) {
+                                                if (is_array($item)) {
+                                                    $name = $item['name'] ?? 'Item';
+                                                    $qty  = $item['qty']  ?? '';
+                                                    $unit = $item['unit'] ?? '';
+                                                    return trim("{$name}" . ($qty ? " — {$qty} {$unit}" : ''));
+                                                }
+                                                return (string) $item;
+                                            }, $rawItems);
+                                            $reliefItemsStr = implode('||', $formattedItems);
+                                        } else {
+                                            $reliefItemsStr = $toStr($rawItems);
+                                        }
+                                @endphp
                                 <td style="color:var(--gray-400);font-size:12px;">
                                     {{ $logs->firstItem() + $loop->index }}
                                 </td>
                                 <td class="td-household">
                                     <strong>{{ $log->household->household_head_name ?? '—' }}</strong>
                                     <small>
-                                        {{ $log->household->barangay ?? '' }}
+                                        {{ $barangayStr }}
                                         @if($log->household)
                                             &mdash; {{ $log->household->total_members }} member(s)
                                         @endif
@@ -898,29 +993,40 @@
                                     </div>
                                 </td>
                                 <td>
-                                    @if($log->goods_detail)
-                                        <span class="goods-text" title="{{ $log->goods_detail }}">{{ $log->goods_detail }}</span>
-                                    @else
-                                        <span class="goods-none">Not specified</span>
-                                    @endif
-                                </td>
-                                <td>
                                     <div class="timestamp">
                                         {{ $log->distributed_at->format('M d, Y') }}
                                         <small>{{ $log->distributed_at->format('h:i A') }}</small>
                                     </div>
                                 </td>
                                 <td>
-                                    @if($log->remarks)
-                                        <span style="font-size:12px;color:var(--gray-600);">{{ $log->remarks }}</span>
-                                    @else
-                                        <span style="font-size:11px;color:var(--gray-400);font-style:italic;">—</span>
-                                    @endif
+                                    <button
+                                        class="btn-details"
+                                        onclick="openDetails({
+                                            household:   {{ json_encode($log->household->household_head_name ?? '—') }},
+                                            barangay:    {{ json_encode($barangayStr) }},
+                                            members:     {{ json_encode($log->household->total_members ?? '—') }},
+                                            serial:      {{ json_encode($log->serial_code) }},
+                                            event:       {{ json_encode($log->event->event_name ?? '—') }},
+                                            eventDate:   {{ json_encode($log->event && $log->event->event_date ? \Carbon\Carbon::parse($log->event->event_date)->format('M d, Y') : '—') }},
+                                            reliefType:  {{ json_encode($reliefTypeStr) }},
+                                            reliefItems: {{ json_encode($reliefItemsStr) }},
+                                            goods:       {{ json_encode($goodsDetailStr) }},
+                                            remarks:     {{ json_encode($remarksStr) }},
+                                            distributedAt: {{ json_encode($log->distributed_at->format('M d, Y h:i A')) }}
+                                        })"
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <line x1="12" y1="8" x2="12" y2="12"/>
+                                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                        </svg>
+                                        Details
+                                    </button>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7">
+                                <td colspan="6">
                                     <div class="empty-state">
                                         <div class="empty-icon">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -973,6 +1079,21 @@
         </a>
     </footer>
 
+    <!-- DETAILS MODAL -->
+    <div class="modal-backdrop" id="detailsModal" onclick="closeDetails(event)">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Distribution Record Details</div>
+                <button class="modal-close" onclick="closeDetailsBtn()" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -994,7 +1115,9 @@
     const overlay = document.getElementById('sidebarOverlay');
     function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') { closeSidebar(); closeDetailsBtn(); }
+    });
 
     function toggleFilter() {
         const panel = document.getElementById('filterPanel');
@@ -1002,6 +1125,67 @@
         const isOpen = panel.classList.contains('open');
         panel.classList.toggle('open', !isOpen);
         btn.classList.toggle('active', !isOpen);
+    }
+
+    /* ─── Details Modal ─── */
+    function openDetails(d) {
+        function row(label, value) {
+            if (!value) return '';
+            return `<div class="modal-row">
+                <div class="modal-row-label">${label}</div>
+                <div class="modal-row-value">${value}</div>
+            </div>`;
+        }
+        function tags(str, cls) {
+            if (!str) return '<span style="color:var(--gray-400);font-style:italic;">Not specified</span>';
+            return str.split(',').map(s => `<span class="modal-tag ${cls || ''}">${s.trim()}</span>`).join('');
+        }
+
+        function reliefItemsList(str) {
+            if (!str) return '<span style="color:var(--gray-400);font-style:italic;">Not specified</span>';
+            const items = str.split('||').map(s => s.trim()).filter(Boolean);
+            return items.map((item, i) => {
+                const parts = item.split(' — ');
+                const name  = parts[0] || item;
+                const qty   = parts[1] || '';
+                return `<div class="relief-item-row">
+                    <span class="relief-item-num">${i + 1}</span>
+                    <span class="relief-item-name">${name}</span>
+                    ${qty ? `<span class="relief-item-qty">${qty}</span>` : ''}
+                </div>`;
+            }).join('');
+        }
+
+        let html = '';
+        html += row('Household',     `<strong>${d.household}</strong>`);
+        html += row('Barangay',      d.barangay);
+        html += row('Members',       d.members ? `${d.members} member(s)` : null);
+        html += row('Serial Code',   `<span style="font-family:monospace;font-weight:700;color:var(--blue);">${d.serial}</span>`);
+        html += row('Event',         `<strong>${d.event}</strong>${d.eventDate ? `<br><span style="font-size:11px;color:var(--gray-400);">${d.eventDate}</span>` : ''}`);
+        html += `<div class="modal-row">
+            <div class="modal-row-label">Relief Type</div>
+            <div class="modal-row-value">${tags(d.reliefType, '')}</div>
+        </div>`;
+        html += `<div class="modal-row">
+            <div class="modal-row-label">Relief Items</div>
+            <div class="modal-row-value relief-items-list">${reliefItemsList(d.reliefItems)}</div>
+        </div>`;
+        if (d.goods) html += row('Goods Detail', d.goods);
+        if (d.remarks) html += row('Remarks', `<span style="color:var(--gray-600);">${d.remarks}</span>`);
+        html += row('Distributed At', `<strong>${d.distributedAt}</strong>`);
+
+        document.getElementById('modalBody').innerHTML = html;
+        document.getElementById('detailsModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetailsBtn() {
+        document.getElementById('detailsModal').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function closeDetails(e) {
+        if (e.target === document.getElementById('detailsModal')) closeDetailsBtn();
     }
 </script>
 </body>

@@ -3,6 +3,7 @@
 <head>
     <title>MDRRMO Naic — Household Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=PT+Serif:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -244,49 +245,95 @@
         /* ─── PAGINATION ─── */
         .pagination-row {
             padding: 14px 20px;
-            border-top: 1px solid var(--gray-100);
-            background: var(--gray-50);
+            border-top: 1px solid var(--gray-200);
+            background: var(--white);
         }
-        .pagination-row svg {
-            width: 14px !important;
-            height: 14px !important;
-            flex-shrink: 0;
-            display: block;
+        /* Hide Laravel's raw output — JS rebuilds it cleanly */
+        .pagination-row nav { display: none; }
+
+        /* Our clean pagination UI */
+        .pg-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
         }
-        .pagination-row nav {
-            display: flex; align-items: center;
-            justify-content: space-between; flex-wrap: wrap; gap: 10px;
+        .pg-info {
+            font-size: 12px;
+            color: var(--gray-400);
         }
-        .pagination-row p, .pagination-row nav > p {
-            font-size: 12px; color: var(--gray-400); line-height: 1.5;
+        .pg-info strong { color: var(--blue-dark); font-weight: 700; }
+        .pg-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
-        .pagination-row p strong { color: var(--gray-600); font-weight: 600; }
-        .pagination-row nav > div,
-        .pagination-row .flex,
-        .pagination-row span[role="group"] {
-            display: flex; align-items: center; gap: 3px; flex-wrap: wrap;
+        .pg-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: 1.5px solid var(--gray-200);
+            background: var(--white);
+            color: var(--gray-600);
+            text-decoration: none;
+            cursor: pointer;
+            line-height: 1;
+            transition: background 0.13s, color 0.13s, border-color 0.13s, box-shadow 0.13s;
+            white-space: nowrap;
+            gap: 5px;
         }
-        .pagination-row nav a,
-        .pagination-row nav span > span,
-        .pagination-row nav > span {
-            display: inline-flex; align-items: center; justify-content: center;
-            min-width: 32px; height: 32px; padding: 0 10px;
-            font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600;
-            color: var(--gray-600); background: var(--white);
-            border: 1px solid var(--gray-200); border-radius: 3px;
-            text-decoration: none; line-height: 1;
-            transition: background 0.12s, color 0.12s, border-color 0.12s;
+        .pg-btn:hover {
+            background: var(--blue-pale);
+            color: var(--blue);
+            border-color: var(--blue-light);
+            box-shadow: 0 2px 5px rgba(27,63,122,0.10);
         }
-        .pagination-row nav a:hover {
-            background: var(--blue-pale); color: var(--blue); border-color: var(--blue-light);
+        .pg-btn.active {
+            background: var(--blue);
+            color: var(--white);
+            border-color: var(--blue);
+            box-shadow: 0 2px 8px rgba(27,63,122,0.20);
+            font-weight: 700;
+            pointer-events: none;
         }
-        .pagination-row nav span[aria-current="page"] > span,
-        .pagination-row nav .active > span {
-            background: var(--blue); color: var(--white); border-color: var(--blue); font-weight: 700;
+        .pg-btn.nav-btn {
+            padding: 0 14px;
+            color: var(--blue);
+            background: var(--blue-pale);
+            border-color: var(--blue-light);
+            font-weight: 700;
         }
-        .pagination-row nav span[aria-disabled="true"],
-        .pagination-row nav span[aria-disabled="true"] > span {
-            opacity: 0.4; cursor: not-allowed; pointer-events: none;
+        .pg-btn.nav-btn:hover {
+            background: var(--blue);
+            color: var(--white);
+            border-color: var(--blue);
+        }
+        .pg-btn.disabled {
+            color: var(--gray-400);
+            background: var(--gray-100);
+            border-color: var(--gray-200);
+            cursor: not-allowed;
+            pointer-events: none;
+            box-shadow: none;
+        }
+        .pg-dots {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 34px;
+            min-width: 24px;
+            font-size: 13px;
+            color: var(--gray-400);
+            letter-spacing: 1px;
+            padding: 0 2px;
         }
 
         /* ─── FOOTER ─── */
@@ -643,14 +690,13 @@
                                             View
                                         </a>
                                         @if(!$household->isApproved())
-                                            <form method="POST" action="{{ route('admin.households.approve', $household) }}">
-                                                @csrf
-                                                <button type="submit" class="btn-approve"
-                                                    onclick="return confirm('Approve this household and generate QR serial code?')">
-                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                                    Approve
-                                                </button>
-                                            </form>
+                                            <button type="button" class="btn-approve"
+                                                data-approve-url="{{ route('admin.households.approve', $household) }}"
+                                                data-household-id="{{ $household->id }}"
+                                                onclick="approveHousehold(this)">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                                Approve
+                                            </button>
                                         @endif
                                     </div>
                                 </td>
@@ -686,7 +732,7 @@
                 </table>
             </div>
 
-            <div class="pagination-row">
+            <div class="pagination-row" id="paginationRow">
                 {{ $households->appends(['filter' => $filter, 'search' => request('search')])->links() }}
             </div>
         </div>
@@ -730,6 +776,145 @@
     function debounceSearch() {
         clearTimeout(searchTimer);
         searchTimer = setTimeout(() => document.getElementById('searchForm').submit(), 450);
+    }
+
+    // ── Rebuild pagination cleanly from Laravel's output ──
+    (function normalizePagination() {
+        const container = document.getElementById('paginationRow');
+        if (!container) return;
+        const nav = container.querySelector('nav');
+        if (!nav) return;
+
+        // Extract "Showing X to Y of Z results" text
+        const infoEl = nav.querySelector('p');
+        const infoHTML = infoEl ? infoEl.innerHTML : '';
+
+        const CHEVRON_L = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px;flex-shrink:0"><polyline points="15 18 9 12 15 6"/></svg>`;
+        const CHEVRON_R = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>`;
+
+        let prevHTML = '', nextHTML = '', pageButtons = '';
+
+        // Query all a/span inside nav regardless of nesting structure
+        nav.querySelectorAll('a, span').forEach(el => {
+            const text = el.textContent.trim().replace(/\s+/g, ' ');
+            const isLink = el.tagName === 'A';
+            const isCurrent = el.getAttribute('aria-current') === 'page';
+            const isDisabled = el.getAttribute('aria-disabled') === 'true';
+            const href = el.getAttribute('href') || '#';
+
+            // Previous
+            if (/previous/i.test(text) || text === '«' || text === '‹') {
+                if (isLink) {
+                    prevHTML = `<a href="${href}" class="pg-btn nav-btn">${CHEVRON_L} Previous</a>`;
+                } else {
+                    prevHTML = `<span class="pg-btn nav-btn disabled">${CHEVRON_L} Previous</span>`;
+                }
+                return;
+            }
+            // Next
+            if (/next/i.test(text) || text === '»' || text === '›') {
+                if (isLink) {
+                    nextHTML = `<a href="${href}" class="pg-btn nav-btn">Next ${CHEVRON_R}</a>`;
+                } else {
+                    nextHTML = `<span class="pg-btn nav-btn disabled">Next ${CHEVRON_R}</span>`;
+                }
+                return;
+            }
+            // Ellipsis
+            if (text === '...' || text === '…' || text === '\u2026') {
+                pageButtons += `<span class="pg-dots">···</span>`;
+                return;
+            }
+            // Skip anything that isn't a plain page number
+            if (!/^\d+$/.test(text)) return;
+            // Page number
+            if (isCurrent) {
+                pageButtons += `<span class="pg-btn active">${text}</span>`;
+            } else if (isLink) {
+                pageButtons += `<a href="${href}" class="pg-btn">${text}</a>`;
+            }
+        });
+
+        // Build clean layout
+        container.innerHTML = `
+            <div class="pg-bar">
+                <div class="pg-controls">
+                    ${prevHTML}
+                    <div style="display:flex;align-items:center;gap:4px;">${pageButtons}</div>
+                    ${nextHTML}
+                </div>
+                ${infoHTML ? `<div class="pg-info">${infoHTML}</div>` : ''}
+            </div>
+        `;
+    })();
+
+    async function approveHousehold(btn) {
+        if (!confirm('Approve this household and generate QR serial code?')) return;
+
+        const url = btn.dataset.approveUrl;
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
+                || '{{ csrf_token() }}';
+
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            });
+
+            if (!res.ok) throw new Error('Server error');
+
+            const data = await res.json().catch(() => ({}));
+
+            // Swap the Approve button for an Approved badge
+            const actionsCell = btn.closest('.actions-cell');
+            btn.remove();
+
+            const badge = document.createElement('span');
+            badge.className = 'badge badge-approved';
+            badge.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Approved`;
+            actionsCell.appendChild(badge);
+
+            // Update the status badge in the same row
+            const row = actionsCell.closest('tr');
+            const statusCell = row.querySelector('.badge-pending');
+            if (statusCell) {
+                statusCell.className = 'badge badge-approved';
+                statusCell.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Approved`;
+            }
+
+            // Update serial code cell if returned
+            if (data.serial_code) {
+                const serialCell = row.querySelector('.serial-none');
+                if (serialCell) {
+                    serialCell.className = 'serial-code';
+                    serialCell.textContent = data.serial_code;
+                }
+            }
+
+            // Show a brief success flash
+            showFlash('Household approved successfully.');
+
+        } catch (err) {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            alert('Approval failed. Please try again.');
+        }
+    }
+
+    function showFlash(msg) {
+        const flash = document.createElement('div');
+        flash.className = 'alert-success';
+        flash.style.cssText = 'position:fixed;top:16px;right:24px;z-index:9999;min-width:280px;border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,0.12);';
+        flash.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>${msg}`;
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 3000);
     }
 </script>
 </body>

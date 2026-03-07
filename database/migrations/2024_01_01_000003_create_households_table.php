@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             // --- Serial Code & QR ---
-            $table->string('serial_code', 20)->unique();    // e.g. NIC-2024-00001
+            $table->string('serial_code', 20)->nullable()->unique(); // e.g. NIC-2024-00001 — assigned on approval
             $table->string('qr_code_path', 255)->nullable(); // storage path to QR PNG
 
             // --- Household Head Info (RBI) ---

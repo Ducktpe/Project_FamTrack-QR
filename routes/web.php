@@ -8,10 +8,10 @@ use App\Http\Controllers\ProfileController;
 Route::get('/', function () {
     // If already logged in, redirect to their dashboard
     if (auth()->check()) {
-        return redirect()->route(auth()->user()->role.'.dashboard');    
+        return redirect()->route(auth()->user()->role.'.dashboard');
     }
-    return redirect()->route('login');
-});
+    return view('welcome');
+})->name('home');
 
 // ── Auth Routes (handled by Breeze in auth.php) ─────────────
 require __DIR__.'/auth.php';
@@ -67,26 +67,87 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/events/quick-store', function(\Illuminate\Http\Request $request) {
         $request->validate([
             'event_name'        => 'required|string|max:255',
-            'relief_type'       => 'required|string|max:255',
-            'target_barangay'   => 'required|array|min:1',   // ← array now
+            'relief_type'       => ['required', 'array', 'min:1'],
+            'relief_type.*'     => ['required', 'string', 'max:255'],
+            'target_barangay'   => 'required|array|min:1',
             'target_barangay.*' => 'required|string|max:100',
             'started_at'        => 'required|date',
             'ended_at'          => 'required|date|after:started_at',
         ]);
 
-        // Join selected barangays into a comma-separated string for storage
-        $targetBarangay = implode(', ', $request->target_barangay);
+        // Item name labels and units — keyed to match blade name attributes
+        $itemMeta = [
+            // Dignity Kit
+            'feminine_hygiene_wash' => ['name' => 'Feminine Hygiene Wash',           'unit' => 'btl'],
+            'sanitary_pads'         => ['name' => 'Sanitary Pads / Napkins',          'unit' => 'pack'],
+            'tissue_wipes'          => ['name' => 'Tissue / Wipes',                   'unit' => 'pack'],
+            'underwear'             => ['name' => 'Underwear',                         'unit' => 'pcs'],
+            // First Aid Kit
+            'alcohol'               => ['name' => 'Alcohol',                           'unit' => 'btl'],
+            'bandaid'               => ['name' => 'Band-aid',                          'unit' => 'box'],
+            'bandage'               => ['name' => 'Bandage',                           'unit' => 'roll'],
+            'betadine'              => ['name' => 'Betadine',                          'unit' => 'btl'],
+            'elastic_bandage'       => ['name' => 'Elastic Bandage',                  'unit' => 'roll'],
+            'emergency_medicine'    => ['name' => 'Emergency Medicine / CAMPOLAS',    'unit' => 'pcs'],
+            'gauze_pad'             => ['name' => 'Gauze Pad',                         'unit' => 'pcs'],
+            'gauze_roll'            => ['name' => 'Gauze Roll',                        'unit' => 'roll'],
+            'medical_tape'          => ['name' => 'Medical Tape',                      'unit' => 'roll'],
+            // Food Pack
+            'canned_goods'          => ['name' => 'Canned Goods (Corned Beef / Sardines)', 'unit' => 'cans'],
+            'coffee'                => ['name' => 'Coffee',                            'unit' => 'pack'],
+            'instant_noodles'       => ['name' => 'Instant Noodles',                  'unit' => 'pcs'],
+            'rice'                  => ['name' => 'Rice',                              'unit' => 'kg'],
+            // Hygiene Kit
+            'bar_soap'              => ['name' => 'Bar Soap',                          'unit' => 'bars'],
+            'bucket'                => ['name' => 'Bucket',                            'unit' => 'pcs'],
+            'deodorant'             => ['name' => 'Deodorant',                         'unit' => 'pcs'],
+            'dipper'                => ['name' => 'Dipper (Tabo)',                     'unit' => 'pcs'],
+            'shampoo'               => ['name' => 'Shampoo',                           'unit' => 'btl'],
+            'toothbrush'            => ['name' => 'Toothbrush',                        'unit' => 'pcs'],
+            'toothpaste'            => ['name' => 'Toothpaste',                        'unit' => 'tube'],
+            'towel'                 => ['name' => 'Towel / Face Towel',               'unit' => 'pcs'],
+        ];
 
-        \App\Models\DistributionEvent::create([
+        // Build relief_items — only include checked items
+        $reliefItems = [];
+        foreach ($request->input('items', []) as $key => $data) {
+            if (!empty($data['included'])) {
+                $reliefItems[$key] = [
+                    'name' => $itemMeta[$key]['name'] ?? $key,
+                    'qty'  => isset($data['qty']) && $data['qty'] !== '' ? (float) $data['qty'] : 1,
+                    'unit' => $itemMeta[$key]['unit'] ?? '',
+                ];
+            }
+        }
+
+        // Handle cash aid separately
+        if ($request->filled('cash_amount')) {
+            $reliefItems['cash_aid'] = [
+                'name' => 'Cash Aid',
+                'qty'  => (float) $request->cash_amount,
+                'unit' => 'PHP',
+            ];
+        }
+
+        $event = \App\Models\DistributionEvent::create([
             'event_name'      => $request->event_name,
-            'relief_type'     => $request->relief_type,
-            'target_barangay' => $targetBarangay,              // e.g. "Sabang, Bucana" or "All Barangays"
+            'relief_type'     => $request->relief_type,      // array → JSON cast
+            'relief_items'    => !empty($reliefItems) ? $reliefItems : null,
+            'target_barangay' => $request->target_barangay,  // array → JSON cast
             'event_date'      => $request->event_date ?? now()->toDateString(),
             'description'     => $request->goods_detail,
             'status'          => 'upcoming',
             'started_at'      => $request->started_at,
             'ended_at'        => $request->ended_at,
             'created_by'      => auth()->id(),
+        ]);
+
+        \App\Models\AuditLog::log('created_distribution_event', [
+            'model'         => 'DistributionEvent',
+            'record_id'     => $event->id,
+            'affected_name' => $event->event_name,
+            'description'   => "Created distribution event \"{$event->event_name}\"",
+            'new_values'    => $event->toArray(),
         ]);
 
         return redirect()->route('admin.distribution.logs')
@@ -120,6 +181,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::post('/distribution/events/{event}/cancel', [\App\Http\Controllers\Admin\AdminDistributionEventController::class, 'cancel'])
         ->name('distribution.events.cancel');
+
+    // Audit Trail
+    Route::get('/audit-trail', [\App\Http\Controllers\AuditTrailController::class, 'index'])
+        ->name('audit.trail');
 });
 
 // ── ENCODER Routes ───────────────────────────────────────────
@@ -193,4 +258,8 @@ Route::middleware(['auth', 'role:auditor'])->prefix('auditor')->name('auditor.')
 
     Route::get('/households/{household}', [\App\Http\Controllers\Auditor\AuditorHouseholdController::class, 'show'])
     ->name('households.show');
+
+    // Audit Trail (read-only)
+    Route::get('/audit-trail', [\App\Http\Controllers\Auditor\AuditTrailController::class, 'index'])
+        ->name('audit.trail');
 });

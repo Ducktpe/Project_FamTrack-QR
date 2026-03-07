@@ -11,7 +11,7 @@ class AuditorDistributionLogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DistributionEvent::with('logs');
+        $query = DistributionEvent::with(['logs.household', 'logs.staff']);
 
         if ($request->filled('search')) {
             $search = $request->search;

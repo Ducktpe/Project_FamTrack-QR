@@ -117,22 +117,24 @@
         }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
+
+        /* ─── PROFILE BADGE — ORANGE ─── */
         .header-user-badge {
             display: flex; align-items: center; gap: 10px;
             padding: 8px 14px;
-            background: var(--blue-pale);
-            border: 1px solid var(--gray-200); border-radius: 4px;
+            background: var(--orange-pale);
+            border: 1px solid var(--orange); border-radius: 4px;
             flex-shrink: 0;
         }
         .user-avatar {
             width: 32px; height: 32px; border-radius: 50%;
-            background: var(--green);
+            background: var(--orange);
             display: flex; align-items: center; justify-content: center;
             color: var(--white); font-weight: 700; font-size: 13px;
             flex-shrink: 0;
         }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--gray-800); line-height: 1.2; }
+        .user-role { font-size: 10px; color: var(--orange); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay {
@@ -195,7 +197,6 @@
         .nav-icon { width: 17px; height: 17px; flex-shrink: 0; color: inherit; opacity: 0.7; }
         .nav-item.active .nav-icon, .nav-item:hover .nav-icon { opacity: 1; }
 
-        /* Nav badges — from dashboard */
         .nav-badge {
             margin-left: auto;
             background: var(--blue);
@@ -215,7 +216,6 @@
 
         .sidebar-sep { border: none; border-top: 1px solid var(--gray-100); margin: 8px 0; }
 
-        /* Role notice box — from dashboard */
         .role-notice {
             margin: 12px 14px;
             background: #FFFAE6;
@@ -278,7 +278,6 @@
         .page-sub { font-size: 12px; color: var(--gray-600); margin-top: 3px; }
         .titlebar-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
 
-        /* Alert */
         .alert-success {
             background: var(--green-pale);
             border: 1px solid #BBF7D0; border-left: 4px solid var(--green);
@@ -288,7 +287,6 @@
         }
         .alert-success svg { width: 16px; height: 16px; flex-shrink: 0; }
 
-        /* Stats row */
         .stats-row {
             display: grid; grid-template-columns: 1fr 1fr 1fr;
             gap: 16px; margin-bottom: 20px;
@@ -325,7 +323,6 @@
             text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400);
         }
 
-        /* Table card */
         .table-card {
             background: var(--white);
             border: 1px solid var(--gray-200);
@@ -454,7 +451,6 @@
         .empty-title { font-size: 14px; font-weight: 600; color: var(--gray-600); margin-bottom: 5px; }
         .empty-sub { font-size: 12px; color: var(--gray-400); margin-bottom: 16px; }
 
-        /* Search bar */
         .search-bar-wrap {
             padding: 12px 20px;
             border-bottom: 1px solid var(--gray-100);
@@ -533,7 +529,6 @@
         }
         .search-result-info strong { color: var(--blue); }
 
-        /* ─── FILTER PANEL ─── */
         .btn-filter-toggle {
             display: inline-flex; align-items: center; gap: 7px;
             padding: 7px 14px;
@@ -639,8 +634,29 @@
         .btn-reset-filter:hover { background: #FEF2F2; color: var(--red); border-color: var(--red); }
         .btn-reset-filter svg { width: 11px; height: 11px; }
 
-        /* Pagination */
-        .pagination-row { padding: 14px 20px; border-top: 1px solid var(--gray-100); background: var(--gray-50); }
+        /* ── Pagination ── */
+        .pagination-row { padding: 14px 20px; border-top: 1px solid var(--gray-200); background: var(--white); }
+        .pagination-row nav { display: none; }
+        .pg-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .pg-info { font-size: 12px; color: var(--gray-400); }
+        .pg-info strong { color: var(--blue-dark); font-weight: 700; }
+        .pg-controls { display: flex; align-items: center; gap: 4px; }
+        .pg-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            height: 34px; min-width: 34px; padding: 0 10px;
+            font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600;
+            border-radius: 6px; border: 1.5px solid var(--gray-200);
+            background: var(--white); color: var(--gray-600);
+            text-decoration: none; cursor: pointer; line-height: 1; gap: 5px;
+            transition: background 0.13s, color 0.13s, border-color 0.13s, box-shadow 0.13s;
+            white-space: nowrap;
+        }
+        .pg-btn:hover { background: var(--blue-pale); color: var(--blue); border-color: var(--blue-light); box-shadow: 0 2px 5px rgba(27,63,122,0.10); }
+        .pg-btn.active { background: var(--blue); color: var(--white); border-color: var(--blue); box-shadow: 0 2px 8px rgba(27,63,122,0.20); font-weight: 700; pointer-events: none; }
+        .pg-btn.nav-btn { padding: 0 14px; color: var(--blue); background: var(--blue-pale); border-color: var(--blue-light); font-weight: 700; }
+        .pg-btn.nav-btn:hover { background: var(--blue); color: var(--white); border-color: var(--blue); }
+        .pg-btn.disabled { color: var(--gray-400); background: var(--gray-100); border-color: var(--gray-200); cursor: not-allowed; pointer-events: none; box-shadow: none; }
+        .pg-dots { display: inline-flex; align-items: center; justify-content: center; height: 34px; min-width: 24px; font-size: 13px; color: var(--gray-400); letter-spacing: 1px; padding: 0 2px; }
 
         /* ─── FOOTER ─── */
         footer {
@@ -667,22 +683,14 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
-        /* ════════════════════════════════════════
-           RESPONSIVE
-           ════════════════════════════════════════ */
         @media (max-width: 900px) {
             .shell {
                 grid-template-rows: 36px auto 1fr 48px;
                 grid-template-columns: 1fr;
-                grid-template-areas:
-                    "topbar"
-                    "header"
-                    "main"
-                    "footer";
+                grid-template-areas: "topbar" "header" "main" "footer";
                 height: 100vh;
                 overflow: hidden;
             }
-
             .sidebar {
                 grid-area: unset;
                 position: fixed;
@@ -697,9 +705,7 @@
             .sidebar-overlay { display: block; }
             .sidebar-close { display: flex; }
             .sidebar .nav-section-label { padding-top: 52px; }
-
             .hamburger { display: flex; }
-
             header { padding: 0 16px; gap: 10px; }
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
@@ -707,12 +713,9 @@
             .header-user-badge { padding: 6px 10px; gap: 8px; }
             .user-name { font-size: 12px; }
             .user-role { display: none; }
-
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
-
             .main-content { padding: 20px 16px; }
-
             .stats-row { grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
             .stat-card { padding: 14px 16px; gap: 12px; }
             .stat-number { font-size: 26px; }
@@ -724,7 +727,6 @@
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
             .status-indicator { display: none; }
-
             header { padding: 0 12px; gap: 8px; }
             .header-logos img { height: 36px; width: 36px; }
             .logo-divider { display: none; }
@@ -734,20 +736,15 @@
             .header-user-badge { padding: 5px 8px; }
             .user-avatar { width: 28px; height: 28px; font-size: 11px; }
             .user-name { font-size: 11px; }
-
             .main-content { padding: 16px 12px; }
-
             .page-titlebar { flex-direction: column; align-items: flex-start; gap: 10px; }
             .page-h1 { font-size: 18px; }
             .titlebar-actions { width: 100%; }
             .back-btn, .btn-register { flex: 1; justify-content: center; }
-
             .stats-row { grid-template-columns: 1fr; gap: 10px; }
             .stat-card { padding: 14px 18px; }
             .stat-number { font-size: 30px; }
-
             .encoder-note { font-size: 11px; }
-
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
@@ -761,10 +758,8 @@
 <body>
 <div class="shell">
 
-    <!-- SIDEBAR OVERLAY -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-    <!-- TOP UTILITY BAR -->
     <div class="topbar">
         <div class="topbar-left">Republic of the Philippines &nbsp;|&nbsp; Province of Cavite &nbsp;|&nbsp; Municipality of Naic</div>
         <div class="topbar-right">
@@ -774,7 +769,6 @@
         </div>
     </div>
 
-    <!-- HEADER -->
     <header>
         <button class="hamburger" onclick="openSidebar()" aria-label="Open navigation">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -783,7 +777,6 @@
                 <line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
         </button>
-
         <div class="header-logos">
             <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO Logo">
             <div class="logo-divider"></div>
@@ -804,7 +797,6 @@
         </div>
     </header>
 
-    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <button class="sidebar-close" onclick="closeSidebar()" aria-label="Close navigation">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -873,10 +865,8 @@
         </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
     <main class="main-content">
 
-        <!-- Page title -->
         <div class="page-titlebar">
             <div>
                 <div class="page-breadcrumb">Encoder / <span>List of Registered Households</span></div>
@@ -900,7 +890,6 @@
             </div>
         </div>
 
-        {{-- Session alert --}}
         @if(session('success'))
             <div class="alert-success">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -911,7 +900,6 @@
             </div>
         @endif
 
-        {{-- Encoder role note --}}
         <div class="encoder-note">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -921,7 +909,6 @@
             </div>
         </div>
 
-        {{-- Stats --}}
         <div class="stats-row">
             <div class="stat-card total">
                 <div class="stat-icon">
@@ -961,7 +948,6 @@
             </div>
         </div>
 
-        {{-- Table --}}
         <div class="table-card">
             <div class="table-card-header">
                 <div class="table-card-header-left">
@@ -970,7 +956,6 @@
                 </div>
             </div>
 
-            {{-- Search + Filter bar --}}
             @php
                 $hasFilters = request()->hasAny(['status', 'sex', 'date_from', 'date_to', 'is_4ps', 'is_pwd', 'is_senior', 'is_solo_parent']);
             @endphp
@@ -980,14 +965,9 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
                         </svg>
-                        <input
-                            type="text"
-                            name="search"
-                            class="search-input"
+                        <input type="text" name="search" class="search-input"
                             placeholder="Search by name, barangay, street, or serial code…"
-                            value="{{ request('search') }}"
-                            autocomplete="off"
-                        >
+                            value="{{ request('search') }}" autocomplete="off">
                     </div>
                     <button type="submit" class="btn-search">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -1005,7 +985,6 @@
                     @endif
                 </form>
 
-                {{-- Filter toggle button --}}
                 <button class="btn-filter-toggle {{ $hasFilters ? 'active' : '' }}" id="filterToggleBtn" onclick="toggleFilter()" type="button">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
@@ -1013,7 +992,6 @@
                     Filters{{ $hasFilters ? ' (Active)' : '' }}
                 </button>
 
-                {{-- Active filter pills --}}
                 @if($hasFilters)
                     <div class="filter-active-pills">
                         @if(request('status'))
@@ -1034,18 +1012,10 @@
                                 Date: {{ request('date_from') ?: '…' }} → {{ request('date_to') ?: '…' }}
                             </span>
                         @endif
-                        @if(request('is_4ps'))
-                            <span class="filter-pill">4Ps Beneficiary</span>
-                        @endif
-                        @if(request('is_pwd'))
-                            <span class="filter-pill">PWD</span>
-                        @endif
-                        @if(request('is_senior'))
-                            <span class="filter-pill">Senior Citizen</span>
-                        @endif
-                        @if(request('is_solo_parent'))
-                            <span class="filter-pill">Solo Parent</span>
-                        @endif
+                        @if(request('is_4ps')) <span class="filter-pill">4Ps Beneficiary</span> @endif
+                        @if(request('is_pwd')) <span class="filter-pill">PWD</span> @endif
+                        @if(request('is_senior')) <span class="filter-pill">Senior Citizen</span> @endif
+                        @if(request('is_solo_parent')) <span class="filter-pill">Solo Parent</span> @endif
                         <a href="{{ route('encoder.households.index', array_filter(['search' => request('search')])) }}" class="btn-reset-filter">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -1062,17 +1032,12 @@
                 @endif
             </div>
 
-            {{-- Filter Panel --}}
             <div class="filter-panel {{ $hasFilters ? 'open' : '' }}" id="filterPanel">
                 <form method="GET" action="{{ route('encoder.households.index') }}" id="filterForm">
-                    {{-- Preserve search query --}}
                     @if(request('search'))
                         <input type="hidden" name="search" value="{{ request('search') }}">
                     @endif
-
                     <div class="filter-grid">
-
-                        {{-- Approval Status --}}
                         <div class="filter-group">
                             <label class="filter-label">Approval Status</label>
                             <select name="status" class="filter-select">
@@ -1081,8 +1046,6 @@
                                 <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved</option>
                             </select>
                         </div>
-
-                        {{-- Sex --}}
                         <div class="filter-group">
                             <label class="filter-label">Sex</label>
                             <select name="sex" class="filter-select">
@@ -1091,20 +1054,14 @@
                                 <option value="Female" {{ request('sex') === 'Female' ? 'selected' : '' }}>Female</option>
                             </select>
                         </div>
-
-                        {{-- Date Registered From --}}
                         <div class="filter-group">
                             <label class="filter-label">Registered From</label>
                             <input type="date" name="date_from" class="filter-date" value="{{ request('date_from') }}">
                         </div>
-
-                        {{-- Date Registered To --}}
                         <div class="filter-group">
                             <label class="filter-label">Registered To</label>
                             <input type="date" name="date_to" class="filter-date" value="{{ request('date_to') }}">
                         </div>
-
-                        {{-- Sector checkboxes --}}
                         <div class="filter-group">
                             <label class="filter-label">Sector / Classification</label>
                             <div class="filter-checkboxes">
@@ -1126,8 +1083,6 @@
                                 </label>
                             </div>
                         </div>
-
-                        {{-- Apply / Reset --}}
                         <div class="filter-group filter-actions">
                             <button type="submit" class="btn-apply-filter">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1136,7 +1091,6 @@
                                 Apply Filters
                             </button>
                         </div>
-
                     </div>
                 </form>
             </div>
@@ -1235,14 +1189,13 @@
                 </table>
             </div>
 
-            <div class="pagination-row">
+            <div class="pagination-row" id="paginationRow">
                 {{ $households->links() }}
             </div>
         </div>
 
     </main>
 
-    <!-- FOOTER -->
     <footer>
         <div class="footer-left">
             &copy; <span id="footer-year"></span> <strong>MDRRMO Naic, Cavite</strong> &mdash; Municipal Disaster Risk Reduction and Management Office
@@ -1273,24 +1226,12 @@
     setInterval(updateClock, 1000);
     document.getElementById('footer-year').textContent = new Date().getFullYear();
 
-    /* ─── Sidebar ─── */
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
+    function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeSidebar(); });
 
-    function openSidebar() {
-        sidebar.classList.add('open');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-    function closeSidebar() {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeSidebar();
-    });
-    /* ─── Filter panel toggle ─── */
     function toggleFilter() {
         const panel = document.getElementById('filterPanel');
         const btn   = document.getElementById('filterToggleBtn');
@@ -1298,6 +1239,63 @@
         panel.classList.toggle('open', !isOpen);
         btn.classList.toggle('active', !isOpen);
     }
+
+    // ── Rebuild pagination cleanly ──
+    (function normalizePagination() {
+        const container = document.getElementById('paginationRow');
+        if (!container) return;
+        const nav = container.querySelector('nav');
+        if (!nav) return;
+
+        const CHEVRON_L = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px;flex-shrink:0"><polyline points="15 18 9 12 15 6"/></svg>`;
+        const CHEVRON_R = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>`;
+
+        const infoEl = nav.querySelector('p');
+        const infoHTML = infoEl ? infoEl.innerHTML : '';
+
+        let prevHTML = '', nextHTML = '', pageButtons = '';
+
+        const btnGroup = nav.querySelector('div') || nav;
+        Array.from(btnGroup.children).forEach(el => {
+            const inner = el.children.length === 1 && el.children[0].tagName === 'SPAN' ? el.children[0] : el;
+            const text = inner.textContent.trim().replace(/[\s\u00a0]+/g, ' ');
+            const isLink = el.tagName === 'A';
+            const isCurrent = el.getAttribute('aria-current') === 'page'
+                           || inner.getAttribute('aria-current') === 'page';
+            const href = el.getAttribute('href') || '#';
+
+            if (/previous/i.test(text) || text === '\u00ab' || text === '\u2039') {
+                prevHTML = isLink
+                    ? `<a href="${href}" class="pg-btn nav-btn">${CHEVRON_L} Previous</a>`
+                    : `<span class="pg-btn nav-btn disabled">${CHEVRON_L} Previous</span>`;
+                return;
+            }
+            if (/next/i.test(text) || text === '\u00bb' || text === '\u203a') {
+                nextHTML = isLink
+                    ? `<a href="${href}" class="pg-btn nav-btn">Next ${CHEVRON_R}</a>`
+                    : `<span class="pg-btn nav-btn disabled">Next ${CHEVRON_R}</span>`;
+                return;
+            }
+            if (text === '...' || text === '\u2026') {
+                pageButtons += `<span class="pg-dots">···</span>`;
+                return;
+            }
+            if (!/^\d+$/.test(text)) return;
+            pageButtons += isCurrent
+                ? `<span class="pg-btn active">${text}</span>`
+                : `<a href="${href}" class="pg-btn">${text}</a>`;
+        });
+
+        container.innerHTML = `
+            <div class="pg-bar">
+                <div class="pg-controls">
+                    ${prevHTML}
+                    <div style="display:flex;align-items:center;gap:4px;">${pageButtons}</div>
+                    ${nextHTML}
+                </div>
+                ${infoHTML ? `<div class="pg-info">${infoHTML}</div>` : ''}
+            </div>`;
+    })();
 </script>
 </body>
 </html>

@@ -33,21 +33,54 @@
             flex-direction: column;
         }
 
-        /* ── TOP BAR ── */
+        /* ─── TOPBAR ─── */
         .topbar {
-            background: #0d1f3c;
+            background: var(--blue-dark);
+            padding: 0 32px;
             height: 34px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 28px;
-            flex-shrink: 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .topbar-left { font-size: 11px; color: rgba(255,255,255,0.4); }
-        .topbar-right { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.35); }
-        .topbar-dot { width: 6px; height: 6px; border-radius: 50%; background: #4CAF50; box-shadow: 0 0 4px #4CAF50; animation: blink 2s infinite; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.3px; }
+        .topbar-right { display: flex; align-items: center; gap: 20px; }
+        .clock { font-size: 12px; font-weight: 600; color: var(--yellow); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
+        .clock-date { font-size: 11px; color: rgba(255,255,255,0.45); }
+        .status-dot { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.45); }
+        .status-dot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #4CAF50; box-shadow: 0 0 6px #4CAF50; animation: blink 2s infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+        /* ─── NAVBAR ─── */
+        nav {
+            background: var(--white);
+            border-bottom: 3px solid var(--yellow);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 0 32px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 14px; }
+        .nav-brand img { height: 50px; width: 50px; object-fit: contain; }
+        .nav-divider { width: 1px; height: 40px; background: var(--gray-200); }
+        .nav-text-org { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 2px; }
+        .nav-text-title { font-family: 'PT Serif', serif; font-size: 17px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
+        .nav-home {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 22px;
+            background: var(--blue);
+            color: var(--white);
+            border: none;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 12px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.15s, transform 0.15s;
+        }
+        .nav-home:hover { background: var(--blue-dark); transform: translateY(-1px); }
+        .nav-home svg { width: 14px; height: 14px; }
 
         /* ── BODY CENTER ── */
         .login-body {
@@ -260,10 +293,34 @@
 <body>
 <div class="page-wrap">
 
-    {{-- TOP BAR --}}
+    <!-- TOPBAR -->
     <div class="topbar">
         <div class="topbar-left">Republic of the Philippines &nbsp;|&nbsp; Province of Cavite &nbsp;|&nbsp; Municipality of Naic</div>
+        <div class="topbar-right">
+            <span class="clock-date" id="top-date">—</span>
+            <span class="clock" id="top-time">00:00:00</span>
+            <span class="status-dot">System Online</span>
+        </div>
     </div>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="nav-brand">
+            <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO Logo">
+            <div class="nav-divider"></div>
+            <img src="{{ asset('images/naic-seal.png') }}" alt="Naic Seal">
+            <div style="margin-left:6px;">
+                <div class="nav-text-org">Office of the Municipal DRRMO</div>
+                <div class="nav-text-title">MDRRMO — Naic, Cavite</div>
+            </div>
+        </div>
+        <a href="{{ route('home') }}" class="nav-home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/>
+            </svg>
+            Homepage
+        </a>
+    </nav>
 
     {{-- BODY --}}
     <div class="login-body">
@@ -410,5 +467,16 @@
     </div>
 
 </div>
+    <script>
+        function pad(n){ return String(n).padStart(2,'0'); }
+        function updateClock() {
+            const now = new Date();
+            const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            document.getElementById('top-time').textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+            document.getElementById('top-date').textContent = days[now.getDay()]+', '+pad(now.getDate())+' '+months[now.getMonth()]+' '+now.getFullYear();
+        }
+        updateClock(); setInterval(updateClock, 1000);
+    </script>
 </body>
 </html>

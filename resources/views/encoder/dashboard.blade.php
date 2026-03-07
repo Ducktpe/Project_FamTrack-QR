@@ -159,19 +159,19 @@
             align-items: center;
             gap: 10px;
             padding: 8px 14px;
-            background: var(--blue-pale);
-            border: 1px solid var(--gray-200);
+            background: #FFF7ED;
+            border: 1px solid #D97706;
             border-radius: 4px;
             flex-shrink: 0;
         }
         .user-avatar { width: 32px; 
         height: 32px; 
         border-radius: 50%; 
-        background: var(--green); 
+        background: #D97706; 
         display: flex; 
         align-items: center; 
         justify-content: center; 
-        color: var(--white); 
+        color: #FFFFFF; 
         font-weight: 700; 
         font-size: 13px; 
         flex-shrink: 0; }
@@ -180,7 +180,7 @@
             color: var(--blue-dark); line-height: 1.2;
         }
         .user-role {
-            font-size: 10px; color: var(--gray-600);
+            font-size: 10px; color: #D97706;
             text-transform: uppercase; letter-spacing: 0.5px;
         }
 

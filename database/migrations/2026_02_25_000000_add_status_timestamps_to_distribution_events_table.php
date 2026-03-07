@@ -9,10 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('distribution_events', function (Blueprint $table) {
-            $table->timestamp('started_at')->nullable()->after('status');
-            $table->timestamp('ended_at')->nullable()->after('started_at');
-            $table->timestamp('cancelled_at')->nullable()->after('ended_at');
-            $table->text('cancellation_reason')->nullable()->after('cancelled_at');
+            if (!Schema::hasColumn('distribution_events', 'started_at'))
+                $table->timestamp('started_at')->nullable()->after('status');
+            if (!Schema::hasColumn('distribution_events', 'ended_at'))
+                $table->timestamp('ended_at')->nullable()->after('started_at');
+            if (!Schema::hasColumn('distribution_events', 'cancelled_at'))
+                $table->timestamp('cancelled_at')->nullable()->after('ended_at');
+            if (!Schema::hasColumn('distribution_events', 'cancellation_reason'))
+                $table->text('cancellation_reason')->nullable()->after('cancelled_at');
         });
     }
 

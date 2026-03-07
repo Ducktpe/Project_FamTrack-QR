@@ -7,6 +7,7 @@ use App\Models\DistributionEvent;
 use App\Models\DistributionLog;
 use App\Models\Household;
 use App\Models\AuditLog;
+use App\Models\ScanAttempt;
 use Illuminate\Http\Request;
 
 class StaffScanController extends Controller
@@ -57,21 +58,19 @@ class StaffScanController extends Controller
         // Prevent scanning households outside the event's target barangay.
         // target_barangay is stored as "All Barangays" OR "Sabang, Bucana, ..."
         $event      = DistributionEvent::findOrFail($validated['event_id']);
-        $targetRaw  = trim($event->target_barangay ?? '');
 
-        // Skip check entirely if target_barangay is empty (legacy events) or "All Barangays"
-        $skipCheck  = empty($targetRaw) || $targetRaw === 'All Barangays';
+        // target_barangay is now a JSON-cast array e.g. ["Sabang","Bucana"] or ["All Barangays"]
+        $targetList = is_array($event->target_barangay) ? $event->target_barangay : [];
+
+        // Skip check if empty or contains "All Barangays"
+        $skipCheck = empty($targetList) || in_array('All Barangays', $targetList);
 
         if (!$skipCheck) {
-            $targetList = array_map('trim', explode(',', $targetRaw));
-
-            // Filter out any empty strings from the list before comparing
-            $targetList = array_filter($targetList, fn($b) => $b !== '');
-
-            if (!empty($targetList) && !in_array(trim($household->barangay), $targetList)) {
+            $targetList = array_map('trim', $targetList);
+            if (!in_array(trim($household->barangay), $targetList)) {
                 return response()->json([
                     'status'       => 'wrong_barangay',
-                    'event_target' => $targetRaw,
+                    'event_target' => implode(', ', $targetList),
                     'household'    => [
                         'name'     => $household->household_head_name,
                         'barangay' => $household->barangay,
@@ -87,6 +86,16 @@ class StaffScanController extends Controller
             ->first();
 
         if ($existingLog) {
+            // Persist the blocked duplicate so the counter survives page refresh
+            ScanAttempt::create([
+                'event_id'     => $validated['event_id'],
+                'household_id' => $household->id,
+                'serial_code'  => $validated['serial_code'],
+                'scanned_by'   => auth()->id(),
+                'result'       => 'duplicate',
+                'scanned_at'   => now(),
+            ]);
+
             return response()->json([
                 'status'  => 'duplicate',
                 'message' => 'ALREADY RECEIVED',
@@ -102,7 +111,7 @@ class StaffScanController extends Controller
             ], 200);
         }
 
-        // Return household info for confirmation
+        // Return household info + event relief_items for confirmation
         return response()->json([
             'status'  => 'success',
             'message' => 'Household found. Ready to confirm release.',
@@ -116,6 +125,7 @@ class StaffScanController extends Controller
                 'is_pwd'        => $household->is_pwd,
                 'is_senior'     => $household->is_senior,
             ],
+            'relief_items' => $event->relief_items ?? [],
         ], 200);
     }
 
@@ -125,10 +135,11 @@ class StaffScanController extends Controller
     public function confirm(Request $request)
     {
         $validated = $request->validate([
-            'household_id' => 'required|exists:households,id',
-            'event_id'     => 'required|exists:distribution_events,id',
-            'goods_detail' => 'nullable|string',
-            'remarks'      => 'nullable|string',
+            'household_id'   => 'required|exists:households,id',
+            'event_id'       => 'required|exists:distribution_events,id',
+            'items_received' => 'nullable|array',
+            'goods_detail'   => 'nullable|string',
+            'remarks'        => 'nullable|string',
         ]);
 
         $household = Household::findOrFail($validated['household_id']);
@@ -145,6 +156,15 @@ class StaffScanController extends Controller
             ], 400);
         }
 
+        // Build items_received from submitted items (staff-edited) or fall back to event defaults
+        $itemsReceived = null;
+        if ($request->filled('items_received')) {
+            $itemsReceived = $request->input('items_received');
+        } else {
+            $event = DistributionEvent::find($validated['event_id']);
+            $itemsReceived = $event->relief_items ?? null;
+        }
+
         // Create distribution log
         $log = DistributionLog::create([
             'event_id'        => $validated['event_id'],
@@ -152,24 +172,40 @@ class StaffScanController extends Controller
             'serial_code'     => $household->serial_code,
             'distributed_by'  => auth()->id(),
             'distributed_at'  => now(),
+            'items_received'  => $itemsReceived,
             'goods_detail'    => $validated['goods_detail'] ?? null,
             'remarks'         => $validated['remarks'] ?? null,
         ]);
 
+        // Persist the successful scan so confirmed_today counter survives refresh
+        ScanAttempt::create([
+            'event_id'     => $validated['event_id'],
+            'household_id' => $household->id,
+            'serial_code'  => $household->serial_code,
+            'scanned_by'   => auth()->id(),
+            'result'       => 'success',
+            'scanned_at'   => now(),
+        ]);
+
         // Audit log
-        AuditLog::create([
-            'user_id'    => auth()->id(),
-            'user_name'  => auth()->user()->name,
-            'action'     => 'distributed_ayuda',
-            'model'      => 'DistributionLog',
-            'record_id'  => $log->id,
-            'new_values' => [
-                'household'   => $household->household_head_name,
-                'serial_code' => $household->serial_code,
-                'event_id'    => $validated['event_id'],
+        $event = DistributionEvent::find($validated['event_id']);
+
+        AuditLog::log('distributed_ayuda', [
+            'model'         => 'DistributionLog',
+            'record_id'     => $log->id,
+            'affected_name' => $household->household_head_name,
+            'description'   => "Released ayuda to {$household->household_head_name} ({$household->serial_code})",
+            'new_values'    => [
+                'household'      => $household->household_head_name,
+                'serial_code'    => $household->serial_code,
+                'event_id'       => $validated['event_id'],
+                'event_name'     => $event->event_name ?? null,
+                'relief_type'    => $event->relief_type ?? null,
+                'relief_items'   => $event->relief_items ?? null,
+                'items_received' => $log->items_received,
+                'goods_detail'   => $log->goods_detail,
+                'remarks'        => $log->remarks,
             ],
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
         ]);
 
         return response()->json([
@@ -191,20 +227,40 @@ class StaffScanController extends Controller
     {
         $staffId = auth()->id();
 
-        // ── FIX: stats_only used by the scanner blade to seed counters on load ──
+        // ── stats_only used by the scanner blade to seed counters on load ──
         if ($request->boolean('stats_only')) {
-            $confirmedToday = DistributionLog::where('distributed_by', $staffId)
-                ->whereDate('distributed_at', today())
-                ->count();
+            $eventId = $request->input('event_id');
 
-            // Blocked duplicates are not stored in DB (they're stopped before insert).
-            // The blade tracks new duplicates locally in-session and adds to this base.
+            // When an event is selected, scope to that event (regardless of date).
+            // When no event is selected, fall back to today across all events.
+            $attemptBase = ScanAttempt::where('scanned_by', $staffId)
+                ->when($eventId,
+                    fn($q, $id) => $q->where('event_id', $id),
+                    fn($q)      => $q->whereDate('scanned_at', today())
+                );
+
+            $confirmedFromAttempts  = (clone $attemptBase)->where('result', 'success')->count();
+            $duplicatesFromAttempts = (clone $attemptBase)->where('result', 'duplicate')->count();
+
+            // ScanAttempt only exists from this feature onwards.
+            // Fall back to DistributionLog for historical confirmed counts.
+            if ($confirmedFromAttempts === 0) {
+                $confirmedToday = DistributionLog::where('distributed_by', $staffId)
+                    ->when($eventId,
+                        fn($q, $id) => $q->where('event_id', $id),
+                        fn($q)      => $q->whereDate('distributed_at', today())
+                    )
+                    ->count();
+            } else {
+                $confirmedToday = $confirmedFromAttempts;
+            }
+
             return response()->json([
                 'confirmed_today'  => $confirmedToday,
-                'duplicates_today' => 0,
+                'duplicates_today' => $duplicatesFromAttempts,
             ]);
         }
-        // ── END FIX ───────────────────────────────────────────────────────────
+        // ── END stats_only ────────────────────────────────────────────────
 
         $search   = $request->input('search');
         $eventId  = $request->input('event_id');

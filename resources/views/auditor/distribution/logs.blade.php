@@ -31,6 +31,10 @@
             --purple-dark:   #3D1F8A;
             --purple-pale:   #F5F0FF;
             --purple-border: #D8CBF5;
+            --sky:           #0EA5E9;
+            --sky-dark:      #0369A1;
+            --sky-pale:      #F0F9FF;
+            --sky-border:    #BAE6FD;
             --sidebar-w:     260px;
         }
 
@@ -99,11 +103,11 @@
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
 
-        /* ── Purple auditor badge (matches dashboard & family profile) ── */
-        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--purple-pale); border: 1px solid var(--purple-border); border-radius: 4px; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--purple); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--purple-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: #7C5CBF; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* ── Sky blue auditor badge (matches audit trail) ── */
+        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--sky-pale); border: 1px solid var(--sky-border); border-radius: 4px; flex-shrink: 0; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--sky); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); line-height: 1.2; }
+        .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
@@ -328,7 +332,6 @@
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
-        <!-- Purple auditor badge — matches dashboard & family profile -->
         <div class="header-user-badge">
             <div class="user-avatar">A</div>
             <div>
@@ -361,16 +364,6 @@
 
         <hr class="sidebar-sep">
         <div class="nav-section-label">View-Only Access</div>
-
-        <a href="{{ route('auditor.family-profiles') }}" class="nav-item" onclick="closeSidebar()">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-            </svg>
-            Family Profiles
-            <span class="nav-badge-view">View</span>
-        </a>
 
         <!-- Active: Distribution Logs -->
         <a href="{{ route('auditor.distribution.logs') }}" class="nav-item active" onclick="closeSidebar()">
@@ -405,7 +398,7 @@
             <span class="nav-badge-view">View</span>
         </a>
 
-        <a href="#" class="nav-item" onclick="closeSidebar()">
+        <a href="{{ route('auditor.audit.trail') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"/>
                 <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
@@ -555,7 +548,7 @@
                                             <div style="font-size:11px; color:var(--gray-400); margin-top:2px;">{{ Str::limit($event->description, 50) }}</div>
                                         @endif
                                     </td>
-                                    <td style="font-size:12px; color:var(--gray-600);">{{ $event->relief_type ?? '—' }}</td>
+                                    <td style="font-size:12px; color:var(--gray-600);">{{ is_array($event->relief_type) ? implode(', ', $event->relief_type) : ($event->relief_type ?? '—') }}</td>
                                     <td style="font-size:12px; white-space:nowrap;">
                                         {{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }}
                                     </td>
@@ -571,7 +564,7 @@
                                     </td>
                                     <td>
                                         <button class="btn-view" onclick="openModal(
-                                            '{{ route('auditor.distribution.events.households', $event) }}',
+                                            {{ $event->id }},
                                             '{{ htmlspecialchars(addslashes($event->event_name), ENT_QUOTES) }}',
                                             '{{ ucfirst(strtolower($event->status)) }}'
                                         )">
@@ -587,6 +580,72 @@
                         </tbody>
                     </table>
                 </div>
+
+                {{-- Hidden inline panels — one per event, read by modal JS --}}
+                @foreach($events as $event)
+                    <div class="event-panel" data-id="{{ $event->id }}" style="display:none;">
+                        <div style="margin-bottom:14px;">
+                            <input type="text" class="modal-search-input" placeholder="Search household name, barangay, or serial code…"
+                                style="width:100%;padding:8px 12px;border:1px solid var(--gray-200);border-radius:4px;font-size:13px;font-family:'Open Sans',sans-serif;outline:none;">
+                        </div>
+                        @php $dlogs = $event->logs ?? collect(); @endphp
+                        @if($dlogs->isEmpty())
+                            <div style="text-align:center;padding:40px;color:var(--gray-400);font-size:13px;font-style:italic;">
+                                No households have been distributed to yet for this event.
+                            </div>
+                        @else
+                            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                                <thead>
+                                    <tr style="background:var(--blue);color:#fff;">
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">#</th>
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Household Head</th>
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Barangay</th>
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Serial Code</th>
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Items Received</th>
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Date Distributed</th>
+                                        <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Staff</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($dlogs as $li => $dlog)
+                                        <tr class="modal-hh-row"
+                                            data-search="{{ strtolower(($dlog->household->household_head_name ?? '') . ' ' . ($dlog->household->barangay ?? '') . ' ' . ($dlog->serial_code ?? '')) }}"
+                                            style="border-bottom:1px solid var(--gray-100);">
+                                            <td style="padding:10px 12px;color:var(--gray-400);font-size:12px;">{{ $li + 1 }}</td>
+                                            <td style="padding:10px 12px;font-weight:600;color:var(--blue-dark);">
+                                                {{ $dlog->household->household_head_name ?? '—' }}
+                                            </td>
+                                            <td style="padding:10px 12px;font-size:12px;color:var(--gray-600);">
+                                                {{ $dlog->household->barangay ?? '—' }}
+                                            </td>
+                                            <td style="padding:10px 12px;font-size:12px;font-family:monospace;color:var(--blue);font-weight:700;letter-spacing:.5px;">
+                                                {{ $dlog->serial_code ?? '—' }}
+                                            </td>
+                                            <td style="padding:10px 12px;font-size:12px;color:var(--gray-600);">
+                                                @if(!empty($dlog->items_received) && is_array($dlog->items_received))
+                                                    {{ implode(', ', array_map(fn($k) => ucwords(str_replace('_',' ',$k)), array_keys($dlog->items_received))) }}
+                                                @elseif(!empty($dlog->goods_detail))
+                                                    {{ $dlog->goods_detail }}
+                                                @else
+                                                    —
+                                                @endif
+                                            </td>
+                                            <td style="padding:10px 12px;font-size:12px;white-space:nowrap;">
+                                                {{ $dlog->distributed_at ? \Carbon\Carbon::parse($dlog->distributed_at)->setTimezone('Asia/Manila')->format('M d, Y h:i A') : '—' }}
+                                            </td>
+                                            <td style="padding:10px 12px;font-size:12px;color:var(--gray-600);">
+                                                {{ $dlog->staff->name ?? ('User #' . ($dlog->distributed_by ?? '—')) }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <div style="margin-top:10px;font-size:11px;color:var(--gray-400);text-align:right;">
+                                {{ $dlogs->count() }} household(s) distributed
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
 
                 @if($events->hasPages())
                     <div class="pagination-wrap">
@@ -680,50 +739,35 @@
         document.body.style.overflow = '';
     }
 
-    /* ─── Modal ─── */
-    let currentModalUrl = '';
+    /* ─── Modal — inline data, no fetch needed ─── */
+    const eventPanels = {};
+    document.querySelectorAll('.event-panel').forEach(el => {
+        eventPanels[el.dataset.id] = el.innerHTML;
+    });
 
-    function openModal(url, eventName, status) {
-        currentModalUrl = url;
+    function openModal(eventId, eventName, status) {
         document.getElementById('modalTitle').textContent = eventName;
         document.getElementById('modalSub').textContent   = 'Status: ' + status + ' — Household recipients';
+        document.getElementById('modalBody').innerHTML    = eventPanels[eventId]
+            ?? '<p style="color:var(--gray-400);padding:20px;text-align:center;">No household data available.</p>';
         document.getElementById('modalOverlay').classList.add('active');
         document.body.style.overflow = 'hidden';
-        loadModalContent(url);
-    }
 
-    function loadModalContent(url) {
-        document.getElementById('modalBody').innerHTML = '<div class="modal-loading"><div class="spinner"></div> Loading households…</div>';
-        fetch(url)
-            .then(r => r.text())
-            .then(html => {
-                const doc     = new DOMParser().parseFromString(html, 'text/html');
-                const content = doc.querySelector('.modal-body');
-                document.getElementById('modalBody').innerHTML = content
-                    ? content.innerHTML
-                    : '<p style="color:var(--red);padding:20px;">Could not load content.</p>';
-
-                const btn   = document.getElementById('modalSearchBtn');
-                const input = document.getElementById('modalSearchInput');
-                btn?.addEventListener('click',  () => modalSearch());
-                input?.addEventListener('keydown', e => { if(e.key==='Enter') modalSearch(); });
-            })
-            .catch(() => {
-                document.getElementById('modalBody').innerHTML = '<p style="color:var(--red);padding:20px;">Error loading households. Please try again.</p>';
+        // Wire up inline search filtering
+        const input = document.querySelector('#modalBody .modal-search-input');
+        if (input) {
+            input.addEventListener('input', function() {
+                const q = this.value.toLowerCase();
+                document.querySelectorAll('#modalBody .modal-hh-row').forEach(row => {
+                    row.style.display = row.dataset.search.includes(q) ? '' : 'none';
+                });
             });
-    }
-
-    function modalSearch() {
-        const search = document.getElementById('modalSearchInput')?.value ?? '';
-        const url    = new URL(currentModalUrl, window.location.origin);
-        url.searchParams.set('search', search);
-        loadModalContent(url.toString());
+        }
     }
 
     function closeModal() {
         document.getElementById('modalOverlay').classList.remove('active');
         document.body.style.overflow = '';
-        currentModalUrl = '';
     }
 
     document.addEventListener('keydown', e => {

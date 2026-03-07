@@ -24,6 +24,10 @@
             --purple-dark:#3D1F8A;
             --purple-pale:#F5F0FF;
             --purple-border:#D8CBF5;
+            --sky:        #0EA5E9;
+            --sky-dark:   #0369A1;
+            --sky-pale:   #F0F9FF;
+            --sky-border: #BAE6FD;
             --sidebar-w:  260px;
         }
 
@@ -161,14 +165,14 @@
             align-items: center;
             gap: 10px;
             padding: 8px 14px;
-            background: var(--purple-pale);
-            border: 1px solid var(--purple-border);
+            background: var(--sky-pale);
+            border: 1px solid var(--sky-border);
             border-radius: 4px;
         }
         .user-avatar {
             width: 32px; height: 32px;
             border-radius: 50%;
-            background: var(--purple);
+            background: var(--sky);
             display: flex; align-items: center; justify-content: center;
             color: var(--white);
             font-weight: 700; font-size: 13px;
@@ -176,10 +180,10 @@
         }
         .user-name {
             font-size: 13px; font-weight: 600;
-            color: var(--purple-dark); line-height: 1.2;
+            color: var(--sky-dark); line-height: 1.2;
         }
         .user-role {
-            font-size: 10px; color: #7C5CBF;
+            font-size: 10px; color: #0284C7;
             text-transform: uppercase; letter-spacing: 0.5px;
         }
 
@@ -658,16 +662,6 @@
         <hr class="sidebar-sep">
         <div class="nav-section-label">View-Only Access</div>
 
-        <a href="{{ route('auditor.family-profiles') }}" class="nav-item" onclick="closeSidebar()">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-            </svg>
-            Family Profiles
-            <span class="nav-badge-view">View</span>
-        </a>
-
         <a href="{{ route('auditor.distribution.logs') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
@@ -700,7 +694,7 @@
             <span class="nav-badge-view">View</span>
         </a>
 
-        <a href="#" class="nav-item" onclick="closeSidebar()">
+        <a href="{{ route('auditor.audit.trail') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"/>
                 <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
@@ -799,7 +793,7 @@
                 <div class="qnav-title">Reports &amp; Exports</div>
                 <div class="qnav-desc">View beneficiary masterlist and distribution summaries</div>
             </a>
-            <a href="#" class="qnav-card">
+            <a href="{{ route('auditor.audit.trail') }}" class="qnav-card">
                 <span class="qnav-readonly">Read Only</span>
                 <div class="qnav-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

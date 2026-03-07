@@ -87,10 +87,12 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; flex-shrink: 0; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ─── PROFILE BADGE — ORANGE ─── */
+        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--orange-pale); border: 1px solid var(--orange); border-radius: 4px; flex-shrink: 0; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--orange); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--gray-800); line-height: 1.2; }
+        .user-role { font-size: 10px; color: var(--orange); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
@@ -331,7 +333,7 @@
         <div class="header-user-badge">
             <div class="user-avatar">E</div>
             <div>
-                <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
+                <div class="user-name">Test Encoder</div>
                 <div class="user-role">Data Entry Access</div>
             </div>
         </div>
@@ -560,11 +562,161 @@
                 </div>
             </div>
 
-            {{-- ── SECTION 4: Family Members ── --}}
+            {{-- ── SECTION 4: Nuclear Family ── --}}
+            <div class="form-section" id="nuclear-family-section" style="display:none;">
+                <div class="form-section-header">
+                    <div class="ca-dot"></div>
+                    <div class="form-section-title">Section 4 — Nuclear Family</div>
+                    <div class="form-section-sub">Based on civil status of household head</div>
+                </div>
+                <div class="form-section-body">
+
+                    {{-- Married: Spouse --}}
+                    <div id="spouse-fields" style="display:none;">
+                        <div class="form-label" style="margin-bottom:12px; font-size:12px; color:var(--blue-dark); font-weight:700;">Spouse Information</div>
+                        <div class="form-row cols-1" style="margin-bottom:14px;">
+                            <div class="form-group">
+                                <label class="form-label">Spouse's Full Name (Last, First, MI) <span class="req">*</span></label>
+                                <input type="text" name="nuclear[spouse][full_name]" id="spouse-name" placeholder="e.g. Dela Cruz, Maria A.">
+                            </div>
+                        </div>
+                        <div class="form-row cols-4" style="margin-bottom:14px;">
+                            <div class="form-group">
+                                <label class="form-label">Sex <span class="req">*</span></label>
+                                <select name="nuclear[spouse][sex]" id="spouse-sex">
+                                    <option value="">— Select —</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date of Birth <span class="req">*</span></label>
+                                <input type="date" name="nuclear[spouse][birthday]" id="spouse-bday" max="{{ date('Y-m-d') }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Educational Attainment <span class="opt">(optional)</span></label>
+                                <select name="nuclear[spouse][educational_attainment]">
+                                    <option value="">— Select —</option>
+                                    <option value="No Schooling">No Schooling</option>
+                                    <option value="Elementary">Elementary</option>
+                                    <option value="High School">High School</option>
+                                    <option value="Vocational">Vocational</option>
+                                    <option value="College">College</option>
+                                    <option value="Postgraduate">Postgraduate</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Occupation <span class="opt">(optional)</span></label>
+                                <input type="text" name="nuclear[spouse][occupation]" placeholder="e.g. Teacher, Vendor, Unemployed">
+                            </div>
+                        </div>
+                        <div class="form-row cols-2" style="margin-bottom:20px;">
+                            <div class="form-group">
+                                <label class="form-label">PhilHealth Number <span class="opt">(optional)</span></label>
+                                <input type="text" name="nuclear[spouse][philhealth_no]" placeholder="e.g. 12-345678901-2">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Flags</label>
+                                <div class="member-checkbox-row">
+                                    <label class="member-checkbox-item">
+                                        <input type="checkbox" name="nuclear[spouse][is_pwd]" value="1">
+                                        Person with Disability (PWD)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Widowed: Deceased Spouse --}}
+                    <div id="deceased-spouse-fields" style="display:none;">
+                        <div class="form-label" style="margin-bottom:12px; font-size:12px; color:var(--blue-dark); font-weight:700;">Deceased Spouse Information</div>
+                        <div class="form-row cols-1" style="margin-bottom:14px;">
+                            <div class="form-group">
+                                <label class="form-label">Deceased Spouse's Full Name (Last, First, MI) <span class="req">*</span></label>
+                                <input type="text" name="nuclear[deceased_spouse][full_name]" id="deceased-name" placeholder="e.g. Dela Cruz, Pedro A.">
+                            </div>
+                        </div>
+                        <div class="form-row cols-4" style="margin-bottom:14px;">
+                            <div class="form-group">
+                                <label class="form-label">Sex <span class="req">*</span></label>
+                                <select name="nuclear[deceased_spouse][sex]" id="deceased-sex">
+                                    <option value="">— Select —</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date of Birth <span class="req">*</span></label>
+                                <input type="date" name="nuclear[deceased_spouse][birthday]" id="deceased-bday" max="{{ date('Y-m-d') }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Educational Attainment <span class="opt">(optional)</span></label>
+                                <select name="nuclear[deceased_spouse][educational_attainment]">
+                                    <option value="">— Select —</option>
+                                    <option value="No Schooling">No Schooling</option>
+                                    <option value="Elementary">Elementary</option>
+                                    <option value="High School">High School</option>
+                                    <option value="Vocational">Vocational</option>
+                                    <option value="College">College</option>
+                                    <option value="Postgraduate">Postgraduate</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Occupation <span class="opt">(optional)</span></label>
+                                <input type="text" name="nuclear[deceased_spouse][occupation]" placeholder="e.g. Farmer, Driver, Unemployed">
+                            </div>
+                        </div>
+                        <div class="form-row cols-2" style="margin-bottom:20px;">
+                            <div class="form-group">
+                                <label class="form-label">PhilHealth Number <span class="opt">(optional)</span></label>
+                                <input type="text" name="nuclear[deceased_spouse][philhealth_no]" placeholder="e.g. 12-345678901-2">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Flags</label>
+                                <div class="member-checkbox-row">
+                                    <label class="member-checkbox-item">
+                                        <input type="checkbox" name="nuclear[deceased_spouse][is_pwd]" value="1">
+                                        Person with Disability (PWD)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Separated: custody checkbox --}}
+                    <div id="separated-fields" style="display:none;">
+                        <label class="checkbox-item" style="max-width:420px; margin-bottom:20px;">
+                            <input type="checkbox" id="has-custody-child" onchange="toggleCustodyChildren()">
+                            <div class="checkbox-item-label">
+                                Has child/ren in custody
+                                <small>Check if the household head has children under his/her care</small>
+                            </div>
+                        </label>
+                    </div>
+
+                    {{-- Children (shown for Married, Widowed, or Separated w/ custody) --}}
+                    <div id="children-area" style="display:none;">
+                        <div style="border-top: 1px solid var(--gray-200); padding-top: 18px; margin-top: 4px;">
+                            <div class="form-label" style="margin-bottom:12px; font-size:12px; color:var(--blue-dark); font-weight:700;">Children</div>
+                            <div id="children-container"></div>
+                            <button type="button" onclick="addChild()" class="btn-add-member">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                                Add Child
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            {{-- ── SECTION 5: Family Members ── --}}
             <div class="form-section">
                 <div class="form-section-header">
                     <div class="ca-dot"></div>
-                    <div class="form-section-title">Section 4 — Family Members</div>
+                    <div class="form-section-title">Section 5 — Other Family Members</div>
                     <div class="form-section-sub">Excluding household head — can be added or updated later</div>
                 </div>
                 <div class="form-section-body">
@@ -641,7 +793,6 @@
        Province → Municipality → Barangay
        ════════════════════════════════════════════ */
 
-    // Location data (inline — mirrors your ph-locations.js)
     const locationData = {
         "Cavite": {
             "Alfonso":                    [],
@@ -660,16 +811,12 @@
             "Maragondon":                 [],
             "Mendez":                     [],
             "Naic": [
-                "Bancaan","Biga","Bucana Malaki","Bucana Sasahan","Calubcob",
-                "Gomez-Zamora (Barangay 1 Poblacion)","Halang","Humbac",
-                "Ibayo Silangan","Ilag","Labac","Latoria",
-                "Luzviminda (Barangay 5 Poblacion)","Mabolo","Makina",
-                "Malainen Bago","Malainen Luma","Molino","Muzon",
-                "Palangue 1 & 2 (Barangay 2 Poblacion)",
-                "Palangue 3 & Kanluran (Barangay 3 Poblacion)",
-                "Sabang","San Roque","Santulan (Barangay 4 Poblacion)",
-                "Sapa","Timalan Balsahan","Timalan Concepcion",
-                "Toclong","Tulay Silangan","Tulay Kanluran"
+                "Bagong Kalsada","Balsahan","Bancaan","Bucana Malaki","Bucana Sasahan",
+                "Calubcob","Capt. C. Nazareno (Poblacion)","Gombalza (Poblacion)",
+                "Halang","Humbac","Ibayo Estacion","Ibayo Silangan","Kanluran Rizal",
+                "Latoria","Labac","Mabolo","Malainen Bago","Malainen Luma","Makina",
+                "Molino","Munting Mapino","Muzon","Palangue 2 & 3","Palangue Central",
+                "Sabang","San Roque","Santulan","Sapa","Timalan Balsahan","Timalan Concepcion"
             ],
             "Noveleta":   [],
             "Rosario":    [],
@@ -703,7 +850,6 @@
         }
     };
 
-    // All provinces list
     const allProvinces = [
         "Abra","Agusan del Norte","Agusan del Sur","Aklan","Albay","Antique","Apayao","Aurora",
         "Basilan","Bataan","Batanes","Batangas","Benguet","Biliran","Bohol","Bukidnon","Bulacan",
@@ -737,7 +883,6 @@
         const munHint   = document.getElementById('mun-hint');
         const brgyHint  = document.getElementById('brgy-hint');
 
-        // Reset downstream
         munSelect.innerHTML  = '<option value="">— Select Municipality —</option>';
         brgySelect.innerHTML = '<option value="">— Select Barangay —</option>';
         munSelect.disabled   = true;
@@ -787,7 +932,6 @@
         }
     }
 
-    // Initialize dropdowns on page load (populate provinces + restore old() values)
     document.addEventListener('DOMContentLoaded', function () {
         const oldProvince = "{{ old('province', '') }}";
         const oldMun      = "{{ old('municipality', '') }}";
@@ -795,7 +939,6 @@
 
         populateSelect(document.getElementById('province'), allProvinces, '— Select Province —', oldProvince || 'Cavite');
 
-        // If restoring old values after validation failure
         if (oldProvince) {
             onProvinceChange();
             if (oldMun) {
@@ -806,13 +949,169 @@
                 }
             }
         } else {
-            // Default: pre-select Cavite → Naic
             document.getElementById('province').value = 'Cavite';
             onProvinceChange();
             document.getElementById('municipality').value = 'Naic';
             onMunicipalityChange();
         }
     });
+
+    /* ─── Nuclear Family ─── */
+    const civilStatusSelect = document.querySelector('select[name="civil_status"]');
+    civilStatusSelect.addEventListener('change', onCivilStatusChange);
+
+    function onCivilStatusChange() {
+        const val = civilStatusSelect.value;
+        const section          = document.getElementById('nuclear-family-section');
+        const spouseFields     = document.getElementById('spouse-fields');
+        const deceasedFields   = document.getElementById('deceased-spouse-fields');
+        const separatedFields  = document.getElementById('separated-fields');
+        const childrenArea     = document.getElementById('children-area');
+        const custodyCheck     = document.getElementById('has-custody-child');
+
+        // Hide everything first
+        section.style.display         = 'none';
+        spouseFields.style.display    = 'none';
+        deceasedFields.style.display  = 'none';
+        separatedFields.style.display = 'none';
+        childrenArea.style.display    = 'none';
+
+        // Clear required attrs
+        document.getElementById('spouse-name').removeAttribute('required');
+        document.getElementById('spouse-bday').removeAttribute('required');
+        document.getElementById('deceased-name').removeAttribute('required');
+        document.getElementById('deceased-bday').removeAttribute('required');
+
+        if (val === 'Married') {
+            section.style.display        = 'block';
+            spouseFields.style.display   = 'block';
+            childrenArea.style.display   = 'block';
+            document.getElementById('spouse-name').setAttribute('required', 'required');
+            document.getElementById('spouse-bday').setAttribute('required', 'required');
+        } else if (val === 'Widowed') {
+            section.style.display         = 'block';
+            deceasedFields.style.display  = 'block';
+            childrenArea.style.display    = 'block';
+            document.getElementById('deceased-name').setAttribute('required', 'required');
+            document.getElementById('deceased-bday').setAttribute('required', 'required');
+        } else if (val === 'Separated') {
+            section.style.display          = 'block';
+            separatedFields.style.display  = 'block';
+            custodyCheck.checked           = false;
+            childrenArea.style.display     = 'none';
+        }
+        // Single → section stays hidden
+    }
+
+    function toggleCustodyChildren() {
+        const checked     = document.getElementById('has-custody-child').checked;
+        const childrenArea = document.getElementById('children-area');
+        childrenArea.style.display = checked ? 'block' : 'none';
+        if (!checked) {
+            document.getElementById('children-container').innerHTML = '';
+            childIndex = 0;
+        }
+    }
+
+    // Re-run on page load if old() value exists (validation failed)
+    document.addEventListener('DOMContentLoaded', function () {
+        const oldStatus = "{{ old('civil_status', '') }}";
+        if (oldStatus) {
+            civilStatusSelect.value = oldStatus;
+            onCivilStatusChange();
+        }
+    });
+
+    /* ─── Children ─── */
+    let childIndex = 0;
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    function addChild() {
+        const container = document.getElementById('children-container');
+        const i = childIndex;
+        const card = document.createElement('div');
+        card.className = 'member-card';
+        card.id = `child-card-${i}`;
+
+        card.innerHTML = `
+            <div class="member-card-header">
+                <div class="member-card-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
+                    </svg>
+                    Child
+                </div>
+                <button type="button" class="btn-remove-member" onclick="document.getElementById('child-card-${i}').remove()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                    Remove
+                </button>
+            </div>
+            <div class="member-card-body">
+                <div class="form-row cols-1">
+                    <div class="form-group">
+                        <label class="form-label">Full Name (Last, First, MI) <span class="req">*</span></label>
+                        <input type="text" name="nuclear[children][${i}][full_name]" required placeholder="e.g. Dela Cruz, Jose A.">
+                    </div>
+                </div>
+                <div class="form-row cols-4">
+                    <div class="form-group">
+                        <label class="form-label">Son / Daughter <span class="req">*</span></label>
+                        <select name="nuclear[children][${i}][relationship]" required>
+                            <option value="">— Select —</option>
+                            <option value="Son">Son (Male)</option>
+                            <option value="Daughter">Daughter (Female)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date of Birth <span class="req">*</span></label>
+                        <input type="date" name="nuclear[children][${i}][birthday]" required max="${todayStr}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Educational Attainment <span class="opt">(optional)</span></label>
+                        <select name="nuclear[children][${i}][educational_attainment]">
+                            <option value="">— Select —</option>
+                            <option value="No Schooling">No Schooling</option>
+                            <option value="Elementary">Elementary</option>
+                            <option value="High School">High School</option>
+                            <option value="Vocational">Vocational</option>
+                            <option value="College">College</option>
+                            <option value="Postgraduate">Postgraduate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Occupation <span class="opt">(optional)</span></label>
+                        <input type="text" name="nuclear[children][${i}][occupation]" placeholder="e.g. Student, Unemployed">
+                    </div>
+                </div>
+                <div class="form-row cols-2">
+                    <div class="form-group">
+                        <label class="form-label">PhilHealth Number <span class="opt">(optional)</span></label>
+                        <input type="text" name="nuclear[children][${i}][philhealth_no]" placeholder="e.g. 12-345678901-2">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Flags</label>
+                        <div class="member-checkbox-row">
+                            <label class="member-checkbox-item">
+                                <input type="checkbox" name="nuclear[children][${i}][is_pwd]" value="1">
+                                Person with Disability (PWD)
+                            </label>
+                            <label class="member-checkbox-item">
+                                <input type="checkbox" name="nuclear[children][${i}][is_student]" value="1">
+                                Currently a Student
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(card);
+        childIndex++;
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
 
     /* ─── Family Members ─── */
     let memberIndex = 0;

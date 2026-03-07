@@ -44,7 +44,10 @@ class AdminDistributionEventController extends Controller
     {
         $validated = $request->validate([
             'event_name'          => 'required|string|max:255',
-            'relief_type'         => 'required|string|max:255',
+
+            // the quick-create view may send multiple types
+            'relief_type'         => ['required', 'array', 'min:1'],
+            'relief_type.*'       => ['required', 'string', 'max:255'],
 
             // ── FIX 1: array because blade sends target_barangay[] ──
             'target_barangay'     => 'required|array|min:1',
@@ -65,9 +68,14 @@ class AdminDistributionEventController extends Controller
         // ── FIX 1: join selected barangays into comma-separated string ──
         $targetBarangay = implode(', ', $validated['target_barangay']);
 
+        // if relief_type is an array, join it to a readable string
+        $reliefType = is_array($validated['relief_type'])
+            ? implode(', ', $validated['relief_type'])
+            : $validated['relief_type'];
+
         $event = DistributionEvent::create([
             'event_name'      => $validated['event_name'],
-            'relief_type'     => $validated['relief_type'],
+            'relief_type'     => $reliefType,
             'target_barangay' => $targetBarangay,
             'event_date'      => $validated['event_date'] ?? now()->toDateString(),
             'description'     => $validated['goods_detail'] ?? null,  // FIX 4: goods_detail → description
@@ -77,15 +85,12 @@ class AdminDistributionEventController extends Controller
             'created_by'      => auth()->id(),
         ]);
 
-        AuditLog::create([
-            'user_id'    => auth()->id(),
-            'user_name'  => auth()->user()->name,
-            'action'     => 'created',
-            'model'      => 'DistributionEvent',
-            'record_id'  => $event->id,
-            'new_values' => $event->toArray(),
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
+        AuditLog::log('created_distribution_event', [
+            'model'         => 'DistributionEvent',
+            'record_id'     => $event->id,
+            'affected_name' => $event->event_name,
+            'description'   => 'Created distribution event "' . $event->event_name . '"',
+            'new_values'    => $event->toArray(),
         ]);
 
         return redirect()->route('admin.distribution.logs')
@@ -103,15 +108,12 @@ class AdminDistributionEventController extends Controller
 
         $event->update(['status' => $validated['status']]);
 
-        AuditLog::create([
-            'user_id'    => auth()->id(),
-            'user_name'  => auth()->user()->name,
-            'action'     => 'updated_status',
-            'model'      => 'DistributionEvent',
-            'record_id'  => $event->id,
-            'new_values' => ['status' => $validated['status']],
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
+        AuditLog::log('updated_event_status', [
+            'model'         => 'DistributionEvent',
+            'record_id'     => $event->id,
+            'affected_name' => $event->event_name,
+            'description'   => 'Changed status of "' . $event->event_name . '" to ' . $validated['status'],
+            'new_values'    => ['status' => $validated['status']],
         ]);
 
         return back()->with('success', "Event status changed to: {$validated['status']}");
@@ -141,6 +143,14 @@ class AdminDistributionEventController extends Controller
             'started_at' => now(),
         ]);
 
+        AuditLog::log('started_distribution_event', [
+            'model'         => 'DistributionEvent',
+            'record_id'     => $event->id,
+            'affected_name' => $event->event_name,
+            'description'   => 'Started distribution event "' . $event->event_name . '"',
+            'new_values'    => ['status' => 'ongoing', 'started_at' => now()],
+        ]);
+
         return back()->with('success', 'Event has been started!');
     }
 
@@ -153,6 +163,14 @@ class AdminDistributionEventController extends Controller
         $event->update([
             'status'   => 'completed',
             'ended_at' => now(),
+        ]);
+
+        AuditLog::log('completed_distribution_event', [
+            'model'         => 'DistributionEvent',
+            'record_id'     => $event->id,
+            'affected_name' => $event->event_name,
+            'description'   => 'Marked distribution event "' . $event->event_name . '" as completed',
+            'new_values'    => ['status' => 'completed', 'ended_at' => now()],
         ]);
 
         return back()->with('success', 'Event has been completed!');
@@ -172,6 +190,14 @@ class AdminDistributionEventController extends Controller
             'status'              => 'cancelled',
             'cancelled_at'        => now(),
             'cancellation_reason' => $request->cancellation_reason,
+        ]);
+
+        AuditLog::log('cancelled_distribution_event', [
+            'model'         => 'DistributionEvent',
+            'record_id'     => $event->id,
+            'affected_name' => $event->event_name,
+            'description'   => 'Cancelled event "' . $event->event_name . '": ' . $request->cancellation_reason,
+            'new_values'    => ['status' => 'cancelled', 'cancellation_reason' => $request->cancellation_reason],
         ]);
 
         return back()->with('success', 'Event has been cancelled.');

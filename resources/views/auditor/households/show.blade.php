@@ -26,6 +26,14 @@
             --gray-400:   #9AA3B0;
             --gray-600:   #5A6372;
             --gray-800:   #2C3340;
+            --purple:     #5B3FA6;
+            --purple-dark:#3D1F8A;
+            --purple-pale:#F5F0FF;
+            --purple-border:#D8CBF5;
+            --sky:        #0EA5E9;
+            --sky-dark:   #0369A1;
+            --sky-pale:   #F0F9FF;
+            --sky-border: #BAE6FD;
             --sidebar-w:  260px;
         }
 
@@ -73,12 +81,11 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; flex-shrink: 0; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
+        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--sky-pale); border: 1px solid var(--sky-border); border-radius: 4px; flex-shrink: 0; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--sky); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); line-height: 1.2; }
+        .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* ─── READ-ONLY BADGE ─── */
         .readonly-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 3px; font-size: 11px; font-weight: 700; color: #92400E; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; }
         .readonly-badge svg { width: 12px; height: 12px; }
 
@@ -112,7 +119,6 @@
         .back-btn:hover { background: var(--blue-pale); }
         .back-btn svg { width: 14px; height: 14px; }
 
-        /* ─── HERO IDENTITY CARD ─── */
         .household-hero { background: var(--white); border: 1px solid var(--gray-200); border-top: 4px solid var(--blue); padding: 24px 28px; display: flex; align-items: center; gap: 24px; margin-bottom: 20px; flex-wrap: wrap; }
         .hero-avatar { width: 64px; height: 64px; border-radius: 4px; background: var(--blue-pale); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .hero-avatar svg { width: 30px; height: 30px; color: var(--blue); }
@@ -178,36 +184,12 @@
         .member-name { font-weight: 600; color: var(--blue-dark); }
         .no-members { padding: 32px; text-align: center; color: var(--gray-400); font-style: italic; font-size: 13px; }
 
-        /* ─── QR CARD ─── */
-        .qr-card { padding: 24px; text-align: center; }
-        .qr-frame { display: inline-block; border: 2px solid var(--blue-pale); padding: 12px; background: var(--white); margin-bottom: 14px; }
-        .qr-frame img { width: 180px; height: 180px; display: block; }
-        .qr-serial { font-family: monospace; font-size: 15px; font-weight: 700; color: var(--blue); letter-spacing: 1.5px; margin-bottom: 4px; }
-        .qr-name { font-size: 12px; color: var(--gray-600); margin-bottom: 3px; }
-        .qr-meta { font-size: 11px; color: var(--gray-400); line-height: 1.6; }
-        .qr-placeholder { padding: 32px 20px; text-align: center; background: var(--gray-50); border: 2px dashed var(--gray-200); }
-        .qr-placeholder-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
-        .qr-placeholder-icon svg { width: 22px; height: 22px; color: var(--gray-400); }
-        .qr-placeholder p { font-size: 12px; color: var(--gray-400); margin-bottom: 4px; }
-
-        /* ─── READ-ONLY NOTICE CARD (replaces Actions) ─── */
-        .readonly-notice {
-            padding: 20px;
-            background: #FFFBEB;
-            border: 1px dashed #FDE68A;
-            display: flex; flex-direction: column; align-items: center;
-            gap: 10px; text-align: center;
-        }
-        .readonly-notice-icon {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: #FEF3C7;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .readonly-notice { padding: 20px; background: #FFFBEB; border: 1px dashed #FDE68A; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+        .readonly-notice-icon { width: 40px; height: 40px; border-radius: 50%; background: #FEF3C7; display: flex; align-items: center; justify-content: center; }
         .readonly-notice-icon svg { width: 20px; height: 20px; color: #D97706; }
         .readonly-notice-title { font-size: 13px; font-weight: 700; color: #92400E; }
         .readonly-notice-sub { font-size: 11px; color: #B45309; line-height: 1.5; }
 
-        /* ─── RECORD INFO CARD ─── */
         .record-info-stack { display: flex; flex-direction: column; gap: 0; }
         .record-info-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid var(--gray-100); gap: 12px; }
         .record-info-row:last-child { border-bottom: none; }
@@ -231,10 +213,7 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
-        @media (max-width: 1100px) {
-            .detail-layout { grid-template-columns: 1fr; }
-            .detail-side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        }
+        @media (max-width: 1100px) { .detail-layout { grid-template-columns: 1fr; } .detail-side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } }
         @media (max-width: 900px) {
             .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
             .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
@@ -255,9 +234,7 @@
             .main-content { padding: 20px 16px; }
             .detail-side { grid-template-columns: 1fr; }
         }
-        @media (max-width: 720px) {
-            .info-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 720px) { .info-grid { grid-template-columns: 1fr; } }
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
@@ -326,10 +303,10 @@
             Read-Only Access
         </span>
         <div class="header-user-badge">
-            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+            <div class="user-avatar">A</div>
             <div>
-                <div class="user-name">{{ auth()->user()->name }}</div>
-                <div class="user-role">Auditor</div>
+                <div class="user-name">Auditor</div>
+                <div class="user-role">View-Only Access</div>
             </div>
         </div>
     </header>
@@ -382,7 +359,6 @@
 
         @php $scanCount = $household->distributionLogs->count(); @endphp
 
-        {{-- Hero Identity Card --}}
         <div class="household-hero">
             <div class="hero-avatar">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -441,126 +417,53 @@
         </div>
 
         <div class="detail-layout">
-
             <div class="detail-main">
-
-                {{-- Household Head Info --}}
                 <div class="section-card">
-                    <div class="section-header">
-                        <div class="ca-dot"></div>
-                        <div class="section-title">Household Head Information</div>
-                    </div>
+                    <div class="section-header"><div class="ca-dot"></div><div class="section-title">Household Head Information</div></div>
                     <div class="section-body">
                         <div class="info-grid">
-                            <div class="info-item">
-                                <div class="info-label">Full Name</div>
-                                <div class="info-value">{{ $household->household_head_name }}</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Sex</div>
-                                <div class="info-value">{{ $household->sex }}</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Birthday</div>
-                                <div class="info-value">{{ $household->birthday->format('F d, Y') }}</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Age</div>
-                                <div class="info-value">{{ $household->age }} years old</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Civil Status</div>
-                                <div class="info-value">{{ $household->civil_status }}</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Contact Number</div>
-                                <div class="info-value">
-                                    @if($household->contact_number) {{ $household->contact_number }}
-                                    @else <em>N/A</em> @endif
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Listahanan ID</div>
-                                <div class="info-value">
-                                    @if($household->listahanan_id) <span class="mono">{{ $household->listahanan_id }}</span>
-                                    @else <em>Not enrolled</em> @endif
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Total Household Members</div>
-                                <div class="info-value">{{ $household->total_members }} person(s)</div>
-                            </div>
+                            <div class="info-item"><div class="info-label">Full Name</div><div class="info-value">{{ $household->household_head_name }}</div></div>
+                            <div class="info-item"><div class="info-label">Sex</div><div class="info-value">{{ $household->sex }}</div></div>
+                            <div class="info-item"><div class="info-label">Birthday</div><div class="info-value">{{ $household->birthday->format('F d, Y') }}</div></div>
+                            <div class="info-item"><div class="info-label">Age</div><div class="info-value">{{ $household->age }} years old</div></div>
+                            <div class="info-item"><div class="info-label">Civil Status</div><div class="info-value">{{ $household->civil_status }}</div></div>
+                            <div class="info-item"><div class="info-label">Contact Number</div><div class="info-value">@if($household->contact_number){{ $household->contact_number }}@else<em>N/A</em>@endif</div></div>
+                            <div class="info-item"><div class="info-label">Listahanan ID</div><div class="info-value">@if($household->listahanan_id)<span class="mono">{{ $household->listahanan_id }}</span>@else<em>Not enrolled</em>@endif</div></div>
+                            <div class="info-item"><div class="info-label">Total Household Members</div><div class="info-value">{{ $household->total_members }} person(s)</div></div>
                         </div>
                     </div>
                 </div>
-
-                {{-- Address --}}
                 <div class="section-card">
-                    <div class="section-header">
-                        <div class="ca-dot"></div>
-                        <div class="section-title">Address</div>
-                    </div>
+                    <div class="section-header"><div class="ca-dot"></div><div class="section-title">Address</div></div>
                     <div class="section-body">
                         <div class="address-block">
-                            <div class="address-line1">
-                                @if($household->house_number){{ $household->house_number }}, @endif
-                                {{ $household->street_purok }}
-                            </div>
-                            <div class="address-line2">
-                                {{ $household->barangay }}, {{ $household->municipality }}, {{ $household->province }}
-                            </div>
+                            <div class="address-line1">@if($household->house_number){{ $household->house_number }}, @endif{{ $household->street_purok }}</div>
+                            <div class="address-line2">{{ $household->barangay }}, {{ $household->municipality }}, {{ $household->province }}</div>
                         </div>
                     </div>
                 </div>
-
-                {{-- DSWD / Sector Flags --}}
                 <div class="section-card">
-                    <div class="section-header">
-                        <div class="ca-dot"></div>
-                        <div class="section-title">DSWD / Listahanan Sector Flags</div>
-                    </div>
+                    <div class="section-header"><div class="ca-dot"></div><div class="section-title">DSWD / Listahanan Sector Flags</div></div>
                     <div class="section-body">
                         @php $hasAnyFlag = $household->is_4ps_beneficiary || $household->is_pwd || $household->is_senior || $household->is_solo_parent; @endphp
                         @if($hasAnyFlag)
                             <div class="sector-flags">
-                                @if($household->is_4ps_beneficiary)
-                                    <span class="sector-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>4Ps Beneficiary</span>
-                                @endif
-                                @if($household->is_pwd)
-                                    <span class="sector-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Has PWD Member</span>
-                                @endif
-                                @if($household->is_senior)
-                                    <span class="sector-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Has Senior Citizen</span>
-                                @endif
-                                @if($household->is_solo_parent)
-                                    <span class="sector-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Has Solo Parent</span>
-                                @endif
+                                @if($household->is_4ps_beneficiary)<span class="sector-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>4Ps Beneficiary</span>@endif
+                                @if($household->is_pwd)<span class="sector-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Has PWD Member</span>@endif
+                                @if($household->is_senior)<span class="sector-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Has Senior Citizen</span>@endif
+                                @if($household->is_solo_parent)<span class="sector-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Has Solo Parent</span>@endif
                             </div>
                         @else
                             <span class="sector-none">No special sector flags recorded.</span>
                         @endif
                     </div>
                 </div>
-
-                {{-- Family Members --}}
                 <div class="section-card">
-                    <div class="section-header">
-                        <div class="ca-dot"></div>
-                        <div class="section-title">Family Members ({{ $household->members->count() }})</div>
-                    </div>
+                    <div class="section-header"><div class="ca-dot"></div><div class="section-title">Family Members ({{ $household->members->count() }})</div></div>
                     @if($household->members->count() > 0)
                         <div class="table-wrapper">
                             <table class="members-table">
-                                <thead>
-                                    <tr>
-                                        <th>Full Name</th>
-                                        <th>Relationship</th>
-                                        <th>Sex / Age</th>
-                                        <th>Birthday</th>
-                                        <th>Occupation</th>
-                                        <th>Flags</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr><th>Full Name</th><th>Relationship</th><th>Sex / Age</th><th>Birthday</th><th>Occupation</th><th>Flags</th></tr></thead>
                                 <tbody>
                                     @foreach($household->members as $member)
                                         <tr>
@@ -568,12 +471,18 @@
                                             <td>{{ $member->relationship }}</td>
                                             <td>{{ $member->sex }}, {{ $member->age }} y/o</td>
                                             <td>{{ $member->birthday->format('M d, Y') }}</td>
-                                            <td>{{ $member->occupation ?? '—' }}</td>
+                                            <td>{{ $member->occupation ?? '&mdash;' }}</td>
                                             <td>
                                                 <div style="display:flex;gap:4px;flex-wrap:wrap;">
-                                                    @if($member->is_pwd)<span class="badge badge-blue">PWD</span>@endif
-                                                    @if($member->is_student)<span class="badge badge-gray">Student</span>@endif
-                                                    @if($member->isSenior())<span class="badge badge-blue">Senior</span>@endif
+                                                    @if($member->is_pwd)
+                                                        <span class="badge badge-blue">PWD</span>
+                                                    @endif
+                                                    @if($member->is_student)
+                                                        <span class="badge badge-gray">Student</span>
+                                                    @endif
+                                                    @if($member->isSenior())
+                                                        <span class="badge badge-blue">Senior</span>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
@@ -585,118 +494,50 @@
                         <div class="no-members">No additional family members registered.</div>
                     @endif
                 </div>
-
-            </div>{{-- /detail-main --}}
+            </div>
 
             <div class="detail-side">
-
-                {{-- QR Code (view only — no download button) --}}
                 <div class="section-card">
-                    <div class="section-header">
-                        <div class="ca-dot"></div>
-                        <div class="section-title">QR Code</div>
-                    </div>
-                    @if($household->qrCode)
-                        <div class="qr-card">
-                            <div class="qr-frame">
-                                <img src="{{ asset('storage/' . $household->qrCode->file_path) }}" alt="QR Code">
-                            </div>
-                            <div class="qr-serial">{{ $household->serial_code }}</div>
-                            <div class="qr-name">{{ $household->household_head_name }}</div>
-                            <div class="qr-meta">
-                                Generated: {{ $household->qrCode->generated_at->format('M d, Y') }}<br>
-                                Reprint Count: {{ $household->qrCode->reprint_count }}
-                            </div>
-                        </div>
-                    @else
-                        <div class="qr-placeholder">
-                            <div class="qr-placeholder-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                                    <rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="14" y2="21"/>
-                                    <line x1="14" y1="14" x2="21" y2="14"/>
-                                </svg>
-                            </div>
-                            <p>QR Code not generated yet.</p>
-                        </div>
-                    @endif
-                </div>
-
-                {{-- Read-Only Notice (replaces Actions card) --}}
-                <div class="section-card">
-                    <div class="section-header">
-                        <div class="ca-dot"></div>
-                        <div class="section-title">Actions</div>
-                    </div>
+                    <div class="section-header"><div class="ca-dot"></div><div class="section-title">Actions</div></div>
                     <div class="readonly-notice">
                         <div class="readonly-notice-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="11" width="18" height="11" rx="2"/>
-                                <path d="M7 11V7a5 5 0 0110 0v4"/>
-                            </svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
                         </div>
                         <div class="readonly-notice-title">Read-Only Account</div>
                         <div class="readonly-notice-sub">Auditor accounts cannot approve, modify, or delete household records.</div>
                     </div>
                 </div>
-
-                {{-- Record Info --}}
                 <div class="section-card">
-                    <div class="section-header">
-                        <div class="ca-dot"></div>
-                        <div class="section-title">Record Information</div>
-                    </div>
+                    <div class="section-header"><div class="ca-dot"></div><div class="section-title">Record Information</div></div>
                     <div class="record-info-stack">
-                        <div class="record-info-row">
-                            <span class="record-info-label">Encoded By</span>
-                            <span class="record-info-value">{{ $household->encoder->name }}</span>
-                        </div>
-                        <div class="record-info-row">
-                            <span class="record-info-label">Approved By</span>
-                            <span class="record-info-value">{{ $household->approver->name ?? '—' }}</span>
-                        </div>
-                        <div class="record-info-row">
-                            <span class="record-info-label">Registered</span>
-                            <span class="record-info-value">{{ $household->created_at->format('M d, Y g:i A') }}</span>
-                        </div>
-                        <div class="record-info-row">
-                            <span class="record-info-label">Last Updated</span>
-                            <span class="record-info-value">{{ $household->updated_at->format('M d, Y g:i A') }}</span>
-                        </div>
+                        <div class="record-info-row"><span class="record-info-label">Encoded By</span><span class="record-info-value">{{ $household->encoder->name }}</span></div>
+                        <div class="record-info-row"><span class="record-info-label">Approved By</span><span class="record-info-value">{{ $household->approver->name ?? '&mdash;' }}</span></div>
+                        <div class="record-info-row"><span class="record-info-label">Registered</span><span class="record-info-value">{{ $household->created_at->format('M d, Y g:i A') }}</span></div>
+                        <div class="record-info-row"><span class="record-info-label">Last Updated</span><span class="record-info-value">{{ $household->updated_at->format('M d, Y g:i A') }}</span></div>
                         <div class="record-info-row">
                             <span class="record-info-label">QR Scans</span>
                             <span class="record-info-value">
                                 <span class="scan-count-inline {{ $scanCount > 0 ? 'has-scans' : 'no-scans' }}">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                        <polyline points="23 7 23 1 17 1"/><polyline points="1 17 1 23 7 23"/>
-                                        <polyline points="23 17 23 23 17 23"/><polyline points="1 7 1 1 7 1"/>
-                                        <rect x="8" y="8" width="8" height="8" rx="1"/>
-                                    </svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 7 23 1 17 1"/><polyline points="1 17 1 23 7 23"/><polyline points="23 17 23 23 17 23"/><polyline points="1 7 1 1 7 1"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
                                     {{ $scanCount }} time{{ $scanCount !== 1 ? 's' : '' }}
                                 </span>
                             </span>
                         </div>
                     </div>
                 </div>
-
-            </div>{{-- /detail-side --}}
-
-        </div>{{-- /detail-layout --}}
+            </div>
+        </div>
 
     </main>
 
-    <!-- FOOTER -->
     <footer>
-        <div class="footer-left">
-            &copy; <span id="footer-year"></span> <strong>MDRRMO Naic, Cavite</strong> &mdash; Municipal Disaster Risk Reduction and Management Office
-        </div>
+        <div class="footer-left">&copy; <span id="footer-year"></span> <strong>MDRRMO Naic, Cavite</strong> &mdash; Municipal Disaster Risk Reduction and Management Office</div>
         <div class="footer-center">Republic of the Philippines</div>
         <a class="fb-link" href="https://www.facebook.com/naicmdrrmo" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
             facebook.com/naicmdrrmo
         </a>
     </footer>
-
 </div>
 
 <script>

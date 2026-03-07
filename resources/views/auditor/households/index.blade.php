@@ -30,6 +30,10 @@
             --purple-dark:#3D1F8A;
             --purple-pale:#F5F0FF;
             --purple-border:#D8CBF5;
+            --sky:        #0EA5E9;
+            --sky-dark:   #0369A1;
+            --sky-pale:   #F0F9FF;
+            --sky-border: #BAE6FD;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -78,10 +82,10 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--purple-pale); border: 1px solid var(--purple-border); border-radius: 4px; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--purple); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--purple-dark); }
-        .user-role { font-size: 10px; color: #7C5CBF; text-transform: uppercase; letter-spacing: 0.5px; }
+        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--sky-pale); border: 1px solid var(--sky-border); border-radius: 4px; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--sky); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); }
+        .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── READ-ONLY BADGE ─── */
         .readonly-badge {
@@ -148,20 +152,15 @@
         .tab-link.active { color: var(--blue); font-weight: 700; border-bottom-color: var(--blue); }
 
         /* ─── SEARCH BAR ─── */
-        .search-bar { background: var(--white); border: 1px solid var(--gray-200); border-top: none; padding: 12px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-        .search-input-wrap { position: relative; flex: 1; max-width: 420px; }
-        .search-input-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--gray-400); pointer-events: none; }
-        .search-input { width: 100%; padding: 8px 10px 8px 34px; border: 1px solid var(--gray-200); background: var(--gray-50); font-size: 13px; font-family: 'Open Sans', sans-serif; color: var(--gray-800); border-radius: 3px; outline: none; transition: border-color 0.15s, background 0.15s; }
-        .search-input:focus { border-color: var(--blue); background: var(--white); }
-        .search-input::placeholder { color: var(--gray-400); }
-        .search-btn { padding: 8px 16px; background: var(--blue); color: var(--white); border: none; border-radius: 3px; font-size: 12px; font-weight: 600; font-family: 'Open Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s; white-space: nowrap; }
-        .search-btn:hover { background: var(--blue-dark); }
-        .search-btn svg { width: 13px; height: 13px; }
-        .search-clear { padding: 8px 12px; background: var(--gray-100); color: var(--gray-600); border: 1px solid var(--gray-200); border-radius: 3px; font-size: 12px; font-weight: 600; font-family: 'Open Sans', sans-serif; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: background 0.15s; white-space: nowrap; }
-        .search-clear:hover { background: var(--gray-200); }
-        .search-clear svg { width: 12px; height: 12px; }
-        .search-results-label { margin-left: auto; font-size: 12px; color: var(--gray-600); white-space: nowrap; }
-        .search-results-label strong { color: var(--blue-dark); }
+        .filter-bar { background: var(--white); border: 1px solid var(--gray-200); padding: 14px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+        .filter-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); flex-shrink: 0; }
+        .filter-search { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 8px; border: 1px solid var(--gray-200); border-radius: 3px; padding: 0 12px; background: var(--gray-50); }
+        .filter-search svg { width: 14px; height: 14px; color: var(--gray-400); flex-shrink: 0; }
+        .filter-search input { border: none; background: none; font-family: 'Open Sans', sans-serif; font-size: 13px; color: var(--gray-800); padding: 9px 0; width: 100%; outline: none; }
+        .filter-search input::placeholder { color: var(--gray-400); }
+        .filter-select { border: 1px solid var(--gray-200); border-radius: 3px; background: var(--gray-50); font-family: 'Open Sans', sans-serif; font-size: 12px; color: var(--gray-600); padding: 8px 10px; outline: none; cursor: pointer; }
+        .filter-count { font-size: 12px; color: var(--gray-400); margin-left: auto; white-space: nowrap; }
+        .filter-count strong { color: var(--blue); }
 
         /* ─── QR SCAN COUNT ─── */
         .scan-count-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
@@ -275,9 +274,8 @@
             .stat-icon { width: 36px; height: 36px; }
             .stat-icon svg { width: 18px; height: 18px; }
             .stat-number { font-size: 22px; }
-            .search-bar { flex-wrap: wrap; }
-            .search-input-wrap { max-width: 100%; width: 100%; }
-            .search-results-label { display: none; }
+            .filter-bar { flex-wrap: wrap; }
+            .filter-search { min-width: 100%; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .readonly-badge { display: none; }
@@ -358,16 +356,6 @@
         <hr class="sidebar-sep">
         <div class="nav-section-label">View-Only Access</div>
 
-        <a href="{{ route('auditor.family-profiles') }}" class="nav-item" onclick="closeSidebar()">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-            </svg>
-            Family Profiles
-            <span class="nav-badge-view">View</span>
-        </a>
-
         <a href="{{ route('auditor.distribution.logs') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
@@ -400,7 +388,7 @@
             <span class="nav-badge-view">View</span>
         </a>
 
-        <a href="#" class="nav-item" onclick="closeSidebar()">
+        <a href="{{ route('auditor.audit.trail') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"/>
                 <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
@@ -474,43 +462,28 @@
                class="tab-link {{ $filter === 'approved' ? 'active' : '' }}">Approved</a>
         </div>
 
-        <!-- Search Bar -->
-        <form method="GET" action="{{ route('auditor.households.index') }}" id="searchForm">
-            <input type="hidden" name="filter" value="{{ $filter }}">
-            <div class="search-bar">
-                <div class="search-input-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    <input
-                        type="text" name="search" id="searchInput" class="search-input"
-                        placeholder="Search by name, barangay, serial code..."
-                        value="{{ request('search') }}" autocomplete="off"
-                        oninput="debounceSearch()"
-                    >
-                </div>
-                <button type="submit" class="search-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    Search
-                </button>
-                @if(request('search'))
-                    <a href="{{ route('auditor.households.index', ['filter' => $filter]) }}" class="search-clear">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                        </svg>
-                        Clear
-                    </a>
-                @endif
-                <span class="search-results-label">
-                    Showing <strong>{{ $households->count() }}</strong> of <strong>{{ $households->total() }}</strong>
-                    @if(request('search'))
-                        &nbsp;for &ldquo;<strong>{{ request('search') }}</strong>&rdquo;
-                    @endif
-                </span>
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <span class="filter-label">Filter</span>
+            <div class="filter-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Search household head, barangay, serial…" oninput="filterTable()">
             </div>
-        </form>
+            <select class="filter-select" id="barangayFilter" onchange="filterTable()">
+                <option value="">All Barangays</option>
+                @foreach($households->getCollection()->pluck('barangay')->unique()->sort() as $brgy)
+                    <option value="{{ strtolower($brgy) }}">{{ $brgy }}</option>
+                @endforeach
+            </select>
+            <select class="filter-select" id="statusFilter" onchange="filterTable()">
+                <option value="">All Status</option>
+                <option value="approved">Approved</option>
+                <option value="pending">Pending</option>
+            </select>
+            <span class="filter-count">Showing <strong id="visibleCount">{{ $households->count() }}</strong> of {{ $households->total() }}</span>
+        </div>
 
         <!-- Table -->
         <div class="table-card">
@@ -541,7 +514,11 @@
                     <tbody>
                         @forelse($households as $household)
                             @php $scanCount = $household->distributionLogs->count(); @endphp
-                            <tr>
+                            <tr class="hh-row"
+                                data-name="{{ strtolower($household->household_head_name) }}"
+                                data-serial="{{ strtolower($household->serial_code ?? '') }}"
+                                data-barangay="{{ strtolower($household->barangay) }}"
+                                data-status="{{ $household->isApproved() ? 'approved' : 'pending' }}">
                                 <td class="td-name">
                                     <strong>{{ $household->household_head_name }}</strong>
                                     <small>{{ $household->sex }}, {{ $household->age }} years old</small>
@@ -666,10 +643,21 @@
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 
-    let searchTimer;
-    function debounceSearch() {
-        clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => document.getElementById('searchForm').submit(), 450);
+    function filterTable() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const brgy   = document.getElementById('barangayFilter').value.toLowerCase();
+        const status = document.getElementById('statusFilter').value.toLowerCase();
+        const rows   = document.querySelectorAll('.hh-row');
+        let visible  = 0;
+        rows.forEach(row => {
+            const matchSearch = !search || row.dataset.name.includes(search) || row.dataset.serial.includes(search) || row.dataset.barangay.includes(search);
+            const matchBrgy   = !brgy   || row.dataset.barangay === brgy;
+            const matchStatus = !status || row.dataset.status === status;
+            const show = matchSearch && matchBrgy && matchStatus;
+            row.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+        document.getElementById('visibleCount').textContent = visible;
     }
 </script>
 </body>

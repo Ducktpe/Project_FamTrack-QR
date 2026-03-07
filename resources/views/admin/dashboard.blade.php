@@ -39,7 +39,6 @@
             font-size: 14px;
         }
 
-        /* ─── Layout ─── */
         .shell {
             display: grid;
             grid-template-rows: 36px 76px 1fr 48px;
@@ -53,13 +52,7 @@
             overflow: hidden;
         }
 
-        /* ─── TOP UTILITY BAR ─── */
-        .topbar {
-            grid-area: topbar;
-            background: var(--blue-dark);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px; z-index: 100;
-        }
+        .topbar { grid-area: topbar; background: var(--blue-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; }
         .topbar-left { font-size: 11px; color: rgba(255,255,255,0.55); letter-spacing: 0.3px; }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
         .clock-inline { font-size: 12px; font-weight: 600; color: var(--yellow); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
@@ -68,15 +61,7 @@
         .status-indicator::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #4CAF50; box-shadow: 0 0 5px #4CAF50; animation: blink 2s infinite; }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-        /* ─── HEADER ─── */
-        header {
-            grid-area: header;
-            background: var(--white);
-            border-bottom: 3px solid var(--yellow);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            display: flex; align-items: center;
-            padding: 0 28px; gap: 14px; z-index: 90;
-        }
+        header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; }
         .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
         .hamburger:hover { background: var(--blue-pale); }
         .hamburger svg { width: 22px; height: 22px; display: block; }
@@ -93,11 +78,9 @@
         .admin-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
         .admin-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
         .sidebar-overlay.active { display: block !important; pointer-events: auto; }
 
-        /* ─── SIDEBAR ─── */
         .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; }
         .sidebar-close { display: none; position: absolute; top: 12px; right: 12px; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 4px; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s; }
         .sidebar-close:hover { background: #FEF2F2; color: #C0392B; }
@@ -113,7 +96,6 @@
         .logout-btn { width: 100%; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; background: var(--blue); color: var(--white); border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
         .logout-btn:hover { background: #C0392B; }
 
-        /* ─── MAIN ─── */
         .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 28px 32px; }
 
         .page-titlebar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); gap: 12px; }
@@ -124,7 +106,6 @@
         .page-date { font-size: 12px; color: var(--gray-600); text-align: right; flex-shrink: 0; }
         .page-date strong { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
 
-        /* Welcome card */
         .welcome-card { background: var(--blue); border-left: 5px solid var(--yellow); padding: 22px 28px; display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
         .welcome-card img { width: 50px; height: 50px; object-fit: contain; flex-shrink: 0; }
         .welcome-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.55); margin-bottom: 4px; }
@@ -132,7 +113,6 @@
         .welcome-heading em { color: var(--yellow); font-style: normal; }
         .welcome-desc { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
 
-        /* Quick nav cards */
         .quick-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
         .qnav-card { background: var(--white); border: 1px solid var(--gray-200); border-top: 3px solid var(--blue); padding: 18px 20px; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; gap: 10px; transition: box-shadow 0.15s, border-top-color 0.15s; }
         .qnav-card:hover { box-shadow: 0 3px 12px rgba(27,63,122,0.12); border-top-color: var(--yellow); }
@@ -141,48 +121,16 @@
         .qnav-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
         .qnav-desc { font-size: 11px; color: var(--gray-600); }
 
-        /* ─── DASHBOARD STAT CARDS ─── */
-        .dash-stats-row {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 14px;
-            margin-bottom: 16px;
-        }
-        .dash-stat-card {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            padding: 16px 18px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .ds-icon {
-            width: 42px; height: 42px;
-            border-radius: 6px;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
+        .dash-stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 16px; }
+        .dash-stat-card { background: var(--white); border: 1px solid var(--gray-200); padding: 16px 18px; display: flex; align-items: center; gap: 14px; }
+        .ds-icon { width: 42px; height: 42px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .ds-icon svg { width: 20px; height: 20px; }
         .ds-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-400); margin-bottom: 4px; }
         .ds-value { font-size: 24px; font-weight: 700; color: var(--blue-dark); line-height: 1; font-variant-numeric: tabular-nums; }
 
-        /* ─── CHARTS ─── */
-        .charts-row {
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 14px;
-            margin-bottom: 16px;
-        }
-        .chart-card {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-        }
-        .chart-card-header {
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--gray-100);
-            background: var(--gray-50);
-            display: flex; align-items: center; gap: 10px;
-        }
+        .charts-row { display: grid; grid-template-columns: 1fr 340px; gap: 14px; margin-bottom: 16px; }
+        .chart-card { background: var(--white); border: 1px solid var(--gray-200); }
+        .chart-card-header { padding: 14px 20px; border-bottom: 1px solid var(--gray-100); background: var(--gray-50); display: flex; align-items: center; gap: 10px; }
         .ca-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); border: 2px solid var(--yellow-dark); flex-shrink: 0; }
         .ca-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
         .ca-view-all { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--blue-light); text-decoration: none; letter-spacing: 0.3px; }
@@ -195,7 +143,6 @@
         .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
         .legend-val { margin-left: auto; font-weight: 700; color: var(--gray-800); font-variant-numeric: tabular-nums; }
 
-        /* ─── RECENT EVENTS TABLE ─── */
         .content-area { background: var(--white); border: 1px solid var(--gray-200); }
         .content-area-header { padding: 14px 20px; border-bottom: 1px solid var(--gray-100); background: var(--gray-50); display: flex; align-items: center; gap: 10px; }
         .dash-table { width: 100%; border-collapse: collapse; }
@@ -206,14 +153,12 @@
         .dash-table tbody td { padding: 10px 16px; font-size: 12.5px; color: var(--gray-800); }
         .dt-name { font-weight: 600; color: var(--blue-dark); }
 
-        /* Status badges */
         .status-badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .status-ongoing  { background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
-        .status-done     { background: var(--blue-pale); color: var(--blue); border: 1px solid #C7D9F5; }
-        .status-upcoming { background: var(--yellow-pale); color: var(--yellow-dark); border: 1px solid #FDE68A; }
-        .status-cancelled{ background: var(--red-pale); color: var(--red); border: 1px solid #FECACA; }
+        .status-ongoing   { background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
+        .status-done      { background: var(--blue-pale); color: var(--blue); border: 1px solid #C7D9F5; }
+        .status-upcoming  { background: var(--yellow-pale); color: var(--yellow-dark); border: 1px solid #FDE68A; }
+        .status-cancelled { background: var(--red-pale); color: var(--red); border: 1px solid #FECACA; }
 
-        /* ─── FOOTER ─── */
         footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; z-index: 100; }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.45); }
         .footer-left strong { color: rgba(255,255,255,0.75); }
@@ -226,7 +171,6 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
-        /* ─── RESPONSIVE ─── */
         @media (max-width: 900px) {
             .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
             .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
@@ -491,7 +435,6 @@
 
         {{-- ── CHARTS ── --}}
         <div class="charts-row">
-            {{-- Bar Chart: Households per Barangay --}}
             <div class="chart-card">
                 <div class="chart-card-header">
                     <div class="ca-dot"></div>
@@ -501,8 +444,6 @@
                     <canvas id="householdsBarChart"></canvas>
                 </div>
             </div>
-
-            {{-- Doughnut: Special Categories --}}
             <div class="chart-card">
                 <div class="chart-card-header">
                     <div class="ca-dot" style="background:#16A34A;border-color:#15803D;"></div>
@@ -537,8 +478,20 @@
                         @forelse($recentEvents as $event)
                         <tr>
                             <td class="dt-name">{{ $event->event_name }}</td>
-                            <td>{{ $event->relief_type }}</td>
-                            <td>{{ $event->target_barangay }}</td>
+                            <td>
+                                @if(is_array($event->relief_type))
+                                    {{ implode(', ', $event->relief_type) }}
+                                @else
+                                    {{ $event->relief_type }}
+                                @endif
+                            </td>
+                            <td>
+                                @if(is_array($event->target_barangay))
+                                    {{ implode(', ', $event->target_barangay) }}
+                                @else
+                                    {{ $event->target_barangay }}
+                                @endif
+                            </td>
                             <td>{{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }}</td>
                             <td>
                                 @if($event->status === 'ongoing')
@@ -579,7 +532,6 @@
 </div>
 
 <script>
-    /* ── Clock ── */
     function pad(n){ return String(n).padStart(2,'0'); }
     function updateClock() {
         const now = new Date();
@@ -594,22 +546,18 @@
     setInterval(updateClock, 1000);
     document.getElementById('footer-year').textContent = new Date().getFullYear();
 
-    /* ── Sidebar ── */
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 
-    /* ── Chart Data from Laravel ── */
     const barLabels = @json($householdsPerBarangay->pluck('barangay'));
     const barData   = @json($householdsPerBarangay->pluck('total'));
-
     const catLabels = ['4Ps Beneficiaries', 'Senior Citizens', 'PWD'];
     const catData   = [@json($total4Ps), @json($totalSeniors), @json($totalPwd)];
     const catColors = ['#16A34A', '#D4A800', '#C0392B'];
 
-    /* ── Bar Chart: Households per Barangay ── */
     const barCtx = document.getElementById('householdsBarChart').getContext('2d');
     new Chart(barCtx, {
         type: 'bar',
@@ -636,26 +584,16 @@
                     bodyColor: '#fff',
                     padding: 10,
                     cornerRadius: 4,
-                    callbacks: {
-                        label: ctx => ` ${ctx.parsed.y} household${ctx.parsed.y !== 1 ? 's' : ''}`
-                    }
+                    callbacks: { label: ctx => ` ${ctx.parsed.y} household${ctx.parsed.y !== 1 ? 's' : ''}` }
                 }
             },
             scales: {
-                x: {
-                    grid: { display: false },
-                    ticks: { font: { size: 10, family: 'Open Sans' }, color: '#9AA3B0', maxRotation: 35 }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: { color: '#F0F2F5' },
-                    ticks: { font: { size: 11, family: 'Open Sans' }, color: '#9AA3B0', precision: 0 }
-                }
+                x: { grid: { display: false }, ticks: { font: { size: 10, family: 'Open Sans' }, color: '#9AA3B0', maxRotation: 35 } },
+                y: { beginAtZero: true, grid: { color: '#F0F2F5' }, ticks: { font: { size: 11, family: 'Open Sans' }, color: '#9AA3B0', precision: 0 } }
             }
         }
     });
 
-    /* ── Doughnut: Special Categories ── */
     const dCtx = document.getElementById('categoriesDoughnut').getContext('2d');
     new Chart(dCtx, {
         type: 'doughnut',
@@ -675,26 +613,14 @@
             cutout: '65%',
             plugins: {
                 legend: { display: false },
-                tooltip: {
-                    backgroundColor: '#122D5A',
-                    titleColor: '#F5C518',
-                    bodyColor: '#fff',
-                    padding: 10,
-                    cornerRadius: 4,
-                }
+                tooltip: { backgroundColor: '#122D5A', titleColor: '#F5C518', bodyColor: '#fff', padding: 10, cornerRadius: 4 }
             }
         }
     });
 
-    /* Build custom legend */
     const legendEl = document.getElementById('doughnutLegend');
     catLabels.forEach((label, i) => {
-        legendEl.innerHTML += `
-            <div class="legend-item">
-                <span class="legend-dot" style="background:${catColors[i]};"></span>
-                <span>${label}</span>
-                <span class="legend-val">${catData[i].toLocaleString()}</span>
-            </div>`;
+        legendEl.innerHTML += `<div class="legend-item"><span class="legend-dot" style="background:${catColors[i]};"></span><span>${label}</span><span class="legend-val">${catData[i].toLocaleString()}</span></div>`;
     });
 </script>
 </body>

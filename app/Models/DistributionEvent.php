@@ -12,9 +12,11 @@ class DistributionEvent extends Model
     protected $fillable = [
         'event_name',
         'relief_type',
+        'relief_items',
         'target_barangay',
         'event_date',
         'description',
+        'goods_detail',
         'status',
         'created_by',
         'started_at',
@@ -24,11 +26,62 @@ class DistributionEvent extends Model
     ];
 
     protected $casts = [
-        'event_date'   => 'date',
-        'started_at'   => 'datetime',
-        'ended_at'     => 'datetime',
-        'cancelled_at' => 'datetime',
+        'event_date'      => 'date',
+        'relief_type'     => 'array',
+        'relief_items'    => 'array',
+        'target_barangay' => 'array',
+        'started_at'      => 'datetime',
+        'ended_at'        => 'datetime',
+        'cancelled_at'    => 'datetime',
     ];
+
+    // ─── Display Accessors ────────────────────────────────────────────────────
+    // These convert the JSON-cast array columns into comma-separated strings so
+    // Blade's {{ }} / htmlspecialchars() never receives an array.
+
+    /**
+     * Return relief_type as a human-readable string.
+     * Use $event->relief_type_display in Blade templates.
+     */
+    public function getReliefTypeDisplayAttribute(): string
+    {
+        $value = $this->getRawOriginal('relief_type');
+        if (is_null($value)) {
+            return '—';
+        }
+        $decoded = json_decode($value, true);
+        return is_array($decoded) ? implode(', ', $decoded) : (string) $value;
+    }
+
+    /**
+     * Return target_barangay as a human-readable string.
+     * Use $event->target_barangay_display in Blade templates.
+     */
+    public function getTargetBarangayDisplayAttribute(): ?string
+    {
+        $value = $this->getRawOriginal('target_barangay');
+        if (is_null($value)) {
+            return null;
+        }
+        $decoded = json_decode($value, true);
+        return is_array($decoded) ? implode(', ', $decoded) : (string) $value;
+    }
+
+    /**
+     * Return relief_items as a human-readable string.
+     * Use $event->relief_items_display in Blade templates.
+     */
+    public function getReliefItemsDisplayAttribute(): string
+    {
+        $value = $this->getRawOriginal('relief_items');
+        if (is_null($value)) {
+            return '—';
+        }
+        $decoded = json_decode($value, true);
+        return is_array($decoded) ? implode(', ', $decoded) : (string) $value;
+    }
+
+    // ─── Relationships ────────────────────────────────────────────────────────
 
     public function creator()
     {
@@ -39,6 +92,8 @@ class DistributionEvent extends Model
     {
         return $this->hasMany(DistributionLog::class, 'event_id');
     }
+
+    // ─── Scopes ───────────────────────────────────────────────────────────────
 
     public function scopeUpcoming($query)
     {
@@ -60,7 +115,8 @@ class DistributionEvent extends Model
         return $query->where('status', 'cancelled');
     }
 
-    // Helper methods
+    // ─── Helper Methods ───────────────────────────────────────────────────────
+
     public function canStart()
     {
         return $this->status === 'upcoming';

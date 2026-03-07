@@ -495,7 +495,7 @@
             Dashboard
         </a>
 
-        <a href="{{ route('staff.scan') }}" class="nav-item scanner-primary" onclick="closeSidebar()">
+        <a href="{{ route('staff.scan') }}?event_id={{ isset($event) ? $event->id : '' }}" class="nav-item scanner-primary" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="23 7 23 1 17 1"/>
                 <polyline points="1 17 1 23 7 23"/>
@@ -584,9 +584,9 @@
                         </div>
                         <div class="event-header-name">{{ $event->event_name }}</div>
                         <div class="event-header-sub">
-                            Relief Type: <strong>{{ $event->relief_type }}</strong>
+                            Relief Type: <strong>{{ $event->relief_type_display }}</strong>
                             &nbsp;&mdash;&nbsp;
-                            Barangay: <strong>{{ $event->target_barangay ?? 'N/A' }}</strong>
+                            Barangay: <strong>{{ $event->target_barangay_display ?? 'N/A' }}</strong>
                         </div>
                     </div>
                 </div>
@@ -633,7 +633,7 @@
                         </svg>
                         Target Barangay
                     </div>
-                    <div class="event-stat-value" style="font-size:15px;">{{ $event->target_barangay ?? '—' }}</div>
+                    <div class="event-stat-value" style="font-size:15px;">{{ $event->target_barangay_display ?? '—' }}</div>
                     <div class="event-stat-meta">service area</div>
                 </div>
                 <div class="event-stat">
@@ -644,7 +644,7 @@
                         </svg>
                         Relief Type
                     </div>
-                    <div class="event-stat-value" style="font-size:15px;">{{ $event->relief_type }}</div>
+                    <div class="event-stat-value" style="font-size:15px;">{{ $event->relief_type_display }}</div>
                     <div class="event-stat-meta">goods category</div>
                 </div>
             </div>
@@ -656,7 +656,7 @@
                     &nbsp;&bull;&nbsp;
                     Started <strong>{{ $event->started_at ? $event->started_at->diffForHumans() : '—' }}</strong>
                 </div>
-                <a href="{{ route('staff.scan') }}" class="event-scan-btn">
+                <a href="{{ route('staff.scan') }}?event_id={{ isset($event) ? $event->id : '' }}" class="event-scan-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <polyline points="23 7 23 1 17 1"/><polyline points="1 17 1 23 7 23"/>
                         <polyline points="23 17 23 23 17 23"/><polyline points="1 7 1 1 7 1"/>

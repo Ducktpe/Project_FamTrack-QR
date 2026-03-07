@@ -154,6 +154,28 @@
         select { cursor: pointer; }
         textarea { resize: vertical; min-height: 80px; }
 
+        /* ─── BARANGAY COUNTER BAR ─── */
+        .brgy-counter-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 7px 12px; margin-bottom: 6px;
+            background: var(--white); border: 1px solid var(--gray-200); border-radius: 3px;
+        }
+        .brgy-counter-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; color: var(--gray-600);
+        }
+        .brgy-counter-badge {
+            font-size: 12px; font-weight: 700;
+            color: var(--blue); background: var(--blue-pale);
+            border: 1px solid #C7D9F5; border-radius: 10px;
+            padding: 2px 12px; letter-spacing: 0.3px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .brgy-counter-badge.all-selected {
+            background: var(--green-pale); color: var(--green-dark);
+            border-color: #86efac;
+        }
+
         /* ─── BARANGAY MULTI-SELECT ─── */
         .brgy-selector {
             border: 1px solid var(--gray-200);
@@ -162,7 +184,6 @@
             overflow: hidden;
         }
 
-        /* Top toolbar: search + select-all */
         .brgy-toolbar {
             display: flex;
             align-items: center;
@@ -196,7 +217,6 @@
         }
         .brgy-search:focus { border-color: var(--blue-light); }
 
-        /* Select all / Clear buttons */
         .brgy-toolbar-btns { display: flex; gap: 5px; flex-shrink: 0; }
         .brgy-tb-btn {
             padding: 5px 10px;
@@ -212,7 +232,6 @@
         .brgy-tb-btn.clear-all  { background: var(--gray-100); color: var(--gray-600); }
         .brgy-tb-btn.clear-all:hover  { background: var(--gray-200); }
 
-        /* Checkbox list */
         .brgy-list {
             max-height: 220px;
             overflow-y: auto;
@@ -234,7 +253,6 @@
         .brgy-item.hidden { display: none; }
         .brgy-item.checked { background: var(--blue-pale); }
 
-        /* Custom checkbox */
         .brgy-checkbox {
             width: 16px; height: 16px;
             border: 2px solid var(--gray-200);
@@ -253,14 +271,12 @@
         .brgy-name { font-size: 13px; color: var(--gray-800); }
         .brgy-item.checked .brgy-name { color: var(--blue-dark); font-weight: 600; }
 
-        /* "All Barangays" special row */
         .brgy-item.all-row {
             border-bottom: 1px solid var(--gray-200);
             margin-bottom: 4px;
         }
         .brgy-item.all-row .brgy-name { font-weight: 600; color: var(--blue-dark); }
 
-        /* Selected tags display */
         .brgy-footer {
             padding: 8px 12px;
             border-top: 1px solid var(--gray-100);
@@ -282,6 +298,199 @@
         .brgy-tag-remove:hover { opacity: 1; }
         .brgy-none { font-size: 11px; color: var(--gray-400); font-style: italic; }
         .brgy-count { font-size: 11px; color: var(--blue); font-weight: 700; }
+
+        /* ─── RELIEF TYPE — CATEGORY PICKER ─── */
+        .relief-cat-picker { display: flex; flex-wrap: wrap; gap: 8px; }
+        .rcp-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 9px 18px; border: 2px solid var(--gray-200); border-radius: 8px;
+            background: var(--white); cursor: pointer; font-family: 'Open Sans', sans-serif;
+            transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+            user-select: none;
+        }
+        .rcp-btn:hover { border-color: #9DB8E8; background: var(--blue-pale); box-shadow: 0 1px 4px rgba(27,63,122,0.08); }
+        .rcp-btn.active { border-color: var(--blue); background: var(--blue-pale); box-shadow: 0 0 0 3px rgba(36,89,168,0.12); }
+        .rcp-btn.active::after { content: '✓'; font-size: 11px; font-weight: 700; color: var(--blue); margin-left: 4px; }
+        .rcp-icon { font-size: 17px; line-height: 1; }
+        .rcp-label { font-size: 13px; font-weight: 600; color: var(--gray-700); }
+        .rcp-btn.active .rcp-label { color: var(--blue-dark); }
+
+        /* ─── RELIEF ITEMS PANEL ─── */
+        .relief-items-empty {
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            padding: 36px 20px; text-align: center; color: var(--gray-400);
+        }
+        .relief-items-empty svg { opacity: 0.25; }
+        .relief-items-empty p { font-size: 13px; line-height: 1.6; }
+        .relief-items-empty strong { color: var(--gray-600); }
+
+        .relief-panel { animation: rpFadeIn 0.2s ease; }
+        @keyframes rpFadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Panel header */
+        .rp-header {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 16px 12px;
+            background: var(--gray-50); border: 1px solid var(--gray-200);
+            border-radius: 8px 8px 0 0; border-bottom: none;
+            margin-bottom: 0;
+        }
+        .rp-icon-badge {
+            width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 19px;
+        }
+        .rp-icon-badge.dignity  { background: #FDF4FF; }
+        .rp-icon-badge.firstaid { background: #FFF1F2; }
+        .rp-icon-badge.food     { background: #FEFCE8; }
+        .rp-icon-badge.hygiene  { background: #EFF6FF; }
+        .rp-icon-badge.cash     { background: #F0FDF4; }
+        .rp-header-text { flex: 1; min-width: 0; }
+        .rp-title { font-size: 14px; font-weight: 700; color: var(--gray-800); display: block; }
+        .rp-hint  { font-size: 11px; color: var(--gray-400); margin-top: 1px; display: block; }
+        .rp-select-all-btn {
+            font-family: 'Open Sans', sans-serif; font-size: 11px; font-weight: 600;
+            color: var(--blue-light); background: var(--blue-pale);
+            border: 1px solid #C7D9F5; border-radius: 4px;
+            padding: 5px 12px; cursor: pointer; flex-shrink: 0;
+            transition: background 0.12s, color 0.12s;
+        }
+        .rp-select-all-btn:hover { background: #D6E6F8; color: var(--blue-dark); }
+
+        /* ─── ENHANCED RELIEF ITEM ROWS ─── */
+        /* Items now have a checkbox + name on the left, qty input on the right */
+        .rp-table {
+            border: 1px solid var(--gray-200);
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
+        }
+
+        /* Column header row */
+        .rp-table-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 6px 14px 6px 46px;
+            gap: 12px;
+        }
+        .rp-th {
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--gray-400);
+        }
+        .rp-th.qty-head { width: 130px; text-align: center; }
+
+        .rp-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 12px;
+            padding: 9px 14px;
+            cursor: pointer;
+            user-select: none;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-100);
+            transition: background 0.1s;
+            position: relative;
+        }
+        .rp-item:last-child { border-bottom: none; }
+        .rp-item:hover { background: #F4F8FF; }
+        .rp-item:has(.rp-cb-native:checked) { background: var(--blue-pale); }
+
+        .rp-item-left {
+            display: flex; align-items: center; gap: 10px;
+            min-width: 0;
+        }
+
+        .rp-cb-native { position: absolute; opacity: 0; width: 0; height: 0; }
+        .rp-box {
+            width: 18px; height: 18px; flex-shrink: 0;
+            border: 2px solid var(--gray-300); border-radius: 5px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--white);
+            transition: background 0.12s, border-color 0.12s;
+        }
+        .rp-item:has(.rp-cb-native:checked) .rp-box { background: var(--blue); border-color: var(--blue); }
+        .rp-box svg { width: 10px; height: 10px; color: var(--white); opacity: 0; transition: opacity 0.1s; }
+        .rp-item:has(.rp-cb-native:checked) .rp-box svg { opacity: 1; }
+        .rp-name { font-size: 13px; color: var(--gray-700); line-height: 1.4; }
+        .rp-item:has(.rp-cb-native:checked) .rp-name { color: var(--blue-dark); font-weight: 600; }
+
+        /* Quantity input wrapper */
+        .rp-qty-wrap {
+            display: flex;
+            align-items: center;
+            width: 130px;
+            flex-shrink: 0;
+            border: 1px solid var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--white);
+            transition: border-color 0.15s, box-shadow 0.15s;
+            opacity: 0.45;
+            pointer-events: none;
+        }
+        /* Enable qty when checked */
+        .rp-item:has(.rp-cb-native:checked) .rp-qty-wrap {
+            opacity: 1;
+            pointer-events: auto;
+            border-color: var(--blue-light);
+            box-shadow: 0 0 0 2px rgba(36,89,168,0.09);
+        }
+        .rp-qty-input {
+            width: 60px; /* shrinks with unit label */
+            flex: 1;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            padding: 7px 8px;
+            font-size: 13px;
+            font-family: 'Open Sans', sans-serif;
+            color: var(--gray-800);
+            text-align: right;
+            background: transparent;
+        }
+        .rp-qty-unit {
+            padding: 7px 9px 7px 6px;
+            font-size: 11px; font-weight: 700;
+            color: var(--gray-500);
+            background: var(--gray-50);
+            border-left: 1px solid var(--gray-200);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* Cash input */
+        .cash-input-wrap {
+            display: flex; align-items: center;
+            border: 1px solid var(--gray-200); border-radius: 4px;
+            overflow: hidden; background: var(--white);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .cash-input-wrap:focus-within { border-color: var(--blue-light); box-shadow: 0 0 0 3px rgba(36,89,168,0.1); }
+        .cash-prefix {
+            padding: 9px 13px; background: var(--gray-50);
+            border-right: 1px solid var(--gray-200);
+            font-size: 14px; font-weight: 700; color: var(--gray-600); flex-shrink: 0;
+        }
+        .cash-input-wrap input {
+            flex: 1; border: none; outline: none; padding: 9px 12px;
+            font-size: 13px; font-family: 'Open Sans', sans-serif;
+            color: var(--gray-800); box-shadow: none !important;
+        }
+
+        /* Status badge */
+        .status-upcoming-badge {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 14px 18px; background: var(--blue-pale);
+            border: 2px solid var(--blue); border-radius: 6px;
+        }
+        .status-upcoming-badge svg { color: var(--blue); flex-shrink: 0; margin-top: 2px; }
+        .status-upcoming-label {
+            display: block; font-size: 13px; font-weight: 700;
+            color: var(--blue); text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .status-upcoming-sub { display: block; font-size: 11px; color: var(--gray-600); margin-top: 2px; line-height: 1.5; }
 
         /* Submit bar */
         .submit-bar { background: var(--white); border: 1px solid var(--gray-200); border-top: 3px solid var(--green); padding: 16px 24px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -314,10 +523,6 @@
         .status-legend-item svg { width: 14px; height: 14px; flex-shrink: 0; }
         .status-legend-item div strong { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .status-legend-item div span { font-size: 11px; opacity: 0.8; }
-
-        .relief-types { display: flex; flex-wrap: wrap; gap: 6px; }
-        .relief-chip { padding: 4px 10px; background: var(--blue-pale); border: 1px solid #C7D9F3; border-radius: 10px; font-size: 11px; color: var(--blue); font-weight: 600; cursor: pointer; transition: background 0.12s; }
-        .relief-chip:hover { background: #C7D9F3; }
 
         /* ─── FOOTER ─── */
         footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; z-index: 100; }
@@ -381,6 +586,7 @@
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
+            .rp-qty-wrap { width: 110px; }
         }
     </style>
 </head>
@@ -421,7 +627,7 @@
             <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name }}</div>
-                <div class="user-role">Administrator</div>
+                <div class="user-role">Full Access</div>
             </div>
         </div>
     </header>
@@ -504,6 +710,17 @@
         <form method="POST" action="{{ route('admin.events.quick-store') }}" id="eventForm">
         @csrf
 
+        @if ($errors->any())
+        <div style="background:#C0392B;color:#fff;padding:14px 20px;margin-bottom:16px;border-radius:4px;">
+            <strong>Please fix the following errors:</strong>
+            <ul style="margin:8px 0 0 18px;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
         <div class="create-layout">
 
             <!-- LEFT: Form -->
@@ -528,16 +745,267 @@
                             </div>
                         </div>
 
-                        <div class="form-row cols-2">
+                        <div class="form-row cols-1">
                             <div class="form-group">
                                 <label class="form-label">Relief Type <span class="req">*</span></label>
-                                <input type="text" name="relief_type"
-                                    id="relief_type_input"
-                                    value="{{ old('relief_type') }}"
-                                    required
-                                    placeholder="e.g. Food Pack">
-                                <div class="form-hint">Type of goods being distributed during this event.</div>
+                                <div id="relief_type_hidden_inputs"></div>
+                                <div class="relief-cat-picker" id="reliefCatPicker">
+                                    <button type="button" class="rcp-btn" id="rcp-cash"     onclick="toggleCategory('Cash Aid',    'rcp-cash',    'items-cash')">    <span class="rcp-icon">💵</span><span class="rcp-label">Cash Aid</span></button>
+                                    <button type="button" class="rcp-btn" id="rcp-dignity"  onclick="toggleCategory('Dignity Kit', 'rcp-dignity',  'items-dignity')"> <span class="rcp-icon">🎀</span><span class="rcp-label">Dignity Kit</span></button>
+                                    <button type="button" class="rcp-btn" id="rcp-firstaid" onclick="toggleCategory('First Aid Kit','rcp-firstaid','items-firstaid')"><span class="rcp-icon">🩹</span><span class="rcp-label">First Aid Kit</span></button>
+                                    <button type="button" class="rcp-btn" id="rcp-food"     onclick="toggleCategory('Food Pack',   'rcp-food',    'items-food')">    <span class="rcp-icon">🍱</span><span class="rcp-label">Food Pack</span></button>
+                                    <button type="button" class="rcp-btn" id="rcp-hygiene"  onclick="toggleCategory('Hygiene Kit', 'rcp-hygiene',  'items-hygiene')"> <span class="rcp-icon">🧴</span><span class="rcp-label">Hygiene Kit</span></button>
+                                </div>
+                                <div class="form-hint">Choose one or more categories of goods being distributed in this event.</div>
                             </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {{-- Relief Items --}}
+                <div class="form-section" id="reliefItemsSection">
+                    <div class="form-section-header">
+                        <div class="ca-dot"></div>
+                        <div class="form-section-title">Relief Items</div>
+                        <span id="reliefItemsBadge" style="display:none;margin-left:auto;font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-pale);border:1px solid #C7D9F5;padding:2px 10px;border-radius:10px;"></span>
+                    </div>
+                    <div class="form-section-body">
+
+                        {{-- Empty state --}}
+                        <div class="relief-items-empty" id="reliefItemsEmpty">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 7H4a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 3h-8l-2 4h12l-2-4z"/></svg>
+                            <p>Select one or more <strong>Relief Types</strong> above to see available items.</p>
+                        </div>
+
+                        {{-- Dignity Kit --}}
+                        <div class="relief-panel" id="items-dignity" style="display:none;">
+                            <div class="rp-header">
+                                <span class="rp-icon-badge dignity">🎀</span>
+                                <div class="rp-header-text">
+                                    <span class="rp-title">Dignity Kit</span>
+                                    <span class="rp-hint">Check items included and enter quantity per household</span>
+                                </div>
+                                <button type="button" class="rp-select-all-btn" onclick="selectAllItems('items-dignity')">Select All</button>
+                            </div>
+                            <div class="rp-table">
+                                <div class="rp-table-head">
+                                    <span class="rp-th">Item</span>
+                                    <span class="rp-th qty-head">Qty / Amount</span>
+                                </div>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[feminine_hygiene_wash][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Feminine Hygiene Wash</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[feminine_hygiene_wash][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">btl</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[sanitary_pads][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Sanitary Pads / Napkins</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[sanitary_pads][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pack</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[tissue_wipes][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Tissue / Wipes</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[tissue_wipes][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pack</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[underwear][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Underwear</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[underwear][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- First Aid Kit --}}
+                        <div class="relief-panel" id="items-firstaid" style="display:none;">
+                            <div class="rp-header">
+                                <span class="rp-icon-badge firstaid">🩹</span>
+                                <div class="rp-header-text">
+                                    <span class="rp-title">First Aid Kit</span>
+                                    <span class="rp-hint">Check items included and enter quantity per household</span>
+                                </div>
+                                <button type="button" class="rp-select-all-btn" onclick="selectAllItems('items-firstaid')">Select All</button>
+                            </div>
+                            <div class="rp-table">
+                                <div class="rp-table-head">
+                                    <span class="rp-th">Item</span>
+                                    <span class="rp-th qty-head">Qty / Amount</span>
+                                </div>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[alcohol][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Alcohol</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[alcohol][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">btl</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[bandaid][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Band-aid</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[bandaid][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">box</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[bandage][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Bandage</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[bandage][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">roll</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[betadine][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Betadine</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[betadine][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">btl</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[elastic_bandage][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Elastic Bandage</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[elastic_bandage][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">roll</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[emergency_medicine][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Emergency Medicine / CAMPOLAS</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[emergency_medicine][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[gauze_pad][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Gauze Pad</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[gauze_pad][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[gauze_roll][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Gauze Roll</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[gauze_roll][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">roll</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[medical_tape][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Medical Tape</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[medical_tape][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">roll</span></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- Food Pack --}}
+                        <div class="relief-panel" id="items-food" style="display:none;">
+                            <div class="rp-header">
+                                <span class="rp-icon-badge food">🍱</span>
+                                <div class="rp-header-text">
+                                    <span class="rp-title">Food Pack</span>
+                                    <span class="rp-hint">Check items included and enter quantity per household</span>
+                                </div>
+                                <button type="button" class="rp-select-all-btn" onclick="selectAllItems('items-food')">Select All</button>
+                            </div>
+                            <div class="rp-table">
+                                <div class="rp-table-head">
+                                    <span class="rp-th">Item</span>
+                                    <span class="rp-th qty-head">Qty / Amount</span>
+                                </div>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[canned_goods][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Canned Goods (Corned Beef / Sardines)</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[canned_goods][qty]" class="rp-qty-input" min="1" step="1" placeholder="2" onclick="event.stopPropagation()"><span class="rp-qty-unit">cans</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[coffee][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Coffee</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[coffee][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pack</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[instant_noodles][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Instant Noodles</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[instant_noodles][qty]" class="rp-qty-input" min="1" step="1" placeholder="3" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[rice][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Rice</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[rice][qty]" class="rp-qty-input" min="0.5" step="0.5" placeholder="5" onclick="event.stopPropagation()"><span class="rp-qty-unit">kg</span></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- Hygiene Kit --}}
+                        <div class="relief-panel" id="items-hygiene" style="display:none;">
+                            <div class="rp-header">
+                                <span class="rp-icon-badge hygiene">🧴</span>
+                                <div class="rp-header-text">
+                                    <span class="rp-title">Hygiene Kit</span>
+                                    <span class="rp-hint">Check items included and enter quantity per household</span>
+                                </div>
+                                <button type="button" class="rp-select-all-btn" onclick="selectAllItems('items-hygiene')">Select All</button>
+                            </div>
+                            <div class="rp-table">
+                                <div class="rp-table-head">
+                                    <span class="rp-th">Item</span>
+                                    <span class="rp-th qty-head">Qty / Amount</span>
+                                </div>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[bar_soap][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Bar Soap</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[bar_soap][qty]" class="rp-qty-input" min="1" step="1" placeholder="2" onclick="event.stopPropagation()"><span class="rp-qty-unit">bars</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[bucket][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Bucket</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[bucket][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[deodorant][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Deodorant</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[deodorant][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[dipper][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Dipper (Tabo)</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[dipper][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[shampoo][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Shampoo</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[shampoo][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">btl</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[toothbrush][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Toothbrush</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[toothbrush][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[toothpaste][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Toothpaste</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[toothpaste][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">tube</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[towel][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Towel / Face Towel</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[towel][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- Cash Aid --}}
+                        <div class="relief-panel" id="items-cash" style="display:none;">
+                            <div class="rp-header">
+                                <span class="rp-icon-badge cash">💵</span>
+                                <div class="rp-header-text">
+                                    <span class="rp-title">Cash Aid</span>
+                                    <span class="rp-hint">Enter the monetary amount per household</span>
+                                </div>
+                            </div>
+                            <div style="padding:4px 0 8px;">
+                                <div class="form-group" style="max-width:300px;">
+                                    <label class="form-label">Amount per Household <span class="req">*</span></label>
+                                    <div class="cash-input-wrap">
+                                        <span class="cash-prefix">₱</span>
+                                        <input type="number" name="cash_amount" id="cashAmountInput"
+                                            min="1" step="0.01" placeholder="0.00"
+                                            oninput="onItemChange()">
+                                    </div>
+                                    <div class="form-hint">Cash amount each household will receive.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Goods detail (auto-filled) --}}
+                        <div id="goodsDetailWrap" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--gray-100);">
+                            <div class="form-group">
+                                <label class="form-label">Goods Detail / Notes <span class="opt">(auto-filled — editable)</span></label>
+                                <textarea name="goods_detail" id="goodsDetailField" placeholder="e.g. 5kg rice, 2 canned goods, cooking oil — per household">{{ old('goods_detail') }}</textarea>
+                                <div class="form-hint">Auto-filled from checked items above. You may edit before submitting.</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {{-- Event Status & Target Barangay --}}
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <div class="ca-dot"></div>
+                        <div class="form-section-title">Event Status &amp; Target Barangay</div>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="form-row cols-2" style="margin-top:20px;">
+                            <div class="form-group">
+                                <label class="form-label">Planned Start Date &amp; Time <span class="req">*</span></label>
+                                <input type="datetime-local" name="started_at" value="{{ old('started_at') }}" required>
+                                <div class="form-hint">When do you plan to start this distribution event?</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Planned End Date &amp; Time <span class="req">*</span></label>
+                                <input type="datetime-local" name="ended_at" value="{{ old('ended_at') }}" required>
+                                <div class="form-hint">When do you plan to end this distribution event?</div>
+                            </div>
+                        </div>
+
+                        <div class="form-row cols-1">
                             <div class="form-group">
                                 <label class="form-label">Event Date <span class="opt">(optional)</span></label>
                                 <input type="date" name="event_date" value="{{ old('event_date', date('Y-m-d')) }}">
@@ -545,24 +1013,18 @@
                             </div>
                         </div>
 
-                        {{-- TARGET BARANGAY — Multi-select ─────────────────── --}}
                         <div class="form-row cols-1">
                             <div class="form-group">
-                                <label class="form-label">
-                                    Target Barangay <span class="req">*</span>
-                                    <span class="opt">(select one or more)</span>
-                                </label>
-
-                                {{-- Hidden inputs submitted with form --}}
+                                <label class="form-label">Target Barangay <span class="req">*</span> <span class="opt">(select one or more)</span></label>
                                 <div id="brgyHiddenInputs"></div>
-
+                                <div class="brgy-counter-bar" id="brgyCounterBar">
+                                    <span class="brgy-counter-label">Selected Barangays</span>
+                                    <span class="brgy-counter-badge" id="brgyCounterBadge">0 / 30</span>
+                                </div>
                                 <div class="brgy-selector">
-                                    {{-- Toolbar --}}
                                     <div class="brgy-toolbar">
                                         <div class="brgy-search-wrap">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                                            </svg>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                                             <input type="text" class="brgy-search" id="brgySearch" placeholder="Filter barangays..." autocomplete="off">
                                         </div>
                                         <div class="brgy-toolbar-btns">
@@ -570,100 +1032,22 @@
                                             <button type="button" class="brgy-tb-btn clear-all"  onclick="clearAllBarangays()">Clear</button>
                                         </div>
                                     </div>
-
-                                    {{-- Scrollable list --}}
                                     <div class="brgy-list" id="brgyList">
-
-                                        {{-- "All Barangays" special row --}}
                                         <div class="brgy-item all-row" id="allBarangaysRow" onclick="toggleAllBarangays(this)">
-                                            <div class="brgy-checkbox">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                                                    <polyline points="20 6 9 17 4 12"/>
-                                                </svg>
-                                            </div>
+                                            <div class="brgy-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
                                             <span class="brgy-name">All Barangays (Municipality-Wide)</span>
                                         </div>
-
-                                        {{-- Individual barangay rows (populated by JS) --}}
                                         <div id="brgyItems"></div>
                                     </div>
-
-                                    {{-- Selected tags footer --}}
                                     <div class="brgy-footer" id="brgyFooter">
                                         <span class="brgy-footer-label">Selected:</span>
                                         <span class="brgy-none" id="brgyNone">None selected</span>
                                     </div>
                                 </div>
-
                                 <div class="form-hint">Select one or more barangays. Use "All Barangays" for municipality-wide events.</div>
                             </div>
                         </div>
-                        {{-- ──────────────────────────────────────────────────── --}}
 
-                        <div class="form-row cols-1">
-                            <div class="form-group">
-                                <label class="form-label">Goods Detail / Notes <span class="opt">(optional)</span></label>
-                                <textarea name="goods_detail" placeholder="e.g. 5kg rice, 2 canned goods, cooking oil — per household">{{ old('goods_detail') }}</textarea>
-                                <div class="form-hint">Specify contents per household pack. This appears in distribution logs for each scan.</div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                {{-- Relief type quick-select chips --}}
-                <div class="form-section">
-                    <div class="form-section-header">
-                        <div class="ca-dot"></div>
-                        <div class="form-section-title">Quick-Select Relief Type</div>
-                    </div>
-                    <div class="form-section-body">
-                        <div class="form-hint" style="margin-bottom:12px;">Click a type to auto-fill the Relief Type field above.</div>
-                        <div class="relief-types">
-                            <span class="relief-chip" onclick="setRelief('Food Pack')">Food Pack</span>
-                            <span class="relief-chip" onclick="setRelief('Cash Aid')">Cash Aid</span>
-                            <span class="relief-chip" onclick="setRelief('Medical Kit')">Medical Kit</span>
-                            <span class="relief-chip" onclick="setRelief('Rice Subsidy')">Rice Subsidy</span>
-                            <span class="relief-chip" onclick="setRelief('Hygiene Kit')">Hygiene Kit</span>
-                            <span class="relief-chip" onclick="setRelief('Clothing Pack')">Clothing Pack</span>
-                            <span class="relief-chip" onclick="setRelief('School Supplies')">School Supplies</span>
-                            <span class="relief-chip" onclick="setRelief('Other')">Other</span>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Event Status --}}
-                <div class="form-section">
-                    <div class="form-section-header">
-                        <div class="ca-dot"></div>
-                        <div class="form-section-title">Initial Event Status</div>
-                    </div>
-                    <div class="form-section-body">
-                        <div class="form-hint" style="margin-bottom:14px;">
-                            All new events start as <strong>Upcoming</strong>. You can manually start the event later from the Distribution Logs page.
-                        </div>
-                        <input type="hidden" name="status" value="upcoming">
-                        <div style="display:inline-flex;align-items:center;gap:10px;padding:12px 18px;background:var(--blue-pale);border:2px solid var(--blue);border-radius:4px;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                            </svg>
-                            <span style="font-size:13px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.5px;">Upcoming</span>
-                            <span style="font-size:11px;color:var(--gray-600);">— Admin will start this event manually</span>
-                        </div>
-                        <div style="margin-top:20px;">
-                            <div class="form-row cols-2">
-                                <div class="form-group">
-                                    <label class="form-label">Planned Start Date &amp; Time <span class="req">*</span></label>
-                                    <input type="datetime-local" name="started_at" value="{{ old('started_at') }}" required>
-                                    <div class="form-hint">When do you plan to start this distribution event?</div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Planned End Date &amp; Time <span class="req">*</span></label>
-                                    <input type="datetime-local" name="ended_at" value="{{ old('ended_at') }}" required>
-                                    <div class="form-hint">When do you plan to end this distribution event?</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -679,6 +1063,7 @@
                 </div>
 
             </div>
+
 
             <!-- RIGHT: Info Panel -->
             <div class="info-panel">
@@ -792,44 +1177,224 @@
     }
     document.addEventListener('keydown', e => { if(e.key === 'Escape') closeSidebar(); });
 
-    /* ── Relief type quick-fill ── */
-    function setRelief(type) {
-        document.getElementById('relief_type_input').value = type;
-        document.getElementById('relief_type_input').focus();
+    /* ── Relief type category picker — MULTI-SELECT ── */
+
+    const CAT_PANELS = {
+        'rcp-cash':     { panelId: 'items-cash',     type: 'Cash Aid' },
+        'rcp-dignity':  { panelId: 'items-dignity',  type: 'Dignity Kit' },
+        'rcp-firstaid': { panelId: 'items-firstaid', type: 'First Aid Kit' },
+        'rcp-food':     { panelId: 'items-food',     type: 'Food Pack' },
+        'rcp-hygiene':  { panelId: 'items-hygiene',  type: 'Hygiene Kit' },
+    };
+
+    // Tracks which categories are currently active (Set of btnIds)
+    const activeCats = new Set();
+
+    function toggleCategory(type, btnId, panelId) {
+        const btn   = document.getElementById(btnId);
+        const panel = document.getElementById(panelId);
+
+        if (activeCats.has(btnId)) {
+            // Deactivate: hide panel, uncheck all items inside it
+            activeCats.delete(btnId);
+            btn.classList.remove('active');
+            panel.style.display = 'none';
+            panel.querySelectorAll('.rp-cb-native').forEach(cb => cb.checked = false);
+            if (btnId === 'rcp-cash') {
+                const ca = document.getElementById('cashAmountInput');
+                if (ca) ca.value = '';
+            }
+        } else {
+            // Activate: show panel
+            activeCats.add(btnId);
+            btn.classList.add('active');
+            panel.style.display = '';
+        }
+
+        // Hide/show empty state
+        const emptyEl = document.getElementById('reliefItemsEmpty');
+        if (emptyEl) emptyEl.style.display = activeCats.size === 0 ? '' : 'none';
+
+        renderReliefTypeInputs();
+        updateGoodsDetail();
+        updateBadge();
+        updateSelectAllBtn(panelId);
     }
+
+    /* Render hidden inputs for relief_type[] */
+    function renderReliefTypeInputs() {
+        const container = document.getElementById('relief_type_hidden_inputs');
+        container.innerHTML = '';
+        activeCats.forEach(btnId => {
+            const input = document.createElement('input');
+            input.type  = 'hidden';
+            input.name  = 'relief_type[]';
+            input.value = CAT_PANELS[btnId].type;
+            container.appendChild(input);
+        });
+    }
+
+    function onItemChange(e) {
+        updateGoodsDetail();
+        updateBadge();
+
+        // whenever an individual item checkbox is changed, update the select-all
+        if (e && e.target) {
+            const panel = e.target.closest('.relief-panel');
+            if (panel) updateSelectAllBtn(panel.id);
+        }
+    }
+
+    function selectAllItems(panelId) {
+        const panel = document.getElementById(panelId);
+        if (!panel) return;
+        const cbs = panel.querySelectorAll('.rp-cb-native');
+        const allChecked = Array.from(cbs).every(cb => cb.checked);
+        cbs.forEach(cb => cb.checked = !allChecked);
+        onItemChange();
+        updateSelectAllBtn(panelId);
+    }
+
+    function updateSelectAllBtn(panelId) {
+        const panel = document.getElementById(panelId);
+        if (!panel) return;
+        const btn = panel.querySelector('.rp-select-all-btn');
+        if (!btn) return;
+        const cbs = panel.querySelectorAll('.rp-cb-native');
+        const allChecked = cbs.length && Array.from(cbs).every(cb => cb.checked);
+        btn.textContent = allChecked ? 'Unselect All' : 'Select All';
+    }
+
+    function updateGoodsDetail() {
+        const gdField = document.getElementById('goodsDetailField');
+        const gdWrap  = document.getElementById('goodsDetailWrap');
+        if (!gdField) return;
+
+        const allParts = [];
+
+        // Cash Aid
+        if (activeCats.has('rcp-cash')) {
+            const amt = document.getElementById('cashAmountInput');
+            if (amt && amt.value) {
+                allParts.push('\u20B1' + parseFloat(amt.value).toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' cash per household');
+            }
+        }
+
+        // All other active kits
+        activeCats.forEach(btnId => {
+            if (btnId === 'rcp-cash') return;
+            const panelId = CAT_PANELS[btnId].panelId;
+            const checked = document.querySelectorAll('#' + panelId + ' .rp-cb-native:checked');
+            checked.forEach(cb => {
+                const item     = cb.closest('.rp-item');
+                const name     = item.querySelector('.rp-name').textContent.trim();
+                const qtyInput = item.querySelector('.rp-qty-input');
+                const unit     = item.querySelector('.rp-qty-unit') ? item.querySelector('.rp-qty-unit').textContent.trim() : '';
+                const qty      = qtyInput && qtyInput.value ? qtyInput.value : '';
+                allParts.push(qty ? `${qty} ${unit} ${name}` : name);
+            });
+        });
+
+        if (allParts.length > 0) {
+            gdField.value = allParts.join(', ');
+            gdField.dataset.autoFilled = '1';
+            if (gdWrap) gdWrap.style.display = '';
+        } else {
+            gdField.value = '';
+            delete gdField.dataset.autoFilled;
+            if (gdWrap) gdWrap.style.display = 'none';
+        }
+    }
+
+    function updateBadge() {
+        const badge = document.getElementById('reliefItemsBadge');
+        if (!badge) return;
+
+        if (activeCats.size === 0) { badge.style.display = 'none'; return; }
+
+        let totalItems = 0;
+        let cashLabel  = '';
+
+        activeCats.forEach(btnId => {
+            if (btnId === 'rcp-cash') {
+                const amt = document.getElementById('cashAmountInput');
+                if (amt && amt.value) cashLabel = '\u20B1' + parseFloat(amt.value).toLocaleString('en-PH', {minimumFractionDigits:2});
+            } else {
+                totalItems += document.querySelectorAll('#' + CAT_PANELS[btnId].panelId + ' .rp-cb-native:checked').length;
+            }
+        });
+
+        const parts = [];
+        if (totalItems > 0) parts.push(totalItems + ' item' + (totalItems > 1 ? 's' : ''));
+        if (cashLabel)      parts.push(cashLabel);
+
+        if (parts.length > 0) {
+            badge.textContent = parts.join(' · ');
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    /* Update goods detail live when qty inputs change */
+    document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('rp-qty-input')) {
+            const item = e.target.closest('.rp-item');
+            if (item && item.querySelector('.rp-cb-native:checked')) {
+                updateGoodsDetail();
+            }
+        }
+    });
+
+    // also handle checkbox toggles globally (so we don't need inline handlers on every input)
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('rp-cb-native')) {
+            onItemChange(e);
+        }
+    });
+
 
     /* ══════════════════════════════════════════════
        BARANGAY MULTI-SELECT
     ══════════════════════════════════════════════ */
 
-    // Selected set — stores barangay names
     const selectedBarangays = new Set(
         @json(old('target_barangay', []))
     );
 
-    // Will be populated once naicBarangays loads
     let allBarangayNames = [];
 
     document.addEventListener('DOMContentLoaded', function () {
 
-        // Build list from ph-locations.js (naicBarangays array)
         if (typeof naicBarangays !== 'undefined') {
             allBarangayNames = [...naicBarangays];
         } else {
-            // Fallback: known Naic barangays
             allBarangayNames = [
-                'Bagong Kalsada','Bucana','Calubcob','Capt. C. Nazareno',
-                'Dagatan','Ibayo Estacion','Ibayo Silangan','Ilustre',
-                'Ilog','Imok','Kanluran','Labac','Latoria','Mabolo',
-                'Makina','Mataas na Lupa','Muzon','Palangue 1','Palangue 2',
-                'Palangue 3','Sabang','San Roque','Timalan Concepcion',
-                'Timalan San Jose','Wakas'
+                'Bagong Kalsada','Balsahan','Bancaan','Bucana Malaki','Bucana Sasahan',
+                'Calubcob','Capt. C. Nazareno (Poblacion)','Gombalza (Poblacion)',
+                'Halang','Humbac','Ibayo Estacion','Ibayo Silangan','Kanluran Rizal',
+                'Latoria','Labac','Mabolo','Malainen Bago','Malainen Luma','Makina',
+                'Molino','Munting Mapino','Muzon','Palangue 2 & 3','Palangue Central',
+                'Sabang','San Roque','Santulan','Sapa','Timalan Balsahan','Timalan Concepcion'
             ];
         }
 
         buildBarangayList();
         renderHiddenInputs();
         renderFooterTags();
+
+        // restore any previously selected relief types (old input after validation error)
+        const oldCats = @json(old('relief_type', []));
+        if (Array.isArray(oldCats) && oldCats.length) {
+            oldCats.forEach(type => {
+                for (const btnId in CAT_PANELS) {
+                    if (CAT_PANELS[btnId].type === type) {
+                        toggleCategory(type, btnId, CAT_PANELS[btnId].panelId);
+                        break;
+                    }
+                }
+            });
+        }
     });
 
     function buildBarangayList() {
@@ -851,7 +1416,6 @@
             container.appendChild(div);
         });
 
-        // Restore "All Barangays" checked state
         const allRow = document.getElementById('allBarangaysRow');
         if (selectedBarangays.has('All Barangays')) {
             allRow.classList.add('checked');
@@ -866,7 +1430,6 @@
             selectedBarangays.add(name);
             el.classList.add('checked');
         }
-        // If "All Barangays" was selected, deselect it
         if (selectedBarangays.has('All Barangays')) {
             selectedBarangays.delete('All Barangays');
             document.getElementById('allBarangaysRow').classList.remove('checked');
@@ -877,7 +1440,6 @@
 
     function toggleAllBarangays(el) {
         const isChecked = el.classList.contains('checked');
-        // Clear everything first
         selectedBarangays.clear();
         document.querySelectorAll('#brgyItems .brgy-item').forEach(item => item.classList.remove('checked'));
 
@@ -908,7 +1470,6 @@
         renderFooterTags();
     }
 
-    /* Render hidden inputs so the form submits correctly */
     function renderHiddenInputs() {
         const container = document.getElementById('brgyHiddenInputs');
         container.innerHTML = '';
@@ -921,12 +1482,25 @@
         });
     }
 
-    /* Render tags in the footer */
     function renderFooterTags() {
         const footer   = document.getElementById('brgyFooter');
         const noneEl   = document.getElementById('brgyNone');
         const existing = footer.querySelectorAll('.brgy-tag, .brgy-count');
         existing.forEach(el => el.remove());
+
+        // Update counter badge
+        const badge = document.getElementById('brgyCounterBadge');
+        const total = allBarangayNames.length;
+        if (badge) {
+            if (selectedBarangays.has('All Barangays')) {
+                badge.textContent = `${total} / ${total}`;
+                badge.classList.add('all-selected');
+            } else {
+                const n = selectedBarangays.size;
+                badge.textContent = `${n} / ${total}`;
+                badge.classList.toggle('all-selected', n === total);
+            }
+        }
 
         if (selectedBarangays.size === 0) {
             noneEl.style.display = '';
@@ -943,8 +1517,6 @@
         }
 
         const names = [...selectedBarangays];
-
-        // Show first 4 as tags, rest as "+N more"
         const show = names.slice(0, 4);
         const rest = names.length - show.length;
 
@@ -971,20 +1543,21 @@
         renderFooterTags();
     }
 
-    /* Live filter / search */
     document.getElementById('brgySearch').addEventListener('input', function () {
         const q = this.value.toLowerCase().trim();
         document.querySelectorAll('#brgyItems .brgy-item').forEach(item => {
             const match = item.dataset.name.toLowerCase().includes(q);
             item.classList.toggle('hidden', !match);
         });
-        // Hide "All Barangays" row when searching
         document.getElementById('allBarangaysRow').style.display = q ? 'none' : '';
     });
 
-    /* Form validation — require at least one barangay */
     document.getElementById('eventForm').addEventListener('submit', function (e) {
-        if (selectedBarangays.size === 0) {
+        if (activeCats.size === 0) {
+            e.preventDefault();
+            alert('Please select at least one Relief Type.');
+            document.getElementById('reliefCatPicker').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else if (selectedBarangays.size === 0) {
             e.preventDefault();
             alert('Please select at least one target barangay.');
             document.getElementById('brgySearch').focus();

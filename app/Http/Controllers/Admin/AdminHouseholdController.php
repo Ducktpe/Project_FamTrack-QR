@@ -100,18 +100,15 @@ class AdminHouseholdController extends Controller
             $household->approved_by = auth()->id();
             $household->save();
 
-            AuditLog::create([
-                'user_id'    => auth()->id(),
-                'user_name'  => auth()->user()->name,
-                'action'     => 'approved',
-                'model'      => 'Household',
-                'record_id'  => $household->id,
-                'new_values' => [
+            AuditLog::log('approved_household', [
+                'model'         => 'Household',
+                'record_id'     => $household->id,
+                'affected_name' => $household->household_head_name,
+                'description'   => "Approved household and assigned serial code {$serialCode}",
+                'new_values'    => [
                     'serial_code' => $serialCode,
                     'approved_by' => auth()->id(),
                 ],
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
             ]);
 
             \DB::commit();
@@ -144,14 +141,12 @@ class AdminHouseholdController extends Controller
         $household->approved_by = null;
         $household->save();
 
-        AuditLog::create([
-            'user_id'    => auth()->id(),
-            'user_name'  => auth()->user()->name,
-            'action'     => 'unapproved',
-            'model'      => 'Household',
-            'record_id'  => $household->id,
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
+        AuditLog::log('rejected_household', [
+            'model'         => 'Household',
+            'record_id'     => $household->id,
+            'affected_name' => $household->household_head_name,
+            'description'   => "Revoked approval and removed serial code from {$household->household_head_name}",
+            'old_values'    => ['serial_code' => $household->serial_code],
         ]);
 
         return back()->with('success', 'Household approval revoked. Serial code removed.');
@@ -169,15 +164,12 @@ class AdminHouseholdController extends Controller
         $householdName = $household->household_head_name;
         $household->delete();
 
-        AuditLog::create([
-            'user_id'    => auth()->id(),
-            'user_name'  => auth()->user()->name,
-            'action'     => 'deleted',
-            'model'      => 'Household',
-            'record_id'  => $household->id,
-            'old_values' => ['household_head_name' => $householdName],
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
+        AuditLog::log('deleted_household', [
+            'model'         => 'Household',
+            'record_id'     => $household->id,
+            'affected_name' => $householdName,
+            'description'   => "Permanently deleted household record of {$householdName}",
+            'old_values'    => ['household_head_name' => $householdName],
         ]);
 
         return redirect()->route('admin.households.index')
@@ -197,19 +189,16 @@ class AdminHouseholdController extends Controller
         try {
             $qrCode = $qrService->generateForHousehold($household);
 
-            AuditLog::create([
-                'user_id'    => auth()->id(),
-                'user_name'  => auth()->user()->name,
-                'action'     => 'generated_qr',
-                'model'      => 'QrCode',
-                'record_id'  => $qrCode->id,
-                'new_values' => [
+            AuditLog::log('generated_qr_code', [
+                'model'         => 'QrCode',
+                'record_id'     => $qrCode->id,
+                'affected_name' => $household->household_head_name,
+                'description'   => "Generated QR code for {$household->household_head_name} ({$household->serial_code})",
+                'new_values'    => [
                     'household_id' => $household->id,
                     'serial_code'  => $household->serial_code,
                     'file_name'    => $qrCode->file_name,
                 ],
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
             ]);
 
             return redirect()->route('admin.households.show', $household)

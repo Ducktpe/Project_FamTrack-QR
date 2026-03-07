@@ -310,15 +310,13 @@
 
         @else
 
-            {{-- ── FIX 1: Stats seeded from server, not hardcoded 0 ── --}}
             <div class="stats-row">
                 <div class="stat-card green-top">
-                    {{-- Starts as a shimmer, filled by fetchTodayStats() on load --}}
-                    <div class="stat-number" id="scan-count"><span class="stat-loading"></span></div>
+                    <div class="stat-number" id="scan-count">0</div>
                     <div class="stat-label">Confirmed Today</div>
                 </div>
                 <div class="stat-card red-top">
-                    <div class="stat-number" id="duplicate-count"><span class="stat-loading"></span></div>
+                    <div class="stat-number" id="duplicate-count">0</div>
                     <div class="stat-label">Duplicates Blocked</div>
                 </div>
             </div>
@@ -334,7 +332,7 @@
                     <select id="event_id" required>
                         <option value="">— Choose an event to begin scanning —</option>
                         @foreach($events as $event)
-                            <option value="{{ $event->id }}">
+                            <option value="{{ $event->id }}" {{ request('event_id') == $event->id ? 'selected' : '' }}>
                                 {{ $event->event_name }} &nbsp;|&nbsp; {{ $event->event_date->format('M d, Y') }}
                             </option>
                         @endforeach
@@ -393,6 +391,16 @@
     ══════════════════════════════════════════════════════ */
 
     const eventSelect        = document.getElementById('event_id');
+
+    // Auto-trigger event selection if ?event_id was passed in the URL
+    (function() {
+        const params = new URLSearchParams(window.location.search);
+        const preselect = params.get('event_id');
+        if (preselect && eventSelect) {
+            eventSelect.value = preselect;
+            eventSelect.dispatchEvent(new Event('change'));
+        }
+    })();
     const scannerContainer   = document.getElementById('scanner-container');
     const resultCard         = document.getElementById('result-card');
     let html5QrcodeScanner   = null;
@@ -401,31 +409,43 @@
     let scanCount            = 0;       // local session tally (added to server count)
     let duplicateCount       = 0;
 
-    /* ── FIX 1: Load today's real counts from the server on page load ── */
+    /* ── Load today's real counts from the server, filtered by selected event ── */
     async function fetchTodayStats() {
+        const eventId = eventSelect?.value ?? '';
+        const url     = '{{ route("staff.scan.history") }}?stats_only=1' + (eventId ? `&event_id=${eventId}` : '');
         try {
-            const res  = await fetch('{{ route("staff.scan.history") }}?stats_only=1', {
+            const res  = await fetch(url, {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             });
             const data = await res.json();
-            // Server returns today's confirmed + duplicates for this staff member
             scanCount      = data.confirmed_today ?? 0;
             duplicateCount = data.duplicates_today ?? 0;
             document.getElementById('scan-count').textContent      = scanCount;
             document.getElementById('duplicate-count').textContent = duplicateCount;
         } catch {
-            // If endpoint doesn't support stats_only yet, just show 0
             document.getElementById('scan-count').textContent      = 0;
             document.getElementById('duplicate-count').textContent = 0;
         }
     }
-    fetchTodayStats();
+    // Don't fetch stats on load — show 0 until user picks an event
+    document.getElementById('scan-count').textContent      = 0;
+    document.getElementById('duplicate-count').textContent = 0;
 
-    /* ── FIX 2: Only start scanner once; switching events does NOT restart camera ── */
+    // Auto-start scanner & fetch stats if event already pre-selected on load
+    if (eventSelect?.value && !scannerRunning) {
+        startScanner();
+        fetchTodayStats();
+    }
+
+    /* ── Only start scanner once; switching events does NOT restart camera ── */
     eventSelect?.addEventListener('change', function () {
         if (!this.value) {
-            // No event chosen — hide scanner
+            // No event chosen — hide scanner and reset counters to zero
             stopScanner();
+            scanCount = 0;
+            duplicateCount = 0;
+            document.getElementById('scan-count').textContent      = 0;
+            document.getElementById('duplicate-count').textContent = 0;
             return;
         }
         if (!scannerRunning) {
@@ -437,6 +457,8 @@
         resultCard.style.display = 'none';
         resultCard.innerHTML = '';
         currentHouseholdData = null;
+        // Refresh counters to show stats for the newly selected event
+        fetchTodayStats();
     });
 
     function startScanner() {
@@ -464,6 +486,12 @@
 
     async function processQRCode(serialCode) {
         const eventId = eventSelect.value;
+
+        if (!eventId) {
+            showErrorResult('Please select an active event before scanning.');
+            return;
+        }
+
         try {
             const response = await fetch('{{ route("staff.scan.process") }}', {
                 method: 'POST',
@@ -488,18 +516,138 @@
             } else {
                 showErrorResult(data.message);
             }
-        } catch {
-            showErrorResult('Network error. Please check your connection.');
+        } catch (err) {
+            showErrorResult('Network error: ' + err.message);
         }
     }
 
     /* ── Result renderers ── */
+
+    function buildItemsEditor(reliefItems) {
+        if (!reliefItems || Object.keys(reliefItems).length === 0) return '';
+
+        // Category metadata — maps item keys to their category
+        const CATEGORIES = {
+            'food_pack':  {
+                label: 'Food Pack', icon: '🍱',
+                accent: '#92400E', bg: '#FFFBEB', border: '#FDE68A', headBg: '#FEF3C7',
+                keys: ['rice','canned_goods','instant_noodles','coffee'],
+            },
+            'hygiene_kit': {
+                label: 'Hygiene Kit', icon: '🧴',
+                accent: '#1D4ED8', bg: '#EFF6FF', border: '#BFDBFE', headBg: '#DBEAFE',
+                keys: ['bar_soap','shampoo','toothbrush','toothpaste','deodorant','towel','bucket','dipper'],
+            },
+            'dignity_kit': {
+                label: 'Dignity Kit', icon: '🎀',
+                accent: '#7E22CE', bg: '#FAF5FF', border: '#E9D5FF', headBg: '#F3E8FF',
+                keys: ['feminine_hygiene_wash','sanitary_pads','tissue_wipes','underwear'],
+            },
+            'first_aid_kit': {
+                label: 'First Aid Kit', icon: '🩹',
+                accent: '#B91C1C', bg: '#FFF1F2', border: '#FECDD3', headBg: '#FFE4E6',
+                keys: ['alcohol','bandaid','bandage','betadine','elastic_bandage','emergency_medicine','gauze_pad','gauze_roll','medical_tape'],
+            },
+            'cash_aid': {
+                label: 'Cash Aid', icon: '💵',
+                accent: '#15803D', bg: '#F0FDF4', border: '#BBF7D0', headBg: '#DCFCE7',
+                keys: ['cash_aid'],
+            },
+        };
+
+        // Group incoming items by category
+        const grouped = {};
+        for (const [key, item] of Object.entries(reliefItems)) {
+            let foundCat = 'other';
+            for (const [catKey, cat] of Object.entries(CATEGORIES)) {
+                if (cat.keys.includes(key)) { foundCat = catKey; break; }
+            }
+            if (!grouped[foundCat]) grouped[foundCat] = [];
+            grouped[foundCat].push([key, item]);
+        }
+
+        if (Object.keys(grouped).length === 0) return '';
+
+        let sectionsHtml = '';
+        for (const [catKey, items] of Object.entries(grouped)) {
+            const cat = CATEGORIES[catKey] || {
+                label: 'Other Items', icon: '📦',
+                accent: '#374151', bg: '#F9FAFB', border: '#E5E7EB', headBg: '#F3F4F6',
+                keys: []
+            };
+
+            let itemRows = '';
+            items.forEach(([key, item]) => {
+                const isCash = item.unit === 'PHP';
+                itemRows += `
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid ${cat.border};background:#fff;">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="width:6px;height:6px;border-radius:50%;background:${cat.accent};flex-shrink:0;"></div>
+                            <span style="font-size:13px;color:#374151;font-weight:500;">${item.name}</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                            ${isCash ? '<span style="font-size:13px;font-weight:700;color:'+cat.accent+';">₱</span>' : ''}
+                            <input
+                                type="number"
+                                data-item-key="${key}"
+                                value="${item.qty}"
+                                min="0"
+                                step="${item.unit === 'kg' ? '0.5' : item.unit === 'PHP' ? '0.01' : '1'}"
+                                style="width:72px;padding:5px 8px;border:1px solid ${cat.border};border-radius:4px;font-size:13px;font-family:inherit;text-align:right;background:${cat.bg};color:#1f2937;outline:none;transition:border-color 0.15s,box-shadow 0.15s;"
+                                onfocus="this.style.borderColor='${cat.accent}';this.style.boxShadow='0 0 0 2px ${cat.border}';"
+                                onblur="this.style.borderColor='${cat.border}';this.style.boxShadow='none';"
+                            >
+                            <span style="font-size:11px;color:${cat.accent};font-weight:700;min-width:28px;">${isCash ? 'PHP' : item.unit}</span>
+                        </div>
+                    </div>`;
+            });
+
+            sectionsHtml += `
+                <div style="border:1px solid ${cat.border};border-radius:6px;overflow:hidden;margin-bottom:10px;">
+                    <div style="padding:9px 14px;background:${cat.headBg};border-bottom:1px solid ${cat.border};display:flex;align-items:center;gap:8px;">
+                        <span style="font-size:16px;line-height:1;">${cat.icon}</span>
+                        <span style="font-size:12px;font-weight:700;color:${cat.accent};text-transform:uppercase;letter-spacing:0.6px;">${cat.label}</span>
+                        <span style="margin-left:auto;font-size:11px;color:${cat.accent};opacity:0.7;">${items.length} item${items.length > 1 ? 's' : ''}</span>
+                    </div>
+                    ${itemRows.replace(/<div style="[^"]*border-bottom:[^"]*"[^>]*>\s*$/, d => d.replace('border-bottom:1px solid '+cat.border+';', ''))}
+                </div>`;
+        }
+
+        return `
+            <div style="margin:16px 0;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B3F7A" stroke-width="2.5"><path d="M20 7H4a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 3h-8l-2 4h12l-2-4z"/></svg>
+                    <span style="font-size:12px;font-weight:700;color:#1B3F7A;text-transform:uppercase;letter-spacing:0.6px;">Items to Release</span>
+                    <span style="font-size:11px;color:#9AA3B0;margin-left:2px;">— adjust quantities if needed</span>
+                </div>
+                ${sectionsHtml}
+            </div>`;
+    }
+
+    function getEditedItems(reliefItems) {
+        if (!reliefItems || Object.keys(reliefItems).length === 0) return null;
+        const result = {};
+        document.querySelectorAll('[data-item-key]').forEach(input => {
+            const key = input.dataset.itemKey;
+            if (reliefItems[key]) {
+                result[key] = {
+                    name: reliefItems[key].name,
+                    qty:  parseFloat(input.value) || 0,
+                    unit: reliefItems[key].unit,
+                };
+            }
+        });
+        return result;
+    }
 
     function showSuccessResult(data) {
         const badges = [];
         if (data.household.is_4ps)    badges.push('<span class="badge badge-4ps">4Ps</span>');
         if (data.household.is_pwd)    badges.push('<span class="badge badge-pwd">PWD</span>');
         if (data.household.is_senior) badges.push('<span class="badge badge-senior">Senior</span>');
+
+        // Store relief_items on the household data for use in confirmRelease
+        currentHouseholdData.relief_items = data.relief_items || {};
 
         resultCard.style.display = 'block';
         resultCard.innerHTML = `
@@ -518,6 +666,7 @@
                         <tr><td>Members</td><td>${data.household.members_count} person(s)</td></tr>
                         ${badges.length ? `<tr><td>Program Flags</td><td>${badges.join('')}</td></tr>` : ''}
                     </table>
+                    ${buildItemsEditor(data.relief_items)}
                     <div class="btn-row">
                         <button class="btn btn-confirm" onclick="confirmRelease()">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -632,8 +781,9 @@
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                 },
                 body: JSON.stringify({
-                    household_id: currentHouseholdData.id,
-                    event_id: eventId,
+                    household_id:   currentHouseholdData.id,
+                    event_id:       eventId,
+                    items_received: getEditedItems(currentHouseholdData.relief_items),
                 }),
             });
             const data = await response.json();

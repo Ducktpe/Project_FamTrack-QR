@@ -15,12 +15,14 @@ class DistributionLog extends Model
         'serial_code',
         'distributed_by',
         'distributed_at',
+        'items_received',
         'goods_detail',
         'remarks',
     ];
 
     protected $casts = [
         'distributed_at' => 'datetime',
+        'items_received' => 'array',
     ];
 
     public function event()
