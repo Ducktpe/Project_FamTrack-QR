@@ -383,7 +383,7 @@
             <div class="user-avatar">A</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name ?? 'Admin' }}</div>
-                <div class="user-role">Administrator</div>
+                <div class="user-role">Full Access</div>
             </div>
         </div>
     </header>
@@ -429,15 +429,13 @@
 
         <div class="page-titlebar">
             <div>
-                <div class="page-breadcrumb">Admin / <span>Households</span> / <span>Details</span></div>
-                <div class="page-h1">Household Details</div>
-                <div class="page-sub">RBI-aligned household profile — Barangay Family Track</div>
+                <div class="page-breadcrumb">Home / <span>Dashboard</span></div>
+                <div class="page-h1">Dashboard Overview</div>
+                <div class="page-sub">Barangay Family Track QR Relief Distribution System — MDRRMO Naic, Cavite</div>
             </div>
-            <div class="titlebar-actions">
-                <a href="{{ route('admin.households.index') }}" class="back-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-                    Back to List
-                </a>
+            <div class="page-date">
+                <span>Today</span>
+                <strong id="main-date">—</strong>
             </div>
         </div>
 

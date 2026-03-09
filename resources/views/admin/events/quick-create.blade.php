@@ -113,6 +113,9 @@
         .back-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--blue); text-decoration: none; padding: 8px 16px; border: 1px solid var(--gray-200); background: var(--white); border-radius: 4px; transition: background 0.15s; flex-shrink: 0; }
         .back-btn:hover { background: var(--blue-pale); }
         .back-btn svg { width: 14px; height: 14px; }
+        .page-date { font-size: 12px; color: var(--gray-600); text-align: right; flex-shrink: 0; }
+        .page-date span { display: block; }
+        .page-date strong { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
 
         .create-layout { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
 
@@ -701,10 +704,10 @@
                 <div class="page-h1">Create Distribution Event</div>
                 <div class="page-sub">Configure a new ayuda / relief distribution event for QR scan tracking</div>
             </div>
-            <a href="{{ route('admin.dashboard') }}" class="back-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-                Back to Dashboard
-            </a>
+            <div class="page-date">
+                <span>Today</span>
+                <strong id="main-date">—</strong>
+            </div>
         </div>
 
         <form method="POST" action="{{ route('admin.events.quick-store') }}" id="eventForm">
@@ -1153,10 +1156,12 @@
     function pad(n){ return String(n).padStart(2,'0'); }
     function updateClock() {
         const now    = new Date();
-        const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];    
         const shortM = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         document.getElementById('top-time').textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
         document.getElementById('top-date').textContent = days[now.getDay()]+', '+pad(now.getDate())+' '+shortM[now.getMonth()]+' '+now.getFullYear();
+        const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        document.getElementById('main-date').textContent = days[now.getDay()]+', '+months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
     }
     updateClock();
     setInterval(updateClock, 1000);

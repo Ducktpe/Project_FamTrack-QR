@@ -172,6 +172,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     
     Route::get('/distribution/events/{event}/export-xlsx', [\App\Http\Controllers\Admin\AdminDistributionLogController::class, 'exportEventXlsx'])
         ->name('distribution.events.export.xlsx');
+
+    Route::post('/distribution/events/{event}/export-custom-xlsx', [\App\Http\Controllers\Admin\AdminDistributionLogController::class, 'exportCustomXlsx'])
+    ->name('distribution.events.export.custom.xlsx');
     
     Route::post('/distribution/events/{event}/start', [\App\Http\Controllers\Admin\AdminDistributionEventController::class, 'start'])
         ->name('distribution.events.start');
@@ -183,7 +186,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         ->name('distribution.events.cancel');
 
     // Audit Trail
-    Route::get('/audit-trail', [\App\Http\Controllers\AuditTrailController::class, 'index'])
+    Route::get('/audit-trail', [\App\Http\Controllers\Admin\AuditTrailController::class, 'index'])
         ->name('audit.trail');
 });
 

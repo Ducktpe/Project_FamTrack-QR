@@ -14,7 +14,9 @@ class AdminDistributionLogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DistributionEvent::with('logs');
+        // Eager-load creator and logs with household so the modal
+        // info header and household table have all data without N+1 queries
+        $query = DistributionEvent::with(['creator', 'logs.household', 'logs.staff']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -39,9 +41,10 @@ class AdminDistributionLogController extends Controller
         $events = $query->orderBy('event_date', 'desc')
             ->paginate(20);
 
+        // Compute totals from already-loaded logs (no extra queries)
         $events->getCollection()->transform(function ($event) {
-            $event->total_distributed = $event->logs()->count();
-            $event->unique_households = $event->logs()->distinct('household_id')->count();
+            $event->total_distributed = $event->logs->count();
+            $event->unique_households = $event->logs->unique('household_id')->count();
             return $event;
         });
 
@@ -95,14 +98,32 @@ class AdminDistributionLogController extends Controller
             ->download('distribution_event_' . $event->id . '.xlsx');
     }
 
+    /**
+     * Customisable export — called by the export options modal (POST).
+     * Accepts selected columns, barangay filter, and date range.
+     */
+    public function exportCustomXlsx(Request $request, DistributionEvent $event)
+    {
+        $logCols  = $request->input('log_cols', []);
+        $hhCols   = $request->input('hh_cols', []);
+        $barangay = $request->input('barangay');
+        $dateFrom = $request->input('date_from');
+        $dateTo   = $request->input('date_to');
+
+        $filename = 'distribution_' . \Str::slug($event->event_name) . '_' . now()->format('Ymd_His') . '.xlsx';
+
+        return (new DistributionEventExport($event, $logCols, $hhCols, $barangay, $dateFrom, $dateTo))
+            ->download($filename);
+    }
+
     public function eventsList()
     {
-        $events = DistributionEvent::with('logs')
+        $events = DistributionEvent::with(['creator', 'logs.household', 'logs.staff'])
             ->orderBy('event_date', 'desc')
             ->get()
             ->map(function ($event) {
-                $event->total_distributed = $event->logs()->count();
-                $event->unique_households = $event->logs()->distinct('household_id')->count();
+                $event->total_distributed = $event->logs->count();
+                $event->unique_households = $event->logs->unique('household_id')->count();
                 return $event;
             });
 

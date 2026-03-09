@@ -423,7 +423,7 @@
         </div>
         <div class="header-spacer"></div>
         <div class="header-user-badge">
-            <div class="user-avatar">S</div>
+            <div class="user-avatar">T</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name }}</div>
                 <div class="user-role">Distribution Staff</div>

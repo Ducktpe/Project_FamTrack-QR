@@ -64,10 +64,12 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ─── PROFILE BADGE — ORANGE ─── */
+        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--orange-pale); border: 1px solid var(--orange); border-radius: 4px; flex-shrink: 0; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--orange); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--gray-800); line-height: 1.2; }
+        .user-role { font-size: 10px; color: var(--orange); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
@@ -256,7 +258,7 @@
         </div>
         <div class="header-spacer"></div>
         <div class="header-user-badge">
-            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+            <div class="user-avatar">E</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
                 <div class="user-role">Data Entry Access</div>

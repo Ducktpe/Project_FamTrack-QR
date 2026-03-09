@@ -124,6 +124,9 @@
         .back-btn { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--blue); text-decoration: none; padding: 8px 16px; border: 1px solid var(--gray-200); background: var(--white); border-radius: 4px; transition: background 0.15s; white-space: nowrap; flex-shrink: 0; }
         .back-btn:hover { background: var(--blue-pale); }
         .back-btn svg { width: 14px; height: 14px; }
+        .page-date { font-size: 12px; color: var(--gray-600); text-align: right; flex-shrink: 0; }
+        .page-date span { display: block; }
+        .page-date strong { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
 
         /* Alerts */
         .alert-success { background: var(--green-pale); border: 1px solid #BBF7D0; border-left: 4px solid var(--green); padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: var(--green-dark); display: flex; align-items: center; gap: 10px; }
@@ -504,14 +507,14 @@
 
         <div class="page-titlebar">
             <div>
-                <div class="page-breadcrumb">Admin / <span>Household Management</span></div>
-                <div class="page-h1">Household Management</div>
-                <div class="page-sub">Review, approve, and manage registered household profiles — RBI Framework</div>
+                <div class="page-breadcrumb">Home / <span>Dashboard</span></div>
+                <div class="page-h1">Dashboard Overview</div>
+                <div class="page-sub">Barangay Family Track QR Relief Distribution System — MDRRMO Naic, Cavite</div>
             </div>
-            <a href="{{ route('admin.dashboard') }}" class="back-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-                Back to Dashboard
-            </a>
+            <div class="page-date">
+                <span>Today</span>
+                <strong id="main-date">—</strong>
+            </div>
         </div>
 
         @if(session('success'))
@@ -761,6 +764,8 @@
         const shortM = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         document.getElementById('top-time').textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
         document.getElementById('top-date').textContent = days[now.getDay()]+', '+pad(now.getDate())+' '+shortM[now.getMonth()]+' '+now.getFullYear();
+        const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        document.getElementById('main-date').textContent = days[now.getDay()]+', '+months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
     }
     updateClock();
     setInterval(updateClock, 1000);
