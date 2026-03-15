@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>MDRRMO Naic — Distribution Logs</title>
+    <title>MDRRMO Naic - Distribution Logs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=PT+Serif:wght@700&display=swap" rel="stylesheet">
@@ -55,7 +55,7 @@
             overflow: hidden;
         }
 
-        /* ─── TOP UTILITY BAR ─── */
+        /* --- TOP UTILITY BAR --- */
         .topbar { grid-area: topbar; background: var(--blue-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; }
         .topbar-left { font-size: 11px; color: rgba(255,255,255,0.55); letter-spacing: 0.3px; }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
@@ -65,7 +65,7 @@
         .status-indicator::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #4CAF50; box-shadow: 0 0 5px #4CAF50; animation: blink 2s infinite; }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-        /* ─── HEADER ─── */
+        /* --- HEADER --- */
         header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; }
         .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
         .hamburger:hover { background: var(--blue-pale); }
@@ -78,18 +78,16 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-
-        /* ── Admin badge (blue, matches dashboard) ── */
         .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; flex-shrink: 0; }
         .admin-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
         .admin-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
         .admin-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* ─── SIDEBAR OVERLAY ─── */
+        /* --- SIDEBAR OVERLAY --- */
         .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
         .sidebar-overlay.active { display: block !important; pointer-events: auto; }
 
-        /* ─── SIDEBAR ─── */
+        /* --- SIDEBAR --- */
         .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
         .sidebar-close { display: none; position: absolute; top: 12px; right: 12px; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 4px; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s; }
         .sidebar-close:hover { background: #FEF2F2; color: #C0392B; }
@@ -105,10 +103,10 @@
         .logout-btn { width: 100%; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; background: var(--blue); color: var(--white); border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
         .logout-btn:hover { background: var(--red); }
 
-        /* ─── MAIN ─── */
+        /* --- MAIN --- */
         .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 28px 32px; }
 
-        /* ─── PAGE TITLEBAR ─── */
+        /* --- PAGE TITLEBAR --- */
         .page-titlebar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); gap: 12px; flex-wrap: wrap; }
         .page-breadcrumb { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
         .page-breadcrumb a { color: var(--blue-light); text-decoration: none; }
@@ -119,7 +117,7 @@
         .page-date { font-size: 12px; color: var(--gray-600); text-align: right; flex-shrink: 0; }
         .page-date strong { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
 
-        /* ─── SUMMARY CARDS ─── */
+        /* --- SUMMARY CARDS --- */
         .summary-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
         .summary-card { background: var(--white); border: 1px solid var(--gray-200); border-top: 3px solid var(--blue); padding: 16px 18px; display: flex; align-items: center; gap: 14px; }
         .summary-card.green  { border-top-color: var(--green); }
@@ -134,10 +132,10 @@
         .summary-card.yellow .summary-value { color: var(--yellow-dark); }
         .summary-sub { font-size: 11px; color: var(--gray-400); margin-top: 3px; }
 
-        /* ─── FILTER BOX ─── */
+        /* --- FILTER BOX --- */
         .filter-box { background: var(--white); border: 1px solid var(--gray-200); padding: 16px 20px; margin-bottom: 16px; }
         .filter-box-header { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 12px; }
-        .filters { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto auto; gap: 10px; align-items: end; }
+        .filters { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto auto; gap: 10px; align-items: end; }
         .filter-group { display: flex; flex-direction: column; gap: 4px; }
         .filter-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); }
         .filter-box input[type="text"],
@@ -158,7 +156,7 @@
         .btn-clear { padding: 8px 14px; background: var(--white); color: var(--gray-600); border: 1px solid var(--gray-200); border-radius: 3px; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap; align-self: end; display: inline-block; text-align: center; transition: background 0.15s; }
         .btn-clear:hover { background: var(--gray-100); }
 
-        /* ─── TABLE ─── */
+        /* --- TABLE --- */
         .table-wrap { background: var(--white); border: 1px solid var(--gray-200); overflow: hidden; }
         .table-header { padding: 13px 20px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; gap: 10px; justify-content: space-between; }
         .table-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); display: flex; align-items: center; gap: 8px; }
@@ -172,6 +170,21 @@
         tbody tr:last-child { border-bottom: none; }
         tbody tr:hover { background: var(--blue-pale); }
         tbody td { padding: 12px 16px; font-size: 13px; color: var(--gray-800); vertical-align: middle; }
+
+        /* -- Cancellation reason inline -- */
+        .cancel-reason-inline { display: flex; align-items: flex-start; gap: 5px; margin-top: 5px; padding: 5px 8px; background: var(--red-pale); border: 1px solid #FECACA; border-radius: 3px; }
+        .cancel-reason-inline svg { flex-shrink: 0; margin-top: 1px; }
+        .cancel-reason-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--red); margin-bottom: 1px; }
+        .cancel-reason-text { font-size: 11px; color: #7f1d1d; line-height: 1.4; }
+
+        /* -- Barangay pills -- */
+        .brgy-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; background: var(--blue-pale); color: var(--blue-dark); border: 1px solid #C5D9F5; white-space: nowrap; }
+        .brgy-pill-more { background: var(--gray-100); color: var(--gray-600); border-color: var(--gray-200); cursor: default; position: relative; }
+        .brgy-pill-more:hover { background: var(--blue-pale); color: var(--blue); border-color: #C5D9F5; }
+        #brgyTooltip { position: fixed; z-index: 9999; background: var(--gray-800); color: #fff; font-size: 11px; font-family: 'Open Sans', sans-serif; padding: 7px 12px; border-radius: 4px; pointer-events: none; max-width: 260px; line-height: 1.6; box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
+
+        /* -- highlight class for map pin deep-link -- */
+        tbody tr.pin-highlight { background: var(--yellow-pale) !important; transition: background 1.5s ease; }
 
         /* Status badges */
         .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -188,6 +201,9 @@
         .btn-export:hover { background: var(--green); color: var(--white); }
         .btn-export svg { width: 12px; height: 12px; pointer-events: none; }
         .action-btns { display: flex; align-items: center; gap: 6px; position: relative; z-index: 1; }
+        .btn-cancel { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: var(--red-pale); color: var(--red); border: 1px solid #FECACA; border-radius: 3px; font-family: 'Open Sans', sans-serif; font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.12s, color 0.12s; white-space: nowrap; pointer-events: auto; position: relative; z-index: 2; }
+        .btn-cancel:hover { background: var(--red); color: var(--white); }
+        .btn-cancel svg { width: 12px; height: 12px; pointer-events: none; }
 
         /* Empty state */
         .empty-state { padding: 56px 40px; text-align: center; }
@@ -202,7 +218,7 @@
         .pagination-wrap .links span[aria-current] { background: var(--blue); color: var(--white); border-color: var(--blue); font-weight: 700; }
         .pagination-wrap .links a:hover { background: var(--blue-pale); color: var(--blue); border-color: var(--blue-light); }
 
-        /* ─── MODAL ─── */
+        /* --- MODAL --- */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
         .modal-box { background: var(--white); width: 100%; max-width: 980px; max-height: 88vh; display: flex; flex-direction: column; border-top: 4px solid var(--yellow); box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
@@ -219,7 +235,7 @@
         .spinner { width: 18px; height: 18px; border: 2px solid var(--gray-200); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ─── FOOTER ─── */
+        /* --- FOOTER --- */
         footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; z-index: 100; }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.45); }
         .footer-left strong { color: rgba(255,255,255,0.75); }
@@ -232,7 +248,7 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
-        /* ─── EXPORT MODAL ─── */
+        /* --- EXPORT MODAL --- */
         .export-modal-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 600; align-items: center; justify-content: center; padding: 20px; }
         .export-modal-overlay.active { display: flex !important; }
         .export-modal-box { background: var(--white); width: 100%; max-width: 780px; max-height: 90vh; display: flex; flex-direction: column; border-top: 4px solid var(--green); box-shadow: 0 20px 60px rgba(0,0,0,0.3); border-radius: 2px; }
@@ -244,8 +260,6 @@
         .export-modal-head-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
         .export-modal-body { padding: 20px 22px; overflow-y: auto; flex: 1; }
         .export-modal-footer { padding: 14px 22px; border-top: 1px solid var(--gray-200); background: var(--gray-50); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; flex-wrap: wrap; }
-
-        /* Column group sections */
         .export-section { margin-bottom: 18px; }
         .export-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; }
         .export-section-title a { font-size: 10px; font-weight: 600; color: var(--blue-light); text-decoration: none; letter-spacing: 0; text-transform: none; cursor: pointer; }
@@ -257,13 +271,9 @@
         .export-col-toggle input[type="checkbox"] { width: 14px !important; height: 14px !important; min-width: 14px !important; max-width: 14px !important; flex-shrink: 0; accent-color: var(--blue); cursor: pointer; margin: 0 !important; padding: 0 !important; border: none !important; box-shadow: none !important; }
         .export-col-toggle span { font-size: 12px; color: var(--gray-800); cursor: pointer; line-height: 1.3; pointer-events: none; }
         .export-col-toggle.checked span { color: var(--blue-dark); font-weight: 600; }
-
-        /* Filter row */
         .export-filters { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 18px; }
         .export-filter-group { display: flex; flex-direction: column; gap: 4px; }
         .export-filter-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); }
-
-        /* Footer btns */
         .export-info { font-size: 11px; color: var(--gray-400); }
         .export-info strong { color: var(--blue-dark); }
         .export-footer-btns { display: flex; align-items: center; gap: 8px; }
@@ -273,7 +283,41 @@
         .btn-export-cancel { padding: 9px 16px; background: var(--white); color: var(--gray-600); border: 1px solid var(--gray-200); border-radius: 3px; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
         .btn-export-cancel:hover { background: var(--gray-100); }
 
-        /* ─── RESPONSIVE ─── */
+        /* --- CANCEL MODAL --- */
+        .cancel-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 700; align-items: center; justify-content: center; padding: 20px; }
+        .cancel-modal-overlay.active { display: flex; }
+        .cancel-modal-box { background: var(--white); width: 100%; max-width: 520px; display: flex; flex-direction: column; border-top: 4px solid var(--red); box-shadow: 0 20px 60px rgba(0,0,0,0.3); border-radius: 2px; }
+        .cancel-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; border-bottom: 1px solid var(--gray-200); background: var(--gray-50); flex-shrink: 0; }
+        .cancel-modal-head-left { display: flex; align-items: center; gap: 10px; }
+        .cancel-modal-head-icon { width: 32px; height: 32px; background: var(--red-pale); border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+        .cancel-modal-head-icon svg { width: 16px; height: 16px; color: var(--red); }
+        .cancel-modal-head h2 { font-family: 'PT Serif', serif; font-size: 16px; font-weight: 700; color: var(--blue-dark); }
+        .cancel-modal-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+        .cancel-modal-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 16px; }
+        .cancel-modal-footer { padding: 14px 22px; border-top: 1px solid var(--gray-200); background: var(--gray-50); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+        .cancel-warning-banner { display: flex; align-items: flex-start; gap: 10px; background: #FEF2F2; border: 1px solid #FECACA; border-left: 4px solid var(--red); padding: 12px 14px; border-radius: 2px; color: var(--red); font-size: 12px; }
+        .cancel-warning-banner strong { font-size: 12px; display: block; margin-bottom: 2px; }
+        .cancel-warning-banner span { font-size: 11px; opacity: 0.85; }
+        .cancel-field-group { display: flex; flex-direction: column; gap: 5px; }
+        .cancel-field-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); }
+        .cancel-field-label em { font-style: normal; font-weight: 400; color: var(--gray-400); text-transform: none; letter-spacing: 0; margin-left: 4px; }
+        .cancel-select,
+        .cancel-textarea {
+            width: 100%; padding: 9px 10px;
+            border: 1px solid var(--gray-200); border-radius: 3px;
+            font-family: 'Open Sans', sans-serif; font-size: 13px;
+            color: var(--gray-800); background: var(--white); outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .cancel-select:focus,
+        .cancel-textarea:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,0.1); }
+        .cancel-textarea { resize: vertical; line-height: 1.5; min-height: 80px; }
+        .cancel-char-count { text-align: right; font-size: 10px; color: var(--gray-400); margin-top: 3px; }
+        .btn-do-cancel { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; background: var(--red); color: var(--white); border: none; border-radius: 3px; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: background 0.15s; }
+        .btn-do-cancel:hover:not(:disabled) { background: #a93226; }
+        .btn-do-cancel:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
             .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
             .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
@@ -320,20 +364,17 @@
 <body>
 <div class="shell">
 
-    <!-- SIDEBAR OVERLAY -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-    <!-- TOP UTILITY BAR -->
     <div class="topbar">
         <div class="topbar-left">Republic of the Philippines &nbsp;|&nbsp; Province of Cavite &nbsp;|&nbsp; Municipality of Naic</div>
         <div class="topbar-right">
-            <span class="clock-date-inline" id="top-date">—</span>
+            <span class="clock-date-inline" id="top-date">-</span>
             <span class="clock-inline" id="top-time">00:00:00</span>
             <span class="status-indicator">System Online</span>
         </div>
     </div>
 
-    <!-- HEADER -->
     <header>
         <button class="hamburger" onclick="openSidebar()" aria-label="Open navigation">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -349,7 +390,7 @@
         </div>
         <div class="header-text">
             <div class="header-org">Office of the Municipal DRRMO</div>
-            <div class="header-title">MDRRMO — Naic, Cavite</div>
+            <div class="header-title">MDRRMO - Naic, Cavite</div>
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
@@ -362,7 +403,6 @@
         </div>
     </header>
 
-    <!-- SIDEBAR — Admin Menu (matches dashboard) -->
     <aside class="sidebar" id="sidebar">
         <button class="sidebar-close" onclick="closeSidebar()" aria-label="Close navigation">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -370,9 +410,7 @@
                 <line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
         </button>
-
         <div class="nav-section-label">Admin Menu</div>
-
         <a href="{{ route('admin.dashboard') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="7" height="7" rx="1"/>
@@ -382,7 +420,6 @@
             </svg>
             Dashboard Overview
         </a>
-
         <a href="{{ route('admin.events.quick-create') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2"/>
@@ -392,8 +429,6 @@
             </svg>
             Distribution Events
         </a>
-
-        <!-- Active: Distribution Logs -->
         <a href="{{ route('admin.distribution.logs') }}" class="nav-item active" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
@@ -403,7 +438,6 @@
             </svg>
             Distribution Logs
         </a>
-
         <a href="{{ route('admin.residents.index') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="8" r="4"/>
@@ -411,7 +445,6 @@
             </svg>
             List of Residents
         </a>
-
         <a href="{{ route('admin.households.index') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
@@ -419,8 +452,15 @@
             </svg>
             List of Households
         </a>
-
-        <hr class="sidebar-sep">
+        <a href="{{ route('admin.traillog.trail') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Trail Logs
+        </a>
+        <hr class="sidebar-sep">    
         <div class="sidebar-bottom">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -434,8 +474,7 @@
         </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
+    <main class="main-content" id="mainContent">
 
         <div class="page-titlebar">
             <div>
@@ -443,13 +482,23 @@
                     <a href="{{ route('admin.dashboard') }}">Home</a> / <span>Distribution Logs</span>
                 </div>
                 <div class="page-h1">Distribution Logs</div>
-                <div class="page-sub">View and manage all relief distribution events — Barangay Family Track QR System</div>
+                <div class="page-sub">View and manage all relief distribution events - Barangay Family Track QR System</div>
             </div>
             <div class="page-date">
                 <span>Today</span>
-                <strong id="main-date">—</strong>
+                <strong id="main-date">-</strong>
             </div>
         </div>
+
+        {{-- Flash success message --}}
+        @if(session('success'))
+            <div style="background:var(--green-pale);border:1px solid #BBF7D0;border-left:4px solid var(--green);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;border-radius:2px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green-dark)" stroke-width="2.5" style="flex-shrink:0;">
+                    <circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/>
+                </svg>
+                <span style="font-size:13px;font-weight:600;color:var(--green-dark);">{{ session('success') }}</span>
+            </div>
+        @endif
 
         {{-- Summary Cards --}}
         <div class="summary-row">
@@ -517,7 +566,7 @@
                 <div class="filters">
                     <div class="filter-group">
                         <div class="filter-label">Search</div>
-                        <input type="text" name="search" placeholder="Event name, relief type…" value="{{ request('search') }}">
+                        <input type="text" name="search" placeholder="Event name, relief type..." value="{{ request('search') }}">
                     </div>
                     <div class="filter-group">
                         <div class="filter-label">From Date</div>
@@ -535,6 +584,15 @@
                             <option value="ongoing"   {{ request('status')=='ongoing'   ? 'selected':'' }}>Ongoing</option>
                             <option value="completed" {{ request('status')=='completed' ? 'selected':'' }}>Completed</option>
                             <option value="cancelled" {{ request('status')=='cancelled' ? 'selected':'' }}>Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-label">Barangay</div>
+                        <select name="barangay">
+                            <option value="">All Barangays</option>
+                            @foreach($allBarangays as $brgy)
+                                <option value="{{ $brgy }}" {{ request('barangay')==$brgy ? 'selected':'' }}>{{ $brgy }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <button type="submit" class="btn-filter">Filter</button>
@@ -574,6 +632,7 @@
                                 <th>#</th>
                                 <th>Event Name</th>
                                 <th>Relief Type</th>
+                                <th>Barangay</th>
                                 <th>Date</th>
                                 <th>Status</th>
                                 <th style="text-align:center">Distributed</th>
@@ -583,17 +642,64 @@
                         </thead>
                         <tbody>
                             @foreach($events as $i => $event)
-                                <tr>
+                                <tr id="event-{{ $event->id }}">
                                     <td style="color:var(--gray-400); font-size:12px;">{{ $events->firstItem() + $i }}</td>
+
+                                    {{-- Event Name + cancellation reason shown inline when cancelled --}}
                                     <td>
                                         <div style="font-weight:600; color:var(--blue-dark);">{{ $event->event_name }}</div>
                                         @if($event->description)
                                             <div style="font-size:11px; color:var(--gray-400); margin-top:2px;">{{ Str::limit($event->description, 50) }}</div>
                                         @endif
+                                        @if(strtolower($event->status) === 'cancelled' && $event->cancellation_reason)
+                                            <div class="cancel-reason-inline">
+                                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5">
+                                                    <circle cx="12" cy="12" r="10"/>
+                                                    <line x1="15" y1="9" x2="9" y2="15"/>
+                                                    <line x1="9" y1="9" x2="15" y2="15"/>
+                                                </svg>
+                                                <div>
+                                                    <div class="cancel-reason-label">Cancellation Reason</div>
+                                                    <div class="cancel-reason-text">{{ $event->cancellation_reason }}</div>
+                                                </div>
+                                            </div>
+                                        @endif
                                     </td>
-                                    <td style="font-size:12px; color:var(--gray-600);">{{ is_array($event->relief_type) ? implode(', ', $event->relief_type) : ($event->relief_type ?? '—') }}</td>
+
+                                    <td style="font-size:12px; color:var(--gray-600);">{{ is_array($event->relief_type) ? implode(', ', $event->relief_type) : ($event->relief_type ?? '-') }}</td>
+                                    <td>
+                                        @php
+                                            $brgys = is_array($event->target_barangay)
+                                                ? array_values(array_filter($event->target_barangay))
+                                                : (($event->target_barangay && $event->target_barangay !== '[]') ? [$event->target_barangay] : []);
+                                            $showCount  = 2;
+                                            $visible    = array_slice($brgys, 0, $showCount);
+                                            $hidden     = array_slice($brgys, $showCount);
+                                            $hiddenTip  = implode(', ', $hidden);
+                                        @endphp
+                                        @if(empty($brgys))
+                                            <span style="color:var(--gray-400);font-size:12px;">-</span>
+                                        @else
+                                            <div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center;">
+                                                @foreach($visible as $b)
+                                                    <span class="brgy-pill">{{ $b }}</span>
+                                                @endforeach
+                                                @if(count($hidden) > 0)
+                                                    <span class="brgy-pill brgy-pill-more"
+                                                          data-tip="{{ $hiddenTip }}"
+                                                          onmouseenter="showBrgyTip(this)"
+                                                          onmouseleave="hideBrgyTip()">+{{ count($hidden) }} more</span>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </td>
                                     <td style="font-size:12px; white-space:nowrap;">
                                         {{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }}
+                                        @if(strtolower($event->status) === 'cancelled' && $event->cancelled_at)
+                                            <div style="font-size:10px;color:var(--red);margin-top:2px;">
+                                                Cancelled {{ \Carbon\Carbon::parse($event->cancelled_at)->setTimezone('Asia/Manila')->format('M d, Y') }}
+                                            </div>
+                                        @endif
                                     </td>
                                     <td>
                                         @php $s = strtolower($event->status); @endphp
@@ -607,8 +713,6 @@
                                     </td>
                                     <td>
                                         <div class="action-btns">
-                                            {{-- FIX 1: View button now only passes the numeric ID.
-                                                 Name/status are read safely from data-panel inside openModal(). --}}
                                             <button class="btn-view" onclick="openModal({{ $event->id }})">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -616,8 +720,6 @@
                                                 </svg>
                                                 View
                                             </button>
-                                            {{-- FIX 2: Export button data-barangays now uses e() instead of
-                                                 htmlspecialchars(..., ENT_QUOTES) so JSON.parse() works correctly. --}}
                                             <button class="btn-export"
                                                 data-event-id="{{ $event->id }}"
                                                 data-event-name="{{ e($event->event_name) }}"
@@ -630,6 +732,19 @@
                                                 </svg>
                                                 Export
                                             </button>
+
+                                            {{-- Cancel button: only show for upcoming/ongoing events --}}
+                                            @if(!in_array(strtolower($event->status), ['cancelled', 'completed']))
+                                                <button type="button" class="btn-cancel"
+                                                        onclick="openCancelModal({{ $event->id }}, '{{ addslashes($event->event_name) }}')">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                        <circle cx="12" cy="12" r="10"/>
+                                                        <line x1="15" y1="9" x2="9" y2="15"/>
+                                                        <line x1="9" y1="9" x2="15" y2="15"/>
+                                                    </svg>
+                                                    Cancel
+                                                </button>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -638,9 +753,6 @@
                     </table>
                 </div>
 
-                {{-- FIX 3: Panel data stored in data-panel attribute via e(json_encode()).
-                     This is immune to apostrophes and special chars in household names.
-                     The browser automatically unescapes dataset values before JSON.parse(). --}}
                 @foreach($events as $event)
                 @php
                     $dlogs = $event->logs ?? collect();
@@ -650,18 +762,18 @@
                         } elseif (!empty($dlog->goods_detail)) {
                             $items = $dlog->goods_detail;
                         } else {
-                            $items = '—';
+                            $items = '-';
                         }
                         return [
                             'num'      => $li + 1,
-                            'head'     => $dlog->household->household_head_name ?? '—',
-                            'barangay' => $dlog->household->barangay ?? '—',
-                            'serial'   => $dlog->serial_code ?? '—',
+                            'head'     => $dlog->household->household_head_name ?? '-',
+                            'barangay' => $dlog->household->barangay ?? '-',
+                            'serial'   => $dlog->serial_code ?? '-',
                             'items'    => $items,
                             'date'     => $dlog->distributed_at
                                 ? \Carbon\Carbon::parse($dlog->distributed_at)->setTimezone('Asia/Manila')->format('M d, Y h:i A')
-                                : '—',
-                            'staff'    => $dlog->staff->name ?? ('User #' . ($dlog->distributed_by ?? '—')),
+                                : '-',
+                            'staff'    => $dlog->staff->name ?? ('User #' . ($dlog->distributed_by ?? '-')),
                             'search'   => strtolower(($dlog->household->household_head_name ?? '') . ' ' . ($dlog->household->barangay ?? '') . ' ' . ($dlog->serial_code ?? '')),
                         ];
                     })->values()->toArray();
@@ -670,7 +782,7 @@
                     if (!empty($event->relief_items) && is_array($event->relief_items)) {
                         foreach ($event->relief_items as $key => $item) {
                             $name = $item['name'] ?? ucwords(str_replace('_',' ',$key));
-                            $qty  = !empty($item['qty']) ? ' × ' . $item['qty'] . ' ' . ($item['unit'] ?? '') : '';
+                            $qty  = !empty($item['qty']) ? ' x ' . $item['qty'] . ' ' . ($item['unit'] ?? '') : '';
                             $reliefPills[] = $name . $qty;
                         }
                     } elseif (!empty($event->relief_type) && is_array($event->relief_type)) {
@@ -680,17 +792,21 @@
                     $barangays = $event->logs->pluck('household.barangay')->filter()->unique()->sort()->values()->toArray();
 
                     $panelData = [
-                        'id'          => $event->id,
-                        'name'        => $event->event_name,
-                        'status'      => ucfirst(strtolower($event->status)),
-                        'date'        => \Carbon\Carbon::parse($event->event_date)->format('M d, Y'),
-                        'createdBy'   => $event->creator->name ?? '—',
-                        'createdAt'   => $event->created_at->setTimezone('Asia/Manila')->format('M d, Y h:i A'),
-                        'hhCount'     => $event->logs->unique('household_id')->count(),
-                        'logCount'    => $event->logs->count(),
-                        'reliefPills' => $reliefPills,
-                        'barangays'   => $barangays,
-                        'logs'        => $logRows,
+                        'id'                  => $event->id,
+                        'name'                => $event->event_name,
+                        'status'              => ucfirst(strtolower($event->status)),
+                        'date'                => \Carbon\Carbon::parse($event->event_date)->format('M d, Y'),
+                        'createdBy'           => $event->creator->name ?? '-',
+                        'createdAt'           => $event->created_at->setTimezone('Asia/Manila')->format('M d, Y h:i A'),
+                        'hhCount'             => $event->logs->unique('household_id')->count(),
+                        'logCount'            => $event->logs->count(),
+                        'reliefPills'         => $reliefPills,
+                        'barangays'           => $barangays,
+                        'logs'                => $logRows,
+                        'cancellationReason'  => $event->cancellation_reason ?? null,
+                        'cancelledAt'         => $event->cancelled_at
+                            ? \Carbon\Carbon::parse($event->cancelled_at)->setTimezone('Asia/Manila')->format('M d, Y h:i A')
+                            : null,
                     ];
                 @endphp
                 <div id="panel-data-{{ $event->id }}"
@@ -700,7 +816,7 @@
 
                 @if($events->hasPages())
                     <div class="pagination-wrap">
-                        <div>Showing {{ $events->firstItem() }}–{{ $events->lastItem() }} of {{ $events->total() }}</div>
+                        <div>Showing {{ $events->firstItem() }}-{{ $events->lastItem() }} of {{ $events->total() }}</div>
                         <div class="links">{{ $events->withQueryString()->links() }}</div>
                     </div>
                 @endif
@@ -709,7 +825,6 @@
 
     </main>
 
-    <!-- FOOTER -->
     <footer>
         <div class="footer-left">
             &copy; <span id="footer-year"></span> <strong>MDRRMO Naic, Cavite</strong> &mdash; Municipal Disaster Risk Reduction and Management Office
@@ -725,7 +840,7 @@
 
 </div>
 
-<!-- MODAL -->
+<!-- VIEW / HOUSEHOLDS MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
     <div class="modal-box" onclick="event.stopPropagation()">
         <div class="modal-head">
@@ -740,7 +855,7 @@
                 </div>
                 <div>
                     <h2 id="modalTitle">Event Households</h2>
-                    <div class="modal-head-sub" id="modalSub">Loading details…</div>
+                    <div class="modal-head-sub" id="modalSub">Loading details...</div>
                 </div>
             </div>
             <button class="modal-close-btn" onclick="closeModal()">
@@ -752,7 +867,7 @@
         </div>
         <div class="modal-body" id="modalBody">
             <div style="display:flex;align-items:center;justify-content:center;height:120px;color:var(--gray-400);font-size:13px;gap:10px;">
-                <div class="spinner"></div> Loading households…
+                <div class="spinner"></div> Loading households...
             </div>
         </div>
     </div>
@@ -784,10 +899,8 @@
         </div>
 
         <div class="export-modal-body">
-
-            {{-- Filters --}}
             <div class="export-section">
-                <div class="export-section-title">Filters <span style="font-weight:400;color:var(--gray-400);text-transform:none;letter-spacing:0;font-size:10px;">(optional — leave blank to include all)</span></div>
+                <div class="export-section-title">Filters <span style="font-weight:400;color:var(--gray-400);text-transform:none;letter-spacing:0;font-size:10px;">(optional - leave blank to include all)</span></div>
                 <div class="export-filters">
                     <div class="export-filter-group">
                         <div class="export-filter-label">Barangay</div>
@@ -806,7 +919,6 @@
                 </div>
             </div>
 
-            {{-- Distribution Log Columns --}}
             <div class="export-section">
                 <div class="export-section-title">
                     Distribution Log Columns
@@ -833,7 +945,6 @@
                 </div>
             </div>
 
-            {{-- Household Profile Columns --}}
             <div class="export-section">
                 <div class="export-section-title">
                     Household Profile Columns
@@ -877,7 +988,6 @@
                     @endforeach
                 </div>
             </div>
-
         </div>
 
         <div class="export-modal-footer">
@@ -899,8 +1009,113 @@
     </div>
 </div>
 
+<!-- CANCEL EVENT MODAL - Uses POST route, no HTTP verb spoofing needed -->
+<div class="cancel-modal-overlay" id="cancelModalOverlay" onclick="closeCancelModal()">
+    <div class="cancel-modal-box" onclick="event.stopPropagation()">
+        <div class="cancel-modal-head">
+            <div class="cancel-modal-head-left">
+                <div class="cancel-modal-head-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/>
+                        <line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2>Cancel Distribution Event</h2>
+                    <div class="cancel-modal-sub" id="cancelModalSub">Provide a reason before confirming</div>
+                </div>
+            </div>
+            <button class="modal-close-btn" onclick="closeCancelModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <form id="cancelEventForm" method="POST" action="">
+            @csrf
+            {{-- route is POST, no method spoofing needed --}}
+
+            <div class="cancel-modal-body">
+
+                {{-- Warning banner --}}
+                <div class="cancel-warning-banner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="flex-shrink:0;margin-top:1px;">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    <div>
+                        <strong>This action cannot be undone.</strong>
+                        <span>The event will be permanently marked as <strong>Cancelled</strong> and the reason will be saved to the record.</span>
+                    </div>
+                </div>
+
+                {{-- Reason preset select --}}
+                <div class="cancel-field-group">
+                    <label class="cancel-field-label" for="cancelReasonSelect">
+                        Cancellation Reason <span style="color:var(--red)">*</span>
+                    </label>
+                    <select id="cancelReasonSelect" name="cancellation_reason_preset"
+                            class="cancel-select"
+                            onchange="handleReasonChange(this)" required>
+                        <option value="">- Select a reason -</option>
+                        <option value="Weather conditions (typhoon/flood)">Weather conditions (typhoon/flood)</option>
+                        <option value="Insufficient relief goods or supplies">Insufficient relief goods or supplies</option>
+                        <option value="Logistics or transport issues">Logistics or transport issues</option>
+                        <option value="Security concerns in the area">Security concerns in the area</option>
+                        <option value="Personnel unavailability">Personnel unavailability</option>
+                        <option value="Barangay official request">Barangay official request</option>
+                        <option value="Event rescheduled">Event rescheduled (update via Edit to set new date)</option>
+                        <option value="Other">Other (please specify below)</option>
+                    </select>
+                </div>
+
+                {{-- Additional details textarea --}}
+                <div class="cancel-field-group">
+                    <label class="cancel-field-label" for="cancelReasonText">
+                        Additional Details
+                        <span id="cancelDescRequired" style="color:var(--red);display:none;"> *</span>
+                        <em id="cancelDescHint">(optional unless "Other" is selected)</em>
+                    </label>
+                    <textarea id="cancelReasonText"
+                              name="cancellation_reason"
+                              class="cancel-textarea"
+                              rows="3"
+                              maxlength="500"
+                              placeholder="Describe the circumstances in more detail..."></textarea>
+                    <div class="cancel-char-count"><span id="cancelCharCount">0</span>/500</div>
+                </div>
+
+            </div>{{-- /.cancel-modal-body --}}
+
+            <div class="cancel-modal-footer">
+                <div style="font-size:11px;color:var(--gray-400);">
+                    Cancellation timestamp will be recorded automatically.
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <button type="button" class="btn-export-cancel" onclick="closeCancelModal()">Go Back</button>
+                    <button type="submit" class="btn-do-cancel" id="btnDoCancel" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                        Confirm Cancellation
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Barangay tooltip -->
+<div id="brgyTooltip" style="display:none;"></div>
+
 <script>
-    /* ─── Clock ─── */
+    /* --- Clock --- */
     function pad(n){ return String(n).padStart(2,'0'); }
     function updateClock() {
         const now    = new Date();
@@ -915,35 +1130,28 @@
     setInterval(updateClock, 1000);
     document.getElementById('footer-year').textContent = new Date().getFullYear();
 
-    /* ─── Sidebar ─── */
+    /* --- Sidebar --- */
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
 
-    /* ─── Panel data helper ─── */
+    /* --- Panel data helper --- */
     function getPanelData(eventId) {
         const el = document.getElementById('panel-data-' + eventId);
         if (!el) return null;
-        try {
-            // Browser auto-unescapes data-* attribute values, so JSON.parse
-            // always receives clean text regardless of apostrophes in names.
-            return JSON.parse(el.dataset.panel);
-        } catch(e) {
-            console.error('panel-data parse error for event ' + eventId, e);
-            return null;
-        }
+        try { return JSON.parse(el.dataset.panel); }
+        catch(e) { console.error('panel-data parse error for event ' + eventId, e); return null; }
     }
 
     function esc(str) {
-        return String(str ?? '—')
+        return String(str ?? '-')
             .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
     function buildModalHTML(d) {
         const statusClass = 'badge-' + d.status.toLowerCase();
 
-        // Relief pills
         let pillsHTML = '';
         if (d.reliefPills && d.reliefPills.length) {
             pillsHTML = `<div style="margin-top:12px;padding-top:12px;border-top:1px solid #C5D9F5;">
@@ -953,7 +1161,24 @@
                 </div></div>`;
         }
 
-        // Info header
+        /* Cancellation reason block - shown inside modal for cancelled events */
+        let cancelHTML = '';
+        if (d.status.toLowerCase() === 'cancelled' && d.cancellationReason) {
+            cancelHTML = `
+            <div style="margin-top:10px;padding:10px 14px;background:#FEF2F2;border:1px solid #FECACA;border-left:4px solid #C0392B;border-radius:2px;display:flex;align-items:flex-start;gap:8px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2.5" style="flex-shrink:0;margin-top:1px;">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+                <div>
+                    <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#C0392B;margin-bottom:2px;">Cancellation Reason</div>
+                    <div style="font-size:12px;color:#7f1d1d;line-height:1.5;">${esc(d.cancellationReason)}</div>
+                    ${d.cancelledAt ? `<div style="font-size:10px;color:#9AA3B0;margin-top:4px;">Cancelled on ${esc(d.cancelledAt)}</div>` : ''}
+                </div>
+            </div>`;
+        }
+
         const infoHTML = `
         <div style="background:#EAF0FA;border:1px solid #C5D9F5;border-left:4px solid #1B3F7A;padding:14px 16px;margin-bottom:16px;">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
@@ -976,13 +1201,12 @@
                 <span class="badge ${statusClass}" style="flex-shrink:0;align-self:flex-start;">${esc(d.status)}</span>
             </div>
             ${pillsHTML}
+            ${cancelHTML}
         </div>`;
 
-        // FIX: Export button inside modal now calls openExportModalFromPanel(id)
-        // instead of passing data through HTML attributes — avoids all escaping issues.
         const searchExportRow = `
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
-            <input type="text" id="modalSearchInput" placeholder="Search household name, barangay, or serial code…"
+            <input type="text" id="modalSearchInput" placeholder="Search household name, barangay, or serial code..."
                 style="flex:1;min-width:200px;padding:8px 12px;border:1px solid #DEE2E8;border-radius:4px;font-size:13px;font-family:'Open Sans',sans-serif;outline:none;">
             <button type="button" class="btn-export" style="flex-shrink:0;" onclick="openExportModalFromPanel(${d.id})">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12" style="pointer-events:none">
@@ -994,7 +1218,6 @@
             </button>
         </div>`;
 
-        // Log table
         let tableHTML = '';
         if (!d.logs || d.logs.length === 0) {
             tableHTML = `<div style="text-align:center;padding:40px;color:#9AA3B0;font-size:13px;font-style:italic;">No households have been distributed to yet for this event.</div>`;
@@ -1029,12 +1252,9 @@
         return infoHTML + searchExportRow + tableHTML;
     }
 
-    /* ─── View Modal ─── */
-    // FIX: openModal now only takes eventId. Name and status come from panel data,
-    // so no special characters in event names can ever break the JS call.
+    /* --- View Modal --- */
     function openModal(eventId) {
         const d = getPanelData(eventId);
-
         if (!d) {
             document.getElementById('modalTitle').textContent = 'Event Details';
             document.getElementById('modalSub').textContent   = 'Could not load data.';
@@ -1043,12 +1263,9 @@
             document.body.style.overflow = 'hidden';
             return;
         }
-
         document.getElementById('modalTitle').textContent = d.name;
-        document.getElementById('modalSub').textContent   = 'Status: ' + d.status + ' — Household recipients';
+        document.getElementById('modalSub').textContent   = 'Status: ' + d.status + ' - Household recipients';
         document.getElementById('modalBody').innerHTML    = buildModalHTML(d);
-
-        // Wire up search input
         const inp = document.getElementById('modalSearchInput');
         if (inp) {
             inp.addEventListener('input', function() {
@@ -1058,7 +1275,6 @@
                 });
             });
         }
-
         document.getElementById('modalOverlay').classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -1068,18 +1284,15 @@
         document.body.style.overflow = '';
     }
 
-    /* ─── Export Modal helpers ─── */
+    /* --- Export Modal --- */
     let currentExportEventId = null;
 
     function _populateExportModal(eventId, eventName, barangays) {
         currentExportEventId = eventId;
-
-        document.getElementById('exportModalTitle').textContent = 'Export — ' + eventName;
+        document.getElementById('exportModalTitle').textContent = 'Export - ' + eventName;
         document.getElementById('exportModalSub').textContent   = 'Customise columns and filters before downloading';
-
         document.getElementById('exportDateFrom').value = '';
         document.getElementById('exportDateTo').value   = '';
-
         const sel = document.getElementById('exportBarangay');
         sel.innerHTML = '<option value="">All Barangays</option>';
         (barangays || []).forEach(b => {
@@ -1087,25 +1300,19 @@
             opt.value = b; opt.textContent = b;
             sel.appendChild(opt);
         });
-
         document.querySelectorAll('.export-col-toggle input[type="checkbox"]').forEach(cb => {
-            cb.checked = true;
-            syncToggleStyle(cb);
+            cb.checked = true; syncToggleStyle(cb);
         });
-
         updateExportColCount();
         document.getElementById('exportModalOverlay').classList.add('active');
         document.body.style.overflow = 'hidden';
     }
 
-    // Called by the Export button in the main table row
     function openExportModal(btn) {
         const barangays = JSON.parse(btn.dataset.barangays || '[]');
         _populateExportModal(btn.dataset.eventId, btn.dataset.eventName, barangays);
     }
 
-    // FIX: Called by the Export Excel button inside the View modal.
-    // Reads everything from the already-parsed panel data — no HTML attribute escaping at all.
     function openExportModalFromPanel(eventId) {
         const d = getPanelData(eventId);
         if (!d) return;
@@ -1126,8 +1333,7 @@
 
     function toggleGroup(group, checked) {
         document.querySelectorAll(`.export-col-toggle[data-group="${group}"] input[type="checkbox"]`).forEach(cb => {
-            cb.checked = checked;
-            syncToggleStyle(cb);
+            cb.checked = checked; syncToggleStyle(cb);
         });
     }
 
@@ -1139,44 +1345,127 @@
 
     function doExport() {
         if (!currentExportEventId) return;
-
         const logCols  = [...document.querySelectorAll('input[name="log_cols[]"]:checked')].map(c => c.value);
         const hhCols   = [...document.querySelectorAll('input[name="hh_cols[]"]:checked')].map(c => c.value);
         const barangay = document.getElementById('exportBarangay').value;
         const dateFrom = document.getElementById('exportDateFrom').value;
         const dateTo   = document.getElementById('exportDateTo').value;
-
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '{{ route("admin.distribution.events.export.custom.xlsx", ["event" => "__ID__"]) }}'.replace('__ID__', currentExportEventId);
         form.target = '_blank';
         form.style.display = 'none';
-
         const addField = (name, value) => {
             const input = document.createElement('input');
-            input.type  = 'hidden';
-            input.name  = name;
-            input.value = value;
+            input.type = 'hidden'; input.name = name; input.value = value;
             form.appendChild(input);
         };
-
         addField('_token', document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}');
         logCols.forEach(v => addField('log_cols[]', v));
         hhCols.forEach(v  => addField('hh_cols[]', v));
         if (barangay) addField('barangay', barangay);
         if (dateFrom) addField('date_from', dateFrom);
         if (dateTo)   addField('date_to', dateTo);
-
         document.body.appendChild(form);
         form.submit();
         document.body.removeChild(form);
-
         closeExportModal();
     }
 
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') { closeSidebar(); closeModal(); closeExportModal(); }
+    /* CANCEL MODAL - Route must be: Route::post(...) */
+    function openCancelModal(eventId, eventName) {
+        // Set form action - route must be POST in web.php
+        document.getElementById('cancelEventForm').action =
+            '{{ url("admin/distribution/events") }}/' + eventId + '/cancel';
+        document.getElementById('cancelModalSub').textContent = '<< ' + eventName + ' >>';
+
+        // Reset fields
+        document.getElementById('cancelReasonSelect').value = '';
+        document.getElementById('cancelReasonText').value   = '';
+        document.getElementById('cancelCharCount').textContent = '0';
+        document.getElementById('cancelDescRequired').style.display = 'none';
+        document.getElementById('cancelDescHint').textContent = '(optional unless "Other" is selected)';
+        document.getElementById('btnDoCancel').disabled = true;
+
+        document.getElementById('cancelModalOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCancelModal() {
+        document.getElementById('cancelModalOverlay').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function handleReasonChange(sel) {
+        const isOther  = sel.value === 'Other';
+        const reqStar  = document.getElementById('cancelDescRequired');
+        const hint     = document.getElementById('cancelDescHint');
+        reqStar.style.display = isOther ? 'inline' : 'none';
+        hint.textContent = isOther ? '(required)' : '(optional unless "Other" is selected)';
+        if (isOther) document.getElementById('cancelReasonText').focus();
+        validateCancelForm();
+    }
+
+    function validateCancelForm() {
+        const preset  = document.getElementById('cancelReasonSelect').value;
+        const text    = document.getElementById('cancelReasonText').value.trim();
+        const isOther = preset === 'Other';
+        const valid   = preset !== '' && (!isOther || text.length > 0);
+        document.getElementById('btnDoCancel').disabled = !valid;
+    }
+
+    document.getElementById('cancelReasonText').addEventListener('input', function() {
+        document.getElementById('cancelCharCount').textContent = this.value.length;
+        validateCancelForm();
     });
+    document.getElementById('cancelReasonSelect').addEventListener('change', validateCancelForm);
+
+    /* --- Global keyboard close --- */
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closeSidebar();
+            closeModal();
+            closeExportModal();
+            closeCancelModal();
+        }
+    });
+
+    /* Auto-open modal when arriving from dashboard map pin (#event-{id}) */
+    (function() {
+        const hash = window.location.hash;
+        if (!hash.startsWith('#event-')) return;
+        const eventId = parseInt(hash.replace('#event-', ''), 10);
+        if (!eventId) return;
+        const mainContent = document.getElementById('mainContent');
+        const row = document.getElementById('event-' + eventId);
+        if (row && mainContent) {
+            const rowTop = row.offsetTop - mainContent.offsetTop - 80;
+            mainContent.scrollTo({ top: rowTop, behavior: 'smooth' });
+            row.classList.add('pin-highlight');
+            setTimeout(() => row.classList.remove('pin-highlight'), 2500);
+        }
+        setTimeout(() => openModal(eventId), 400);
+    })();
+
+    /* -- Barangay pill tooltip -- */
+    const brgyTip = document.getElementById('brgyTooltip');
+    function showBrgyTip(el) {
+        brgyTip.textContent = el.dataset.tip.split(', ').join('\n');
+        brgyTip.style.display = 'block';
+        document.addEventListener('mousemove', moveBrgyTip);
+    }
+    function hideBrgyTip() {
+        brgyTip.style.display = 'none';
+        document.removeEventListener('mousemove', moveBrgyTip);
+    }
+    function moveBrgyTip(e) {
+        const p = 14;
+        let x = e.clientX + p, y = e.clientY + p;
+        if (x + 280 > window.innerWidth)  x = e.clientX - 280 - p;
+        if (y + 100 > window.innerHeight) y = e.clientY - 60;
+        brgyTip.style.left = x + 'px';
+        brgyTip.style.top  = y + 'px';
+    }
 </script>
 </body>
 </html>

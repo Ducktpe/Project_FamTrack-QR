@@ -38,6 +38,14 @@ class AdminDistributionLogController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('barangay')) {
+            $brgy = $request->barangay;
+            $query->where(function ($q) use ($brgy) {
+                $q->whereJsonContains('target_barangay', $brgy)
+                  ->orWhere('target_barangay', 'like', "%{$brgy}%");
+            });
+        }
+
         $events = $query->orderBy('event_date', 'desc')
             ->paginate(20);
 
@@ -48,7 +56,15 @@ class AdminDistributionLogController extends Controller
             return $event;
         });
 
-        return view('admin.distribution.logs', compact('events'));
+        // Collect all distinct barangays from target_barangay for the filter dropdown
+        $allBarangays = DistributionEvent::all()
+            ->flatMap(fn($e) => is_array($e->target_barangay) ? $e->target_barangay : [$e->target_barangay])
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values();
+
+        return view('admin.distribution.logs', compact('events', 'allBarangays'));
     }
 
     public function exportEventCsv(DistributionEvent $event)
@@ -159,5 +175,26 @@ class AdminDistributionLogController extends Controller
         ->values();
 
         return view('admin.distribution.event-households', compact('event', 'households'));
+    }
+
+    public function cancel(Request $request, DistributionEvent $event)
+    {
+        $request->validate([
+            'cancellation_reason_preset' => 'required|string',
+            'cancellation_reason'        => 'nullable|string|max:500',
+        ]);
+
+        $reason = $request->cancellation_reason_preset;
+        if ($request->filled('cancellation_reason')) {
+            $reason .= ': ' . $request->cancellation_reason;
+        }
+
+        $event->update([
+            'status'              => 'cancelled',
+            'cancelled_at'        => now(),
+            'cancellation_reason' => $reason,
+        ]);
+
+        return back()->with('success', 'Event "' . $event->event_name . '" has been cancelled.');
     }
 }

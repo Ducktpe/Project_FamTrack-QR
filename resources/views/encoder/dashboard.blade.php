@@ -657,26 +657,8 @@
             List of Households
         </a>
 
+        
         <hr class="sidebar-sep">
-        <div class="nav-section-label">DSWD Integration</div>
-
-        <a href="#" class="nav-item" onclick="closeSidebar()">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 11l3 3L22 4"/>
-                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-            </svg>
-            Listahanan Cross-Reference
-        </a>
-
-        <a href="#" class="nav-item" onclick="closeSidebar()">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                <line x1="12" y1="9" x2="12" y2="13"/>
-                <line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-            Flag Duplicate Records
-            <span class="nav-badge-warn">Action</span>
-        </a>
 
         <div class="role-notice">
             <div class="role-notice-title">&#9432; Encoder Access</div>
@@ -729,39 +711,6 @@
             <div class="access-notice-text">
                 <strong>Encoder Role — Data Entry Access.</strong> You may create and update family profiles following the RBI form, add or edit household members, and cross-reference entries with DSWD Listahanan. Submitted records will be reviewed and approved by the Administrator before QR codes are generated. You do not have access to distribution logs or QR code management.
             </div>
-        </div>
-
-        <div class="quick-nav">
-            <a href="{{ route('encoder.households.index') }}" class="qnav-card">
-                <div class="qnav-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                        <path d="M9 22V12h6v10"/>
-                    </svg>
-                </div>
-                <div class="qnav-title">My Households</div>
-                <div class="qnav-desc">View and manage your submitted household records</div>
-            </a>
-            <a href="{{ route('encoder.households.index') }}" class="qnav-card">
-                <div class="qnav-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                    </svg>
-                </div>
-                <div class="qnav-title">Household Management</div>
-                <div class="qnav-desc">Add, edit, or archive members within a household</div>
-            </a>
-            <a href="#" class="qnav-card">
-                <div class="qnav-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                    </svg>
-                </div>
-                <div class="qnav-title">Listahanan Cross-Reference</div>
-                <div class="qnav-desc">Tag and verify families against DSWD Listahanan records</div>
-            </a>
         </div>
 
         <div class="content-area">

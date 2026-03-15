@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Encoder;
 use App\Http\Controllers\Controller;
 use App\Models\Household;
 use App\Models\FamilyMember;
+use App\Models\NuclearFamily;
+use App\Models\HouseholdRiskProfile;
+use App\Models\FamilyMemberDetail;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class EncoderHouseholdController extends Controller
 {
@@ -61,161 +65,199 @@ class EncoderHouseholdController extends Controller
     }
 
     /**
-     * Store a newly created household in database
+     * Store a newly created household in database.
+     * Reads from blade's fam[fi][...] + fam[fi][m][mi][...] structure.
      */
     public function store(Request $request)
     {
-        // Validate household head data
-        $validated = $request->validate([
+        $request->validate([
             'household_head_name' => 'required|string|max:150',
-            'sex' => 'required|in:Male,Female',
-            'birthday' => 'required|date|before:today',
-            'civil_status' => 'required|string|max:30',
-            'contact_number' => 'nullable|string|max:20',
-            'house_number' => 'nullable|string|max:30',
-            'street_purok' => 'nullable|string|max:100',
-            'barangay' => 'required|string|max:100',
-            'municipality' => 'required|string|max:100',
-            'province' => 'required|string|max:100',
-            'listahanan_id' => 'nullable|string|max:50',
-            'is_4ps_beneficiary' => 'boolean',
-            'is_pwd' => 'boolean',
-            'is_senior' => 'boolean',
-            'is_solo_parent' => 'boolean',
-            
-            // Family members validation (optional)
-            'members' => 'nullable|array',
-            'members.*.full_name' => 'required|string|max:150',
-            'members.*.relationship' => 'required|string|max:50',
-            'members.*.sex' => 'required|in:Male,Female',
-            'members.*.birthday' => 'required|date|before:today',
-            'members.*.is_pwd' => 'boolean',
-            'members.*.is_student' => 'boolean',
-            'members.*.occupation' => 'nullable|string|max:100',
-            'members.*.educational_attainment' => 'nullable|string|max:50',
-
-            // Nuclear family (spouse/deceased spouse + children)
-            'nuclear.spouse.full_name'                   => 'required_if:civil_status,Married|nullable|string|max:150',
-            'nuclear.spouse.sex'                        => 'required_if:civil_status,Married|nullable|in:Male,Female',
-            'nuclear.spouse.birthday'                   => 'required_if:civil_status,Married|nullable|date|before:today',
-            'nuclear.spouse.occupation'                 => 'nullable|string|max:100',
-            'nuclear.spouse.educational_attainment'     => 'nullable|string|max:50',
-            'nuclear.spouse.philhealth_no'              => 'nullable|string|max:30',
-            'nuclear.spouse.is_pwd'                     => 'boolean',
-            'nuclear.deceased_spouse.full_name'         => 'required_if:civil_status,Widowed|nullable|string|max:150',
-            'nuclear.deceased_spouse.sex'               => 'required_if:civil_status,Widowed|nullable|in:Male,Female',
-            'nuclear.deceased_spouse.birthday'          => 'required_if:civil_status,Widowed|nullable|date|before:today',
-            'nuclear.deceased_spouse.occupation'        => 'nullable|string|max:100',
-            'nuclear.deceased_spouse.educational_attainment' => 'nullable|string|max:50',
-            'nuclear.deceased_spouse.philhealth_no'     => 'nullable|string|max:30',
-            'nuclear.deceased_spouse.is_pwd'            => 'boolean',
-            'nuclear.children'                  => 'nullable|array',
-            'nuclear.children.*.full_name'      => 'required|string|max:150',
-            'nuclear.children.*.relationship'   => 'required|in:Son,Daughter',
-            'nuclear.children.*.birthday'       => 'required|date|before:today',
-            'nuclear.children.*.occupation'              => 'nullable|string|max:100',
-            'nuclear.children.*.educational_attainment'  => 'nullable|string|max:50',
-            'nuclear.children.*.philhealth_no'           => 'nullable|string|max:30',
-            'nuclear.children.*.is_pwd'                  => 'boolean',
-            'nuclear.children.*.is_student'              => 'boolean',
+            'sex'                 => 'required|in:Male,Female',
+            'birthday'            => 'required|date|before:today',
+            'civil_status'        => 'required|string|max:30',
+            'contact_number'      => 'nullable|string|max:20',
+            'house_number'        => 'nullable|string|max:30',
+            'street_purok'        => 'nullable|string|max:100',
+            'barangay'            => 'required|string|max:100',
+            'municipality'        => 'required|string|max:100',
+            'province'            => 'required|string|max:100',
+            'listahanan_id'       => 'nullable|string|max:50',
+            'latitude'            => 'nullable|numeric|between:-90,90',
+            'longitude'           => 'nullable|numeric|between:-180,180',
+            'coordinates_image_file' => 'nullable|file|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         DB::beginTransaction();
         try {
-            // Create household record (without serial code yet — assigned on approval)
+            // ── 1. households ────────────────────────────────────────────
             $household = Household::create([
-                'household_head_name' => $validated['household_head_name'],
-                'sex' => $validated['sex'],
-                'birthday' => $validated['birthday'],
-                'civil_status' => $validated['civil_status'],
-                'contact_number' => $validated['contact_number'] ?? null,
-                'house_number' => $validated['house_number'] ?? null,
-                'street_purok' => $validated['street_purok'] ?? null,
-                'barangay' => $validated['barangay'],
-                'municipality' => $validated['municipality'],
-                'province' => $validated['province'],
-                'listahanan_id' => $validated['listahanan_id'] ?? null,
-                'is_4ps_beneficiary' => $request->has('is_4ps_beneficiary'),
-                'is_pwd' => $request->has('is_pwd'),
-                'is_senior' => $request->has('is_senior'),
-                'is_solo_parent' => $request->has('is_solo_parent'),
-                'status' => 'active',
-                'encoded_by' => auth()->id(),
-                // approved_by is NULL until Admin approves
+                'household_head_name' => $request->household_head_name,
+                'sex'                 => $request->sex,
+                'birthday'            => $request->birthday,
+                'civil_status'        => $request->civil_status,
+                'contact_number'      => $request->contact_number,
+                'house_number'        => $request->house_number,
+                'street_purok'        => $request->location,
+                'location'            => $request->location,
+                'barangay'            => $request->barangay,
+                'barangay_area'       => $request->barangay_area,
+                'municipality'        => $request->municipality ?? 'Naic',
+                'province'            => $request->province    ?? 'Cavite',
+                'email'               => $request->email,
+                'year_built'          => $request->year_built  ?: null,
+                'housing_type'        => $request->housing_type,
+                'housing_material'    => $request->housing_material,
+                'ownership_type'      => $request->ownership_type,
+                'electricity_source'  => $request->electricity_source,
+                'water_source'        => $request->water_source,
+                'toilet_access'       => $request->toilet_access,
+                'waste_disposal'      => $request->waste_disposal,
+                'latitude'            => $request->latitude  ?: null,
+                'longitude'           => $request->longitude ?: null,
+                'coordinates_image'   => null,
+                'listahanan_id'       => $request->listahanan_id,
+                'is_4ps_beneficiary'  => 0,
+                'is_pwd'              => 0,
+                'is_senior'           => 0,
+                'is_solo_parent'      => 0,
+                'status'              => 'active',
+                'encoded_by'          => auth()->id(),
             ]);
 
-            // Add family members if provided
-            if (!empty($validated['members'])) {
-                foreach ($validated['members'] as $member) {
-                    FamilyMember::create([
-                        'household_id' => $household->id,
-                        'full_name' => $member['full_name'],
-                        'relationship' => $member['relationship'],
-                        'sex' => $member['sex'],
-                        'birthday' => $member['birthday'],
-                        'is_pwd' => isset($member['is_pwd']) && $member['is_pwd'],
-                        'is_student' => isset($member['is_student']) && $member['is_student'],
-                        'occupation' => $member['occupation'] ?? null,
-                        'educational_attainment' => $member['educational_attainment'] ?? null,
-                    ]);
-                }
+            // Location photo upload
+            if ($request->hasFile('coordinates_image_file')) {
+                $path = $request->file('coordinates_image_file')
+                    ->store('household-photos', 'public');
+                $household->update(['coordinates_image' => $path]);
             }
 
-            // Add nuclear family members
-            $nuclear = $request->input('nuclear', []);
-            $civilStatus = $validated['civil_status'];
+            // ── 2. household_risk_profiles ───────────────────────────────
+            HouseholdRiskProfile::create([
+                'household_id'         => $household->id,
+                'early_warning'        => $request->early_warning        ?? 0,
+                'ews_sources'          => implode(',', $request->input('ews_sources', [])),
+                'hazard_awareness'     => $request->hazard_awareness     ?? 0,
+                'income_average'       => $request->income_average,
+                'literacy_rate'        => $request->literacy_rate,
+                'financial_assistance' => $request->financial_assistance ?? 0,
+                'access_info'          => $request->access_info          ?? 0,
+                'relocate_willingness' => $request->relocate_willingness ?? 0,
+                'remarks'              => $request->remarks,
+            ]);
 
-            // Spouse (Married)
-            if ($civilStatus === 'Married' && !empty($nuclear['spouse']['full_name'])) {
-                FamilyMember::create([
-                    'household_id'           => $household->id,
-                    'full_name'              => $nuclear['spouse']['full_name'],
-                    'relationship'           => 'Spouse',
-                    'sex'                    => $nuclear['spouse']['sex'] ?? ($validated['sex'] === 'Male' ? 'Female' : 'Male'),
-                    'birthday'               => $nuclear['spouse']['birthday'],
-                    'occupation'             => $nuclear['spouse']['occupation'] ?? null,
-                    'educational_attainment' => $nuclear['spouse']['educational_attainment'] ?? null,
-                    'philhealth_no'          => $nuclear['spouse']['philhealth_no'] ?? null,
-                    'is_pwd'                 => isset($nuclear['spouse']['is_pwd']) && $nuclear['spouse']['is_pwd'],
-                    'is_student'             => false,
+            // ── 3. nuclear_families + family_members + family_member_details
+            // Blade sends: fam[fi][family_name|family_type|family_head]
+            //              fam[fi][m][mi][full_name|sex|birthday|civil_status|...]
+            $isSenior    = false;
+            $isPwd       = false;
+            $is4ps       = false;
+            $isSoloParent = false;
+
+            // ── Lookup tables: blade sends numeric index, DB needs string ──
+            $vulnLabels   = ['None','Senior','PWD','Solo Parent','4Ps Member','Young','Old'];
+            $employLabels = ['Unemployed','Employed','Part-time','Full-time','Self-employed','Pension/Retired','Freelance','Other'];
+            $educLabels   = ['Elementary Undergraduate','Elementary Graduate','High School Undergraduate','High School Graduate','Vocational','College Undergraduate','College Graduate','Master','Doctorate','TESDA','Other'];
+            $famTypeLabels = ['Nuclear Family','Extended Family','Single Parent Family','Blended Family','Childless Couple','Grandparent-headed','Skipped Generation','Other'];
+            $civilLabels  = ['Single','Married','Legally Separated','Widowed'];
+
+            foreach ($request->input('fam', []) as $fi => $famData) {
+
+                $famTypeIdx = isset($famData['family_type']) && $famData['family_type'] !== ''
+                    ? (int)$famData['family_type'] : null;
+
+                $nf = NuclearFamily::create([
+                    'household_id' => $household->id,
+                    'family_name'  => $famData['family_name'] ?? null,
+                    'family_type'  => $famTypeIdx !== null ? ($famTypeLabels[$famTypeIdx] ?? null) : null,
+                    'family_head'  => $famData['family_head'] ?? null,
                 ]);
-            }
 
-            // Deceased Spouse (Widowed)
-            if ($civilStatus === 'Widowed' && !empty($nuclear['deceased_spouse']['full_name'])) {
-                FamilyMember::create([
-                    'household_id'           => $household->id,
-                    'full_name'              => $nuclear['deceased_spouse']['full_name'],
-                    'relationship'           => 'Deceased Spouse',
-                    'sex'                    => $nuclear['deceased_spouse']['sex'] ?? ($validated['sex'] === 'Male' ? 'Female' : 'Male'),
-                    'birthday'               => $nuclear['deceased_spouse']['birthday'],
-                    'occupation'             => $nuclear['deceased_spouse']['occupation'] ?? null,
-                    'educational_attainment' => $nuclear['deceased_spouse']['educational_attainment'] ?? null,
-                    'philhealth_no'          => $nuclear['deceased_spouse']['philhealth_no'] ?? null,
-                    'is_pwd'                 => isset($nuclear['deceased_spouse']['is_pwd']) && $nuclear['deceased_spouse']['is_pwd'],
-                    'is_student'             => false,
-                ]);
-            }
-
-            // Children (Married, Widowed, or Separated w/ custody)
-            if (!empty($nuclear['children'])) {
-                foreach ($nuclear['children'] as $child) {
-                    FamilyMember::create([
+                // ── For Nuclear Family 1: insert household head as first family member ──
+                // Uses Section 1 fields (household_head_name, sex, birthday, civil_status)
+                if ($fi == 1) {
+                    $headMember = FamilyMember::create([
                         'household_id'           => $household->id,
-                        'full_name'              => $child['full_name'],
-                        'relationship'           => $child['relationship'],
-                        'sex'                    => $child['relationship'] === 'Son' ? 'Male' : 'Female',
-                        'birthday'               => $child['birthday'],
-                        'occupation'             => $child['occupation'] ?? null,
-                        'educational_attainment' => $child['educational_attainment'] ?? null,
-                        'philhealth_no'          => $child['philhealth_no'] ?? null,
-                        'is_pwd'                 => isset($child['is_pwd']) && $child['is_pwd'],
-                        'is_student'             => isset($child['is_student']) && $child['is_student'],
+                        'nuclear_family_id'      => $nf->id,
+                        'full_name'              => $household->household_head_name,
+                        'relationship'           => 'Head',
+                        'civil_status'           => $household->civil_status,
+                        'sex'                    => $household->sex,
+                        'birthday'               => $household->birthday,
+                        'educational_attainment' => null,
+                        'is_pwd'                 => 0,
+                        'is_student'             => 0,
                     ]);
+
+                    FamilyMemberDetail::create([
+                        'family_member_id'  => $headMember->id,
+                        'vulnerable_sector' => null,
+                        'vuln_registered'   => null,
+                        'vuln_id_number'    => null,
+                        'is_lgbtqia'        => 0,
+                        'employment_status' => null,
+                        'job_title'         => null,
+                    ]);
+                }
+
+                // Loop members — fam[fi][m][mi][...]
+                foreach ($famData['m'] ?? [] as $mi => $m) {
+                    // NF1 row 1 = household head, already inserted above from Section 1 fields
+                    if ($fi == 1 && $mi == 1) continue;
+
+                    if (empty($m['full_name'])) continue;
+                    if (empty($m['birthday']))  continue; // birthday is NOT NULL
+
+                    // Decode numeric indexes → string labels
+                    $vulnIdx  = isset($m['vuln_sector'])        && $m['vuln_sector']        !== '' ? (int)$m['vuln_sector']        : null;
+                    $empIdx   = isset($m['employment_status'])  && $m['employment_status']  !== '' ? (int)$m['employment_status']  : null;
+                    $educIdx  = isset($m['educational_attainment']) && $m['educational_attainment'] !== '' ? (int)$m['educational_attainment'] : null;
+                    $civilIdx = isset($m['civil_status'])       && $m['civil_status']       !== '' ? (int)$m['civil_status']       : null;
+
+                    $vulnStr  = $vulnIdx  !== null ? ($vulnLabels[$vulnIdx]   ?? null) : null;
+                    $empStr   = $empIdx   !== null ? ($employLabels[$empIdx]  ?? null) : null;
+                    $educStr  = $educIdx  !== null ? ($educLabels[$educIdx]   ?? null) : null;
+                    $civilStr = $civilIdx !== null ? ($civilLabels[$civilIdx] ?? null) : null;
+
+                    $member = FamilyMember::create([
+                        'household_id'           => $household->id,
+                        'nuclear_family_id'      => $nf->id,
+                        'full_name'              => $m['full_name'],
+                        'relationship'           => $m['relationship']  ?? 'Other',
+                        'civil_status'           => $civilStr,
+                        'sex'                    => $m['sex']           ?? null,
+                        'birthday'               => $m['birthday'],
+                        'educational_attainment' => $educStr,
+                        'is_pwd'                 => ($vulnStr === 'PWD') ? 1 : 0,
+                        'is_student'             => 0,
+                    ]);
+
+                    FamilyMemberDetail::create([
+                        'family_member_id'  => $member->id,
+                        'vulnerable_sector' => $vulnStr,
+                        'vuln_registered'   => $m['vuln_registered'] ?? null,
+                        'vuln_id_number'    => $m['vuln_id_number']  ?? null,
+                        'is_lgbtqia'        => isset($m['is_lgbtqia']) ? 1 : 0,
+                        'employment_status' => $empStr,
+                        'job_title'         => $m['job_title']       ?? null,
+                    ]);
+
+                    // Bubble vulnerability flags up to household
+                    if ($vulnStr === 'PWD')         $isPwd        = true;
+                    if ($vulnStr === 'Senior')       $isSenior     = true;
+                    if ($vulnStr === 'Solo Parent')  $isSoloParent = true;
+                    if ($vulnStr === '4Ps Member')   $is4ps        = true;
                 }
             }
 
-            // Audit log
+            // Update household vulnerability flags
+            $household->update([
+                'is_pwd'             => $isPwd        ? 1 : 0,
+                'is_senior'          => $isSenior     ? 1 : 0,
+                'is_solo_parent'     => $isSoloParent ? 1 : 0,
+                'is_4ps_beneficiary' => $is4ps        ? 1 : 0,
+            ]);
+
+            // ── 4. Audit log ─────────────────────────────────────────────
             AuditLog::log('created_household', [
                 'model'         => 'Household',
                 'record_id'     => $household->id,

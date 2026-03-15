@@ -455,6 +455,15 @@
             List of Households
         </a>
 
+        <a href="{{ route('admin.traillog.trail') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Trail Logs
+        </a>
+
         <hr class="sidebar-sep">
         <div class="sidebar-bottom">
             <form method="POST" action="{{ route('logout') }}">

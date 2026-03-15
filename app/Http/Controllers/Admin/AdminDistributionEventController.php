@@ -9,9 +9,6 @@ use Illuminate\Http\Request;
 
 class AdminDistributionEventController extends Controller
 {
-    /**
-     * Display all distribution events
-     */
     public function index()
     {
         $events = DistributionEvent::with('creator')
@@ -21,69 +18,88 @@ class AdminDistributionEventController extends Controller
         return view('admin.events.index', compact('events'));
     }
 
-    /**
-     * Show form to create new event
-     */
     public function create()
     {
         return view('admin.events.create');
     }
 
-    /**
-     * Store new distribution event
-     *
-     * Fixes applied:
-     *  1. target_barangay validated as array (blade sends target_barangay[])
-     *     then imploded to a comma-separated string before saving
-     *  2. event_date made nullable to match the optional field in the blade
-     *  3. started_at and ended_at added to validation and create()
-     *  4. goods_detail (form field name) mapped correctly to description (DB column)
-     *  5. status defaults to 'upcoming' so the hidden field always works
-     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'event_name'          => 'required|string|max:255',
-
-            // the quick-create view may send multiple types
-            'relief_type'         => ['required', 'array', 'min:1'],
-            'relief_type.*'       => ['required', 'string', 'max:255'],
-
-            // ── FIX 1: array because blade sends target_barangay[] ──
-            'target_barangay'     => 'required|array|min:1',
-            'target_barangay.*'   => 'required|string|max:100',
-
-            // ── FIX 2: nullable to match the optional date field ──
-            'event_date'          => 'nullable|date',
-
-            'goods_detail'        => 'nullable|string',   // maps to description
-
-            // ── FIX 3: started_at and ended_at now validated ──
-            'started_at'          => 'required|date',
-            'ended_at'            => 'required|date|after:started_at',
-
-            'status'              => 'required|in:upcoming,ongoing,completed,cancelled',
+        $request->validate([
+            'event_name'            => 'required|string|max:255',
+            'relief_type'           => 'required|array|min:1',
+            'relief_type.*'         => 'required|string|max:255',
+            'target_barangay'       => 'required|array|min:1',
+            'target_barangay.*'     => 'required|string|max:100',
+            'event_date'            => 'nullable|date',
+            'goods_detail'          => 'nullable|string',
+            'started_at'            => 'required|date',
+            'ended_at'              => 'required|date|after:started_at',
+            'status'                => 'required|in:upcoming,ongoing,completed,cancelled',
+            'distribution_lat'      => 'nullable|numeric|between:-90,90',
+            'distribution_lng'      => 'nullable|numeric|between:-180,180',
+            'distribution_location' => 'nullable|string|max:255',
+            'distribution_dms'      => 'nullable|string|max:100',
         ]);
 
-        // ── FIX 1: join selected barangays into comma-separated string ──
-        $targetBarangay = implode(', ', $validated['target_barangay']);
+        // Plain comma-separated strings (no array cast on these DB columns)
+        $reliefType     = implode(', ', $request->input('relief_type'));
+        $targetBarangay = implode(', ', $request->input('target_barangay'));
 
-        // if relief_type is an array, join it to a readable string
-        $reliefType = is_array($validated['relief_type'])
-            ? implode(', ', $validated['relief_type'])
-            : $validated['relief_type'];
+        // Build relief_items JSON from blade checkboxes: items[key][included] + items[key][qty]
+        $reliefItems = [];
+        $unitMap = [
+            'feminine_hygiene_wash' => 'btl',  'sanitary_pads'      => 'pack',
+            'tissue_wipes'          => 'pack',  'underwear'          => 'pcs',
+            'alcohol'               => 'btl',   'bandaid'            => 'box',
+            'bandage'               => 'roll',  'betadine'           => 'btl',
+            'elastic_bandage'       => 'roll',  'emergency_medicine' => 'pcs',
+            'gauze_pad'             => 'pcs',   'gauze_roll'         => 'roll',
+            'medical_tape'          => 'roll',  'canned_goods'       => 'cans',
+            'coffee'                => 'pack',  'instant_noodles'    => 'pcs',
+            'rice'                  => 'kg',    'bar_soap'           => 'bars',
+            'bucket'                => 'pcs',   'deodorant'          => 'pcs',
+            'dipper'                => 'pcs',   'shampoo'            => 'btl',
+            'toothbrush'            => 'pcs',   'toothpaste'         => 'tube',
+            'towel'                 => 'pcs',
+        ];
 
-        $event = DistributionEvent::create([
-            'event_name'      => $validated['event_name'],
-            'relief_type'     => $reliefType,
-            'target_barangay' => $targetBarangay,
-            'event_date'      => $validated['event_date'] ?? now()->toDateString(),
-            'description'     => $validated['goods_detail'] ?? null,  // FIX 4: goods_detail → description
-            'status'          => $validated['status'],
-            'started_at'      => $validated['started_at'],            // FIX 3
-            'ended_at'        => $validated['ended_at'],              // FIX 3
-            'created_by'      => auth()->id(),
-        ]);
+        foreach ($request->input('items', []) as $key => $item) {
+            if (!empty($item['included'])) {
+                $reliefItems[] = [
+                    'key'  => $key,
+                    'name' => ucwords(str_replace('_', ' ', $key)),
+                    'qty'  => $item['qty'] ?? null,
+                    'unit' => $unitMap[$key] ?? null,
+                ];
+            }
+        }
+
+        if ($request->filled('cash_amount')) {
+            $reliefItems[] = [
+                'key'  => 'cash_aid',
+                'name' => 'Cash Aid',
+                'qty'  => $request->input('cash_amount'),
+                'unit' => 'PHP',
+            ];
+        }
+
+        $event = \App\Models\DistributionEvent::create([
+                    'event_name'            => $request->event_name,
+                    'relief_type'           => implode(', ', $request->relief_type),
+                    'relief_items'          => !empty($reliefItems) ? $reliefItems : null,
+                    'target_barangay'       => implode(', ', $request->target_barangay), // FIX 1: was passing raw array → "Array to string" error
+                    'event_date'            => $request->event_date ?? now()->toDateString(),
+                    'description'           => $request->goods_detail,
+                    'status'                => 'upcoming',
+                    'started_at'            => $request->started_at,
+                    'ended_at'              => $request->ended_at,
+                    'created_by'            => auth()->id(),
+                    'distribution_lat'      => $request->distribution_lat ?: null,
+                    'distribution_lng'      => $request->distribution_lng ?: null,
+                    'distribution_location' => $request->distribution_location ?: null,
+                    'distribution_dms'      => $request->distribution_dms ?: null,        // FIX 2: was missing entirely
+                ]);
 
         AuditLog::log('created_distribution_event', [
             'model'         => 'DistributionEvent',
@@ -94,12 +110,9 @@ class AdminDistributionEventController extends Controller
         ]);
 
         return redirect()->route('admin.distribution.logs')
-            ->with('success', 'Distribution event created successfully!');
+            ->with('success', 'Distribution event "' . $event->event_name . '" created successfully!');
     }
 
-    /**
-     * Change event status
-     */
     public function updateStatus(DistributionEvent $event, Request $request)
     {
         $validated = $request->validate([
@@ -119,9 +132,6 @@ class AdminDistributionEventController extends Controller
         return back()->with('success', "Event status changed to: {$validated['status']}");
     }
 
-    /**
-     * View event details and distribution logs
-     */
     public function show(DistributionEvent $event)
     {
         $event->load('logs.household', 'logs.staff');
@@ -138,10 +148,7 @@ class AdminDistributionEventController extends Controller
             return back()->with('error', 'Event cannot be started.');
         }
 
-        $event->update([
-            'status'     => 'ongoing',
-            'started_at' => now(),
-        ]);
+        $event->update(['status' => 'ongoing', 'started_at' => now()]);
 
         AuditLog::log('started_distribution_event', [
             'model'         => 'DistributionEvent',
@@ -160,10 +167,7 @@ class AdminDistributionEventController extends Controller
             return back()->with('error', 'Event cannot be ended.');
         }
 
-        $event->update([
-            'status'   => 'completed',
-            'ended_at' => now(),
-        ]);
+        $event->update(['status' => 'completed', 'ended_at' => now()]);
 
         AuditLog::log('completed_distribution_event', [
             'model'         => 'DistributionEvent',

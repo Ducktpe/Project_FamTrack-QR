@@ -11,8 +11,10 @@ class FamilyMember extends Model
 
     protected $fillable = [
         'household_id',
+        'nuclear_family_id',   // ← added
         'full_name',
         'relationship',
+        'civil_status',        // ← added
         'sex',
         'birthday',
         'is_pwd',
@@ -23,8 +25,8 @@ class FamilyMember extends Model
     ];
 
     protected $casts = [
-        'birthday' => 'date',
-        'is_pwd' => 'boolean',
+        'birthday'   => 'date',
+        'is_pwd'     => 'boolean',
         'is_student' => 'boolean',
     ];
 
@@ -33,6 +35,16 @@ class FamilyMember extends Model
     public function household()
     {
         return $this->belongsTo(Household::class);
+    }
+
+    public function nuclearFamily()
+    {
+        return $this->belongsTo(NuclearFamily::class);
+    }
+
+    public function detail()
+    {
+        return $this->hasOne(FamilyMemberDetail::class);
     }
 
     // ── Helper Methods ───────────────────────────────────

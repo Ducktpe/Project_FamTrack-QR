@@ -10,21 +10,45 @@ class Household extends Model
     use HasFactory;
 
     protected $fillable = [
+        // Identity
+        'serial_code',
         'household_head_name',
         'sex',
         'birthday',
         'civil_status',
         'contact_number',
         'house_number',
+
+        // Location
         'street_purok',
+        'location',
         'barangay',
+        'barangay_area',
         'municipality',
         'province',
+        'latitude',
+        'longitude',
+        'coordinates_image',
+
+        // Housing
+        'year_built',
+        'housing_type',
+        'housing_material',
+        'ownership_type',
+        'electricity_source',
+        'water_source',
+        'toilet_access',
+        'waste_disposal',
+
+        // Program
+        'email',
         'listahanan_id',
         'is_4ps_beneficiary',
         'is_pwd',
         'is_senior',
         'is_solo_parent',
+
+        // System
         'status',
         'encoded_by',
         'approved_by',
@@ -32,11 +56,14 @@ class Household extends Model
     ];
 
     protected $casts = [
-        'birthday' => 'date',
+        'birthday'           => 'date',
         'is_4ps_beneficiary' => 'boolean',
-        'is_pwd' => 'boolean',
-        'is_senior' => 'boolean',
-        'is_solo_parent' => 'boolean',
+        'is_pwd'             => 'boolean',
+        'is_senior'          => 'boolean',
+        'is_solo_parent'     => 'boolean',
+        'latitude'           => 'decimal:7',
+        'longitude'          => 'decimal:7',
+        'year_built'         => 'integer',
     ];
 
     // ── Relationships ────────────────────────────────────
@@ -56,6 +83,16 @@ class Household extends Model
         return $this->hasMany(FamilyMember::class);
     }
 
+    public function nuclearFamilies()
+    {
+        return $this->hasMany(NuclearFamily::class);
+    }
+
+    public function riskProfile()
+    {
+        return $this->hasOne(HouseholdRiskProfile::class);
+    }
+
     public function qrCode()
     {
         return $this->hasOne(QrCode::class);
@@ -63,7 +100,7 @@ class Household extends Model
 
     public function distributionLogs()
     {
-        return $this->hasMany(DistributionLog::class, 'household_id');  
+        return $this->hasMany(DistributionLog::class, 'household_id');
     }
 
     // ── Helper Methods ───────────────────────────────────
@@ -85,7 +122,7 @@ class Household extends Model
 
     public function getTotalMembersAttribute(): int
     {
-        return $this->members()->count() + 1; // +1 for household head
+        return $this->members()->count() + 1;
     }
 
     public function getAgeAttribute(): int

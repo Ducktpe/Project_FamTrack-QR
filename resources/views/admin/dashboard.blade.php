@@ -4,7 +4,9 @@
     <title>MDRRMO Naic, Cavite — Admin Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=PT+Serif:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <style>
         :root {
             --blue:       #1B3F7A;
@@ -159,6 +161,69 @@
         .status-upcoming  { background: var(--yellow-pale); color: var(--yellow-dark); border: 1px solid #FDE68A; }
         .status-cancelled { background: var(--red-pale); color: var(--red); border: 1px solid #FECACA; }
 
+        /* ═══════════════════════════════════════════
+           DISTRIBUTION MAP SECTION
+        ═══════════════════════════════════════════ */
+        .dist-map-section { background: var(--white); border: 1px solid var(--gray-200); margin-top: 20px; }
+        .dist-map-header { padding: 14px 20px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .dist-map-title-wrap { display: flex; align-items: center; gap: 10px; }
+        .dist-map-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
+        .dist-map-sub   { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+        .dist-map-legend { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .dm-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: var(--gray-600); }
+        .dm-legend-pin { width: 12px; height: 12px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.12); flex-shrink: 0; }
+        .dm-legend-pin.upcoming  { background: #2459A8; }
+        .dm-legend-pin.ongoing   { background: #16A34A; }
+        .dm-legend-pin.completed { background: #6B7280; }
+        .dm-legend-pin.cancelled { background: #C0392B; }
+        .dist-map-filters { display: flex; align-items: center; gap: 6px; padding: 9px 20px; background: var(--white); border-bottom: 1px solid var(--gray-100); flex-wrap: wrap; }
+        .dm-filter-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-400); margin-right: 4px; }
+        .dm-filter-btn { padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 20px; border: 1.5px solid var(--gray-200); background: var(--white); cursor: pointer; font-family: 'Open Sans', sans-serif; transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px; }
+        .dm-filter-btn .dm-fc { font-size: 10px; background: var(--gray-100); color: var(--gray-600); padding: 1px 6px; border-radius: 10px; font-weight: 700; }
+        .dm-filter-btn:hover { background: var(--gray-50); }
+        .dm-filter-btn.active.f-all      { border-color: var(--blue);    background: var(--blue-pale);  color: var(--blue-dark); }
+        .dm-filter-btn.active.f-upcoming { border-color: #2459A8;         background: #EAF0FA;           color: #1B3F7A; }
+        .dm-filter-btn.active.f-ongoing  { border-color: var(--green);    background: var(--green-pale); color: var(--green-dark); }
+        .dm-filter-btn.active.f-completed{ border-color: var(--gray-400); background: var(--gray-100);   color: var(--gray-800); }
+        .dm-filter-btn.active.f-cancelled{ border-color: var(--red);      background: var(--red-pale);   color: var(--red); }
+        .dm-filter-btn.active.f-recent   { border-color: #7C3AED;         background: #F5F3FF;           color: #5B21B6; }
+        .dm-filter-btn.active .dm-fc { background: rgba(0,0,0,0.1); color: inherit; }
+        .dist-map-body { position: relative; }
+        #dashDistMap { height: 400px; width: 100%; }
+        .dist-map-no-pin { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,0.93); border: 1px solid var(--gray-200); border-radius: 8px; padding: 18px 28px; text-align: center; font-size: 12px; color: var(--gray-400); pointer-events: none; z-index: 500; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .dist-map-no-pin.show { display: block; }
+        .dist-map-footer { display: flex; border-top: 1px solid var(--gray-100); background: var(--gray-50); flex-wrap: wrap; }
+        .dm-stat { flex: 1; min-width: 80px; padding: 10px 16px; border-right: 1px solid var(--gray-100); text-align: center; }
+        .dm-stat:last-child { border-right: none; }
+        .dm-stat-val { display: block; font-size: 20px; font-weight: 700; font-family: 'PT Serif', serif; line-height: 1.1; }
+        .dm-stat-val.c-all      { color: var(--blue-dark); }
+        .dm-stat-val.c-upcoming { color: var(--blue); }
+        .dm-stat-val.c-ongoing  { color: var(--green); }
+        .dm-stat-val.c-completed{ color: var(--gray-600); }
+        .dm-stat-val.c-cancelled{ color: var(--red); }
+        .dm-popup .leaflet-popup-content-wrapper { border-radius: 6px; padding: 0; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.18); border: none; }
+        .dm-popup .leaflet-popup-content { margin: 0; min-width: 210px; }
+        .dm-popup-inner { font-family: 'Open Sans', sans-serif; }
+        .dm-popup-head { padding: 10px 14px 8px; border-bottom: 1px solid #f0f0f0; }
+        .dm-sbadge { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 2px 8px; border-radius: 10px; margin-bottom: 5px; }
+        .dm-sbadge.upcoming  { background: #EAF0FA; color: #1B3F7A; }
+        .dm-sbadge.ongoing   { background: #DCFCE7; color: #15803D; }
+        .dm-sbadge.completed { background: #F3F4F6; color: #4B5563; }
+        .dm-sbadge.cancelled { background: #FEF2F2; color: #C0392B; }
+        .dm-popup-name { font-size: 13px; font-weight: 700; color: #1B3F7A; display: block; line-height: 1.3; }
+        .dm-popup-body { padding: 8px 14px 10px; }
+        .dm-popup-row { display: flex; align-items: flex-start; gap: 6px; font-size: 11px; color: #5A6372; margin-bottom: 4px; line-height: 1.4; }
+        .dm-popup-row:last-child { margin-bottom: 0; }
+        .dm-popup-row svg { width: 11px; height: 11px; flex-shrink: 0; margin-top: 1px; color: #9AA3B0; }
+        .dm-popup-link { margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0; font-size: 11px; font-weight: 700; color: #2459A8; text-decoration: none; display: block; }
+        .dm-popup-link:hover { color: #1B3F7A; }
+
+        #dashDistMap {
+            height: 400px;
+            width: 100%;
+            background: #1a1a2e;
+        }
+
         footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; z-index: 100; }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.45); }
         .footer-left strong { color: rgba(255,255,255,0.75); }
@@ -217,6 +282,8 @@
             .dash-stats-row { grid-template-columns: repeat(2, 1fr); }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
+            #dashDistMap { height: 280px; }
+            .dist-map-legend { gap: 8px; }
         }
     </style>
 </head>
@@ -269,6 +336,7 @@
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
         </button>
+
         <div class="nav-section-label">Admin Menu</div>
         <a href="{{ route('admin.dashboard') }}" class="nav-item active" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -304,6 +372,16 @@
             </svg>
             List of Households
         </a>
+        <a href="{{ route('admin.traillog.trail') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Trail Logs
+        </a>
+        <hr class="sidebar-sep">
+
         <hr class="sidebar-sep">
         <div class="sidebar-bottom">
             <form method="POST" action="{{ route('logout') }}">
@@ -478,20 +556,8 @@
                         @forelse($recentEvents as $event)
                         <tr>
                             <td class="dt-name">{{ $event->event_name }}</td>
-                            <td>
-                                @if(is_array($event->relief_type))
-                                    {{ implode(', ', $event->relief_type) }}
-                                @else
-                                    {{ $event->relief_type }}
-                                @endif
-                            </td>
-                            <td>
-                                @if(is_array($event->target_barangay))
-                                    {{ implode(', ', $event->target_barangay) }}
-                                @else
-                                    {{ $event->target_barangay }}
-                                @endif
-                            </td>
+                            <td>{{ is_array($event->relief_type) ? implode(', ', $event->relief_type) : $event->relief_type }}</td>
+                            <td>{{ $event->target_barangay_display }}</td>
                             <td>{{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }}</td>
                             <td>
                                 @if($event->status === 'ongoing')
@@ -515,6 +581,109 @@
             </div>
         </div>
 
+        {{-- ── DISTRIBUTION MAP ── --}}
+        @php
+            $mapEvents = \App\Models\DistributionEvent::whereNotNull('distribution_lat')
+                ->whereNotNull('distribution_lng')
+                ->select('id','event_name','relief_type','target_barangay','status',
+                         'started_at','ended_at','distribution_lat','distribution_lng',
+                         'distribution_location','event_date')
+                ->latest('event_date')
+                ->get();
+
+            $dmUpcoming  = $mapEvents->where('status','upcoming')->count();
+            $dmOngoing   = $mapEvents->where('status','ongoing')->count();
+            $dmCompleted = $mapEvents->where('status','completed')->count();
+            $dmCancelled = $mapEvents->where('status','cancelled')->count();
+            $dmTotal     = $mapEvents->count();
+            $dmRecent    = $mapEvents->filter(function($e) {
+                return $e->event_date && \Carbon\Carbon::parse($e->event_date)->gte(now()->subDays(30));
+            })->count();
+
+            $dmEventsJson = $mapEvents->map(function($e) {
+                $brgy = $e->target_barangay;
+                return [
+                    'id'       => $e->id,
+                    'name'     => $e->event_name,
+                    'type'     => $e->relief_type,
+                    'barangay' => is_array($brgy) ? implode(', ', $brgy) : ($brgy ?? '—'),
+                    'status'   => $e->status,
+                    'date'     => $e->event_date ? \Carbon\Carbon::parse($e->event_date)->format('M d, Y') : '—',
+                    'date_raw' => $e->event_date ? \Carbon\Carbon::parse($e->event_date)->format('Y-m-d') : null,
+                    'lat'      => (float) $e->distribution_lat,
+                    'lng'      => (float) $e->distribution_lng,
+                    'loc'      => $e->distribution_location ?? '',
+                ];
+            })->values();
+        @endphp
+
+        <div class="dist-map-section">
+
+            {{-- Header --}}
+            <div class="dist-map-header">
+                <div class="dist-map-title-wrap">
+                    <div class="ca-dot"></div>
+                    <div>
+                        <div class="dist-map-title">Distribution Events Map</div>
+                        <div class="dist-map-sub">Pinned distribution points across Naic, Cavite — click a marker for details</div>
+                    </div>
+                </div>
+                <div class="dist-map-legend">
+                    <div class="dm-legend-item"><span class="dm-legend-pin upcoming"></span>Upcoming</div>
+                    <div class="dm-legend-item"><span class="dm-legend-pin ongoing"></span>Ongoing</div>
+                    <div class="dm-legend-item"><span class="dm-legend-pin completed"></span>Completed</div>
+                    <div class="dm-legend-item"><span class="dm-legend-pin cancelled"></span>Cancelled</div>
+                </div>
+            </div>
+
+            {{-- Filter bar --}}
+            <div class="dist-map-filters">
+                <span class="dm-filter-label">Filter:</span>
+                <button class="dm-filter-btn active f-all"       onclick="dmFilter('all',this)">All <span class="dm-fc">{{ $dmTotal }}</span></button>
+                <button class="dm-filter-btn f-upcoming"         onclick="dmFilter('upcoming',this)">Upcoming <span class="dm-fc">{{ $dmUpcoming }}</span></button>
+                <button class="dm-filter-btn f-ongoing"          onclick="dmFilter('ongoing',this)">Ongoing <span class="dm-fc">{{ $dmOngoing }}</span></button>
+                <button class="dm-filter-btn f-completed"        onclick="dmFilter('completed',this)">Completed <span class="dm-fc">{{ $dmCompleted }}</span></button>
+                <button class="dm-filter-btn f-cancelled"        onclick="dmFilter('cancelled',this)">Cancelled <span class="dm-fc">{{ $dmCancelled }}</span></button>
+                <button class="dm-filter-btn f-recent"           onclick="dmFilter('recent',this)">Recent 30d <span class="dm-fc">{{ $dmRecent }}</span></button>
+            </div>
+
+            {{-- Map --}}
+            <div class="dist-map-body">
+                <div id="dashDistMap"></div>
+                <div class="dist-map-no-pin" id="dmNoPin">
+                    <div style="font-size:22px;margin-bottom:6px;">📍</div>
+                    <strong style="color:var(--gray-600);">No pinned events</strong><br>
+                    No events with this status have a pinned location yet.
+                </div>
+            </div>
+
+            {{-- Stats footer --}}
+            <div class="dist-map-footer">
+                <div class="dm-stat">
+                    <span class="dm-stat-val c-all">{{ $dmTotal }}</span>
+                    <span class="dm-stat-label">Pinned Total</span>
+                </div>
+                <div class="dm-stat">
+                    <span class="dm-stat-val c-upcoming">{{ $dmUpcoming }}</span>
+                    <span class="dm-stat-label">Upcoming</span>
+                </div>
+                <div class="dm-stat">
+                    <span class="dm-stat-val c-ongoing">{{ $dmOngoing }}</span>
+                    <span class="dm-stat-label">Ongoing</span>
+                </div>
+                <div class="dm-stat">
+                    <span class="dm-stat-val c-completed">{{ $dmCompleted }}</span>
+                    <span class="dm-stat-label">Completed</span>
+                </div>
+                <div class="dm-stat">
+                    <span class="dm-stat-val c-cancelled">{{ $dmCancelled }}</span>
+                    <span class="dm-stat-label">Cancelled</span>
+                </div>
+            </div>
+
+        </div>
+        {{-- END DISTRIBUTION MAP --}}
+
     </main>
 
     <!-- FOOTER -->
@@ -532,6 +701,7 @@
 </div>
 
 <script>
+    /* ── Clock ── */
     function pad(n){ return String(n).padStart(2,'0'); }
     function updateClock() {
         const now = new Date();
@@ -546,44 +716,35 @@
     setInterval(updateClock, 1000);
     document.getElementById('footer-year').textContent = new Date().getFullYear();
 
+    /* ── Sidebar ── */
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 
+    /* ── Charts ── */
     const barLabels = @json($householdsPerBarangay->pluck('barangay'));
     const barData   = @json($householdsPerBarangay->pluck('total'));
     const catLabels = ['4Ps Beneficiaries', 'Senior Citizens', 'PWD'];
     const catData   = [@json($total4Ps), @json($totalSeniors), @json($totalPwd)];
     const catColors = ['#16A34A', '#D4A800', '#C0392B'];
 
-    const barCtx = document.getElementById('householdsBarChart').getContext('2d');
-    new Chart(barCtx, {
+    new Chart(document.getElementById('householdsBarChart').getContext('2d'), {
         type: 'bar',
         data: {
             labels: barLabels,
             datasets: [{
-                label: 'Households',
-                data: barData,
-                backgroundColor: 'rgba(27,63,122,0.15)',
-                borderColor: '#1B3F7A',
-                borderWidth: 2,
-                borderRadius: 4,
-                hoverBackgroundColor: 'rgba(27,63,122,0.28)',
+                label: 'Households', data: barData,
+                backgroundColor: 'rgba(27,63,122,0.15)', borderColor: '#1B3F7A',
+                borderWidth: 2, borderRadius: 4, hoverBackgroundColor: 'rgba(27,63,122,0.28)',
             }]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            responsive: true, maintainAspectRatio: false,
             plugins: {
                 legend: { display: false },
-                tooltip: {
-                    backgroundColor: '#122D5A',
-                    titleColor: '#F5C518',
-                    bodyColor: '#fff',
-                    padding: 10,
-                    cornerRadius: 4,
+                tooltip: { backgroundColor: '#122D5A', titleColor: '#F5C518', bodyColor: '#fff', padding: 10, cornerRadius: 4,
                     callbacks: { label: ctx => ` ${ctx.parsed.y} household${ctx.parsed.y !== 1 ? 's' : ''}` }
                 }
             },
@@ -594,33 +755,202 @@
         }
     });
 
-    const dCtx = document.getElementById('categoriesDoughnut').getContext('2d');
-    new Chart(dCtx, {
+    new Chart(document.getElementById('categoriesDoughnut').getContext('2d'), {
         type: 'doughnut',
         data: {
             labels: catLabels,
-            datasets: [{
-                data: catData,
-                backgroundColor: catColors.map(c => c + '33'),
-                borderColor: catColors,
-                borderWidth: 2,
-                hoverOffset: 6,
-            }]
+            datasets: [{ data: catData, backgroundColor: catColors.map(c => c+'33'), borderColor: catColors, borderWidth: 2, hoverOffset: 6 }]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            cutout: '65%',
-            plugins: {
-                legend: { display: false },
-                tooltip: { backgroundColor: '#122D5A', titleColor: '#F5C518', bodyColor: '#fff', padding: 10, cornerRadius: 4 }
-            }
+            responsive: true, maintainAspectRatio: true, cutout: '65%',
+            plugins: { legend: { display: false }, tooltip: { backgroundColor: '#122D5A', titleColor: '#F5C518', bodyColor: '#fff', padding: 10, cornerRadius: 4 } }
         }
     });
 
     const legendEl = document.getElementById('doughnutLegend');
     catLabels.forEach((label, i) => {
         legendEl.innerHTML += `<div class="legend-item"><span class="legend-dot" style="background:${catColors[i]};"></span><span>${label}</span><span class="legend-val">${catData[i].toLocaleString()}</span></div>`;
+    });
+
+    /* ══════════════════════════════════════════
+       DISTRIBUTION MAP
+    ══════════════════════════════════════════ */
+    const DM_EVENTS = @json($dmEventsJson);
+
+    const DM_COLORS = { upcoming:'#2459A8', ongoing:'#16A34A', completed:'#6B7280', cancelled:'#C0392B' };
+    const DM_LABELS = { upcoming:'Upcoming', ongoing:'Ongoing', completed:'Completed', cancelled:'Cancelled' };
+    const DM_ICONS  = { upcoming:'🕐', ongoing:'⚡', completed:'✅', cancelled:'✕' };
+
+    function dmPinIcon(status) {
+        const c = DM_COLORS[status] || '#2459A8';
+        return L.divIcon({
+            className: '',
+            html: `<svg width="28" height="38" viewBox="0 0 28 38" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="14" cy="36" rx="5" ry="2" fill="rgba(0,0,0,.22)"/>
+                <path d="M14 1C8.48 1 4 5.48 4 11c0 7.5 10 25 10 25S24 18.5 24 11C24 5.48 19.52 1 14 1z"
+                    fill="${c}" stroke="rgba(255,255,255,0.85)" stroke-width="2"/>
+                <circle cx="14" cy="11" r="5" fill="white" opacity="0.9"/>
+            </svg>`,
+            iconSize: [28,38], iconAnchor: [14,38], popupAnchor: [0,-40],
+        });
+    }
+
+    function dmPopupHTML(ev) {
+        const c = DM_COLORS[ev.status] || '#2459A8';
+        return `<div class="dm-popup-inner">
+            <div class="dm-popup-head" style="border-top:3px solid ${c}">
+                <span class="dm-sbadge ${ev.status}">${DM_ICONS[ev.status]} ${DM_LABELS[ev.status]}</span>
+                <span class="dm-popup-name">${ev.name}</span>
+            </div>
+            <div class="dm-popup-body">
+                <div class="dm-popup-row">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 3h-8l-2 4h12l-2-4z"/></svg>
+                    <span>${ev.type || '—'}</span>
+                </div>
+                <div class="dm-popup-row">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                    <span>${ev.barangay}</span>
+                </div>
+                <div class="dm-popup-row">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <span>${ev.date}</span>
+                </div>
+                ${ev.loc ? `<div class="dm-popup-row">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span style="font-size:10px;color:#9AA3B0">${ev.loc}</span>
+                </div>` : ''}
+                <a class="dm-popup-link" href="{{ route('admin.distribution.logs') }}#event-${ev.id}">View Distribution Log →</a>
+            </div>
+        </div>`;
+    }
+
+    /* Init map */
+    const NAIC = [14.3294, 120.7614];
+    let dmMap = null;
+    let dmMarkers = [];
+    let dmCurrentFilter = 'all';
+
+    function initDashMap() {
+        if (dmMap) return;
+        dmMap = L.map('dashDistMap').setView(NAIC, 13);
+
+        const baseLayers = {
+            "🛰️ Satellite": L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© Esri, Maxar, Earthstar Geographics', maxZoom: 19
+            }),
+            "🗺️ Street Map": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd', maxZoom: 19
+            }),
+            "🏙️ Street (Detailed)": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors', maxZoom: 19
+            }),
+            "📐 Topo": L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap © OpenTopoMap', maxZoom: 17
+            }),
+        };
+
+        baseLayers["🛰️ Satellite"].addTo(dmMap);
+        L.control.layers(baseLayers, null, { position: 'topright', collapsed: false }).addTo(dmMap);
+
+        DM_EVENTS.forEach(ev => {
+            if (!ev.lat || !ev.lng) return;
+            const marker = L.marker([ev.lat, ev.lng], { icon: dmPinIcon(ev.status) })
+                .addTo(dmMap)
+                .bindPopup(dmPopupHTML(ev), { className:'dm-popup', maxWidth:260, minWidth:215 });
+            dmMarkers.push({ marker, status: ev.status, date_raw: ev.date_raw || null });
+        });
+
+        if (dmMarkers.length === 1) {
+            dmMap.setView(dmMarkers[0].marker.getLatLng(), 15);
+        } else if (dmMarkers.length > 1) {
+            dmMap.fitBounds(L.latLngBounds(dmMarkers.map(m => m.marker.getLatLng())), { padding:[40,40] });
+        }
+
+        dmUpdateNotice();
+        setTimeout(() => dmMap.invalidateSize(true), 100);
+        setTimeout(() => dmMap.invalidateSize(true), 500);
+    }
+
+    window.dmFilter = function(status, btn) {
+        dmCurrentFilter = status;
+        document.querySelectorAll('.dm-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const now30 = new Date();
+        now30.setDate(now30.getDate() - 30);
+
+        dmMarkers.forEach(({ marker, status: ms, date_raw }) => {
+            let show;
+            if (status === 'all') {
+                show = true;
+            } else if (status === 'recent') {
+                show = date_raw && new Date(date_raw) >= now30;
+            } else {
+                show = ms === status;
+            }
+            if (show && !dmMap.hasLayer(marker)) marker.addTo(dmMap);
+            if (!show && dmMap.hasLayer(marker))  dmMap.removeLayer(marker);
+        });
+
+        dmUpdateNotice();
+
+        const visible = dmMarkers.filter(({ status:ms }) => status === 'all' || ms === status).map(({marker}) => marker.getLatLng());
+        if (visible.length === 1)      dmMap.setView(visible[0], 15);
+        else if (visible.length > 1)   dmMap.fitBounds(L.latLngBounds(visible), { padding:[40,40] });
+    };
+
+    function dmUpdateNotice() {
+        const now30 = new Date();
+        now30.setDate(now30.getDate() - 30);
+        const count = dmMarkers.filter(({ status, date_raw }) => {
+            if (dmCurrentFilter === 'all')    return true;
+            if (dmCurrentFilter === 'recent') return date_raw && new Date(date_raw) >= now30;
+            return status === dmCurrentFilter;
+        }).length;
+        document.getElementById('dmNoPin').classList.toggle('show', count === 0);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initDashMap);
+    } else {
+        initDashMap();
+    }
+
+    /* ══════════════════════════════════════════
+       AUTO-REFRESH — every 30 seconds
+    ══════════════════════════════════════════ */
+    const REFRESH_MS  = 30_000;
+    const SCROLL_KEY  = 'dash_scroll';
+    const mainContent = document.querySelector('.main-content');
+
+    const savedScroll = sessionStorage.getItem(SCROLL_KEY);
+    if (savedScroll !== null && mainContent) {
+        mainContent.scrollTop = parseInt(savedScroll, 10);
+        sessionStorage.removeItem(SCROLL_KEY);
+    }
+
+    function doRefresh() {
+        if (mainContent) sessionStorage.setItem(SCROLL_KEY, mainContent.scrollTop);
+        location.reload();
+    }
+
+    let remaining = REFRESH_MS / 1000;
+    const timerEl = document.createElement('span');
+    timerEl.style.cssText = 'font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.5px;';
+    timerEl.title = 'Auto-refresh countdown';
+    document.querySelector('.topbar-right').prepend(timerEl);
+
+    const countdownInterval = setInterval(() => {
+        remaining--;
+        timerEl.textContent = `Refresh in ${remaining}s`;
+        if (remaining <= 0) {
+            clearInterval(countdownInterval);
+            doRefresh();
+        }
+    }, 1000);
+
+    mainContent && mainContent.addEventListener('scroll', () => {
+        remaining = REFRESH_MS / 1000;
     });
 </script>
 </body>

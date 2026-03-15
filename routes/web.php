@@ -3,15 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WelcomeController;
 
 // ── Public Routes ────────────────────────────────────────────
-Route::get('/', function () {
-    // If already logged in, redirect to their dashboard
-    if (auth()->check()) {
-        return redirect()->route(auth()->user()->role.'.dashboard');
-    }
-    return view('welcome');
-})->name('home');
+Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
 // ── Auth Routes (handled by Breeze in auth.php) ─────────────
 require __DIR__.'/auth.php';
@@ -61,9 +56,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         return view('admin.events.quick-create');
     })->name('events.quick-create');
 
-    Route::get('/events/{event}', [\App\Http\Controllers\Admin\AdminDistributionEventController::class, 'show'])
-        ->name('events.show');
-
     Route::post('/events/quick-store', function(\Illuminate\Http\Request $request) {
         $request->validate([
             'event_name'        => 'required|string|max:255',
@@ -75,40 +67,34 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
             'ended_at'          => 'required|date|after:started_at',
         ]);
 
-        // Item name labels and units — keyed to match blade name attributes
         $itemMeta = [
-            // Dignity Kit
-            'feminine_hygiene_wash' => ['name' => 'Feminine Hygiene Wash',           'unit' => 'btl'],
-            'sanitary_pads'         => ['name' => 'Sanitary Pads / Napkins',          'unit' => 'pack'],
-            'tissue_wipes'          => ['name' => 'Tissue / Wipes',                   'unit' => 'pack'],
-            'underwear'             => ['name' => 'Underwear',                         'unit' => 'pcs'],
-            // First Aid Kit
-            'alcohol'               => ['name' => 'Alcohol',                           'unit' => 'btl'],
-            'bandaid'               => ['name' => 'Band-aid',                          'unit' => 'box'],
-            'bandage'               => ['name' => 'Bandage',                           'unit' => 'roll'],
-            'betadine'              => ['name' => 'Betadine',                          'unit' => 'btl'],
-            'elastic_bandage'       => ['name' => 'Elastic Bandage',                  'unit' => 'roll'],
-            'emergency_medicine'    => ['name' => 'Emergency Medicine / CAMPOLAS',    'unit' => 'pcs'],
-            'gauze_pad'             => ['name' => 'Gauze Pad',                         'unit' => 'pcs'],
-            'gauze_roll'            => ['name' => 'Gauze Roll',                        'unit' => 'roll'],
-            'medical_tape'          => ['name' => 'Medical Tape',                      'unit' => 'roll'],
-            // Food Pack
+            'feminine_hygiene_wash' => ['name' => 'Feminine Hygiene Wash',                'unit' => 'btl'],
+            'sanitary_pads'         => ['name' => 'Sanitary Pads / Napkins',              'unit' => 'pack'],
+            'tissue_wipes'          => ['name' => 'Tissue / Wipes',                       'unit' => 'pack'],
+            'underwear'             => ['name' => 'Underwear',                             'unit' => 'pcs'],
+            'alcohol'               => ['name' => 'Alcohol',                               'unit' => 'btl'],
+            'bandaid'               => ['name' => 'Band-aid',                              'unit' => 'box'],
+            'bandage'               => ['name' => 'Bandage',                               'unit' => 'roll'],
+            'betadine'              => ['name' => 'Betadine',                              'unit' => 'btl'],
+            'elastic_bandage'       => ['name' => 'Elastic Bandage',                      'unit' => 'roll'],
+            'emergency_medicine'    => ['name' => 'Emergency Medicine / CAMPOLAS',        'unit' => 'pcs'],
+            'gauze_pad'             => ['name' => 'Gauze Pad',                             'unit' => 'pcs'],
+            'gauze_roll'            => ['name' => 'Gauze Roll',                            'unit' => 'roll'],
+            'medical_tape'          => ['name' => 'Medical Tape',                          'unit' => 'roll'],
             'canned_goods'          => ['name' => 'Canned Goods (Corned Beef / Sardines)', 'unit' => 'cans'],
-            'coffee'                => ['name' => 'Coffee',                            'unit' => 'pack'],
-            'instant_noodles'       => ['name' => 'Instant Noodles',                  'unit' => 'pcs'],
-            'rice'                  => ['name' => 'Rice',                              'unit' => 'kg'],
-            // Hygiene Kit
-            'bar_soap'              => ['name' => 'Bar Soap',                          'unit' => 'bars'],
-            'bucket'                => ['name' => 'Bucket',                            'unit' => 'pcs'],
-            'deodorant'             => ['name' => 'Deodorant',                         'unit' => 'pcs'],
-            'dipper'                => ['name' => 'Dipper (Tabo)',                     'unit' => 'pcs'],
-            'shampoo'               => ['name' => 'Shampoo',                           'unit' => 'btl'],
-            'toothbrush'            => ['name' => 'Toothbrush',                        'unit' => 'pcs'],
-            'toothpaste'            => ['name' => 'Toothpaste',                        'unit' => 'tube'],
-            'towel'                 => ['name' => 'Towel / Face Towel',               'unit' => 'pcs'],
+            'coffee'                => ['name' => 'Coffee',                                'unit' => 'pack'],
+            'instant_noodles'       => ['name' => 'Instant Noodles',                      'unit' => 'pcs'],
+            'rice'                  => ['name' => 'Rice',                                  'unit' => 'kg'],
+            'bar_soap'              => ['name' => 'Bar Soap',                              'unit' => 'bars'],
+            'bucket'                => ['name' => 'Bucket',                                'unit' => 'pcs'],
+            'deodorant'             => ['name' => 'Deodorant',                             'unit' => 'pcs'],
+            'dipper'                => ['name' => 'Dipper (Tabo)',                         'unit' => 'pcs'],
+            'shampoo'               => ['name' => 'Shampoo',                               'unit' => 'btl'],
+            'toothbrush'            => ['name' => 'Toothbrush',                            'unit' => 'pcs'],
+            'toothpaste'            => ['name' => 'Toothpaste',                            'unit' => 'tube'],
+            'towel'                 => ['name' => 'Towel / Face Towel',                   'unit' => 'pcs'],
         ];
 
-        // Build relief_items — only include checked items
         $reliefItems = [];
         foreach ($request->input('items', []) as $key => $data) {
             if (!empty($data['included'])) {
@@ -120,7 +106,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
             }
         }
 
-        // Handle cash aid separately
         if ($request->filled('cash_amount')) {
             $reliefItems['cash_aid'] = [
                 'name' => 'Cash Aid',
@@ -130,16 +115,20 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         }
 
         $event = \App\Models\DistributionEvent::create([
-            'event_name'      => $request->event_name,
-            'relief_type'     => $request->relief_type,      // array → JSON cast
-            'relief_items'    => !empty($reliefItems) ? $reliefItems : null,
-            'target_barangay' => $request->target_barangay,  // array → JSON cast
-            'event_date'      => $request->event_date ?? now()->toDateString(),
-            'description'     => $request->goods_detail,
-            'status'          => 'upcoming',
-            'started_at'      => $request->started_at,
-            'ended_at'        => $request->ended_at,
-            'created_by'      => auth()->id(),
+            'event_name'            => $request->event_name,
+            'relief_type'           => implode(', ', $request->relief_type),
+            'relief_items'          => !empty($reliefItems) ? $reliefItems : null,
+            'target_barangay'       => $request->target_barangay,
+            'event_date'            => $request->event_date ?? now()->toDateString(),
+            'description'           => $request->goods_detail,
+            'status'                => 'upcoming',
+            'started_at'            => $request->started_at,
+            'ended_at'              => $request->ended_at,
+            'created_by'            => auth()->id(),
+            'distribution_lat'      => $request->distribution_lat ?: null,
+            'distribution_lng'      => $request->distribution_lng ?: null,
+            'distribution_location' => $request->distribution_location ?: null,
+            'distribution_dms'      => $request->distribution_dms ?: null,
         ]);
 
         \App\Models\AuditLog::log('created_distribution_event', [
@@ -153,6 +142,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         return redirect()->route('admin.distribution.logs')
             ->with('success', 'Event created successfully!');
     })->name('events.quick-store');
+
+    Route::get('/events/{event}', [\App\Http\Controllers\Admin\AdminDistributionEventController::class, 'show'])
+        ->name('events.show');
 
     // Distribution Logs (Admin)
     Route::get('/distribution/logs', [\App\Http\Controllers\Admin\AdminDistributionLogController::class, 'index'])
@@ -186,8 +178,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         ->name('distribution.events.cancel');
 
     // Audit Trail
-    Route::get('/audit-trail', [\App\Http\Controllers\Admin\AuditTrailController::class, 'index'])
-        ->name('audit.trail');
+    Route::get('/trail-logs', [\App\Http\Controllers\Admin\AdminTrailController::class, 'index'])
+        ->name('traillog.trail');
 });
 
 // ── ENCODER Routes ───────────────────────────────────────────
@@ -197,9 +189,7 @@ Route::middleware(['auth', 'role:encoder'])->prefix('encoder')->name('encoder.')
         return view('encoder.dashboard');
     })->name('dashboard');
 
-    // Household CRUD routes
     Route::resource('households', \App\Http\Controllers\Encoder\EncoderHouseholdController::class);
-
 });
 
 // ── STAFF Routes ─────────────────────────────────────────────
@@ -237,6 +227,7 @@ Route::middleware(['auth', 'role:staff'])->prefix('staff')->name('staff.')->grou
         return view('staff.active-event', compact('activeEvents'));
     })->name('active-event');
 });
+
 // ── AUDITOR Routes ───────────────────────────────────────────
 Route::middleware(['auth', 'role:auditor'])->prefix('auditor')->name('auditor.')->group(function () {
     Route::get('/dashboard', function () {
@@ -246,7 +237,6 @@ Route::middleware(['auth', 'role:auditor'])->prefix('auditor')->name('auditor.')
     Route::get('/family-profiles', [\App\Http\Controllers\Auditor\AuditorController::class, 'familyProfiles'])
         ->name('family-profiles');
 
-    // Auditor: distribution logs (read-only)
     Route::get('/distribution/logs', [\App\Http\Controllers\Auditor\AuditorDistributionLogController::class, 'index'])
         ->name('distribution.logs');
 
@@ -262,7 +252,6 @@ Route::middleware(['auth', 'role:auditor'])->prefix('auditor')->name('auditor.')
     Route::get('/households/{household}', [\App\Http\Controllers\Auditor\AuditorHouseholdController::class, 'show'])
     ->name('households.show');
 
-    // Audit Trail (read-only)
     Route::get('/audit-trail', [\App\Http\Controllers\Auditor\AuditTrailController::class, 'index'])
         ->name('audit.trail');
 });

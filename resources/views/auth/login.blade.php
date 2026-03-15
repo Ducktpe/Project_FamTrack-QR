@@ -25,6 +25,7 @@
             height: 100%;
             font-family: 'Open Sans', sans-serif;
             background: var(--gray-100);
+            overflow-x: hidden;
         }
 
         .page-wrap {
@@ -41,6 +42,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-shrink: 0;
         }
         .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.3px; }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
@@ -60,6 +62,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-shrink: 0;
         }
         .nav-brand { display: flex; align-items: center; gap: 14px; }
         .nav-brand img { height: 50px; width: 50px; object-fit: contain; }
@@ -78,9 +81,11 @@
             text-decoration: none;
             border-radius: 4px;
             transition: background 0.15s, transform 0.15s;
+            white-space: nowrap;
         }
         .nav-home:hover { background: var(--blue-dark); transform: translateY(-1px); }
-        .nav-home svg { width: 14px; height: 14px; }
+        .nav-home svg { width: 14px; height: 14px; flex-shrink: 0; }
+        .nav-home span { display: inline; }
 
         /* ── BODY CENTER ── */
         .login-body {
@@ -98,6 +103,8 @@
             display: grid;
             grid-template-columns: 300px 1fr;
             box-shadow: 0 8px 40px rgba(0,0,0,0.45);
+            border-radius: 4px;
+            overflow: hidden;
         }
 
         /* ── LEFT PANEL ── */
@@ -177,7 +184,7 @@
             color: var(--yellow); margin-bottom: 6px;
             display: flex; align-items: center; gap: 8px;
         }
-        .right-eyebrow::before { content: ''; width: 18px; height: 2px; background: var(--yellow); }
+        .right-eyebrow::before { content: ''; width: 18px; height: 2px; background: var(--yellow); flex-shrink: 0; }
         .right-title {
             font-family: 'PT Serif', serif;
             font-size: 22px; font-weight: 700;
@@ -200,12 +207,13 @@
         .field-input {
             width: 100%;
             border: 1.5px solid var(--gray-200);
-            padding: 10px 12px 10px 34px;
-            font-size: 13px; color: var(--gray-800);
+            padding: 11px 12px 11px 34px;
+            font-size: 14px; color: var(--gray-800);
             background: var(--gray-50);
             font-family: 'Open Sans', sans-serif;
             outline: none; border-radius: 0;
             transition: border-color 0.15s, background 0.15s;
+            /* Prevent iOS zoom on focus (font-size >= 16px on mobile handled via media query) */
         }
         .field-input:focus {
             border-color: var(--blue);
@@ -216,16 +224,17 @@
 
         /* ── REMEMBER ── */
         .remember-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
-        .remember-row input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--blue); cursor: pointer; }
+        .remember-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; }
         .remember-row span { font-size: 12px; color: var(--gray-600); }
 
         .form-divider { border: none; border-top: 1px solid var(--gray-100); margin: 16px 0; }
 
         /* ── ACTIONS ── */
-        .form-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .form-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
         .forgot-link {
             font-size: 12px; color: var(--blue);
             text-decoration: underline; text-underline-offset: 2px; font-weight: 500;
+            padding: 4px 0; /* larger tap target */
         }
         .forgot-link:hover { color: var(--yellow); }
 
@@ -235,7 +244,7 @@
             font-family: 'Open Sans', sans-serif;
             font-size: 12px; font-weight: 700;
             text-transform: uppercase; letter-spacing: 1.5px;
-            padding: 11px 28px;
+            padding: 12px 28px;
             border: none; cursor: pointer; border-radius: 0;
             display: flex; align-items: center; gap: 8px;
             transition: background 0.15s; white-space: nowrap;
@@ -259,10 +268,11 @@
         /* ── FOOTER ── */
         .footer {
             background: #0d1f3c;
-            height: 46px;
+            min-height: 46px;
             border-top: 3px solid var(--yellow);
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 28px; flex-shrink: 0;
+            padding: 10px 28px; flex-shrink: 0;
+            flex-wrap: wrap; gap: 6px;
         }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.35); }
         .footer-left strong { color: rgba(255,255,255,0.6); }
@@ -276,17 +286,103 @@
         .footer-fb svg { width: 13px; height: 13px; }
 
         /* ── RESPONSIVE ── */
-        @media (max-width: 700px) {
-            .login-card { grid-template-columns: 1fr; max-width: 420px; }
-            .login-left { padding: 28px 24px; }
-            .left-features { display: none; }
-            .login-right { padding: 28px 24px; }
-            .footer-center { display: none; }
+
+        /* Tablet (≤768px) — stack card vertically, shrink nav */
+        @media (max-width: 768px) {
+            /* Topbar */
+            .topbar { padding: 0 20px; height: 30px; }
             .topbar-left { display: none; }
+            .clock-date { display: none; }
+
+            /* Navbar */
+            nav { padding: 0 20px; height: 62px; }
+            .nav-brand img { height: 40px; width: 40px; }
+            .nav-text-org { display: none; }
+            .nav-text-title { font-size: 14px; }
+            .nav-divider { height: 30px; }
+            .nav-home { padding: 9px 16px; font-size: 11px; }
+
+            /* Card goes single column */
+            .login-card {
+                grid-template-columns: 1fr;
+                max-width: 480px;
+                box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+            }
+
+            /* Left panel becomes a compact header strip */
+            .login-left {
+                padding: 28px 24px 22px;
+                border-left: none;
+                border-top: 5px solid var(--yellow);
+            }
+            .login-logos img { width: 52px; height: 52px; }
+            .logos-sep { height: 40px; }
+            .left-title { font-size: 18px; }
+            .left-sub { margin-bottom: 0; }
+            .left-rule { display: none; }
+            .left-features { display: none; }
+
+            /* Right panel */
+            .login-right { padding: 28px 24px; }
+
+            /* Body padding */
+            .login-body { padding: 28px 16px; align-items: flex-start; padding-top: 32px; }
+
+            /* Footer */
+            .footer { padding: 10px 20px; }
+            .footer-center { display: none; }
         }
-        @media (max-width: 400px) {
-            .login-body { padding: 20px 12px; }
+
+        /* Small mobile (≤480px) */
+        @media (max-width: 480px) {
+            /* Topbar */
+            .topbar { padding: 0 14px; }
+            .status-dot { display: none; }
+            .clock { font-size: 11px; }
+
+            /* Navbar — icon-only home button */
+            nav { padding: 0 14px; height: 56px; }
+            .nav-brand { gap: 8px; }
+            .nav-brand img { height: 34px; width: 34px; }
+            .nav-divider { display: none; }
+            .nav-text-title { font-size: 13px; }
+            .nav-home span { display: none; }
+            .nav-home { padding: 9px 10px; gap: 0; width: 38px; height: 38px; justify-content: center; border-radius: 50%; }
+            .nav-home svg { width: 16px; height: 16px; }
+
+            /* Card */
+            .login-card { max-width: 100%; border-radius: 2px; }
+
+            /* Left panel even more compact */
+            .login-left { padding: 22px 18px 18px; }
+            .login-logos { gap: 10px; margin-bottom: 14px; }
+            .login-logos img { width: 44px; height: 44px; }
+            .logos-sep { height: 34px; }
+            .left-title { font-size: 16px; }
+
+            /* Right panel */
             .login-right { padding: 24px 18px; }
+            .right-title { font-size: 19px; }
+
+            /* Inputs — font-size 16px prevents iOS auto-zoom on focus */
+            .field-input { font-size: 16px; padding: 12px 12px 12px 36px; }
+
+            /* Actions — stack vertically on very small screens */
+            .form-actions { flex-direction: column; align-items: stretch; gap: 10px; }
+            .submit-btn { width: 100%; justify-content: center; padding: 13px; }
+            .forgot-link { text-align: center; }
+
+            /* Body */
+            .login-body { padding: 16px 12px; }
+
+            /* Footer */
+            .footer { padding: 10px 14px; }
+            .footer-fb span { display: none; } /* icon only */
+        }
+
+        /* Reduce motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
     </style>
 </head>
@@ -318,7 +414,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/>
             </svg>
-            Homepage
+            <span>Homepage</span>
         </a>
     </nav>
 
@@ -462,7 +558,7 @@
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
             </svg>
-            facebook.com/naicmdrrmo
+            <span>facebook.com/naicmdrrmo</span>
         </a>
     </div>
 

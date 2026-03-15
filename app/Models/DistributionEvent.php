@@ -16,69 +16,66 @@ class DistributionEvent extends Model
         'target_barangay',
         'event_date',
         'description',
-        'goods_detail',
         'status',
         'created_by',
         'started_at',
         'ended_at',
         'cancelled_at',
         'cancellation_reason',
+        'distribution_lat',
+        'distribution_lng',
+        'distribution_location',
+        'distribution_dms',
     ];
 
     protected $casts = [
-        'event_date'      => 'date',
-        'relief_type'     => 'array',
-        'relief_items'    => 'array',
-        'target_barangay' => 'array',
-        'started_at'      => 'datetime',
-        'ended_at'        => 'datetime',
-        'cancelled_at'    => 'datetime',
+        'event_date'       => 'date',
+        'relief_items'     => 'array',   // JSON array of {key, name, qty}
+        'target_barangay'  => 'array',   // JSON array — DB has a CHECK constraint requiring valid JSON
+        'started_at'       => 'datetime',
+        'ended_at'         => 'datetime',
+        'cancelled_at'     => 'datetime',
+        'distribution_lat' => 'float',
+        'distribution_lng' => 'float',
+        // relief_type is a plain comma-separated string — no cast needed
     ];
 
     // ─── Display Accessors ────────────────────────────────────────────────────
-    // These convert the JSON-cast array columns into comma-separated strings so
-    // Blade's {{ }} / htmlspecialchars() never receives an array.
 
     /**
-     * Return relief_type as a human-readable string.
-     * Use $event->relief_type_display in Blade templates.
+     * relief_type is stored as a plain comma-separated string.
+     * e.g. "Food Pack, Hygiene Kit"
      */
     public function getReliefTypeDisplayAttribute(): string
     {
-        $value = $this->getRawOriginal('relief_type');
-        if (is_null($value)) {
-            return '—';
-        }
-        $decoded = json_decode($value, true);
-        return is_array($decoded) ? implode(', ', $decoded) : (string) $value;
+        return $this->relief_type ?? '—';
     }
 
     /**
-     * Return target_barangay as a human-readable string.
-     * Use $event->target_barangay_display in Blade templates.
+     * target_barangay is stored as a plain comma-separated string.
+     * e.g. "Sabang, Molino, Halang"
      */
-    public function getTargetBarangayDisplayAttribute(): ?string
+    public function getTargetBarangayDisplayAttribute(): string
     {
-        $value = $this->getRawOriginal('target_barangay');
-        if (is_null($value)) {
-            return null;
-        }
-        $decoded = json_decode($value, true);
-        return is_array($decoded) ? implode(', ', $decoded) : (string) $value;
+        $val = $this->target_barangay;
+        if (empty($val)) return '—';
+        return is_array($val) ? implode(', ', $val) : $val;
     }
 
     /**
-     * Return relief_items as a human-readable string.
-     * Use $event->relief_items_display in Blade templates.
+     * relief_items is stored as JSON array of objects: [{key, name, qty}, ...]
+     * Returns a readable string like "5 kg Rice, 2 cans Canned Goods"
      */
     public function getReliefItemsDisplayAttribute(): string
     {
-        $value = $this->getRawOriginal('relief_items');
-        if (is_null($value)) {
-            return '—';
-        }
-        $decoded = json_decode($value, true);
-        return is_array($decoded) ? implode(', ', $decoded) : (string) $value;
+        $items = $this->relief_items; // already decoded by cast
+        if (empty($items)) return '—';
+
+        return collect($items)->map(function ($item) {
+            $qty  = $item['qty']  ?? null;
+            $name = $item['name'] ?? $item['key'] ?? '?';
+            return $qty ? "{$qty} {$name}" : $name;
+        })->implode(', ');
     }
 
     // ─── Relationships ────────────────────────────────────────────────────────
@@ -117,18 +114,23 @@ class DistributionEvent extends Model
 
     // ─── Helper Methods ───────────────────────────────────────────────────────
 
-    public function canStart()
+    public function canStart(): bool
     {
         return $this->status === 'upcoming';
     }
 
-    public function canEnd()
+    public function canEnd(): bool
     {
         return $this->status === 'ongoing';
     }
 
-    public function canCancel()
+    public function canCancel(): bool
     {
         return in_array($this->status, ['upcoming', 'ongoing']);
+    }
+
+    public function hasPin(): bool
+    {
+        return !is_null($this->distribution_lat) && !is_null($this->distribution_lng);
     }
 }

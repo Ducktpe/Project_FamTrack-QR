@@ -5,37 +5,38 @@
 
 // Naic Barangays (30 total)
 const naicBarangays = [
+    "Bagong Karsada",
+    "Balsahan",
     "Bancaan",
-    "Biga", 
     "Bucana Malaki",
     "Bucana Sasahan",
     "Calubcob",
-    "Gomez-Zamora (Barangay 1 Poblacion)",
+    "Capt. C. Nazareno (Pob.)",
+    "GOMBALZA",
     "Halang",
     "Humbac",
+    "Ibayo Estacion",
     "Ibayo Silangan",
-    "Ilag",
+    "Kanluran",
     "Labac",
     "Latoria",
-    "Luzviminda (Barangay 5 Poblacion)",
-    "Mabolo",
+    "Mabulo",
     "Makina",
     "Malainen Bago",
     "Malainen Luma",
     "Molino",
+    "Munting Mapino",
     "Muzon",
-    "Palangue 1 & 2 (Barangay 2 Poblacion)",
-    "Palangue 3 & Kanluran (Barangay 3 Poblacion)",
+    "Palangue 1",
+    "Palangue 2 & 3",
     "Sabang",
     "San Roque",
-    "Santulan (Barangay 4 Poblacion)",
+    "Santulan",
     "Sapa",
     "Timalan Balsahan",
-    "Timalan Concepcion",
-    "Toclong",
-    "Tulay Silangan",
-    "Tulay Kanluran"
+    "Timalan Concepcion"
 ];
+
 
 // Cavite Municipalities
 const caviteMunicipalities = [
