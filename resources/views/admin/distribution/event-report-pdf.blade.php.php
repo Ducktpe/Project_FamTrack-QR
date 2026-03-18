@@ -83,6 +83,7 @@ class EventHouseholdsExport implements WithEvents, ShouldAutoSize
                     'distributed_at'      => $h->distributionLog?->distributed_at,
                     'goods_detail'        => $h->goods_detail ?? '',
                     'remarks'             => $h->remarks ?? '',
+                    'scan_mode'           => $this->event->scan_mode ?? 'household',
                     'has_qr_code'         => (bool) $h->qrCode,
                 ]);
         }
@@ -102,6 +103,7 @@ class EventHouseholdsExport implements WithEvents, ShouldAutoSize
                 'distributed_at'      => $log->distributed_at,
                 'goods_detail'        => $log->goods_detail ?? '',
                 'remarks'             => $log->remarks ?? '',
+                    'scan_mode'           => $this->event->scan_mode ?? 'household',
                 'has_qr_code'         => false, // logs source doesn't carry QR info
             ]);
     }
@@ -192,14 +194,14 @@ class EventHouseholdsExport implements WithEvents, ShouldAutoSize
                 // ── ROWS 1-2: Title header bar ────────────────────────────────
                 $sheet->setCellValue('A1', 'MDRRMO RBI System');
                 $sheet->setCellValue('I1', 'Exported at: ' . $exportedAt);
-                $sheet->mergeCells('A1:D1');
-                $sheet->mergeCells('E1:I1');
+                $sheet->mergeCells('A1:E1');
+                $sheet->mergeCells('F1:J1');
                 $sheet->setCellValue('A2', 'List of Households');
                 $sheet->setCellValue('I2', $barangayName);
-                $sheet->mergeCells('A2:D2');
-                $sheet->mergeCells('E2:I2');
+                $sheet->mergeCells('A2:E2');
+                $sheet->mergeCells('F2:J2');
 
-                foreach (['A1:I1', 'A2:I2'] as $range) {
+                foreach (['A1:J1', 'A2:J2'] as $range) {
                     $sheet->getStyle($range)->getFill()
                         ->setFillType(Fill::FILL_SOLID)
                         ->getStartColor()->setARGB('FF002EC0');
@@ -210,8 +212,8 @@ class EventHouseholdsExport implements WithEvents, ShouldAutoSize
                         ->setVertical(Alignment::VERTICAL_CENTER);
                 }
                 $sheet->getStyle('A2:I2')->getFont()->setBold(false)->getColor()->setARGB('FFD0DCF5');
-                $sheet->getStyle('E1:I1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-                $sheet->getStyle('E2:I2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle('F1:J1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle('F2:J2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
                 $sheet->getRowDimension(1)->setRowHeight(22);
                 $sheet->getRowDimension(2)->setRowHeight(18);
 
@@ -260,6 +262,7 @@ class EventHouseholdsExport implements WithEvents, ShouldAutoSize
                     'G' => 'Distributed At',
                     'H' => 'Goods Detail',
                     'I' => 'Remarks',
+                    'J' => 'Scan Mode',
                 ];
 
                 $medBorder = ['borderStyle' => Border::BORDER_MEDIUM, 'color' => ['argb' => 'FF000000']];
@@ -287,7 +290,7 @@ class EventHouseholdsExport implements WithEvents, ShouldAutoSize
                 }
 
                 $sheet->getRowDimension(5)->setRowHeight(20);
-                $sheet->setAutoFilter('A5:I5');
+                $sheet->setAutoFilter('A5:J5');
 
                 // ── ROWS 6+: Data rows ────────────────────────────────────────
                 foreach ($data as $index => $row) {
@@ -303,6 +306,7 @@ class EventHouseholdsExport implements WithEvents, ShouldAutoSize
                         'G' => $row->distributed_at?->format('Y-m-d H:i:s') ?? '—',
                         'H' => $row->goods_detail,
                         'I' => $row->remarks,
+                        'J' => $row->scan_mode === 'family_head' ? 'Per Family Head' : 'Per Household',
                     ];
 
                     $stripeFill = ($index % 2 === 0) ? 'FFFFFFFF' : 'FFF2F2F2';
@@ -332,7 +336,7 @@ class EventHouseholdsExport implements WithEvents, ShouldAutoSize
 
                 // ── Medium outline border around table (rows 5 → end) ─────────
                 if ($totalRows > 0) {
-                    $sheet->getStyle("A5:I{$dataEnd}")->applyFromArray([
+                    $sheet->getStyle("A5:J{$dataEnd}")->applyFromArray([
                         'borders' => [
                             'outline' => [
                                 'borderStyle' => Border::BORDER_MEDIUM,
@@ -343,7 +347,7 @@ class EventHouseholdsExport implements WithEvents, ShouldAutoSize
                 }
 
                 // ── Column widths ─────────────────────────────────────────────
-                foreach (['A' => 6, 'B' => 18, 'C' => 16, 'D' => 26, 'E' => 20, 'F' => 18, 'G' => 20, 'H' => 18, 'I' => 18] as $col => $w) {
+                foreach (['A' => 6, 'B' => 18, 'C' => 16, 'D' => 26, 'E' => 20, 'F' => 18, 'G' => 20, 'H' => 18, 'I' => 18, 'J' => 16] as $col => $w) {
                     $sheet->getColumnDimension($col)->setWidth($w);
                 }
 
@@ -355,7 +359,7 @@ class EventHouseholdsExport implements WithEvents, ShouldAutoSize
                     ->setFitToWidth(1)
                     ->setFitToHeight(0);
                 $sheet->getHeaderFooter()
-                    ->setOddHeader('&C&B MDRRMO RBI System — List of Households')
+                    ->setOddHeader('&C&B MDRRMO RBI System — Distribution Report')
                     ->setOddFooter('&L' . $barangayName . '&RPage &P of &N');
             },
         ];

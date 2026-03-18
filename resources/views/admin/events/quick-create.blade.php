@@ -1029,6 +1029,48 @@
                     </div>
                 </div>
 
+
+                {{-- Scan Mode --}}
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <div class="ca-dot"></div>
+                        <div class="form-section-title">Scan Mode</div>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="form-row cols-1">
+                            <div class="form-group">
+                                <label class="form-label">Scan Mode <span class="req">*</span></label>
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;" id="scanModePicker">
+
+                                    <div id="sm-household" onclick="selectScanMode('household')" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:2px solid var(--blue);border-radius:6px;cursor:pointer;background:var(--blue-pale);transition:border-color 0.15s,background 0.15s;user-select:none;">
+                                        <div id="sm-household-icon" style="width:36px;height:36px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+                                        </div>
+                                        <div>
+                                            <div id="sm-household-title" style="font-size:13px;font-weight:700;color:var(--blue-dark);margin-bottom:3px;">Per Household</div>
+                                            <div style="font-size:11px;color:var(--gray-600);line-height:1.5;">Accepts the <strong>household QR card</strong>. One release per household. Best for general relief distribution.</div>
+                                        </div>
+                                    </div>
+
+                                    <div id="sm-family_head" onclick="selectScanMode('family_head')" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:2px solid var(--gray-200);border-radius:6px;cursor:pointer;background:var(--white);transition:border-color 0.15s,background 0.15s;user-select:none;">
+                                        <div id="sm-family_head-icon" style="width:36px;height:36px;border-radius:8px;background:var(--gray-200);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gray-600)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+                                        </div>
+                                        <div>
+                                            <div id="sm-family_head-title" style="font-size:13px;font-weight:700;color:var(--gray-800);margin-bottom:3px;">Per Family Head</div>
+                                            <div style="font-size:11px;color:var(--gray-600);line-height:1.5;">Accepts the <strong>family head personal QR</strong>. One release per family head. Best for targeted beneficiary programs.</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-hint" id="scanModeHint">
+                                    <strong>Per Household:</strong> Staff scans the household QR card — only one claim allowed per household per event.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {{-- Relief Items --}}
                 <div class="form-section" id="reliefItemsSection">
                     <div class="form-section-header">
@@ -1453,6 +1495,7 @@
 
                 <!-- Submit -->
                 <input type="hidden" name="status" value="upcoming">
+                <input type="hidden" name="scan_mode" id="scanModeInput" value="household">
                 <div class="submit-bar">
                     <button type="submit" class="btn-submit" id="submitBtn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -2422,6 +2465,12 @@
             alert('Please select at least one target barangay.');
             document.getElementById('brgyTrigger').focus();
         }
+
+        /* ── Guard: re-assert scan_mode value on submit so browser autofill cannot reset it ── */
+        var scanInput = document.getElementById('scanModeInput');
+        if (!scanInput.value || (scanInput.value !== 'household' && scanInput.value !== 'family_head')) {
+            scanInput.value = 'household';
+        }
     });
 
     /* ══════════════════════════════════════════════
@@ -2521,6 +2570,39 @@
         if (fullMap)  fullMap.setView([lat, lng], 16);
     }
 
+
+
+
+</script>
+
+<script>
+function selectScanMode(val) {
+    document.getElementById("scanModeInput").value = val;
+
+    /* Update hint text to match selection */
+    var hints = {
+        'household':   '<strong>Per Household:</strong> Staff scans the household QR card — only one claim allowed per household per event.',
+        'family_head': '<strong>Per Family Head:</strong> Staff scans the family head\'s personal QR card — one claim per family head per event.'
+    };
+    var hintEl = document.getElementById('scanModeHint');
+    if (hintEl) hintEl.innerHTML = hints[val] || hints['household'];
+
+    var modes = ["household", "family_head"];
+    for (var i = 0; i < modes.length; i++) {
+        var m = modes[i];
+        var card = document.getElementById("sm-" + m);
+        var icon = document.getElementById("sm-" + m + "-icon");
+        var titl = document.getElementById("sm-" + m + "-title");
+        if (!card || !icon || !titl) continue;
+        var sel = (m === val);
+        card.style.border     = sel ? "2px solid #1B3F7A" : "2px solid #DEE2E8";
+        card.style.background = sel ? "#EAF0FA"           : "#FFFFFF";
+        icon.style.background = sel ? "#1B3F7A"           : "#DEE2E8";
+        var svg = icon.querySelector("svg");
+        if (svg) svg.setAttribute("stroke", sel ? "#fff" : "#5A6372");
+        titl.style.color = sel ? "#122D5A" : "#2C3340";
+    }
+}
 </script>
 </body>
 </html>

@@ -6,25 +6,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=PT+Serif:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --blue:       #1B3F7A;
-            --blue-dark:  #122D5A;
-            --blue-light: #2459A8;
-            --blue-pale:  #EAF0FA;
-            --yellow:     #F5C518;
-            --yellow-dark:#D4A800;
-            --green:      #16A34A;
-            --green-pale: #DCFCE7;
-            --green-dark: #15803D;
-            --white:      #FFFFFF;
-            --gray-50:    #F7F8FA;
-            --gray-100:   #F0F2F5;
-            --gray-200:   #DEE2E8;
-            --gray-400:   #9AA3B0;
-            --gray-600:   #5A6372;
-            --gray-800:   #2C3340;
-            --red:        #C0392B;
-            --red-pale:   #FEF2F2;
-            --sidebar-w:  256px;
+            --blue:        #1B3F7A;
+            --blue-dark:   #122D5A;
+            --blue-light:  #2459A8;
+            --blue-pale:   #EAF0FA;
+            --yellow:      #F5C518;
+            --yellow-dark: #D4A800;
+            --green:       #16A34A;
+            --green-pale:  #DCFCE7;
+            --green-dark:  #15803D;
+            --orange:      #C2410C;
+            --orange-pale: #FFF7ED;
+            --purple:      #7C3AED;
+            --purple-pale: #F5F3FF;
+            --white:       #FFFFFF;
+            --gray-50:     #F7F8FA;
+            --gray-100:    #F0F2F5;
+            --gray-200:    #DEE2E8;
+            --gray-400:    #9AA3B0;
+            --gray-600:    #5A6372;
+            --gray-800:    #2C3340;
+            --red:         #C0392B;
+            --red-pale:    #FEF2F2;
+            --sidebar-w:   256px;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -74,11 +78,7 @@
             display: flex; align-items: center;
             padding: 0 28px; gap: 14px; z-index: 90;
         }
-        .hamburger {
-            display: none; background: none; border: none; cursor: pointer;
-            padding: 6px; margin-left: -4px; border-radius: 4px;
-            color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s;
-        }
+        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
         .hamburger:hover { background: var(--blue-pale); }
         .hamburger svg { width: 22px; height: 22px; display: block; }
         .header-logos { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
@@ -89,73 +89,36 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-admin-badge {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 14px; background: var(--blue-pale);
-            border: 1px solid var(--gray-200); border-radius: 4px;
-        }
-        .admin-avatar {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: var(--blue); display: flex; align-items: center; justify-content: center;
-            color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0;
-        }
+        .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; }
+        .admin-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
         .admin-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
         .admin-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
-        .sidebar-overlay {
-            display: none !important; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.45); z-index: 200;
-            opacity: 0; transition: opacity 0.25s; pointer-events: none;
-        }
+        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
         .sidebar-overlay.active { display: block !important; pointer-events: auto; }
 
         /* ─── SIDEBAR ─── */
-        .sidebar {
-            grid-area: sidebar; background: var(--white);
-            border-right: 1px solid var(--gray-200);
-            display: flex; flex-direction: column; overflow-y: auto;
-        }
-        .sidebar-close {
-            display: none; position: absolute; top: 12px; right: 12px;
-            background: var(--gray-100); border: 1px solid var(--gray-200);
-            border-radius: 4px; width: 32px; height: 32px;
-            align-items: center; justify-content: center;
-            cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s;
-        }
+        .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
+        .sidebar-close { display: none; position: absolute; top: 12px; right: 12px; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 4px; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s; }
         .sidebar-close:hover { background: var(--red-pale); color: var(--red); }
         .sidebar-close svg { width: 16px; height: 16px; }
         .nav-section-label { padding: 18px 20px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray-400); }
-        .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 11px 20px; font-size: 13.5px; font-weight: 500;
-            color: var(--gray-600); text-decoration: none;
-            border-left: 3px solid transparent;
-            transition: background 0.12s, color 0.12s, border-color 0.12s;
-        }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 20px; font-size: 13.5px; font-weight: 500; color: var(--gray-600); text-decoration: none; border-left: 3px solid transparent; transition: background 0.12s, color 0.12s, border-color 0.12s; }
         .nav-item:hover { background: var(--gray-50); color: var(--blue); border-left-color: var(--blue-light); }
         .nav-item.active { background: var(--blue-pale); color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
         .nav-icon { width: 17px; height: 17px; flex-shrink: 0; color: inherit; opacity: 0.7; }
         .nav-item.active .nav-icon, .nav-item:hover .nav-icon { opacity: 1; }
         .sidebar-sep { border: none; border-top: 1px solid var(--gray-100); margin: 8px 0; }
         .sidebar-bottom { margin-top: auto; padding: 16px 20px; border-top: 1px solid var(--gray-200); }
-        .logout-btn {
-            width: 100%; font-family: 'Open Sans', sans-serif;
-            font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
-            background: var(--blue); color: var(--white); border: none;
-            padding: 10px 16px; border-radius: 4px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s;
-        }
+        .logout-btn { width: 100%; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; background: var(--blue); color: var(--white); border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
         .logout-btn:hover { background: var(--red); }
 
         /* ─── MAIN ─── */
         .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 28px 32px; }
 
-        .page-titlebar {
-            display: flex; align-items: flex-end; justify-content: space-between;
-            margin-bottom: 20px; padding-bottom: 16px;
-            border-bottom: 1px solid var(--gray-200); gap: 12px;
-        }
+        /* ─── PAGE TITLEBAR ─── */
+        .page-titlebar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); gap: 12px; }
         .page-breadcrumb { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
         .page-breadcrumb a { color: var(--gray-400); text-decoration: none; }
         .page-breadcrumb a:hover { color: var(--blue-light); }
@@ -166,139 +129,117 @@
         .page-date strong { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
 
         /* ─── SUMMARY STATS ─── */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-        .stat-card {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-top: 3px solid var(--blue);
-            padding: 16px 18px;
-        }
-        .stat-card.yellow { border-top-color: var(--yellow); }
-        .stat-card.green  { border-top-color: var(--green); }
-        .stat-card.red    { border-top-color: var(--red); }
+        .stats-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px; }
+        .stat-card { background: var(--white); border: 1px solid var(--gray-200); border-top: 3px solid var(--blue); padding: 14px 16px; border-radius: 2px; }
+        .stat-card.yellow  { border-top-color: var(--yellow); }
+        .stat-card.green   { border-top-color: var(--green); }
+        .stat-card.red     { border-top-color: var(--red); }
+        .stat-card.orange  { border-top-color: var(--orange); }
+        .stat-card.purple  { border-top-color: var(--purple); }
         .stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 6px; }
-        .stat-value { font-size: 26px; font-weight: 700; color: var(--blue-dark); line-height: 1; }
-        .stat-card.yellow .stat-value { color: var(--yellow-dark); }
-        .stat-card.green  .stat-value { color: var(--green); }
-        .stat-card.red    .stat-value { color: var(--red); }
+        .stat-value { font-size: 24px; font-weight: 700; color: var(--blue-dark); line-height: 1; }
+        .stat-card.yellow .stat-value  { color: var(--yellow-dark); }
+        .stat-card.green  .stat-value  { color: var(--green); }
+        .stat-card.red    .stat-value  { color: var(--red); }
+        .stat-card.orange .stat-value  { color: var(--orange); }
+        .stat-card.purple .stat-value  { color: var(--purple); }
         .stat-meta { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
 
-        /* ─── FILTERS ─── */
-        .filters-bar {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            padding: 14px 18px;
-            display: flex; align-items: center; gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-        .filter-group { display: flex; align-items: center; gap: 6px; }
+        /* ─── FILTERS BAR ─── */
+        .filters-bar { background: var(--white); border: 1px solid var(--gray-200); padding: 12px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 0; border-bottom: none; }
+        .filter-group { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
         .filter-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); white-space: nowrap; }
-        .filter-input, .filter-select {
-            border: 1px solid var(--gray-200);
-            background: var(--gray-50);
-            padding: 7px 10px;
-            font-size: 12px; color: var(--gray-800);
-            font-family: 'Open Sans', sans-serif;
-            outline: none; border-radius: 3px;
-            transition: border-color 0.15s;
-        }
-        .filter-input { width: 220px; }
+        .filter-input, .filter-select { border: 1px solid var(--gray-200); background: var(--gray-50); padding: 7px 10px; font-size: 12px; color: var(--gray-800); font-family: 'Open Sans', sans-serif; outline: none; border-radius: 3px; transition: border-color 0.15s; }
         .filter-select { padding-right: 28px; appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA3B0' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 8px center;
-        }
+            background-repeat: no-repeat; background-position: right 8px center; }
         .filter-input:focus, .filter-select:focus { border-color: var(--blue); background: var(--white); }
-        .filter-spacer { flex: 1; }
+        .filter-spacer { flex: 1; min-width: 8px; }
         .filter-count { font-size: 12px; color: var(--gray-600); white-space: nowrap; }
         .filter-count strong { color: var(--blue-dark); }
 
+        /* Search scope combo */
+        .search-combo { display: flex; align-items: stretch; border: 1px solid var(--gray-200); border-radius: 3px; overflow: hidden; background: var(--gray-50); transition: border-color 0.15s; }
+        .search-combo:focus-within { border-color: var(--blue); background: var(--white); }
+        .search-combo .scope-select { border: none; border-right: 1px solid var(--gray-200); background: var(--gray-100); padding: 7px 22px 7px 8px; font-size: 11px; font-weight: 700; color: var(--gray-600); font-family: 'Open Sans', sans-serif; outline: none; appearance: none; cursor: pointer; flex-shrink: 0; min-width: 86px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239AA3B0' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 5px center; }
+        .search-combo .scope-select:hover { background-color: var(--blue-pale); color: var(--blue); }
+        .search-combo .search-input { border: none; background: transparent; padding: 7px 10px; font-size: 12px; color: var(--gray-800); font-family: 'Open Sans', sans-serif; outline: none; width: 190px; }
+        .search-combo .clear-btn { display: none; align-items: center; justify-content: center; padding: 0 8px; border: none; background: transparent; color: var(--gray-400); cursor: pointer; font-size: 16px; line-height: 1; }
+        .search-combo .clear-btn:hover { color: var(--red); }
+        .search-combo.has-value .clear-btn { display: flex; }
+
+        /* Highlight matched text */
+        mark.hl { background: #FFF176; color: inherit; border-radius: 2px; padding: 0 1px; font-style: normal; }
+
+        /* Mobile filter toggle */
+        .filter-toggle-btn { display: none; align-items: center; gap: 6px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 3px; padding: 7px 12px; font-size: 12px; font-weight: 600; color: var(--gray-600); cursor: pointer; font-family: 'Open Sans', sans-serif; white-space: nowrap; transition: background 0.15s; flex-shrink: 0; }
+        .filter-toggle-btn:hover { background: var(--blue-pale); color: var(--blue); border-color: var(--blue-light); }
+        .filter-toggle-btn .ftb-count { background: var(--blue); color: #fff; border-radius: 10px; font-size: 10px; padding: 1px 6px; margin-left: 2px; display: none; }
+        .filter-toggle-btn .ftb-count.show { display: inline; }
+        .filters-collapsible { display: contents; }
+
+        /* Active filter tags */
+        .active-filters { background: var(--white); border: 1px solid var(--gray-200); border-top: none; padding: 8px 16px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 0; }
+        .active-filters.hidden { display: none; }
+        .filter-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; background: var(--blue-pale); border: 1px solid #C7D9F5; border-radius: 10px; font-size: 11px; color: var(--blue); font-weight: 600; }
+        .filter-tag a { color: var(--blue); text-decoration: none; margin-left: 2px; opacity: 0.6; font-weight: 700; }
+        .filter-tag a:hover { opacity: 1; }
+        .clear-all { font-size: 11px; color: var(--red); text-decoration: none; font-weight: 600; margin-left: 4px; }
+        .clear-all:hover { text-decoration: underline; }
+
         /* ─── TABLE ─── */
-        .table-wrap {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            overflow-x: auto;
-            margin-bottom: 16px;
-        }
+        .table-wrap { background: var(--white); border: 1px solid var(--gray-200); border-top: none; overflow-x: auto; margin-bottom: 0; }
         table { width: 100%; border-collapse: collapse; }
-        thead th {
-            padding: 11px 14px; text-align: left;
-            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-            color: var(--gray-400); background: var(--gray-50);
-            border-bottom: 1px solid var(--gray-200); white-space: nowrap;
-            cursor: pointer; user-select: none;
-        }
-        thead th:hover { color: var(--blue); }
-        thead th.sorted { color: var(--blue); }
-        thead th .sort-icon { display: inline-block; margin-left: 4px; opacity: 0.4; font-size: 9px; }
-        thead th.sorted .sort-icon { opacity: 1; }
-        tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; }
+        thead th { padding: 10px 14px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); background: var(--gray-50); border-bottom: 2px solid var(--gray-200); white-space: nowrap; }
+        .th-sortable { cursor: pointer; user-select: none; }
+        .th-sortable:hover { color: var(--blue); }
+        .th-sortable.sorted { color: var(--blue); }
+        .sort-icon { display: inline-block; margin-left: 3px; opacity: 0.4; font-size: 9px; }
+        .th-sortable.sorted .sort-icon { opacity: 1; }
+        tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; cursor: pointer; }
         tbody tr:last-child { border-bottom: none; }
         tbody tr:hover { background: var(--blue-pale); }
-        tbody td { padding: 10px 14px; font-size: 12.5px; color: var(--gray-800); vertical-align: middle; }
-        .td-name { font-weight: 600; color: var(--blue-dark); }
-        .td-sub  { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
-        .td-num  { font-variant-numeric: tabular-nums; }
+        tbody td { padding: 9px 14px; font-size: 12.5px; color: var(--gray-800); vertical-align: middle; }
+        .td-name { font-weight: 600; color: var(--blue-dark); font-size: 13px; }
+        .td-sub  { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+        .td-num  { font-variant-numeric: tabular-nums; color: var(--gray-400); font-size: 12px; }
+        .td-muted { color: var(--gray-400); font-style: italic; font-size: 11px; }
+        .td-serial { font-family: 'Courier New', monospace; font-size: 11px; color: var(--blue); background: var(--blue-pale); padding: 2px 6px; border-radius: 3px; white-space: nowrap; }
 
         /* Badges */
-        .badge {
-            display: inline-block; padding: 2px 8px; border-radius: 10px;
-            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
-            white-space: nowrap;
-        }
+        .badge { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
         .badge-head    { background: var(--blue-pale); color: var(--blue); border: 1px solid #C7D9F5; }
         .badge-member  { background: var(--gray-100); color: var(--gray-600); border: 1px solid var(--gray-200); }
         .badge-male    { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
         .badge-female  { background: #FDF2F8; color: #9D174D; border: 1px solid #FBCFE8; }
-        .badge-pwd     { background: #FFF7ED; color: var(--orange, #C2410C); border: 1px solid #FED7AA; }
-        .badge-senior  { background: var(--yellow-pale, #FFFAE6); color: var(--yellow-dark); border: 1px solid #FDE68A; }
+        .badge-pwd     { background: var(--orange-pale); color: var(--orange); border: 1px solid #FED7AA; }
+        .badge-senior  { background: #FFFAE6; color: var(--yellow-dark); border: 1px solid #FDE68A; }
         .badge-4ps     { background: var(--green-pale); color: var(--green-dark); border: 1px solid #BBF7D0; }
+        .badge-solo    { background: var(--purple-pale); color: var(--purple); border: 1px solid #DDD6FE; }
+        .badge-lgbtqia { background: #FDF4FF; color: #7E22CE; border: 1px solid #E9D5FF; }
+        .badge-student { background: var(--gray-100); color: var(--gray-600); border: 1px solid var(--gray-200); }
 
         /* ─── EMPTY STATE ─── */
         .empty-state { padding: 56px 24px; text-align: center; }
-        .empty-icon {
-            width: 52px; height: 52px; border-radius: 50%;
-            background: var(--gray-100); border: 2px solid var(--gray-200);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 14px;
-        }
+        .empty-icon { width: 52px; height: 52px; border-radius: 50%; background: var(--gray-100); border: 2px solid var(--gray-200); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
         .empty-icon svg { width: 24px; height: 24px; color: var(--gray-400); }
         .empty-title { font-size: 14px; font-weight: 600; color: var(--gray-600); margin-bottom: 4px; }
         .empty-sub { font-size: 12px; color: var(--gray-400); }
 
         /* ─── PAGINATION ─── */
-        .pagination {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 18px;
-            background: var(--white); border: 1px solid var(--gray-200);
-            border-top: none; gap: 12px; flex-wrap: wrap;
-        }
+        .pagination { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--white); border: 1px solid var(--gray-200); border-top: 1px solid var(--gray-100); gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
         .pagination-info { font-size: 12px; color: var(--gray-600); }
         .pagination-info strong { color: var(--gray-800); }
         .pagination-btns { display: flex; align-items: center; gap: 4px; }
-        .pg-btn {
-            min-width: 32px; height: 32px; border-radius: 3px;
-            border: 1px solid var(--gray-200); background: var(--white);
-            font-size: 12px; font-weight: 600; color: var(--gray-600);
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            padding: 0 8px; transition: background 0.12s, color 0.12s, border-color 0.12s;
-            font-family: 'Open Sans', sans-serif;
-        }
+        .pg-btn { min-width: 32px; height: 32px; border-radius: 3px; border: 1px solid var(--gray-200); background: var(--white); font-size: 12px; font-weight: 600; color: var(--gray-600); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0 8px; transition: background 0.12s, color 0.12s, border-color 0.12s; font-family: 'Open Sans', sans-serif; }
         .pg-btn:hover:not(:disabled) { background: var(--blue-pale); color: var(--blue); border-color: var(--blue-light); }
         .pg-btn.active { background: var(--blue); color: var(--white); border-color: var(--blue); }
         .pg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
         /* ─── FOOTER ─── */
-        footer {
-            grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px; gap: 8px; z-index: 100;
-        }
+        footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; z-index: 100; }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.45); }
         .footer-left strong { color: rgba(255,255,255,0.75); }
         .footer-center { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 1px; text-transform: uppercase; }
@@ -312,45 +253,48 @@
 
         /* ─── RESPONSIVE ─── */
         @media (max-width: 900px) {
-            .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
+            .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; }
             .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
             .sidebar.open { transform: translateX(0); }
             .sidebar-overlay { display: block; }
             .sidebar-close { display: flex; }
             .sidebar .nav-section-label { padding-top: 52px; }
             .hamburger { display: flex; }
+            .filter-toggle-btn { display: flex; }
+            .filters-collapsible { display: none; width: 100%; }
+            .filters-collapsible.open { display: flex; flex-direction: column; align-items: flex-start; }
+            .filters-bar { flex-wrap: wrap; gap: 8px; }
+            .filter-group { width: 100%; }
+            .filter-group .filter-select { flex: 1; }
+            .search-combo { width: 100%; }
+            .search-combo .search-input { flex: 1; width: auto; min-width: 0; }
+            /* Card-style rows on tablet */
+            .table-wrap table thead { display: none; }
+            .table-wrap table tbody tr { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; padding: 10px 14px; border-bottom: 2px solid var(--gray-200); }
+            .table-wrap table tbody td { padding: 3px 0; border: none; font-size: 12px; }
+            .table-wrap table tbody td:before { content: attr(data-label); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-400); display: block; margin-bottom: 1px; }
+            .table-wrap table tbody td:first-child { grid-column: 1 / -1; }
+            .td-name { font-size: 14px; }
             header { padding: 0 16px; gap: 10px; }
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
-            .header-admin-badge { padding: 6px 10px; gap: 8px; }
-            .admin-name { font-size: 12px; }
-            .admin-role { display: none; }
-            .topbar { padding: 0 16px; }
-            .topbar-left { display: none; }
-            .main-content { padding: 20px 16px; }
             .stats-row { grid-template-columns: repeat(3, 1fr); }
+            .main-content { padding: 20px 16px; }
         }
         @media (max-width: 640px) {
-            .topbar { justify-content: flex-end; }
-            .clock-date-inline { display: none; }
-            .status-indicator { display: none; }
-            header { padding: 0 12px; gap: 8px; }
-            .header-logos img { height: 36px; width: 36px; }
-            .logo-divider, .header-logos img:last-child, .header-org { display: none; }
-            .header-title { font-size: 13px; }
-            .main-content { padding: 16px 12px; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .filters-bar { gap: 8px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; }
             .page-h1 { font-size: 18px; }
-            .stats-row { grid-template-columns: repeat(2, 1fr); }
-            .filter-input { width: 100%; }
-            .filters-bar { gap: 8px; }
+            .main-content { padding: 16px 12px; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
-        }
-        @media (max-width: 380px) {
-            .main-content { padding: 12px 10px; }
-            .stats-row { grid-template-columns: 1fr 1fr; }
+            /* Single-column card rows on phones */
+            .table-wrap table tbody tr { grid-template-columns: 1fr; }
+            .table-wrap table tbody td:first-child { grid-column: 1; }
+            .pagination { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .header-admin-badge { display: none; }
         }
     </style>
 </head>
@@ -373,9 +317,7 @@
     <header>
         <button class="hamburger" onclick="openSidebar()" aria-label="Open navigation">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="3" y1="6" x2="21" y2="6"/>
-                <line x1="3" y1="12" x2="21" y2="12"/>
-                <line x1="3" y1="18" x2="21" y2="18"/>
+                <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
         </button>
         <div class="header-logos">
@@ -393,7 +335,7 @@
             <div class="admin-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
                 <div class="admin-name">{{ auth()->user()->name }}</div>
-                <div class="admin-role">Full Access</div>
+                <div class="admin-role">{{ ucfirst(auth()->user()->role ?? 'Staff') }}</div>
             </div>
         </div>
     </header>
@@ -408,7 +350,6 @@
 
         <div class="nav-section-label">Admin Menu</div>
 
-        <!-- 1. Dashboard Overview -->
         <a href="{{ route('admin.dashboard') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
@@ -417,7 +358,6 @@
             Dashboard Overview
         </a>
 
-        <!-- 2. Distribution Events -->
         <a href="{{ route('admin.events.quick-create') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2"/>
@@ -427,7 +367,6 @@
             Distribution Events
         </a>
 
-        <!-- 3. Distribution Logs -->
         <a href="{{ route('admin.distribution.logs') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
@@ -437,7 +376,6 @@
             Distribution Logs
         </a>
 
-        <!-- 4. List of Residents (active) -->
         <a href="{{ route('admin.residents.index') }}" class="nav-item active" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="8" r="4"/>
@@ -446,7 +384,6 @@
             List of Residents
         </a>
 
-        <!-- 5. List of Households -->
         <a href="{{ route('admin.households.index') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
@@ -458,8 +395,7 @@
         <a href="{{ route('admin.traillog.trail') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <line x1="12" y1="9" x2="12" y2="13"/>
-                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
             Trail Logs
         </a>
@@ -495,82 +431,161 @@
             </div>
         </div>
 
-        {{-- SUMMARY STATS --}}
+        {{-- SUMMARY STATS (6 cards) --}}
         <div class="stats-row">
             <div class="stat-card">
                 <div class="stat-label">Total Residents</div>
-                <div class="stat-value">{{ $totalResidents }}</div>
+                <div class="stat-value">{{ number_format($totalResidents) }}</div>
                 <div class="stat-meta">heads + members</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Household Heads</div>
-                <div class="stat-value">{{ $totalHeads }}</div>
+                <div class="stat-value">{{ number_format($totalHeads) }}</div>
                 <div class="stat-meta">registered households</div>
             </div>
             <div class="stat-card yellow">
                 <div class="stat-label">4Ps Beneficiaries</div>
-                <div class="stat-value">{{ $total4Ps }}</div>
-                <div class="stat-meta">households</div>
+                <div class="stat-value">{{ number_format($total4Ps) }}</div>
+                <div class="stat-meta">households enrolled</div>
             </div>
             <div class="stat-card green">
                 <div class="stat-label">Senior Citizens</div>
-                <div class="stat-value">{{ $totalSeniors }}</div>
+                <div class="stat-value">{{ number_format($totalSeniors) }}</div>
                 <div class="stat-meta">aged 60 and above</div>
             </div>
             <div class="stat-card red">
                 <div class="stat-label">PWD</div>
-                <div class="stat-value">{{ $totalPwd }}</div>
+                <div class="stat-value">{{ number_format($totalPwd) }}</div>
                 <div class="stat-meta">persons w/ disability</div>
+            </div>
+            <div class="stat-card purple">
+                <div class="stat-label">Solo Parents</div>
+                <div class="stat-value">{{ number_format($totalSoloParents ?? 0) }}</div>
+                <div class="stat-meta">registered solo parents</div>
             </div>
         </div>
 
         {{-- FILTERS --}}
         <form method="GET" action="{{ route('admin.residents.index') }}" id="filterForm">
+            {{-- Hidden fields carried through --}}
+            <input type="hidden" name="scope" id="scopeHidden" value="{{ request('scope', 'all') }}">
+
             <div class="filters-bar">
+
+                {{-- Mobile toggle --}}
+                <button type="button" class="filter-toggle-btn" onclick="toggleFilters()" id="filterToggleBtn">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+                    </svg>
+                    Filters
+                    <span class="ftb-count" id="filterBadge"></span>
+                </button>
+
+                {{-- Search scope combo --}}
                 <div class="filter-group">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9AA3B0" stroke-width="2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9AA3B0" stroke-width="2" style="flex-shrink:0">
                         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
                     </svg>
-                    <input type="text" name="search" class="filter-input" placeholder="Search by name, barangay..." value="{{ request('search') }}" oninput="debounceSubmit()">
+                    <div class="search-combo" id="searchCombo">
+                        <select class="scope-select" id="scopeSelect" onchange="updateScope(this.value)" title="Search field">
+                            <option value="all"          {{ request('scope','all') === 'all'          ? 'selected' : '' }}>All Fields</option>
+                            <option value="name"         {{ request('scope') === 'name'         ? 'selected' : '' }}>Name</option>
+                            <option value="barangay"     {{ request('scope') === 'barangay'     ? 'selected' : '' }}>Barangay</option>
+                            <option value="serial"       {{ request('scope') === 'serial'       ? 'selected' : '' }}>Serial Code</option>
+                            <option value="age"          {{ request('scope') === 'age'          ? 'selected' : '' }}>Age</option>
+                            <option value="civil_status" {{ request('scope') === 'civil_status' ? 'selected' : '' }}>Civil Status</option>
+                            <option value="employment"   {{ request('scope') === 'employment'   ? 'selected' : '' }}>Employment</option>
+                            <option value="relationship" {{ request('scope') === 'relationship' ? 'selected' : '' }}>Relationship</option>
+                        </select>
+                        <input type="text" name="search" class="search-input" id="searchInput"
+                            placeholder="Search residents..."
+                            value="{{ request('search') }}"
+                            oninput="onSearchInput(this)">
+                        <button type="button" class="clear-btn" onclick="clearSearch()" title="Clear search">×</button>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <span class="filter-label">Type</span>
-                    <select name="type" class="filter-select" onchange="this.form.submit()">
-                        <option value="">All</option>
-                        <option value="head"   {{ request('type') === 'head'   ? 'selected' : '' }}>Household Heads</option>
-                        <option value="member" {{ request('type') === 'member' ? 'selected' : '' }}>Members Only</option>
-                    </select>
+
+                {{-- Collapsible filter groups --}}
+                <div class="filters-collapsible" id="filtersCollapsible">
+                    <div class="filter-group">
+                        <span class="filter-label">Type</span>
+                        <select name="type" class="filter-select" onchange="this.form.submit()">
+                            <option value="">All</option>
+                            <option value="head"   {{ request('type') === 'head'   ? 'selected' : '' }}>Heads Only</option>
+                            <option value="member" {{ request('type') === 'member' ? 'selected' : '' }}>Members Only</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Sex</span>
+                        <select name="sex" class="filter-select" onchange="this.form.submit()">
+                            <option value="">All</option>
+                            <option value="Male"   {{ request('sex') === 'Male'   ? 'selected' : '' }}>Male</option>
+                            <option value="Female" {{ request('sex') === 'Female' ? 'selected' : '' }}>Female</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Barangay</span>
+                        <select name="barangay" class="filter-select" onchange="this.form.submit()">
+                            <option value="">All Barangays</option>
+                            @foreach($barangays as $brgy)
+                                <option value="{{ $brgy }}" {{ request('barangay') === $brgy ? 'selected' : '' }}>{{ $brgy }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Tag</span>
+                        <select name="tag" class="filter-select" onchange="this.form.submit()">
+                            <option value="">All</option>
+                            <option value="4ps"     {{ request('tag') === '4ps'     ? 'selected' : '' }}>4Ps</option>
+                            <option value="pwd"     {{ request('tag') === 'pwd'     ? 'selected' : '' }}>PWD</option>
+                            <option value="senior"  {{ request('tag') === 'senior'  ? 'selected' : '' }}>Senior Citizen</option>
+                            <option value="solo"    {{ request('tag') === 'solo'    ? 'selected' : '' }}>Solo Parent</option>
+                            <option value="student" {{ request('tag') === 'student' ? 'selected' : '' }}>Student</option>
+                            <option value="lgbtqia" {{ request('tag') === 'lgbtqia' ? 'selected' : '' }}>LGBTQIA+</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Age</span>
+                        <select name="age_group" class="filter-select" onchange="this.form.submit()">
+                            <option value="">All Ages</option>
+                            <option value="child"  {{ request('age_group') === 'child'  ? 'selected' : '' }}>Child (0–17)</option>
+                            <option value="adult"  {{ request('age_group') === 'adult'  ? 'selected' : '' }}>Adult (18–59)</option>
+                            <option value="senior" {{ request('age_group') === 'senior' ? 'selected' : '' }}>Senior (60+)</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <span class="filter-label">Sex</span>
-                    <select name="sex" class="filter-select" onchange="this.form.submit()">
-                        <option value="">All</option>
-                        <option value="Male"   {{ request('sex') === 'Male'   ? 'selected' : '' }}>Male</option>
-                        <option value="Female" {{ request('sex') === 'Female' ? 'selected' : '' }}>Female</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <span class="filter-label">Barangay</span>
-                    <select name="barangay" class="filter-select" onchange="this.form.submit()">
-                        <option value="">All Barangays</option>
-                        @foreach($barangays as $brgy)
-                            <option value="{{ $brgy }}" {{ request('barangay') === $brgy ? 'selected' : '' }}>{{ $brgy }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <span class="filter-label">Tag</span>
-                    <select name="tag" class="filter-select" onchange="this.form.submit()">
-                        <option value="">All</option>
-                        <option value="4ps"    {{ request('tag') === '4ps'    ? 'selected' : '' }}>4Ps</option>
-                        <option value="pwd"    {{ request('tag') === 'pwd'    ? 'selected' : '' }}>PWD</option>
-                        <option value="senior" {{ request('tag') === 'senior' ? 'selected' : '' }}>Senior Citizen</option>
-                        <option value="solo"   {{ request('tag') === 'solo'   ? 'selected' : '' }}>Solo Parent</option>
-                    </select>
-                </div>
+
                 <div class="filter-spacer"></div>
-                <div class="filter-count">Showing <strong>{{ $residents->count() }}</strong> of <strong>{{ $residents->total() }}</strong></div>
+                <div class="filter-count">
+                    Showing <strong>{{ $residents->count() }}</strong> of <strong>{{ $residents->total() }}</strong>
+                </div>
             </div>
+
+            {{-- Active filter tags --}}
+            @php
+                $activeFilters = array_filter([
+                    'search'    => request('search'),
+                    'type'      => request('type'),
+                    'sex'       => request('sex'),
+                    'barangay'  => request('barangay'),
+                    'tag'       => request('tag'),
+                    'age_group' => request('age_group'),
+                ]);
+            @endphp
+            @if(count($activeFilters))
+            <div class="active-filters">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9AA3B0" stroke-width="2.5" style="flex-shrink:0">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+                </svg>
+                @foreach($activeFilters as $key => $val)
+                    <span class="filter-tag">
+                        {{ ucfirst(str_replace('_', ' ', $key)) }}: {{ $val }}
+                        <a href="{{ request()->fullUrlWithQuery([$key => null]) }}">×</a>
+                    </span>
+                @endforeach
+                <a href="{{ route('admin.residents.index') }}" class="clear-all">Clear all</a>
+            </div>
+            @endif
         </form>
 
         {{-- TABLE --}}
@@ -578,68 +593,95 @@
             <table>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Full Name</th>
+                        <th style="width:40px">#</th>
+                        <th class="th-sortable {{ request('sort') === 'name' ? 'sorted' : '' }}"
+                            onclick="sortBy('name')">
+                            Full Name <span class="sort-icon">{{ request('sort') === 'name' ? (request('dir') === 'asc' ? '↑' : '↓') : '↕' }}</span>
+                        </th>
                         <th>Type</th>
                         <th>Sex</th>
-                        <th>Age</th>
-                        <th>Barangay</th>
+                        <th class="th-sortable {{ request('sort') === 'age' ? 'sorted' : '' }}"
+                            onclick="sortBy('age')">
+                            Age <span class="sort-icon">{{ request('sort') === 'age' ? (request('dir') === 'asc' ? '↑' : '↓') : '↕' }}</span>
+                        </th>
+                        <th class="th-sortable {{ request('sort') === 'barangay' ? 'sorted' : '' }}"
+                            onclick="sortBy('barangay')">
+                            Barangay <span class="sort-icon">{{ request('sort') === 'barangay' ? (request('dir') === 'asc' ? '↑' : '↓') : '↕' }}</span>
+                        </th>
                         <th>Household Head</th>
                         <th>Relationship</th>
+                        <th>Serial Code</th>
                         <th>Tags</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($residents as $i => $person)
-                    <tr>
-                        <td class="td-num">{{ $residents->firstItem() + $i }}</td>
-                        <td>
-                            <div class="td-name">{{ $person['name'] }}</div>
-                            @if($person['type'] === 'head' && $person['contact_number'])
-                                <div class="td-sub">{{ $person['contact_number'] }}</div>
+                    <tr onclick="window.location='{{ route('admin.households.show', $person['household_id']) }}'" title="View household">
+                        <td class="td-num" data-label="#">{{ $residents->firstItem() + $i }}</td>
+                        <td data-label="Full Name">
+                            <div class="td-name hl-name">{{ $person['name'] }}</div>
+                            @if($person['type'] === 'head' && !empty($person['contact_number']))
+                                <div class="td-sub">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:2px"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 0h3a2 2 0 012 1.72c.12.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0122 14.92z"/></svg>
+                                    {{ $person['contact_number'] }}
+                                </div>
+                            @endif
+                            @if(!empty($person['occupation']))
+                                <div class="td-sub hl-employment">{{ $person['occupation'] }}</div>
                             @endif
                         </td>
-                        <td>
+                        <td data-label="Type">
                             @if($person['type'] === 'head')
                                 <span class="badge badge-head">Head</span>
                             @else
                                 <span class="badge badge-member">Member</span>
                             @endif
                         </td>
-                        <td>
+                        <td data-label="Sex">
                             @if($person['sex'] === 'Male')
                                 <span class="badge badge-male">M</span>
                             @elseif($person['sex'] === 'Female')
                                 <span class="badge badge-female">F</span>
                             @else
-                                <span style="color:var(--gray-400)">—</span>
+                                <span class="td-muted">—</span>
                             @endif
                         </td>
-                        <td class="td-num">{{ $person['age'] ?? '—' }}</td>
-                        <td>{{ $person['barangay'] ?? '—' }}</td>
-                        <td>
+                        <td class="td-num hl-age" data-label="Age">{{ $person['age'] ?? '—' }}</td>
+                        <td class="hl-barangay" data-label="Barangay">{{ $person['barangay'] ?? '—' }}</td>
+                        <td data-label="Household Head">
                             @if($person['type'] === 'head')
-                                <span style="color:var(--gray-400);font-style:italic;font-size:11px;">—</span>
+                                <span class="td-muted">—</span>
                             @else
-                                {{ $person['household_head'] ?? '—' }}
+                                <span class="hl-name">{{ $person['household_head'] ?? '—' }}</span>
                             @endif
                         </td>
-                        <td>{{ $person['relationship'] ?? ($person['type'] === 'head' ? 'Head' : '—') }}</td>
-                        <td>
-                            <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                        <td class="hl-relationship" data-label="Relationship">{{ $person['relationship'] ?? ($person['type'] === 'head' ? 'Head' : '—') }}</td>
+                        <td class="hl-serial" data-label="Serial Code">
+                            @if(!empty($person['serial_code']))
+                                <span class="td-serial">{{ $person['serial_code'] }}</span>
+                            @else
+                                <span class="td-muted">Pending</span>
+                            @endif
+                        </td>
+                        <td data-label="Tags">
+                            <div style="display:flex;gap:3px;flex-wrap:wrap;">
                                 @if($person['is_4ps'])    <span class="badge badge-4ps">4Ps</span> @endif
                                 @if($person['is_pwd'])    <span class="badge badge-pwd">PWD</span> @endif
                                 @if($person['is_senior']) <span class="badge badge-senior">Senior</span> @endif
-                                @if($person['is_solo'] ?? false) <span class="badge badge-senior">Solo Parent</span> @endif
-                                @if(!$person['is_4ps'] && !$person['is_pwd'] && !$person['is_senior'] && !($person['is_solo'] ?? false))
-                                    <span style="color:var(--gray-400);font-size:11px;">—</span>
+                                @if($person['is_solo'] ?? false) <span class="badge badge-solo">Solo Parent</span> @endif
+                                @if($person['is_student'] ?? false) <span class="badge badge-student">Student</span> @endif
+                                @if($person['is_lgbtqia'] ?? false) <span class="badge badge-lgbtqia">LGBTQIA+</span> @endif
+                                @if(!$person['is_4ps'] && !$person['is_pwd'] && !$person['is_senior']
+                                    && !($person['is_solo'] ?? false) && !($person['is_student'] ?? false)
+                                    && !($person['is_lgbtqia'] ?? false))
+                                    <span class="td-muted">—</span>
                                 @endif
                             </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="9">
+                        <td colspan="10">
                             <div class="empty-state">
                                 <div class="empty-icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -661,21 +703,22 @@
         @if($residents->hasPages())
         <div class="pagination">
             <div class="pagination-info">
-                Showing <strong>{{ $residents->firstItem() }}–{{ $residents->lastItem() }}</strong> of <strong>{{ $residents->total() }}</strong> residents
+                Showing <strong>{{ $residents->firstItem() }}–{{ $residents->lastItem() }}</strong>
+                of <strong>{{ $residents->total() }}</strong> residents
             </div>
             <div class="pagination-btns">
                 <button class="pg-btn" {{ $residents->onFirstPage() ? 'disabled' : '' }}
-                    onclick="goToPage({{ $residents->currentPage() - 1 }})">
-                    &lsaquo;
-                </button>
+                    onclick="goToPage(1)" title="First page">«</button>
+                <button class="pg-btn" {{ $residents->onFirstPage() ? 'disabled' : '' }}
+                    onclick="goToPage({{ $residents->currentPage() - 1 }})">‹</button>
                 @foreach($residents->getUrlRange(max(1, $residents->currentPage()-2), min($residents->lastPage(), $residents->currentPage()+2)) as $page => $url)
                     <button class="pg-btn {{ $page == $residents->currentPage() ? 'active' : '' }}"
                         onclick="goToPage({{ $page }})">{{ $page }}</button>
                 @endforeach
                 <button class="pg-btn" {{ !$residents->hasMorePages() ? 'disabled' : '' }}
-                    onclick="goToPage({{ $residents->currentPage() + 1 }})">
-                    &rsaquo;
-                </button>
+                    onclick="goToPage({{ $residents->currentPage() + 1 }})">›</button>
+                <button class="pg-btn" {{ !$residents->hasMorePages() ? 'disabled' : '' }}
+                    onclick="goToPage({{ $residents->lastPage() }})" title="Last page">»</button>
             </div>
         </div>
         @endif
@@ -689,9 +732,7 @@
         </div>
         <div class="footer-center">Republic of the Philippines</div>
         <a class="fb-link" href="https://www.facebook.com/naicmdrrmo" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
             facebook.com/naicmdrrmo
         </a>
     </footer>
@@ -699,6 +740,7 @@
 </div>
 
 <script>
+    /* ─── Clock ─── */
     function pad(n){ return String(n).padStart(2,'0'); }
     function updateClock() {
         const now = new Date();
@@ -720,19 +762,122 @@
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 
-    /* ─── Search debounce ─── */
-    let searchTimer;
-    function debounceSubmit() {
-        clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => document.getElementById('filterForm').submit(), 450);
-    }
-
     /* ─── Pagination ─── */
     function goToPage(page) {
         const url = new URL(window.location);
         url.searchParams.set('page', page);
         window.location = url.toString();
     }
+
+    /* ─── Sort ─── */
+    function sortBy(col) {
+        const url = new URL(window.location);
+        const currentSort = url.searchParams.get('sort');
+        const currentDir  = url.searchParams.get('dir');
+        url.searchParams.set('sort', col);
+        url.searchParams.set('dir', currentSort === col && currentDir === 'asc' ? 'desc' : 'asc');
+        url.searchParams.set('page', 1);
+        window.location = url.toString();
+    }
+
+    /* ─── Search scope ─── */
+    function updateScope(val) {
+        document.getElementById('scopeHidden').value = val;
+        const input = document.getElementById('searchInput');
+        const placeholders = {
+            all:          'Search name, barangay, serial, age...',
+            name:         'Search by full name...',
+            barangay:     'Search by barangay...',
+            serial:       'Search by serial code...',
+            age:          'Search by age (e.g. 25)...',
+            civil_status: 'e.g. Single, Married, Widowed...',
+            employment:   'e.g. Employed, Unemployed...',
+            relationship: 'e.g. Head, Spouse, Son...',
+        };
+        input.placeholder = placeholders[val] || 'Search residents...';
+    }
+
+    /* ─── Search input: debounce submit + live highlight + clear btn ─── */
+    let searchTimer;
+    function onSearchInput(input) {
+        const combo = document.getElementById('searchCombo');
+        combo.classList.toggle('has-value', input.value.length > 0);
+        applyHighlight(input.value, document.getElementById('scopeSelect').value);
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => document.getElementById('filterForm').submit(), 600);
+    }
+
+    function clearSearch() {
+        const input = document.getElementById('searchInput');
+        input.value = '';
+        document.getElementById('searchCombo').classList.remove('has-value');
+        removeHighlight();
+        document.getElementById('filterForm').submit();
+    }
+
+    /* ─── Live highlight ─── */
+    const SCOPE_CLASS = {
+        all:          null,   // highlight all hl-* cells
+        name:         ['hl-name'],
+        barangay:     ['hl-barangay'],
+        serial:       ['hl-serial'],
+        age:          ['hl-age'],
+        civil_status: [],     // no dedicated cell — skip highlight
+        employment:   ['hl-employment'],
+        relationship: ['hl-relationship'],
+    };
+
+    function escapeRe(s){ return s.replace(/[.*+?^${}()|[\]\]/g,'\$&'); }
+
+    function applyHighlight(term, scope) {
+        removeHighlight();
+        if (!term) return;
+        const re = new RegExp('(' + escapeRe(term) + ')', 'gi');
+        let classes = SCOPE_CLASS[scope];
+        if (classes === null) classes = ['hl-name','hl-barangay','hl-serial','hl-age','hl-employment','hl-relationship'];
+        classes.forEach(cls => {
+            document.querySelectorAll('.' + cls).forEach(el => {
+                el.innerHTML = el.textContent.replace(re, '<mark class="hl">$1</mark>');
+            });
+        });
+    }
+
+    function removeHighlight() {
+        document.querySelectorAll('mark.hl').forEach(mark => {
+            const parent = mark.parentNode;
+            parent.replaceChild(document.createTextNode(mark.textContent), mark);
+            parent.normalize();
+        });
+    }
+
+    /* ─── Mobile filter toggle ─── */
+    function toggleFilters() {
+        const col = document.getElementById('filtersCollapsible');
+        const btn = document.getElementById('filterToggleBtn');
+        col.classList.toggle('open');
+        btn.style.color = col.classList.contains('open') ? 'var(--blue)' : '';
+    }
+
+    /* ─── Active filter badge on toggle button ─── */
+    (function() {
+        const active = ['type','sex','barangay','tag','age_group']
+            .filter(k => new URLSearchParams(window.location.search).get(k));
+        if (active.length) {
+            const badge = document.getElementById('filterBadge');
+            if (badge) { badge.textContent = active.length; badge.classList.add('show'); }
+        }
+    })();
+
+    /* ─── Init: restore combo state on page load ─── */
+    (function() {
+        const input = document.getElementById('searchInput');
+        const scope = document.getElementById('scopeSelect');
+        if (input && input.value) {
+            document.getElementById('searchCombo').classList.add('has-value');
+            applyHighlight(input.value, scope ? scope.value : 'all');
+        }
+        if (scope) updateScope(scope.value);
+    })();
 </script>
 </body>
 </html>

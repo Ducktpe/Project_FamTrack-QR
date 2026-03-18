@@ -6,165 +6,152 @@ use App\Http\Controllers\Controller;
 use App\Models\Household;
 use App\Models\FamilyMember;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ResidentController extends Controller
 {
     public function index(Request $request)
     {
-        $search   = $request->input('search');
-        $type     = $request->input('type');
-        $sex      = $request->input('sex');
-        $barangay = $request->input('barangay');
-        $tag      = $request->input('tag');
+        $search   = $request->get('search');
+        $type     = $request->get('type');       // head | member | ''
+        $sex      = $request->get('sex');         // Male | Female | ''
+        $barangay = $request->get('barangay');
+        $tag      = $request->get('tag');         // 4ps | pwd | senior | solo | student | lgbtqia
+        $ageGroup = $request->get('age_group');   // child | adult | senior
+        $sort     = $request->get('sort', 'name');
+        $dir      = $request->get('dir', 'asc') === 'desc' ? 'desc' : 'asc';
 
-        // ── Build the flat residents list ────────────────────────────────
-        $residents = collect();
+        // --- Build query over family_members joined to households ---
+        $query = FamilyMember::query()
+            ->select([
+                'family_members.id',
+                'family_members.household_id',
+                'family_members.is_family_head',
+                'family_members.full_name',
+                'family_members.relationship',
+                'family_members.sex',
+                'family_members.birthday',
+                'family_members.age',
+                'family_members.is_pwd',
+                'family_members.is_student',
+                'family_members.is_senior_citizen',
+                'family_members.occupation',
+                'households.household_head_name',
+                'households.contact_number',
+                'households.barangay',
+                'households.serial_code',
+                'households.is_4ps_beneficiary',
+                'households.is_solo_parent',
+            ])
+            ->join('households', 'households.id', '=', 'family_members.household_id')
+            ->leftJoin('family_member_details as fmd', 'fmd.family_member_id', '=', 'family_members.id');
 
-        // -- Household Heads --
-        $headsQuery = Household::query();
-
+        // --- Filters ---
         if ($search) {
-            $headsQuery->where(function ($q) use ($search) {
-                $q->where('household_head_name', 'like', "%{$search}%")
-                  ->orWhere('barangay', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('family_members.full_name', 'like', "%{$search}%")
+                  ->orWhere('households.barangay', 'like', "%{$search}%")
+                  ->orWhere('households.serial_code', 'like', "%{$search}%")
+                  ->orWhere('households.household_head_name', 'like', "%{$search}%");
             });
         }
-        if ($sex)      $headsQuery->where('sex', $sex);
-        if ($barangay) $headsQuery->where('barangay', $barangay);
 
-        // Tag filters on heads
-        // Validate tag input
-        $allowedTags = ['4ps', 'pwd', 'senior', 'solo'];
-        if ($tag && !in_array($tag, $allowedTags)) $tag = null;
-
-        if ($tag === '4ps')    $headsQuery->where('is_4ps_beneficiary', true);
-        if ($tag === 'pwd')    $headsQuery->where('is_pwd', true);
-        if ($tag === 'senior') {
-            $headsQuery->where(function ($q) {
-                $q->where(function ($q2) {
-                    $q2->whereNotNull('birthday')
-                       ->whereDate('birthday', '<=', now()->subYears(60));
-                })->orWhere(function ($q2) {
-                    $q2->whereNull('birthday')->where('is_senior', true);
-                });
-            });
-        }
-        if ($tag === 'solo')   $headsQuery->where('is_solo_parent', true);
-
-        if (!$type || $type === 'head') {
-            foreach ($headsQuery->get() as $hh) {
-                $age = $hh->birthday ? $hh->birthday->age : null;
-                $residents->push([
-                    'type'           => 'head',
-                    'name'           => $hh->household_head_name,
-                    'sex'            => $hh->sex,
-                    'age'            => $age,
-                    'barangay'       => $hh->barangay,
-                    'contact_number' => $hh->contact_number,
-                    'household_head' => null,
-                    'relationship'   => 'Head',
-                    'is_4ps'         => $hh->is_4ps_beneficiary,
-                    'is_pwd'         => $hh->is_pwd,
-                    'is_senior'      => $hh->is_senior,
-                    'is_solo'        => $hh->is_solo_parent,
-                ]);
-            }
+        if ($type === 'head') {
+            $query->where('family_members.is_family_head', 1);
+        } elseif ($type === 'member') {
+            $query->where('family_members.is_family_head', 0);
         }
 
-        // -- Family Members --
-        if (!$type || $type === 'member') {
-            $membersQuery = FamilyMember::with('household');
-
-            if ($search) {
-                $membersQuery->where(function ($q) use ($search) {
-                    $q->where('full_name', 'like', "%{$search}%")
-                      ->orWhereHas('household', fn($hq) =>
-                          $hq->where('barangay', 'like', "%{$search}%")
-                      );
-                });
-            }
-            if ($sex) $membersQuery->where('sex', $sex);
-            if ($barangay) {
-                $membersQuery->whereHas('household', fn($q) =>
-                    $q->where('barangay', $barangay)
-                );
-            }
-            if ($tag === 'pwd')    $membersQuery->where('is_pwd', true);
-            if ($tag === 'senior') {
-                // senior = age >= 60, computed from birthday
-                $membersQuery->whereNotNull('birthday')
-                             ->whereDate('birthday', '<=', now()->subYears(60));
-            }
-            // 4ps and solo_parent live on the household, not the member
-            if ($tag === '4ps') {
-                $membersQuery->whereHas('household', fn($q) =>
-                    $q->where('is_4ps_beneficiary', true)
-                );
-            }
-            if ($tag === 'solo') {
-                $membersQuery->whereHas('household', fn($q) =>
-                    $q->where('is_solo_parent', true)
-                );
-            }
-
-            foreach ($membersQuery->get() as $member) {
-                $age = $member->birthday ? $member->birthday->age : null;
-                $residents->push([
-                    'type'           => 'member',
-                    'name'           => $member->full_name,
-                    'sex'            => $member->sex,
-                    'age'            => $age,
-                    'barangay'       => $member->household->barangay ?? '—',
-                    'contact_number' => null,
-                    'household_head' => $member->household->household_head_name ?? '—',
-                    'relationship'   => $member->relationship,
-                    'is_4ps'         => $member->household->is_4ps_beneficiary ?? false,
-                    'is_pwd'         => $member->is_pwd,
-                    'is_senior'      => $age !== null && $age >= 60,
-                    'is_solo'        => $member->household->is_solo_parent ?? false,
-                ]);
-            }
+        if ($sex) {
+            $query->where('family_members.sex', $sex);
         }
 
-        // ── Summary stats (always unfiltered) ───────────────────────────
-        $totalHeads     = Household::count();
-        $totalMembers   = FamilyMember::count();
-        $totalResidents = $totalHeads + $totalMembers;
-        $total4Ps       = Household::where('is_4ps_beneficiary', true)->count();
-        $totalPwd       = Household::where('is_pwd', true)->count()
-                        + FamilyMember::where('is_pwd', true)->count();
-        $totalSeniors   = Household::where('is_senior', true)->count()
-                        + FamilyMember::whereNotNull('birthday')
-                            ->whereDate('birthday', '<=', now()->subYears(60))
-                            ->count();
+        if ($barangay) {
+            $query->where('households.barangay', $barangay);
+        }
 
-        // ── Barangay list for filter dropdown ───────────────────────────
-        $barangays = Household::distinct()->orderBy('barangay')->pluck('barangay');
+        if ($tag === '4ps') {
+            $query->where('households.is_4ps_beneficiary', 1);
+        } elseif ($tag === 'pwd') {
+            $query->where('family_members.is_pwd', 1);
+        } elseif ($tag === 'senior') {
+            $query->where('family_members.is_senior_citizen', 1);
+        } elseif ($tag === 'solo') {
+            $query->where('households.is_solo_parent', 1);
+        } elseif ($tag === 'student') {
+            $query->where('family_members.is_student', 1);
+        } elseif ($tag === 'lgbtqia') {
+            $query->where('fmd.is_lgbtqia', 1);
+        }
 
-        // ── Manual pagination ────────────────────────────────────────────
-        $perPage     = 50;
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $paged       = $residents->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        if ($ageGroup === 'child') {
+            $query->where('family_members.age', '<', 18);
+        } elseif ($ageGroup === 'adult') {
+            $query->whereBetween('family_members.age', [18, 59]);
+        } elseif ($ageGroup === 'senior') {
+            $query->where('family_members.age', '>=', 60);
+        }
 
-        $residents = new LengthAwarePaginator(
-            $paged,
-            $residents->count(),
-            $perPage,
-            $currentPage,
-            ['path' => $request->url(), 'query' => $request->query()]
-        );
+        // --- Sort ---
+        $sortMap = [
+            'name'     => 'family_members.full_name',
+            'age'      => 'family_members.birthday',
+            'barangay' => 'households.barangay',
+        ];
+        $sortCol = $sortMap[$sort] ?? 'family_members.full_name';
+        // For age, sort by birthday in reverse direction so "older" = higher age
+        $sortDir = ($sort === 'age') ? ($dir === 'asc' ? 'desc' : 'asc') : $dir;
+        $query->orderBy($sortCol, $sortDir);
+
+        // Paginate — preserve all query params
+        $residents = $query->paginate(50)->withQueryString();
+
+        // --- Transform into flat array for blade ---
+        $residents->through(function ($m) {
+            return [
+                'household_id'   => $m->household_id,
+                'name'           => $m->full_name,
+                'type'           => $m->is_family_head ? 'head' : 'member',
+                'sex'            => $m->sex,
+                'age'            => $m->age,
+                'barangay'       => $m->barangay,
+                'household_head' => $m->household_head_name,
+                'relationship'   => $m->relationship,
+                'serial_code'    => $m->serial_code,
+                'contact_number' => $m->contact_number,
+                'occupation'     => $m->occupation,
+                'is_4ps'         => (bool) $m->is_4ps_beneficiary,
+                'is_pwd'         => (bool) $m->is_pwd,
+                'is_senior'      => (bool) $m->is_senior_citizen,
+                'is_solo'        => (bool) $m->is_solo_parent,
+                'is_student'     => (bool) $m->is_student,
+                'is_lgbtqia'     => (bool) ($m->is_lgbtqia ?? false),
+            ];
+        });
+
+        // --- Summary stats (always counts full dataset, not filtered) ---
+        $totalResidents  = FamilyMember::count();
+        $totalHeads      = FamilyMember::where('is_family_head', 1)->count();
+        $total4Ps        = Household::where('is_4ps_beneficiary', 1)->count();
+        $totalSeniors    = FamilyMember::where('is_senior_citizen', 1)->count();
+        $totalPwd        = FamilyMember::where('is_pwd', 1)->count();
+        $totalSoloParents = Household::where('is_solo_parent', 1)->count();
+
+        // --- Barangay list for filter dropdown ---
+        $barangays = Household::select('barangay')
+            ->distinct()
+            ->orderBy('barangay')
+            ->pluck('barangay');
 
         return view('admin.residents.index', compact(
             'residents',
+            'barangays',
             'totalResidents',
             'totalHeads',
-            'totalMembers',
             'total4Ps',
             'totalSeniors',
             'totalPwd',
-            'barangays'
+            'totalSoloParents'
         ));
     }
 }

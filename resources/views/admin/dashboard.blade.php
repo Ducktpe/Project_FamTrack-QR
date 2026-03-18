@@ -139,7 +139,8 @@
         .ca-view-all:hover { color: var(--blue); }
         .chart-body { padding: 20px; height: 240px; position: relative; }
         .chart-body-doughnut { display: flex; flex-direction: column; align-items: center; gap: 16px; height: auto; padding: 20px; }
-        .chart-body-doughnut canvas { max-width: 180px; max-height: 180px; }
+        .chart-canvas-wrap { position: relative; width: 180px; height: 180px; flex-shrink: 0; }
+        .chart-canvas-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
         .doughnut-legend { width: 100%; display: flex; flex-direction: column; gap: 7px; }
         .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--gray-600); }
         .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
@@ -232,18 +233,69 @@
         .fb-link:hover { color: var(--yellow); }
         .fb-link svg { width: 13px; height: 13px; }
 
+        /* ── Extra dashboard sections ── */
+        .mid-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+        .bar-chart-list { display: flex; flex-direction: column; gap: 9px; }
+        .bcl-row { display: grid; grid-template-columns: 120px 1fr 38px; align-items: center; gap: 8px; }
+        .bcl-label { font-size: 11px; color: var(--gray-600); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .bcl-track { background: var(--gray-100); border-radius: 3px; height: 9px; overflow: hidden; }
+        .bcl-fill  { height: 100%; border-radius: 3px; }
+        .bcl-val   { font-size: 11px; font-weight: 700; color: var(--gray-600); text-align: right; }
+        .prog-list { display: flex; flex-direction: column; gap: 10px; }
+        .prog-row  { }
+        .prog-label-row { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 3px; }
+        .prog-label-row span   { color: var(--gray-600); }
+        .prog-label-row strong { color: var(--gray-800); }
+        .prog-track { background: var(--gray-100); border-radius: 10px; height: 8px; overflow: hidden; }
+        .prog-fill  { height: 100%; border-radius: 10px; }
+        .approval-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 4px 0; }
+        .ring-svg-wrap { position: relative; width: 130px; height: 130px; flex-shrink: 0; }
+        .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .ring-center-val { font-family: 'PT Serif', serif; font-size: 24px; font-weight: 700; color: var(--blue-dark); line-height: 1; }
+        .ring-center-lbl { font-size: 9px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+        .ring-legend { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+        .ring-legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--gray-600); }
+        .ring-legend-dot  { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+        .ring-legend-val  { margin-left: auto; font-weight: 700; color: var(--gray-800); }
+        .pending-list { }
+        .pending-item { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--gray-100); font-size: 12px; gap: 10px; }
+        .pending-item:last-child { border-bottom: none; }
+        .pending-name { font-weight: 600; color: var(--blue-dark); }
+        .pending-sub  { font-size: 10px; color: var(--gray-400); margin-top: 1px; }
+        .pending-approve-btn { flex-shrink: 0; padding: 4px 12px; background: var(--blue); color: #fff; border: none; border-radius: 3px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; cursor: pointer; text-decoration: none; font-family: 'Open Sans', sans-serif; transition: background .15s; }
+        .pending-approve-btn:hover { background: var(--blue-dark); }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
+        /* ════════════════════════════════════════
+           RESPONSIVE
+           ════════════════════════════════════════ */
+
+        /* ── Tablet (≤ 900px) ── */
         @media (max-width: 900px) {
-            .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
-            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
+            /* Shell: sidebar becomes off-canvas drawer */
+            .shell {
+                grid-template-rows: 36px auto 1fr 48px;
+                grid-template-columns: 1fr;
+                grid-template-areas: "topbar" "header" "main" "footer";
+                height: 100vh; overflow: hidden;
+            }
+            .sidebar {
+                grid-area: unset;
+                position: fixed; top: 0; left: 0; bottom: 0;
+                width: var(--sidebar-w); z-index: 300;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            }
             .sidebar.open { transform: translateX(0); }
             .sidebar-overlay { display: block; }
             .sidebar-close { display: flex; }
             .sidebar .nav-section-label { padding-top: 52px; }
             .hamburger { display: flex; }
+
+            /* Header */
             header { padding: 0 16px; gap: 10px; }
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
@@ -254,36 +306,118 @@
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
             .main-content { padding: 20px 16px; }
+
+            /* Quick nav: 2 columns */
             .quick-nav { grid-template-columns: repeat(2, 1fr); }
+
+            /* Stat cards: 3 columns */
             .dash-stats-row { grid-template-columns: repeat(3, 1fr); }
+
+            /* Mid-row: 2 columns */
+            .mid-row { grid-template-columns: 1fr 1fr; }
+            .bcl-row { grid-template-columns: 90px 1fr 32px; }
+
+            /* Charts row: stack */
             .charts-row { grid-template-columns: 1fr; }
+
+            /* Population charts: stack */
+            .pop-charts-row { grid-template-columns: 1fr !important; }
+
+            /* Map: shorter */
+            #dashDistMap { height: 320px; }
+
+            /* Distribution table: scrollable */
+            .dist-table-wrap { overflow-x: auto; }
         }
+
+        /* ── Large mobile (≤ 640px) ── */
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
             .status-indicator { display: none; }
+
             header { padding: 0 12px; gap: 8px; }
             .header-logos img { height: 36px; width: 36px; }
             .logo-divider { display: none; }
             .header-logos img:last-child { display: none; }
             .header-org { display: none; }
-            .header-title { font-size: 13px; }
+            .header-title { font-size: 13px; line-height: 1.3; }
+            .header-admin-badge { padding: 5px 8px; }
+            .admin-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .admin-name { font-size: 11px; }
+
             .main-content { padding: 16px 12px; }
-            .page-titlebar { flex-direction: column; align-items: flex-start; }
+            .page-titlebar { flex-direction: column; align-items: flex-start; gap: 6px; }
             .page-h1 { font-size: 18px; }
+            .page-date { text-align: left; }
+
             .welcome-card { padding: 16px 18px; gap: 14px; }
             .welcome-card img { width: 38px; height: 38px; }
             .welcome-heading { font-size: 16px; }
             .welcome-desc { display: none; }
+
+            /* Quick nav: 2 columns compact */
             .quick-nav { grid-template-columns: 1fr 1fr; gap: 10px; }
             .qnav-card { padding: 14px; gap: 8px; }
             .qnav-title { font-size: 12px; }
             .qnav-desc { display: none; }
+
+            /* Stat cards: 2 columns */
             .dash-stats-row { grid-template-columns: repeat(2, 1fr); }
+            .dash-stat-card { padding: 12px 14px; gap: 10px; }
+            .ds-icon { width: 36px; height: 36px; }
+            .ds-icon svg { width: 16px; height: 16px; }
+            .ds-value { font-size: 20px; }
+            .ds-label { font-size: 9px; }
+
+            /* Mid-row: stack */
+            .mid-row { grid-template-columns: 1fr; }
+            .bcl-row { grid-template-columns: 80px 1fr 30px; }
+
+            /* Chart bodies: shorter on mobile */
+            .chart-body { height: 200px; padding: 14px; }
+            .chart-canvas-wrap { width: 150px; height: 150px; }
+            .chart-body-doughnut canvas { max-width: 150px; height: 150px !important; }
+
+            /* Map */
+            #dashDistMap { height: 260px; }
+            .dist-map-legend { display: none; }
+            .dist-map-filters { gap: 4px; }
+            .dm-filter-btn { padding: 3px 8px; font-size: 10px; }
+            .dm-filter-btn .dm-fc { display: none; }
+            .dm-stat-val { font-size: 16px; }
+
+            /* Distribution table: hide less important columns */
+            .dash-table .col-barangay,
+            .dash-table .col-distributed { display: none; }
+
             footer { padding: 0 12px; }
             .footer-center { display: none; }
-            #dashDistMap { height: 280px; }
-            .dist-map-legend { gap: 8px; }
+            .footer-left { font-size: 10px; }
+        }
+
+        /* ── Small mobile (≤ 420px) ── */
+        @media (max-width: 420px) {
+            .main-content { padding: 12px 10px; }
+            .quick-nav { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .qnav-card { padding: 12px 10px; gap: 6px; }
+
+            /* Stat cards: 1 column */
+            .dash-stats-row { grid-template-columns: 1fr 1fr; }
+            .dash-stat-card { padding: 10px 12px; }
+
+            /* Also hide Status column from table on tiny screens */
+            .dash-table .col-status { display: none; }
+
+            #dashDistMap { height: 220px; }
+            .dist-map-footer { flex-wrap: wrap; }
+            .dm-stat { min-width: 50%; border-bottom: 1px solid var(--gray-100); }
+        }
+
+        /* ── Very small (≤ 360px) ── */
+        @media (max-width: 360px) {
+            .quick-nav { grid-template-columns: 1fr; }
+            .dash-stats-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -511,6 +645,294 @@
             </div>
         </div>
 
+        @php
+            $totalHouseholdsAll = \App\Models\Household::count();
+            $pendingCount       = \App\Models\Household::whereNull('approved_by')->count();
+            $approvedCount      = \App\Models\Household::whereNotNull('approved_by')->count();
+            $approvalRate       = $totalHouseholdsAll > 0 ? round(($approvedCount / $totalHouseholdsAll) * 100) : 0;
+            $pendingRate        = $totalHouseholdsAll > 0 ? round(($pendingCount  / $totalHouseholdsAll) * 100) : 0;
+
+            // ── Population summary ───────────────────────────────────────────
+            $totalFamilyHeads   = \App\Models\FamilyMember::where('is_family_head', 1)->count();
+            $totalAllResidents  = \App\Models\FamilyMember::count();
+            $totalMale          = \App\Models\FamilyMember::where('sex', 'Male')->count();
+            $totalFemale        = \App\Models\FamilyMember::where('sex', 'Female')->count();
+
+            // Age group breakdown
+            $ageGroups = [
+                'Children (0–12)'   => \App\Models\FamilyMember::whereRaw('TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 0 AND 12')->count(),
+                'Teen (13–17)'      => \App\Models\FamilyMember::whereRaw('TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 13 AND 17')->count(),
+                'Adult (18–59)'     => \App\Models\FamilyMember::whereRaw('TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 18 AND 59')->count(),
+                'Senior (60+)'      => \App\Models\FamilyMember::whereRaw('TIMESTAMPDIFF(YEAR, birthday, CURDATE()) >= 60')->count(),
+            ];
+
+            // Vulnerability breakdown
+            $vulnData = [
+                ['label' => '4Ps Beneficiary',     'count' => \App\Models\Household::where('is_4ps_beneficiary',1)->count(), 'color' => '#1B3F7A'],
+                ['label' => 'Person w/ Disability', 'count' => \App\Models\Household::where('is_pwd',1)->count(),             'color' => '#7C3AED'],
+                ['label' => 'Senior Citizen',       'count' => \App\Models\Household::where('is_senior',1)->count(),          'color' => '#D97706'],
+                ['label' => 'Solo Parent',          'count' => \App\Models\Household::where('is_solo_parent',1)->count(),     'color' => '#DB2777'],
+            ];
+
+            // Housing type breakdown
+            $housingBreakdown = \App\Models\Household::whereNotNull('housing_type')
+                ->selectRaw('housing_type, count(*) as total')
+                ->groupBy('housing_type')->orderByDesc('total')->limit(6)
+                ->pluck('total','housing_type')->toArray();
+            $maxHt = max(array_values($housingBreakdown) ?: [1]);
+
+            // Water source breakdown
+            $waterBreakdown = \App\Models\Household::whereNotNull('water_source')
+                ->selectRaw('water_source, count(*) as total')
+                ->groupBy('water_source')->orderByDesc('total')->limit(4)
+                ->pluck('total','water_source')->toArray();
+            $maxWater = max(array_values($waterBreakdown) ?: [1]);
+
+            // Pending households (latest 5)
+            $pendingHouseholds = \App\Models\Household::whereNull('approved_by')
+                ->with('encoder')->latest()->limit(5)->get();
+
+            // Employment breakdown (from family_member_details)
+            $empBreakdown = \App\Models\FamilyMemberDetail::whereNotNull('employment_status')
+                ->selectRaw('employment_status, count(*) as total')
+                ->groupBy('employment_status')->orderByDesc('total')->limit(5)
+                ->pluck('total','employment_status')->toArray();
+            $maxEmp = max(array_values($empBreakdown) ?: [1]);
+
+            // Monthly registrations (last 6 months)
+            $monthlyRegs = collect();
+            for ($i = 5; $i >= 0; $i--) {
+                $m = now()->subMonths($i);
+                $monthlyRegs->push([
+                    'month' => $m->format('M Y'),
+                    'count' => \App\Models\Household::whereYear('created_at', $m->year)
+                                    ->whereMonth('created_at', $m->month)->count(),
+                ]);
+            }
+        @endphp
+
+        {{-- ── POPULATION SUMMARY CARDS ── --}}
+        <div class="dash-stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px;">
+            {{-- Total Households --}}
+            <div class="dash-stat-card" style="border-left:4px solid #1B3F7A;">
+                <div class="ds-icon" style="background:#EAF0FA;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#1B3F7A" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+                </div>
+                <div style="flex:1;">
+                    <div class="ds-label">Total Households</div>
+                    <div class="ds-value">{{ number_format($totalHouseholdsAll) }}</div>
+                    <div style="font-size:10px;color:var(--gray-400);margin-top:3px;">
+                        <span style="color:#16A34A;font-weight:600;">{{ number_format($approvedCount) }} approved</span>
+                        &nbsp;·&nbsp;
+                        <span style="color:#D97706;font-weight:600;">{{ number_format($pendingCount) }} pending</span>
+                    </div>
+                </div>
+            </div>
+            {{-- Total Family Heads --}}
+            <div class="dash-stat-card" style="border-left:4px solid #7C3AED;">
+                <div class="ds-icon" style="background:#F5F3FF;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a7 7 0 0113 0"/><path d="M12 11v4"/><path d="M10 13h4"/></svg>
+                </div>
+                <div style="flex:1;">
+                    <div class="ds-label">Family Heads</div>
+                    <div class="ds-value" style="color:#7C3AED;">{{ number_format($totalFamilyHeads) }}</div>
+                    <div style="font-size:10px;color:var(--gray-400);margin-top:3px;">One per nuclear family unit</div>
+                </div>
+            </div>
+            {{-- Total Residents with Gender --}}
+            <div class="dash-stat-card" style="border-left:4px solid #0891B2;">
+                <div class="ds-icon" style="background:#ECFEFF;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0891B2" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><path d="M16 3.13a4 4 0 010 7.75"/><path d="M21 21v-2a4 4 0 00-3-3.87"/></svg>
+                </div>
+                <div style="flex:1;">
+                    <div class="ds-label">Total Residents</div>
+                    <div class="ds-value" style="color:#0891B2;">{{ number_format($totalAllResidents) }}</div>
+                    <div style="font-size:10px;color:var(--gray-400);margin-top:3px;">
+                        <span style="color:#2459A8;font-weight:600;">♂ {{ number_format($totalMale) }} M</span>
+                        &nbsp;·&nbsp;
+                        <span style="color:#DB2777;font-weight:600;">♀ {{ number_format($totalFemale) }} F</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ── MID ROW: Approval Ring + Vulnerability + Pending Approvals ── --}}
+        <div class="mid-row" style="margin-bottom:16px;">
+
+            {{-- Approval Status Ring --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot"></div>
+                    <div class="ca-title">Approval Status</div>
+                    <span style="margin-left:auto;font-size:10px;color:var(--gray-400);">All Households</span>
+                </div>
+                <div class="chart-body chart-body-doughnut" style="height:auto;">
+                    <div class="approval-ring-wrap">
+                        <div class="ring-svg-wrap">
+                            @php
+                                $r = 15.9; $c = 2 * 3.14159 * $r;
+                                $aDash = $totalHouseholdsAll > 0 ? ($approvedCount / $totalHouseholdsAll) * $c : 0;
+                                $pDash = $totalHouseholdsAll > 0 ? ($pendingCount  / $totalHouseholdsAll) * $c : 0;
+                            @endphp
+                            <svg viewBox="0 0 36 36" width="130" height="130">
+                                <circle cx="18" cy="18" r="{{ $r }}" fill="none" stroke="#F0F2F5" stroke-width="3.5"/>
+                                @if($totalHouseholdsAll > 0)
+                                <circle cx="18" cy="18" r="{{ $r }}" fill="none" stroke="#16A34A" stroke-width="3.5"
+                                    stroke-dasharray="{{ round($aDash-.4,2) }} {{ round($c-$aDash+.4,2) }}"
+                                    stroke-dashoffset="{{ round($c/4,2) }}" stroke-linecap="round"/>
+                                <circle cx="18" cy="18" r="{{ $r }}" fill="none" stroke="#D97706" stroke-width="3.5"
+                                    stroke-dasharray="{{ round($pDash-.4,2) }} {{ round($c-$pDash+.4,2) }}"
+                                    stroke-dashoffset="{{ round($c/4-$aDash,2) }}" stroke-linecap="round"/>
+                                @endif
+                            </svg>
+                            <div class="ring-center">
+                                <div class="ring-center-val">{{ $approvalRate }}%</div>
+                                <div class="ring-center-lbl">Approved</div>
+                            </div>
+                        </div>
+                        <div class="ring-legend">
+                            <div class="ring-legend-item"><div class="ring-legend-dot" style="background:#16A34A;"></div>Approved<span class="ring-legend-val">{{ number_format($approvedCount) }}</span></div>
+                            <div class="ring-legend-item"><div class="ring-legend-dot" style="background:#D97706;"></div>Pending<span class="ring-legend-val">{{ number_format($pendingCount) }}</span></div>
+                            <div class="ring-legend-item"><div class="ring-legend-dot" style="background:#1B3F7A;"></div>Total<span class="ring-legend-val">{{ number_format($totalHouseholdsAll) }}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Vulnerability Progress Bars --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot"></div>
+                    <div class="ca-title">Vulnerability Classification</div>
+                    <span style="margin-left:auto;font-size:10px;color:var(--gray-400);">% of households</span>
+                </div>
+                <div class="chart-body" style="height:auto;padding:16px 18px;">
+                    <div class="prog-list">
+                        @foreach($vulnData as $v)
+                        @php $vpct = $totalHouseholdsAll > 0 ? round(($v['count'] / $totalHouseholdsAll) * 100) : 0; @endphp
+                        <div class="prog-row">
+                            <div class="prog-label-row">
+                                <span>{{ $v['label'] }}</span>
+                                <strong>{{ number_format($v['count']) }} <span style="font-weight:400;color:var(--gray-400);">({{ $vpct }}%)</span></strong>
+                            </div>
+                            <div class="prog-track">
+                                <div class="prog-fill" style="width:{{ $vpct }}%;background:{{ $v['color'] }};"></div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                    {{-- Employment mini breakdown --}}
+                    @if(count($empBreakdown) > 0)
+                    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--gray-100);">
+                        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gray-400);margin-bottom:8px;">Employment Status</div>
+                        <div class="bar-chart-list">
+                            @foreach($empBreakdown as $es => $ec)
+                            @php $epct = round(($ec / $maxEmp) * 100); @endphp
+                            <div class="bcl-row">
+                                <div class="bcl-label">{{ $es }}</div>
+                                <div class="bcl-track"><div class="bcl-fill" style="width:{{ $epct }}%;background:#7C3AED;"></div></div>
+                                <div class="bcl-val">{{ $ec }}</div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Pending Approvals --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot" style="background:#D97706;border-color:#B45309;"></div>
+                    <div class="ca-title">Pending Approvals</div>
+                    <span style="margin-left:auto;font-size:10px;color:var(--gray-400);">{{ $pendingCount }} total</span>
+                </div>
+                <div class="chart-body" style="height:auto;padding:0 18px 4px;">
+                    @forelse($pendingHouseholds as $ph)
+                    <div class="pending-item">
+                        <div>
+                            <div class="pending-name">{{ Str::limit($ph->household_head_name, 24) }}</div>
+                            <div class="pending-sub">{{ $ph->barangay }} · by {{ $ph->encoder?->name ?? 'Encoder' }} · {{ $ph->created_at->diffForHumans() }}</div>
+                        </div>
+                        <a href="{{ route('admin.households.show', $ph) }}" class="pending-approve-btn">Review</a>
+                    </div>
+                    @empty
+                    <div style="text-align:center;padding:28px;color:var(--gray-400);font-size:12px;">🎉 All households approved!</div>
+                    @endforelse
+                    @if($pendingCount > 5)
+                    <div style="text-align:center;padding:8px 0 12px;"><a href="{{ route('admin.households.index') }}?status=pending" style="font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">View all {{ $pendingCount }} pending →</a></div>
+                    @endif
+                </div>
+            </div>
+
+        </div>
+
+        {{-- ── BOTTOM ROW: Housing + Water + Monthly Trend ── --}}
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;" class="mid-row">
+
+            {{-- Housing Type --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot"></div>
+                    <div class="ca-title">Housing Type</div>
+                </div>
+                <div class="chart-body" style="height:auto;padding:16px 18px;">
+                    @if(count($housingBreakdown) > 0)
+                    <div class="bar-chart-list">
+                        @foreach($housingBreakdown as $ht => $hc)
+                        @php $hpct = round(($hc / $maxHt) * 100); @endphp
+                        <div class="bcl-row">
+                            <div class="bcl-label">{{ ucfirst(str_replace('_',' ',$ht)) }}</div>
+                            <div class="bcl-track"><div class="bcl-fill" style="width:{{ $hpct }}%;background:#1B3F7A;"></div></div>
+                            <div class="bcl-val">{{ $hc }}</div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @else
+                    <div style="text-align:center;padding:24px;color:var(--gray-400);font-size:12px;">No data yet</div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Water Source --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot" style="background:#2459A8;border-color:#1B3F7A;"></div>
+                    <div class="ca-title">Water Source</div>
+                </div>
+                <div class="chart-body" style="height:auto;padding:16px 18px;">
+                    @if(count($waterBreakdown) > 0)
+                    <div class="bar-chart-list">
+                        @foreach($waterBreakdown as $ws => $wc)
+                        @php $wpct = round(($wc / $maxWater) * 100); @endphp
+                        <div class="bcl-row" style="grid-template-columns:140px 1fr 32px;">
+                            <div class="bcl-label" style="font-size:10px;" title="{{ $ws }}">{{ Str::limit($ws, 28) }}</div>
+                            <div class="bcl-track"><div class="bcl-fill" style="width:{{ $wpct }}%;background:#2459A8;"></div></div>
+                            <div class="bcl-val">{{ $wc }}</div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @else
+                    <div style="text-align:center;padding:24px;color:var(--gray-400);font-size:12px;">No data yet</div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Monthly Registration Trend --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot" style="background:#16A34A;border-color:#15803D;"></div>
+                    <div class="ca-title">Monthly Registrations</div>
+                    <span style="margin-left:auto;font-size:10px;color:var(--gray-400);">Last 6 months</span>
+                </div>
+                <div class="chart-body" style="height:200px;padding:16px 18px;">
+                    <canvas id="monthlyTrendChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
         {{-- ── CHARTS ── --}}
         <div class="charts-row">
             <div class="chart-card">
@@ -528,8 +950,39 @@
                     <div class="ca-title">Special Categories</div>
                 </div>
                 <div class="chart-body chart-body-doughnut">
-                    <canvas id="categoriesDoughnut"></canvas>
+                    <div class="chart-canvas-wrap">
+                        <canvas id="categoriesDoughnut"></canvas>
+                    </div>
                     <div class="doughnut-legend" id="doughnutLegend"></div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ── POPULATION CHARTS ── --}}
+        <div class="pop-charts-row" style="display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:14px;margin-bottom:16px;">
+            {{-- Gender Doughnut --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot" style="background:#0891B2;border-color:#0E7490;"></div>
+                    <div class="ca-title">Gender Distribution</div>
+                    <span style="margin-left:auto;font-size:10px;color:var(--gray-400);">All Residents</span>
+                </div>
+                <div class="chart-body chart-body-doughnut">
+                    <div class="chart-canvas-wrap">
+                        <canvas id="genderDoughnut"></canvas>
+                    </div>
+                    <div class="doughnut-legend" id="genderLegend"></div>
+                </div>
+            </div>
+            {{-- Age Group Bar Chart --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot" style="background:#7C3AED;border-color:#6D28D9;"></div>
+                    <div class="ca-title">Age Group Breakdown</div>
+                    <span style="margin-left:auto;font-size:10px;color:var(--gray-400);">All Residents</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="ageGroupChart"></canvas>
                 </div>
             </div>
         </div>
@@ -541,15 +994,15 @@
                 <div class="ca-title">Recent Distribution Events</div>
                 <a href="{{ route('admin.distribution.logs') }}" class="ca-view-all">View All →</a>
             </div>
-            <div style="overflow-x:auto;">
+            <div class="dist-table-wrap" style="overflow-x:auto;">
                 <table class="dash-table">
                     <thead>
                         <tr>
                             <th>Event Name</th>
                             <th>Relief Type</th>
-                            <th>Barangay</th>
+                            <th class="col-barangay">Barangay</th>
                             <th>Date</th>
-                            <th>Status</th>
+                            <th class="col-status">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -557,9 +1010,9 @@
                         <tr>
                             <td class="dt-name">{{ $event->event_name }}</td>
                             <td>{{ is_array($event->relief_type) ? implode(', ', $event->relief_type) : $event->relief_type }}</td>
-                            <td>{{ $event->target_barangay_display }}</td>
+                            <td class="col-barangay">{{ $event->target_barangay_display }}</td>
                             <td>{{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }}</td>
-                            <td>
+                            <td class="col-status">
                                 @if($event->status === 'ongoing')
                                     <span class="status-badge status-ongoing">Ongoing</span>
                                 @elseif($event->status === 'completed')
@@ -762,7 +1215,7 @@
             datasets: [{ data: catData, backgroundColor: catColors.map(c => c+'33'), borderColor: catColors, borderWidth: 2, hoverOffset: 6 }]
         },
         options: {
-            responsive: true, maintainAspectRatio: true, cutout: '65%',
+            responsive: true, maintainAspectRatio: false, cutout: '65%',
             plugins: { legend: { display: false }, tooltip: { backgroundColor: '#122D5A', titleColor: '#F5C518', bodyColor: '#fff', padding: 10, cornerRadius: 4 } }
         }
     });
@@ -770,6 +1223,102 @@
     const legendEl = document.getElementById('doughnutLegend');
     catLabels.forEach((label, i) => {
         legendEl.innerHTML += `<div class="legend-item"><span class="legend-dot" style="background:${catColors[i]};"></span><span>${label}</span><span class="legend-val">${catData[i].toLocaleString()}</span></div>`;
+    });
+
+    /* ── Monthly Trend Chart ── */
+    new Chart(document.getElementById('monthlyTrendChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: @json($monthlyRegs->pluck('month')),
+            datasets: [{
+                label: 'Households',
+                data: @json($monthlyRegs->pluck('count')),
+                borderColor: '#16A34A',
+                backgroundColor: 'rgba(22,163,74,0.08)',
+                borderWidth: 2.5,
+                pointBackgroundColor: '#16A34A',
+                pointRadius: 4,
+                tension: 0.35,
+                fill: true,
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: '#122D5A', titleColor: '#F5C518', bodyColor: '#fff', padding: 10, cornerRadius: 4 }
+            },
+            scales: {
+                x: { grid: { display: false }, ticks: { font: { size: 9, family: 'Open Sans' }, color: '#9AA3B0' } },
+                y: { beginAtZero: true, grid: { color: '#F0F2F5' }, ticks: { font: { size: 10, family: 'Open Sans' }, color: '#9AA3B0', precision: 0 } }
+            }
+        }
+    });
+
+    /* ── Gender Distribution Chart ── */
+    const genderLabels = ['Male', 'Female'];
+    const genderData   = [@json($totalMale), @json($totalFemale)];
+    const genderColors = ['#2459A8', '#DB2777'];
+
+    new Chart(document.getElementById('genderDoughnut').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+            labels: genderLabels,
+            datasets: [{ data: genderData, backgroundColor: genderColors.map(c => c+'33'), borderColor: genderColors, borderWidth: 2, hoverOffset: 6 }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false, cutout: '65%',
+            plugins: { legend: { display: false }, tooltip: { backgroundColor: '#122D5A', titleColor: '#F5C518', bodyColor: '#fff', padding: 10, cornerRadius: 4 } }
+        }
+    });
+
+    const genderLegendEl = document.getElementById('genderLegend');
+    const genderIcons = ['♂', '♀'];
+    genderLabels.forEach((label, i) => {
+        const total = genderData.reduce((a, b) => a + b, 0);
+        const pct = total > 0 ? Math.round((genderData[i] / total) * 100) : 0;
+        genderLegendEl.innerHTML += `<div class="legend-item"><span class="legend-dot" style="background:${genderColors[i]};"></span><span>${genderIcons[i]} ${label}</span><span class="legend-val">${genderData[i].toLocaleString()} <span style="font-weight:400;color:var(--gray-400);font-size:10px;">(${pct}%)</span></span></div>`;
+    });
+
+    /* ── Age Group Chart ── */
+    const ageLabels = @json(array_keys($ageGroups));
+    const ageData   = @json(array_values($ageGroups));
+    const ageColors = ['#16A34A', '#F5C518', '#2459A8', '#C0392B'];
+
+    new Chart(document.getElementById('ageGroupChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: ageLabels,
+            datasets: [{
+                label: 'Residents',
+                data: ageData,
+                backgroundColor: ageColors.map(c => c + '33'),
+                borderColor: ageColors,
+                borderWidth: 2,
+                borderRadius: 5,
+                hoverBackgroundColor: ageColors.map(c => c + '66'),
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: '#122D5A', titleColor: '#F5C518', bodyColor: '#fff', padding: 10, cornerRadius: 4,
+                    callbacks: { label: ctx => ` ${ctx.parsed.y.toLocaleString()} resident${ctx.parsed.y !== 1 ? 's' : ''}` }
+                }
+            },
+            scales: {
+                x: { grid: { display: false }, ticks: { font: { size: 10, family: 'Open Sans' }, color: '#9AA3B0' } },
+                y: { beginAtZero: true, grid: { color: '#F0F2F5' }, ticks: { font: { size: 11, family: 'Open Sans' }, color: '#9AA3B0', precision: 0 } }
+            }
+        }
+    });
+
+    /* ── Force Chart.js to resize on window resize ── */
+    window.addEventListener('resize', () => {
+        Chart.instances && Object.values(Chart.instances).forEach(chart => {
+            chart.resize();
+        });
     });
 
     /* ══════════════════════════════════════════

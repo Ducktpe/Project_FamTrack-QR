@@ -288,22 +288,120 @@
         .fb-link svg{width:13px;height:13px;}
         ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--gray-100);}::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:4px;}
         /* RESPONSIVE */
-        @media(max-width:900px){
-            .shell{grid-template-rows:36px auto 1fr 48px;grid-template-columns:1fr;grid-template-areas:"topbar" "header" "main" "footer";height:100vh;overflow:hidden;}
-            .sidebar{grid-area:unset;position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);z-index:300;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);box-shadow:4px 0 20px rgba(0,0,0,.15);}
-            .sidebar.open{transform:translateX(0);}
-            .sidebar-overlay{display:block;}
-            .sidebar-close{display:flex;}
-            .sidebar .nav-section-label{padding-top:52px;}
-            .hamburger{display:flex;}
-            .main-content{padding:20px 16px;}
-            .form-row.cols-3{grid-template-columns:1fr 1fr;}
+        /* ── 900px: tablet — sidebar becomes drawer ── */
+        @media (max-width: 900px) {
+            .shell {
+                grid-template-rows: 36px auto 1fr 48px;
+                grid-template-columns: 1fr;
+                grid-template-areas: "topbar" "header" "main" "footer";
+                height: 100vh;
+                overflow: hidden;
+            }
+            .sidebar {
+                grid-area: unset;
+                position: fixed;
+                top: 0; left: 0; bottom: 0;
+                width: var(--sidebar-w);
+                z-index: 300;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay { display: block; }
+            .sidebar-close { display: flex; }
+            .sidebar .nav-section-label { padding-top: 52px; }
+
+            .hamburger { display: flex; }
+
+            header { padding: 0 16px; gap: 10px; }
+            .header-logos img { height: 44px; width: 44px; }
+            .header-title { font-size: 15px; }
+            .header-sub { display: none; }
+            .header-user-badge { padding: 6px 10px; gap: 8px; }
+            .user-name { font-size: 12px; }
+            .user-role { display: none; }
+
+            .topbar { padding: 0 16px; }
+            .topbar-left { display: none; }
+
+            .main-content { padding: 20px 16px; }
+
+            /* Form grids */
+            .form-row.cols-3 { grid-template-columns: 1fr 1fr; }
+            .form-row.cols-4 { grid-template-columns: 1fr 1fr; }
+
+            /* Member table: allow horizontal scroll */
+            .member-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+            /* Nuclear family head panel */
+            #head_panel_1 > div[style*="grid-template-columns:repeat(4"] {
+                grid-template-columns: 1fr 1fr !important;
+            }
         }
-        @media(max-width:640px){
-            .form-row.cols-2,.form-row.cols-3{grid-template-columns:1fr;}
-            .form-card-body{padding:16px;}
-            .main-content{padding:16px 12px;}
-            .header-sub{display:none;}
+
+        /* ── 640px: large phone ── */
+        @media (max-width: 640px) {
+            .topbar { justify-content: flex-end; }
+            .clock-date-inline { display: none; }
+            .status-indicator { display: none; }
+
+            header { padding: 0 12px; gap: 8px; }
+            .header-logos img { height: 36px; width: 36px; }
+            .logo-divider { display: none; }
+            .header-logos img:last-child { display: none; }
+            .header-org { display: none; }
+            .header-title { font-size: 13px; line-height: 1.3; }
+            .header-user-badge { padding: 5px 8px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .user-name { font-size: 11px; }
+
+            .main-content { padding: 16px 12px; }
+            .form-card-body { padding: 16px; }
+
+            .page-titlebar { flex-direction: column; align-items: flex-start; gap: 6px; }
+            .page-h1 { font-size: 18px; }
+            .page-date { text-align: left; }
+
+            /* All multi-col form rows collapse to 1 col */
+            .form-row.cols-2,
+            .form-row.cols-3,
+            .form-row.cols-4 { grid-template-columns: 1fr; }
+
+            /* Nuclear family meta row */
+            .nf-meta { grid-template-columns: 1fr !important; }
+
+            /* Head panel full width */
+            #head_panel_1 > div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr 1fr !important;
+            }
+
+            /* Nuclear family pills hidden */
+            .nf-pills { display: none; }
+            .nf-label { font-size: 12px; }
+
+            footer { padding: 0 12px; }
+            .footer-center { display: none; }
+            .footer-left { font-size: 10px; }
+        }
+
+        /* ── 480px: small phone ── */
+        @media (max-width: 480px) {
+            .form-actions { flex-direction: column-reverse; gap: 8px; }
+            .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+
+            .nf-card-header { flex-wrap: wrap; gap: 8px; }
+            .nf-header-actions { width: 100%; justify-content: flex-end; }
+
+            /* Head panel single column on small phones */
+            #head_panel_1 > div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+            #head_panel_1 .form-group[style*="grid-column:span 2"] {
+                grid-column: span 1 !important;
+            }
+
+            .lang-toggle { display: none; }
         }
     </style>
 </head>
@@ -355,38 +453,53 @@
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
-    <button class="sidebar-close" onclick="closeSidebar()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    <button class="sidebar-close" onclick="closeSidebar()" aria-label="Close navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
     </button>
+
     <div class="nav-section-label">Encoder Menu</div>
-    <a href="#" class="nav-item">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+
+    <a href="{{ route('encoder.dashboard') }}" class="nav-item" onclick="closeSidebar()">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
         Dashboard
     </a>
-    <a href="#" class="nav-item active">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        <span id="nav-add-household">Add Household</span>
+    <a href="{{ route('encoder.households.create') }}" class="nav-item active" onclick="closeSidebar()">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        Add Household
         <span class="nav-badge">Form</span>
     </a>
-    <a href="#" class="nav-item">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
-        <span id="nav-households">List of Households</span>
+    <a href="{{ route('encoder.households.index') }}" class="nav-item" onclick="closeSidebar()">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/>
+        </svg>
+        List of Households
     </a>
+
     <hr class="sidebar-sep">
-    <div class="nav-section-label">DSWD Integration</div>
-    <a href="#" class="nav-item">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-        Listahanan Cross-Reference
-    </a>
+
     <div class="role-notice">
         <div class="role-notice-title">&#9432; Encoder Access</div>
-        <div class="role-notice-text" id="role-notice-text">You can create and update family profiles. QR code generation and distribution logs are managed by the Admin.</div>
+        <div class="role-notice-text">You can create and update family profiles. QR code generation and distribution logs are managed by the Admin.</div>
     </div>
+
     <div class="sidebar-bottom">
-        <button class="logout-btn">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-            <span id="nav-logout">Logout</span>
-        </button>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="logout-btn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+                </svg>
+                Logout
+            </button>
+        </form>
     </div>
 </aside>
 
@@ -402,7 +515,7 @@
     </div>
 
     {{-- POST to your Laravel route: route('households.store') --}}
-    <form id="householdForm" method="POST" action="{{ route('encoder.households.store') }}" onsubmit="handleSubmit(event)">
+    <form id="householdForm" method="POST" action="{{ route('encoder.households.store') }}" enctype="multipart/form-data" onsubmit="handleSubmit(event)">
     @csrf
     {{-- Always Naic, Cavite --}}
     <input type="hidden" name="municipality" value="Naic">
@@ -433,39 +546,7 @@
                         value="{{ old('contact_number') }}" placeholder="e.g. 09XX-XXX-XXXX">
                 </div>
             </div>
-            <div class="form-row cols-4" style="grid-template-columns:1fr 1fr 1fr 1fr;">
-                <div class="form-group">
-                    <label class="form-label">Sex <span class="req">*</span></label>
-                    {{-- DB: households.sex --}}
-                    <select class="form-select" name="sex" id="inp-sex" required onchange="syncSection1ToNF1()">
-                        <option value="">— Select —</option>
-                        <option value="Male" {{ old('sex')=='Male'?'selected':'' }}>Male</option>
-                        <option value="Female" {{ old('sex')=='Female'?'selected':'' }}>Female</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Birthday <span class="req">*</span></label>
-                    {{-- DB: households.birthday --}}
-                    <input type="date" class="form-input" name="birthday" id="inp-birthday" required value="{{ old('birthday') }}" oninput="syncSection1ToNF1()">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Civil Status <span class="req">*</span></label>
-                    {{-- DB: households.civil_status --}}
-                    <select class="form-select" name="civil_status" id="inp-civil" required onchange="syncSection1ToNF1()">
-                        <option value="">— Select —</option>
-                        <option value="Single" {{ old('civil_status')=='Single'?'selected':'' }}>Single</option>
-                        <option value="Married" {{ old('civil_status')=='Married'?'selected':'' }}>Married</option>
-                        <option value="Legally Separated" {{ old('civil_status')=='Legally Separated'?'selected':'' }}>Legally Separated</option>
-                        <option value="Widowed" {{ old('civil_status')=='Widowed'?'selected':'' }}>Widowed</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">House / Unit No.</label>
-                    {{-- DB: households.house_number --}}
-                    <input type="text" class="form-input" name="house_number"
-                        value="{{ old('house_number') }}" placeholder="e.g. 12-B">
-                </div>
-            </div>
+
             <div class="form-row cols-2">
                 <div class="form-group">
                     <label class="form-label">Listahanan ID</label>
@@ -545,7 +626,7 @@
                 <div class="form-group">
                     <label class="form-label" id="lbl-coord-img">Location Photo <span style="font-weight:400;color:var(--gray-400);text-transform:none;letter-spacing:0;">(optional — map screenshot or on-site photo)</span></label>
                     <div class="img-upload-box" onclick="document.getElementById('coord-img-file').click()">
-                        <input type="file" id="coord-img-file" name="coordinates_image_file" accept="image/*" onchange="previewCoordImg(event)">
+                        <input type="file" id="coord-img-file" name="coordinates_image" accept="image/*" onchange="previewCoordImg(event)">
                         <svg class="img-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                         <div class="img-upload-text" id="img-upload-text">Click to upload location photo</div>
                         <div class="img-upload-sub">JPG, PNG, WEBP — max 5 MB</div>
@@ -554,7 +635,7 @@
                         <img id="imgPreview" src="" alt="Location preview">
                         <button type="button" class="img-preview-remove" onclick="removeCoordImg()">✕</button>
                     </div>
-                    <input type="hidden" name="coordinates_image" id="inp-coord-img" value="{{ old('coordinates_image') }}">
+                    {{-- coordinates_image is submitted directly via the file input above --}}
                 </div>
             </div>
             {{-- Map Pin --}}
@@ -1043,12 +1124,13 @@ function makeSelOpts(key){
 }
 
 function familyMemberTableHTML(fi){
-    return `<div style="overflow-x:auto;">
+    return `<div class="member-table-wrap" style="overflow-x:auto;margin-top:8px;">
         <table class="member-table" id="fam_table_${fi}">
             <thead><tr>
                 <th>#</th>
                 <th class="th-name-h">Name</th>
                 <th>Relationship</th>
+                <th>Head</th>
                 <th class="th-age-h">Age</th>
                 <th class="th-bdate-h">Birthdate</th>
                 <th class="th-sex-h">Sex</th>
@@ -1101,11 +1183,17 @@ function addNuclearFamily(){
             <div class="nf-body-inner">
                 <div class="nf-meta">
                     <div class="form-group">
-                        <label class="form-label"><span class="lbl-family-name-s">${T('lbl-family-name')}</span> <span class="req">*</span></label>
+                        <label class="form-label">
+                            <span class="lbl-family-name-s">${T('lbl-family-name')}</span>
+                            ${fi === 1 ? '<span style="font-size:10px;font-weight:400;color:var(--gray-400);text-transform:none;letter-spacing:0;margin-left:4px;">(auto-filled)</span>' : '<span class="req">*</span>'}
+                        </label>
                         {{-- DB: nuclear_families.family_name --}}
-                        <input type="text" class="form-input" name="fam[${fi}][family_name]" style="font-size:12px;padding:6px 10px;"
-                            placeholder="e.g. Dela Cruz"
-                            oninput="updateFamilyLabel(${fi},this.value)">
+                        <input type="text" class="form-input" name="fam[${fi}][family_name]"
+                            id="nf_fname_${fi}"
+                            style="font-size:12px;padding:6px 10px;${fi === 1 ? 'background:var(--gray-50);color:var(--gray-600);' : ''}"
+                            placeholder="${fi === 1 ? 'Auto-filled from household head' : 'e.g. Dela Cruz'}"
+                            ${fi === 1 ? 'readonly' : ''}
+                            oninput="${fi !== 1 ? `updateFamilyLabel(${fi},this.value)` : ''}">
                     </div>
                     <div class="form-group">
                         <label class="form-label"><span class="lbl-family-type-s">${T('lbl-family-type')}</span></label>
@@ -1115,11 +1203,17 @@ function addNuclearFamily(){
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label"><span class="lbl-family-head-s">${T('lbl-family-head')}</span></label>
+                        <label class="form-label">
+                            <span class="lbl-family-head-s">${T('lbl-family-head')}</span>
+                            ${fi === 1 ? '<span style="font-size:10px;font-weight:400;color:var(--gray-400);text-transform:none;letter-spacing:0;margin-left:4px;">(auto-filled)</span>' : ''}
+                        </label>
                         {{-- DB: nuclear_families.family_head --}}
-                        <input type="text" class="form-input" name="fam[${fi}][family_head]" style="font-size:12px;padding:6px 10px;"
-                            placeholder="Full name of head"
-                            oninput="updateFamilyHead(${fi},this.value); if(${fi}===1) syncNF1ToSection1(this.value);">
+                        <input type="text" class="form-input" name="fam[${fi}][family_head]"
+                            id="nf_fhead_${fi}"
+                            style="font-size:12px;padding:6px 10px;${fi === 1 ? 'background:var(--gray-50);color:var(--gray-600);' : ''}"
+                            placeholder="${fi === 1 ? 'Auto-filled from household head name' : 'Full name of head'}"
+                            ${fi === 1 ? 'readonly' : ''}
+                            oninput="${fi !== 1 ? `updateFamilyHead(${fi},this.value)` : ''}">
                     </div>
                 </div>
 
@@ -1144,7 +1238,7 @@ function addNuclearFamily(){
     }
     updateResidentsCount();
     // scroll into view smoothly
-    setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+    if(!_pageInitialising) setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
 }
 
 function toggleFamily(fi){
@@ -1172,17 +1266,27 @@ function headInfoPanelHTML(fi){
             Household Head Details
         </div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+            <input type="hidden" name="fam[${fi}][m][1][is_family_head]" value="1">
+            <div class="form-group" style="grid-column:span 2;">
+                <label class="form-label" style="font-size:10px;">Full Name <span class="req">*</span></label>
+                <input type="text" class="form-input" name="fam[${fi}][m][1][full_name]"
+                    style="font-size:12px;padding:6px 8px;"
+                    id="hp_name_${fi}"
+                    oninput="syncHeadNameToSection1(this.value)">
+            </div>
             <div class="form-group">
                 <label class="form-label" style="font-size:10px;">Age</label>
                 <input type="number" class="form-input" name="fam[${fi}][m][1][age_display]" min="0" max="120"
-                    style="font-size:12px;padding:6px 8px;" title="For display only"
+                    style="font-size:12px;padding:6px 8px;background:var(--gray-50);color:var(--gray-600);"
+                    title="Auto-calculated from Birthdate" readonly tabindex="-1"
                     id="hp_age_${fi}">
             </div>
             <div class="form-group" style="grid-column:span 2;">
                 <label class="form-label" style="font-size:10px;">Birthdate</label>
                 <input type="date" class="form-input" name="fam[${fi}][m][1][birthday]"
                     style="font-size:12px;padding:6px 8px;"
-                    id="hp_bday_${fi}">
+                    id="hp_bday_${fi}"
+                    oninput="calcAge(this,'hp_age_${fi}')">
             </div>
             <div class="form-group">
                 <label class="form-label" style="font-size:10px;">Sex</label>
@@ -1257,28 +1361,36 @@ function headInfoPanelHTML(fi){
    Member row 1 name: fam[1][m][1][full_name]  (for NF2+ auto-fill, not NF1)
 ──────────────────────────────────────────────────────────────────── */
 
-// Section 1 → NF1 (called when any Section 1 field changes)
+// Section 1 name → NF1 (called when #inp-hhname changes)
+// The head panel (fam[1][m][1][...]) is now the source of truth for
+// sex / birthday / civil_status — those fields were removed from Section 1.
 function syncSection1ToNF1(){
-    const name  = document.getElementById('inp-hhname')?.value  || '';
-    const sex   = document.getElementById('inp-sex')?.value     || '';
-    const bday  = document.getElementById('inp-birthday')?.value|| '';
-    const civil = document.getElementById('inp-civil')?.value   || '';
+    const name = document.getElementById('inp-hhname')?.value || '';
 
-    // Fill NF1 family_head text input
-    const nf1HeadInput = document.querySelector('input[name="fam[1][family_head]"]');
-    if(nf1HeadInput){ nf1HeadInput.value = name; updateFamilyHead(1, name); }
+    // Extract last name (first word before comma, or first word if no comma)
+    const lastName = name.includes(',')
+        ? name.split(',')[0].trim()
+        : name.trim().split(' ')[0];
 
-    // Fill NF1 head panel fields
-    const hpSex  = document.getElementById('hp_sex_1');
-    const hpBday = document.getElementById('hp_bday_1');
-    const hpCivil= document.getElementById('hp_civil_1');
+    // Auto-fill NF1 family_name (last name) and family_head (full name) — both readonly
+    const nf1FamilyName = document.getElementById('nf_fname_1');
+    const nf1HeadInput  = document.getElementById('nf_fhead_1');
 
-    if(hpSex && sex){
-        // find matching option
-        [...hpSex.options].forEach(o => { if(o.value === sex) o.selected = true; });
-    }
-    if(hpBday  && bday)  hpBday.value  = bday;
-    if(hpCivil && civil) hpCivil.value = civil;
+    if(nf1FamilyName) { nf1FamilyName.value = lastName; updateFamilyLabel(1, lastName); }
+    if(nf1HeadInput)  { nf1HeadInput.value  = name;     updateFamilyHead(1, name); }
+
+    // Keep head panel full_name in sync too
+    const hpName = document.getElementById('hp_name_1');
+    if(hpName && hpName.value !== name) hpName.value = name;
+}
+
+// Head panel full_name → Section 1 household_head_name + NF1 meta fields
+function syncHeadNameToSection1(val){
+    const hhName = document.getElementById('inp-hhname');
+    if(hhName && hhName.value !== val) hhName.value = val;
+
+    // Re-use syncSection1ToNF1 logic to keep NF1 meta consistent
+    syncSection1ToNF1();
 }
 
 // NF1 family_head input → Section 1 household_head_name (and subtitle)
@@ -1399,8 +1511,13 @@ function familyMemberRowHTML(fi, mi){
           <option value="In-law">In-law</option>
           <option value="Other">Other</option>
       </select></td>
-      <td><input type="number" class="form-input" name="fam[${fi}][m][${mi}][age_display]" min="0" max="120" style="width:52px;font-size:11px;padding:5px 6px" title="Age auto-calculated from birthday — for display only"></td>
-      <td><input type="date" class="form-input" name="fam[${fi}][m][${mi}][birthday]" style="min-width:130px;font-size:11px;padding:5px 6px"></td>
+      <td style="text-align:center">
+        <input type="checkbox" name="fam[${fi}][m][${mi}][is_family_head]" value="1"
+          style="accent-color:#7C3AED;width:16px;height:16px;margin-top:5px"
+          title="Check if this member is the head of this nuclear family">
+      </td>
+      <td><input type="number" class="form-input" id="age_${uid}" name="fam[${fi}][m][${mi}][age_display]" min="0" max="120" style="width:52px;font-size:11px;padding:5px 6px;background:var(--gray-50);color:var(--gray-600);" title="Auto-calculated from Birthdate" readonly tabindex="-1"></td>
+      <td><input type="date" class="form-input" name="fam[${fi}][m][${mi}][birthday]" style="min-width:130px;font-size:11px;padding:5px 6px" oninput="calcAge(this,'age_${uid}')"></td>
       <td><select class="form-select" name="fam[${fi}][m][${mi}][sex]" style="min-width:80px;font-size:11px;padding:5px 6px">
           <option value="">${sp}</option><option value="Male">${sm}</option><option value="Female">${sf}</option>
       </select></td>
@@ -1495,6 +1612,19 @@ function setLang(lang){
     applyLang();
 }
 
+/* ─── Age auto-calculator ─── */
+function calcAge(bdayInput, ageFieldId){
+    const ageEl = document.getElementById(ageFieldId);
+    if(!ageEl) return;
+    if(!bdayInput.value){ ageEl.value=''; return; }
+    const today = new Date();
+    const bday  = new Date(bdayInput.value);
+    let age = today.getFullYear() - bday.getFullYear();
+    const m = today.getMonth() - bday.getMonth();
+    if(m < 0 || (m === 0 && today.getDate() < bday.getDate())) age--;
+    ageEl.value = age >= 0 ? age : '';
+}
+
 /* ─── Clock ─── */
 function pad(n){return String(n).padStart(2,'0');}
 function updateClock(){
@@ -1537,8 +1667,15 @@ function confirmReset(){
 }
 
 /* ─── Init ─── */
+// Force scroll to top on every page load/reload
+if('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
+let _pageInitialising = true;
 initMemberTable();
 applyLang();
+// Allow scrollIntoView again after init is fully done
+requestAnimationFrame(()=>{ _pageInitialising = false; window.scrollTo(0,0); });
 
 // On load: if old() values exist (after validation fail), push Section 1 → NF1
 (function(){

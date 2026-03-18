@@ -157,20 +157,43 @@
         .tab-count { background: var(--red); color: var(--white); font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
 
         /* ─── SEARCH BAR ─── */
-        .search-bar { background: var(--white); border: 1px solid var(--gray-200); border-top: none; padding: 12px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-        .search-input-wrap { position: relative; flex: 1; max-width: 420px; }
-        .search-input-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--gray-400); pointer-events: none; }
-        .search-input { width: 100%; padding: 8px 10px 8px 34px; border: 1px solid var(--gray-200); background: var(--gray-50); font-size: 13px; font-family: 'Open Sans', sans-serif; color: var(--gray-800); border-radius: 3px; outline: none; transition: border-color 0.15s, background 0.15s; }
-        .search-input:focus { border-color: var(--blue); background: var(--white); }
-        .search-input::placeholder { color: var(--gray-400); }
-        .search-btn { padding: 8px 16px; background: var(--blue); color: var(--white); border: none; border-radius: 3px; font-size: 12px; font-weight: 600; font-family: 'Open Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s; white-space: nowrap; }
-        .search-btn:hover { background: var(--blue-dark); }
-        .search-btn svg { width: 13px; height: 13px; }
-        .search-clear { padding: 8px 12px; background: var(--gray-100); color: var(--gray-600); border: 1px solid var(--gray-200); border-radius: 3px; font-size: 12px; font-weight: 600; font-family: 'Open Sans', sans-serif; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: background 0.15s; white-space: nowrap; }
-        .search-clear:hover { background: var(--gray-200); }
-        .search-clear svg { width: 12px; height: 12px; }
+        /* ── Search bar ── */
+        .search-bar { background: var(--white); border: 1px solid var(--gray-200); border-top: none; padding: 12px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 0; flex-wrap: wrap; }
+
+        /* ── Scope combo ── */
+        .search-combo { display: flex; align-items: stretch; border: 1px solid var(--gray-200); border-radius: 3px; overflow: hidden; background: var(--gray-50); transition: border-color 0.15s, box-shadow 0.15s; flex: 1; min-width: 260px; max-width: 520px; }
+        .search-combo:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(27,63,122,0.08); background: var(--white); }
+        .search-combo .scope-sel { border: none !important; border-right: 1px solid var(--gray-200) !important; background: var(--gray-100) !important; padding: 8px 22px 8px 10px !important; font-size: 11px !important; font-weight: 700 !important; color: var(--gray-600) !important; font-family: 'Open Sans', sans-serif !important; outline: none !important; appearance: none !important; -webkit-appearance: none !important; cursor: pointer; flex-shrink: 0; min-width: 100px; width: auto !important; box-shadow: none !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239AA3B0' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important; background-position: right 6px center !important; }
+        .search-combo .scope-sel:hover { background-color: var(--blue-pale) !important; color: var(--blue) !important; }
+        .search-combo .srch-input { border: none !important; background: transparent !important; padding: 8px 10px !important; font-size: 13px !important; color: var(--gray-800) !important; font-family: 'Open Sans', sans-serif !important; outline: none !important; flex: 1; min-width: 0; width: auto !important; box-shadow: none !important; }
+        .search-combo .srch-input::placeholder { color: var(--gray-400); }
+        .search-combo .srch-clear { display: none; align-items: center; justify-content: center; padding: 0 10px; border: none !important; background: transparent !important; color: var(--gray-400); cursor: pointer; font-size: 18px; line-height: 1; width: auto !important; transition: color 0.12s; }
+        .search-combo .srch-clear:hover { color: var(--red) !important; }
+        .search-combo.has-value .srch-clear { display: flex; }
+
+        /* Highlight */
+        mark.hl { background: #FFF176; color: inherit; border-radius: 2px; padding: 0 1px; font-style: normal; }
+
+        /* Active filter tags */
+        .active-filters-bar { background: var(--white); border: 1px solid var(--gray-200); border-top: none; padding: 7px 16px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+        .active-filters-bar.hidden { display: none; }
+        .filter-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; background: var(--blue-pale); border: 1px solid #C7D9F5; border-radius: 10px; font-size: 11px; color: var(--blue); font-weight: 600; }
+        .filter-tag a { color: var(--blue); text-decoration: none; margin-left: 2px; opacity: 0.6; font-weight: 700; }
+        .filter-tag a:hover { opacity: 1; }
+        .clear-all-link { font-size: 11px; color: var(--red); text-decoration: none; font-weight: 600; margin-left: 4px; }
+        .clear-all-link:hover { text-decoration: underline; }
+
         .search-results-label { margin-left: auto; font-size: 12px; color: var(--gray-600); white-space: nowrap; }
         .search-results-label strong { color: var(--blue-dark); }
+
+        /* ─── QR TYPE BADGES ─── */
+        .qr-type-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; white-space: nowrap; }
+        .qr-type-badge svg { width: 10px; height: 10px; flex-shrink: 0; }
+        .qr-household { background: var(--blue-pale); color: var(--blue); border: 1px solid #C7D9F3; }
+        .qr-head      { background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; }
+        .qr-none      { background: var(--gray-100); color: var(--gray-400); border: 1px solid var(--gray-200); font-style: italic; font-weight: 500; font-size: 10px; }
 
         /* Events participated badge */
         .events-count-zero { font-size: 11px; color: var(--gray-400); font-style: italic; }
@@ -394,7 +417,7 @@
             .stat-icon svg { width: 18px; height: 18px; }
             .stat-number { font-size: 22px; }
             .search-bar { flex-wrap: wrap; }
-            .search-input-wrap { max-width: 100%; width: 100%; }
+            .search-combo { max-width: 100%; width: 100%; min-width: 0; }
             .search-results-label { display: none; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
@@ -577,32 +600,27 @@
         <!-- Search Bar -->
         <form method="GET" action="{{ route('admin.households.index') }}" id="searchForm">
             <input type="hidden" name="filter" value="{{ $filter }}">
+            <input type="hidden" name="scope" id="scopeHidden" value="{{ request('scope','all') }}">
+
             <div class="search-bar">
-                <div class="search-input-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    <input
-                        type="text" name="search" id="searchInput" class="search-input"
-                        placeholder="Search by name, barangay, serial code..."
+                {{-- ── Scope combo ── --}}
+                <div class="search-combo" id="searchCombo">
+                    <select class="scope-sel" id="scopeSelect" onchange="updateScope(this.value)">
+                        <option value="all"      {{ request('scope','all')==='all'      ? 'selected':'' }}>All Fields</option>
+                        <option value="name"     {{ request('scope')==='name'     ? 'selected':'' }}>Head Name</option>
+                        <option value="barangay" {{ request('scope')==='barangay' ? 'selected':'' }}>Barangay</option>
+                        <option value="serial"   {{ request('scope')==='serial'   ? 'selected':'' }}>Serial Code</option>
+                        <option value="encoder"  {{ request('scope')==='encoder'  ? 'selected':'' }}>Encoded By</option>
+                        <option value="status"   {{ request('scope')==='status'   ? 'selected':'' }}>Status</option>
+                    </select>
+                    <input type="text" name="search" id="searchInput" class="srch-input"
+                        placeholder="Search households..."
                         value="{{ request('search') }}" autocomplete="off"
-                        oninput="debounceSearch()"
-                    >
+                        oninput="onSearchType(this)"
+                        onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('searchForm').submit();}">
+                    <button type="button" class="srch-clear" onclick="clearSearch()" title="Clear">×</button>
                 </div>
-                <button type="submit" class="search-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    Search
-                </button>
-                @if(request('search'))
-                    <a href="{{ route('admin.households.index', ['filter' => $filter]) }}" class="search-clear">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                        </svg>
-                        Clear
-                    </a>
-                @endif
+
                 <span class="search-results-label">
                     Showing <strong>{{ $households->count() }}</strong> of <strong>{{ $households->total() }}</strong>
                     @if(request('search'))
@@ -611,6 +629,19 @@
                 </span>
             </div>
         </form>
+
+        {{-- ── Active filter tags ── --}}
+        @php $hasSearch = request('search'); @endphp
+        @if($hasSearch)
+        <div class="active-filters-bar">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9AA3B0" stroke-width="2.5" style="flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span class="filter-tag">
+                {{ ucfirst(str_replace('_',' ', request('scope','all'))) }}: {{ request('search') }}
+                <a href="{{ route('admin.households.index', ['filter' => $filter]) }}">×</a>
+            </span>
+            <a href="{{ route('admin.households.index', ['filter' => $filter]) }}" class="clear-all-link">Clear search</a>
+        </div>
+        @endif
 
         <!-- Table -->
         <div class="table-card">
@@ -629,11 +660,13 @@
                     <thead>
                         <tr>
                             <th>Household Head</th>
-                            <th>Address</th>
+                            <th>Barangay</th>
+                            <th>Nuclear Families</th>
                             <th>Members</th>
                             <th>Encoded By</th>
                             <th>Status</th>
                             <th>Serial Code</th>
+                            <th>QR Codes</th>
                             <th>QR Scans</th>
                             <th>Actions</th>
                         </tr>
@@ -641,27 +674,46 @@
                     <tbody>
                         @forelse($households as $household)
                             @php
-                                $scanCount = $household->distributionLogs->count();
+                                $scanCount    = $household->distributionLogs->count();
+                                $familyHead   = $household->members->firstWhere('is_family_head', 1);
+                                $nuclearCount = $household->nuclearFamilies->count();
                             @endphp
                             <tr>
                                 <td class="td-name">
-                                    <strong>{{ $household->household_head_name }}</strong>
-                                    <small>{{ $household->sex }}, {{ $household->age }} years old</small>
+                                    <strong class="hl-name">{{ $household->household_head_name }}</strong>
+                                    <small>
+                                        {{ $household->street_purok }}, {{ $household->barangay }}
+                                    </small>
                                 </td>
                                 <td class="td-address">
-                                    {{ $household->street_purok }}, {{ $household->barangay }}
+                                    <span class="hl-barangay">{{ $household->barangay }}</span>
                                     <small>{{ $household->municipality }}, {{ $household->province }}</small>
                                 </td>
-                                <td>{{ $household->total_members }} person(s)</td>
-                                <td>{{ $household->encoder->name }}</td>
+                                <td>
+                                    @if($nuclearCount > 0)
+                                        <span style="font-size:12px;font-weight:700;color:var(--blue);">{{ $nuclearCount }}</span>
+                                        <span style="font-size:11px;color:var(--gray-400);"> famil{{ $nuclearCount !== 1 ? 'ies' : 'y' }}</span>
+                                    @else
+                                        <span style="font-size:11px;color:var(--gray-400);font-style:italic;">—</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    {{ $household->total_members }} person(s)
+                                    @if($familyHead)
+                                        <small style="display:block;font-size:10px;color:var(--gray-400);margin-top:2px;">
+                                            Head: {{ \Illuminate\Support\Str::limit($familyHead->full_name, 20) }}
+                                        </small>
+                                    @endif
+                                </td>
+                                <td class="hl-encoder">{{ $household->encoder->name }}</td>
                                 <td>
                                     @if($household->isApproved())
-                                        <span class="badge badge-approved">
+                                        <span class="badge badge-approved hl-status">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                                             Approved
                                         </span>
                                     @else
-                                        <span class="badge badge-pending">
+                                        <span class="badge badge-pending hl-status">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                             Pending
                                         </span>
@@ -669,10 +721,33 @@
                                 </td>
                                 <td>
                                     @if($household->serial_code)
-                                        <span class="serial-code">{{ $household->serial_code }}</span>
+                                        <span class="serial-code hl-serial">{{ $household->serial_code }}</span>
                                     @else
                                         <span class="serial-none">Not assigned</span>
                                     @endif
+                                </td>
+                                {{-- QR Codes column --}}
+                                <td>
+                                    <div style="display:flex;flex-direction:column;gap:4px;">
+                                        {{-- Household QR --}}
+                                        @if($household->qrCode)
+                                            <span class="qr-type-badge qr-household">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+                                                Household QR
+                                            </span>
+                                        @else
+                                            <span class="qr-type-badge qr-none">No Household QR</span>
+                                        @endif
+                                        {{-- Family Head QR --}}
+                                        @if($familyHead && $familyHead->qr_code_path)
+                                            <span class="qr-type-badge qr-head">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+                                                Head QR
+                                            </span>
+                                        @else
+                                            <span class="qr-type-badge qr-none">No Head QR</span>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="scan-count-wrap">
@@ -714,7 +789,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8">
+                                <td colspan="10">
                                     <div class="empty-state">
                                         <div class="empty-icon">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -785,11 +860,73 @@
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 
-    let searchTimer;
-    function debounceSearch() {
-        clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => document.getElementById('searchForm').submit(), 450);
+    /* ── Search scope ── */
+    const SEARCH_PH = {
+        all:      'Search by name, barangay, serial code...',
+        name:     'Search by household head name...',
+        barangay: 'Search by barangay...',
+        serial:   'Search by serial code...',
+        encoder:  'Search by encoder name...',
+        status:   'e.g. Approved, Pending...',
+    };
+    function updateScope(val) {
+        document.getElementById('scopeHidden').value = val;
+        const inp = document.getElementById('searchInput');
+        if (inp) inp.placeholder = SEARCH_PH[val] || 'Search...';
     }
+
+    /* typing: update highlight + clear btn only — submit on Enter */
+    function onSearchType(input) {
+        const combo = document.getElementById('searchCombo');
+        if (combo) combo.classList.toggle('has-value', input.value.length > 0);
+        applyHighlight(input.value, document.getElementById('scopeSelect').value);
+    }
+    function clearSearch() {
+        const inp = document.getElementById('searchInput');
+        if (!inp) return;
+        inp.value = '';
+        document.getElementById('searchCombo').classList.remove('has-value');
+        removeHighlight();
+        document.getElementById('searchForm').submit();
+    }
+
+    /* ── Live highlight ── */
+    const HL_SCOPE = {
+        all:      ['hl-name','hl-barangay','hl-serial','hl-encoder','hl-status'],
+        name:     ['hl-name'],
+        barangay: ['hl-barangay'],
+        serial:   ['hl-serial'],
+        encoder:  ['hl-encoder'],
+        status:   ['hl-status'],
+    };
+    function _re(s) { return s.replace(/[-[\]{}()*+?.,\^$|#\s]/g, '\$&'); }
+    function applyHighlight(term, scope) {
+        removeHighlight();
+        if (!term) return;
+        const re = new RegExp('(' + _re(term) + ')', 'gi');
+        (HL_SCOPE[scope] || HL_SCOPE.all).forEach(cls => {
+            document.querySelectorAll('.' + cls).forEach(el => {
+                el.innerHTML = el.textContent.replace(re, '<mark class="hl">$1</mark>');
+            });
+        });
+    }
+    function removeHighlight() {
+        document.querySelectorAll('mark.hl').forEach(m => {
+            m.parentNode.replaceChild(document.createTextNode(m.textContent), m);
+            m.parentNode.normalize();
+        });
+    }
+
+    /* Init on load */
+    (function() {
+        const inp   = document.getElementById('searchInput');
+        const scope = document.getElementById('scopeSelect');
+        if (inp && inp.value) {
+            document.getElementById('searchCombo').classList.add('has-value');
+            applyHighlight(inp.value, scope ? scope.value : 'all');
+        }
+        if (scope) updateScope(scope.value);
+    })();
 
     // ── Rebuild pagination cleanly from Laravel's output ──
     (function normalizePagination() {

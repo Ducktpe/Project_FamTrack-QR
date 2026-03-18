@@ -52,6 +52,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         [\App\Http\Controllers\Admin\AdminHouseholdController::class, 'downloadQrCode'])
         ->name('households.qr.download');
 
+    Route::post('/households/{household}/members/{member}/qr-generate',
+        [\App\Http\Controllers\Admin\AdminHouseholdController::class, 'generateHeadQrCode'])
+        ->name('households.qr.generate-head');
+
+    Route::get('/households/{household}/members/{member}/qr-download',
+        [\App\Http\Controllers\Admin\AdminHouseholdController::class, 'downloadHeadQrCode'])
+        ->name('households.qr.download-head');
+
     Route::get('/events/create-quick', function() {
         return view('admin.events.quick-create');
     })->name('events.quick-create');
@@ -65,6 +73,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
             'target_barangay.*' => 'required|string|max:100',
             'started_at'        => 'required|date',
             'ended_at'          => 'required|date|after:started_at',
+            'scan_mode'         => 'required|in:household,family_head',
         ]);
 
         $itemMeta = [
@@ -119,6 +128,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
             'relief_type'           => implode(', ', $request->relief_type),
             'relief_items'          => !empty($reliefItems) ? $reliefItems : null,
             'target_barangay'       => $request->target_barangay,
+            'scan_mode'             => $request->scan_mode,
             'event_date'            => $request->event_date ?? now()->toDateString(),
             'description'           => $request->goods_detail,
             'status'                => 'upcoming',
@@ -135,7 +145,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
             'model'         => 'DistributionEvent',
             'record_id'     => $event->id,
             'affected_name' => $event->event_name,
-            'description'   => "Created distribution event \"{$event->event_name}\"",
+            'description'   => "Created distribution event \"{$event->event_name}\" (scan mode: {$event->scan_mode})",
             'new_values'    => $event->toArray(),
         ]);
 
@@ -230,9 +240,8 @@ Route::middleware(['auth', 'role:staff'])->prefix('staff')->name('staff.')->grou
 
 // ── AUDITOR Routes ───────────────────────────────────────────
 Route::middleware(['auth', 'role:auditor'])->prefix('auditor')->name('auditor.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('auditor.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\Auditor\AuditorController::class, 'dashboard'])
+        ->name('dashboard');
 
     Route::get('/family-profiles', [\App\Http\Controllers\Auditor\AuditorController::class, 'familyProfiles'])
         ->name('family-profiles');

@@ -580,6 +580,150 @@
         @media (max-width: 380px) {
             .quick-nav { grid-template-columns: 1fr; }
         }
+
+        /* ─── STAT CARDS ─── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-top: 3px solid var(--blue);
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .stat-card.orange { border-top-color: #D97706; }
+        .stat-card.green  { border-top-color: var(--green); }
+        .stat-card.purple { border-top-color: #7C3AED; }
+        .stat-label {
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: var(--gray-400);
+        }
+        .stat-value {
+            font-family: 'PT Serif', serif;
+            font-size: 32px; font-weight: 700;
+            color: var(--blue-dark); line-height: 1;
+        }
+        .stat-card.orange .stat-value { color: #D97706; }
+        .stat-card.green  .stat-value { color: var(--green); }
+        .stat-card.purple .stat-value { color: #7C3AED; }
+        .stat-sub {
+            font-size: 11px; color: var(--gray-400);
+            display: flex; align-items: center; gap: 5px;
+        }
+        .stat-sub .up   { color: var(--green); font-weight: 600; }
+        .stat-sub .down { color: var(--red);   font-weight: 600; }
+
+        /* ─── CHARTS ROW ─── */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .chart-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+        }
+        .chart-card-header {
+            padding: 13px 18px;
+            border-bottom: 1px solid var(--gray-100);
+            background: var(--gray-50);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .chart-card-header .ca-title { font-size: 12px; font-weight: 600; color: var(--blue-dark); }
+        .chart-card-header .ca-sub   { font-size: 10px; color: var(--gray-400); margin-left: auto; }
+        .chart-body { padding: 16px 18px; }
+
+        /* ─── BAR CHART ─── */
+        .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+        .bar-row { display: grid; grid-template-columns: 110px 1fr 40px; align-items: center; gap: 10px; }
+        .bar-label { font-size: 11px; color: var(--gray-600); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .bar-track { background: var(--gray-100); border-radius: 3px; height: 10px; overflow: hidden; }
+        .bar-fill  { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+        .bar-pct   { font-size: 11px; font-weight: 700; color: var(--gray-600); text-align: right; }
+
+        /* ─── DONUT CHART ─── */
+        .donut-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 0;
+        }
+        .donut-svg-wrap { position: relative; width: 150px; height: 150px; flex-shrink: 0; }
+        .donut-center {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .donut-center-val  { font-family: 'PT Serif', serif; font-size: 26px; font-weight: 700; color: var(--blue-dark); line-height: 1; }
+        .donut-center-lbl  { font-size: 9px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+        .donut-legend { width: 100%; display: flex; flex-direction: column; gap: 7px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--gray-700); }
+        .legend-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .legend-val  { margin-left: auto; font-weight: 700; color: var(--gray-800); }
+
+        /* ─── BOTTOM ROW ─── */
+        .bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        /* ─── PROGRESS LIST ─── */
+        .progress-list { display: flex; flex-direction: column; gap: 12px; }
+        .progress-item-label {
+            display: flex; justify-content: space-between;
+            font-size: 11px; margin-bottom: 4px;
+        }
+        .progress-item-label span { color: var(--gray-600); }
+        .progress-item-label strong { color: var(--gray-800); font-weight: 700; }
+        .progress-track { background: var(--gray-100); border-radius: 10px; height: 8px; overflow: hidden; }
+        .progress-fill  { height: 100%; border-radius: 10px; transition: width 0.8s ease; }
+
+        /* ─── RECENT TABLE ─── */
+        .recent-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .recent-table th {
+            padding: 8px 12px; background: var(--gray-50);
+            border-bottom: 2px solid var(--gray-200);
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .8px;
+            color: var(--gray-400); text-align: left;
+        }
+        .recent-table td {
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--gray-100);
+            color: var(--gray-700); vertical-align: middle;
+        }
+        .recent-table tr:last-child td { border-bottom: none; }
+        .recent-table tr:hover td { background: var(--blue-pale); }
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 2px 8px; border-radius: 10px;
+            font-size: 9px; font-weight: 700; text-transform: uppercase;
+        }
+        .pill-pending  { background: #FFF7ED; color: #92400E; }
+        .pill-approved { background: #DCFCE7; color: #15803D; }
+
+        /* ─── RESPONSIVE CHARTS ─── */
+        @media (max-width: 900px) {
+            .stats-grid   { grid-template-columns: repeat(2, 1fr); }
+            .charts-row   { grid-template-columns: 1fr; }
+            .bottom-row   { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .stats-grid   { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .stat-value   { font-size: 24px; }
+            .bar-row      { grid-template-columns: 80px 1fr 36px; }
+        }
     </style>
 </head>
 <body>
@@ -713,21 +857,264 @@
             </div>
         </div>
 
-        <div class="content-area">
-            <div class="content-area-header">
-                <div class="ca-dot"></div>
-                <div class="ca-title">Content Area</div>
+        @php
+            // ── Swap these with real DB queries in your controller ──
+            $totalHouseholds  = App\Models\Household::where('encoded_by', auth()->id())->count();
+            $pending          = App\Models\Household::where('encoded_by', auth()->id())->whereNull('approved_by')->count();
+            $approved         = App\Models\Household::where('encoded_by', auth()->id())->whereNotNull('approved_by')->count();
+            $totalMembers     = App\Models\FamilyMember::whereHas('household', fn($q) => $q->where('encoded_by', auth()->id()))->count();
+
+            $approvalRate     = $totalHouseholds > 0 ? round(($approved / $totalHouseholds) * 100) : 0;
+            $pendingRate      = $totalHouseholds > 0 ? round(($pending  / $totalHouseholds) * 100) : 0;
+
+            // Vulnerability breakdown
+            $is4ps        = App\Models\Household::where('encoded_by', auth()->id())->where('is_4ps_beneficiary', 1)->count();
+            $isPwd        = App\Models\Household::where('encoded_by', auth()->id())->where('is_pwd',             1)->count();
+            $isSenior     = App\Models\Household::where('encoded_by', auth()->id())->where('is_senior',         1)->count();
+            $isSoloParent = App\Models\Household::where('encoded_by', auth()->id())->where('is_solo_parent',    1)->count();
+
+            // Housing type breakdown (top 5)
+            $housingTypes = App\Models\Household::where('encoded_by', auth()->id())
+                ->whereNotNull('housing_type')
+                ->selectRaw('housing_type, count(*) as total')
+                ->groupBy('housing_type')
+                ->orderByDesc('total')
+                ->limit(5)
+                ->pluck('total', 'housing_type')
+                ->toArray();
+
+            // Barangay breakdown (top 6)
+            $barangayCounts = App\Models\Household::where('encoded_by', auth()->id())
+                ->selectRaw('barangay, count(*) as total')
+                ->groupBy('barangay')
+                ->orderByDesc('total')
+                ->limit(6)
+                ->pluck('total', 'barangay')
+                ->toArray();
+
+            $maxBrgy = max(array_values($barangayCounts) ?: [1]);
+
+            // Recent 5 households
+            $recentHouseholds = App\Models\Household::where('encoded_by', auth()->id())
+                ->orderByDesc('created_at')
+                ->limit(5)
+                ->get();
+        @endphp
+
+        {{-- ── STAT CARDS ── --}}
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Households</div>
+                <div class="stat-value">{{ $totalHouseholds }}</div>
+                <div class="stat-sub">All submitted records</div>
             </div>
-            <div class="content-placeholder-body">
-                <div class="ph-icon-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                    </svg>
+            <div class="stat-card orange">
+                <div class="stat-label">Pending Approval</div>
+                <div class="stat-value">{{ $pending }}</div>
+                <div class="stat-sub">
+                    <span class="down">{{ $pendingRate }}%</span> of total
                 </div>
-                <div class="ph-title">No content to display</div>
-                <div class="ph-sub">Select a module from the sidebar or the quick links above to load content here.</div>
             </div>
+            <div class="stat-card green">
+                <div class="stat-label">Approved</div>
+                <div class="stat-value">{{ $approved }}</div>
+                <div class="stat-sub">
+                    <span class="up">{{ $approvalRate }}%</span> approval rate
+                </div>
+            </div>
+            <div class="stat-card purple">
+                <div class="stat-label">Total Members</div>
+                <div class="stat-value">{{ $totalMembers }}</div>
+                <div class="stat-sub">Across all households</div>
+            </div>
+        </div>
+
+        {{-- ── CHARTS ROW ── --}}
+        <div class="charts-row">
+
+            {{-- Bar Chart: Households per Barangay --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot"></div>
+                    <div class="ca-title">Households per Barangay</div>
+                    <span class="ca-sub">Top 6</span>
+                </div>
+                <div class="chart-body">
+                    @if(count($barangayCounts) > 0)
+                    <div class="bar-chart">
+                        @foreach($barangayCounts as $brgy => $count)
+                        @php $pct = $maxBrgy > 0 ? round(($count / $maxBrgy) * 100) : 0; @endphp
+                        <div class="bar-row">
+                            <div class="bar-label" title="{{ $brgy }}">{{ $brgy }}</div>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width:{{ $pct }}%;background:var(--blue);"></div>
+                            </div>
+                            <div class="bar-pct">{{ $count }}</div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @else
+                    <div style="text-align:center;padding:32px;color:var(--gray-400);font-size:12px;">No data yet</div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Donut Chart: Approval Status --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot"></div>
+                    <div class="ca-title">Approval Status</div>
+                </div>
+                <div class="chart-body">
+                    <div class="donut-wrap">
+                        <div class="donut-svg-wrap">
+                            <svg viewBox="0 0 36 36" width="150" height="150">
+                                @php
+                                    $r = 15.9;
+                                    $circ = 2 * 3.14159 * $r;
+                                    $approvedDash = $totalHouseholds > 0 ? ($approved / $totalHouseholds) * $circ : 0;
+                                    $pendingDash  = $totalHouseholds > 0 ? ($pending  / $totalHouseholds) * $circ : 0;
+                                    $gap = 0.5;
+                                @endphp
+                                <circle cx="18" cy="18" r="{{ $r }}" fill="none" stroke="#F0F2F5" stroke-width="3.5"/>
+                                @if($totalHouseholds > 0)
+                                <circle cx="18" cy="18" r="{{ $r }}" fill="none"
+                                    stroke="#16A34A" stroke-width="3.5"
+                                    stroke-dasharray="{{ round($approvedDash - $gap, 2) }} {{ round($circ - $approvedDash + $gap, 2) }}"
+                                    stroke-dashoffset="{{ round($circ / 4, 2) }}"
+                                    stroke-linecap="round"/>
+                                <circle cx="18" cy="18" r="{{ $r }}" fill="none"
+                                    stroke="#D97706" stroke-width="3.5"
+                                    stroke-dasharray="{{ round($pendingDash - $gap, 2) }} {{ round($circ - $pendingDash + $gap, 2) }}"
+                                    stroke-dashoffset="{{ round($circ / 4 - $approvedDash, 2) }}"
+                                    stroke-linecap="round"/>
+                                @endif
+                            </svg>
+                            <div class="donut-center">
+                                <div class="donut-center-val">{{ $approvalRate }}%</div>
+                                <div class="donut-center-lbl">Approved</div>
+                            </div>
+                        </div>
+                        <div class="donut-legend">
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background:#16A34A;"></div>
+                                Approved
+                                <span class="legend-val">{{ $approved }}</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background:#D97706;"></div>
+                                Pending
+                                <span class="legend-val">{{ $pending }}</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background:#1B3F7A;"></div>
+                                Total
+                                <span class="legend-val">{{ $totalHouseholds }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ── BOTTOM ROW ── --}}
+        <div class="bottom-row">
+
+            {{-- Vulnerability Progress Bars --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot"></div>
+                    <div class="ca-title">Vulnerability Classification</div>
+                    <span class="ca-sub">% of total households</span>
+                </div>
+                <div class="chart-body">
+                    <div class="progress-list">
+                        @php
+                            $vulns = [
+                                ['label'=>'4Ps Beneficiary',    'count'=>$is4ps,        'color'=>'#1B3F7A'],
+                                ['label'=>'Person w/ Disability','count'=>$isPwd,        'color'=>'#7C3AED'],
+                                ['label'=>'Senior Citizen',      'count'=>$isSenior,     'color'=>'#D97706'],
+                                ['label'=>'Solo Parent',         'count'=>$isSoloParent, 'color'=>'#DB2777'],
+                            ];
+                        @endphp
+                        @foreach($vulns as $v)
+                        @php $vpct = $totalHouseholds > 0 ? round(($v['count'] / $totalHouseholds) * 100) : 0; @endphp
+                        <div>
+                            <div class="progress-item-label">
+                                <span>{{ $v['label'] }}</span>
+                                <strong>{{ $v['count'] }} <span style="font-weight:400;color:var(--gray-400);">({{ $vpct }}%)</span></strong>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width:{{ $vpct }}%;background:{{ $v['color'] }};"></div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                    {{-- Housing Type mini bars --}}
+                    @if(count($housingTypes) > 0)
+                    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--gray-100);">
+                        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gray-400);margin-bottom:10px;">Housing Type Breakdown</div>
+                        <div class="bar-chart">
+                            @php $maxHt = max(array_values($housingTypes)); @endphp
+                            @foreach($housingTypes as $ht => $htCount)
+                            @php $htPct = round(($htCount / $maxHt) * 100); @endphp
+                            <div class="bar-row" style="grid-template-columns:100px 1fr 36px;">
+                                <div class="bar-label">{{ ucfirst(str_replace('_',' ',$ht)) }}</div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width:{{ $htPct }}%;background:#7C3AED;"></div>
+                                </div>
+                                <div class="bar-pct">{{ $htCount }}</div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Recent Households Table --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot"></div>
+                    <div class="ca-title">Recently Registered</div>
+                    <a href="{{ route('encoder.households.index') }}" style="margin-left:auto;font-size:11px;color:var(--blue);text-decoration:none;font-weight:600;">View All →</a>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="recent-table">
+                        <thead>
+                            <tr>
+                                <th>Household Head</th>
+                                <th>Barangay</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentHouseholds as $hh)
+                            <tr>
+                                <td>
+                                    <strong style="display:block;color:var(--blue-dark);font-size:12px;">{{ Str::limit($hh->household_head_name, 22) }}</strong>
+                                    <span style="font-size:10px;color:var(--gray-400);">{{ $hh->created_at->diffForHumans() }}</span>
+                                </td>
+                                <td style="font-size:11px;">{{ Str::limit($hh->barangay, 18) }}</td>
+                                <td>
+                                    @if($hh->isApproved())
+                                        <span class="status-pill pill-approved">✓ Approved</span>
+                                    @else
+                                        <span class="status-pill pill-pending">⏳ Pending</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="3" style="text-align:center;padding:24px;color:var(--gray-400);font-size:12px;">No households registered yet</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
 
     </main>

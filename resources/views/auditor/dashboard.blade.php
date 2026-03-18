@@ -20,6 +20,14 @@
             --gray-600:   #5A6372;
             --gray-800:   #2C3340;
             --red:        #C0392B;
+            --red-pale:   #FEF2F2;
+            --red-border: #FECACA;
+            --green:      #16A34A;
+            --green-pale: #F0FDF4;
+            --green-border:#BBF7D0;
+            --orange:     #D97706;
+            --orange-pale:#FFFBEB;
+            --orange-border:#FDE68A;
             --purple:     #5B3FA6;
             --purple-dark:#3D1F8A;
             --purple-pale:#F5F0FF;
@@ -115,7 +123,6 @@
             z-index: 90;
         }
 
-        /* Hamburger — hidden on desktop */
         .hamburger {
             display: none;
             background: none;
@@ -189,18 +196,19 @@
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay {
-            display: none !important; /* Force hide until activated */
-            position: fixed; 
+            display: none !important;
+            position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.45); 
+            background: rgba(0,0,0,0.45);
             z-index: 200;
-            opacity: 0; 
+            opacity: 0;
             transition: opacity 0.25s;
-            pointer-events: none; /* Don't block clicks when hidden */
+            pointer-events: none;
         }
         .sidebar-overlay.active {
             display: block !important;
-            pointer-events: auto; /* Allow clicks when active */
+            opacity: 1;
+            pointer-events: auto;
         }
 
         /* ─── SIDEBAR ─── */
@@ -214,7 +222,6 @@
             position: relative;
         }
 
-        /* Close button — only shown on mobile */
         .sidebar-close {
             display: none;
             position: absolute;
@@ -283,7 +290,6 @@
             margin: 8px 0;
         }
 
-        /* Read-only role notice */
         .role-notice {
             margin: 12px 14px;
             background: var(--purple-pale);
@@ -389,7 +395,7 @@
         .welcome-heading em { color: var(--yellow); font-style: normal; }
         .welcome-desc { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
 
-        /* Access notice — purple tint for auditor */
+        /* Access notice */
         .access-notice {
             background: var(--white);
             border: 1px solid var(--purple-border);
@@ -449,7 +455,7 @@
             border: 1px solid var(--gray-200);
         }
 
-        /* Content area */
+        /* ─── CONTENT AREA ─── */
         .content-area {
             background: var(--white);
             border: 1px solid var(--gray-200);
@@ -458,20 +464,189 @@
             padding: 14px 20px;
             border-bottom: 1px solid var(--gray-100);
             background: var(--gray-50);
-            display: flex; align-items: center; gap: 10px;
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
         }
+        .ca-header-left { display: flex; align-items: center; gap: 10px; }
         .ca-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); border: 2px solid var(--yellow-dark); }
         .ca-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
-        .content-placeholder-body { padding: 56px 40px; text-align: center; }
-        .ph-icon-wrap {
-            width: 48px; height: 48px;
-            background: var(--gray-100); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 14px;
+        .ca-subtitle { font-size: 11px; color: var(--gray-400); }
+
+        /* Stat grid */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            border-bottom: 1px solid var(--gray-100);
         }
-        .ph-icon-wrap svg { width: 22px; height: 22px; color: var(--gray-400); }
-        .ph-title { font-size: 14px; font-weight: 600; color: var(--gray-600); margin-bottom: 5px; }
-        .ph-sub { font-size: 12px; color: var(--gray-400); }
+        .stat-card {
+            padding: 20px 22px;
+            border-right: 1px solid var(--gray-100);
+            position: relative;
+        }
+        .stat-card:last-child { border-right: none; }
+        .stat-card-accent {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--blue);
+        }
+        .stat-card-accent.yellow  { background: var(--yellow); }
+        .stat-card-accent.green   { background: var(--green); }
+        .stat-card-accent.red     { background: var(--red); }
+        .stat-card-accent.orange  { background: var(--orange); }
+        .stat-label {
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            color: var(--gray-400); margin-bottom: 8px;
+        }
+        .stat-number {
+            font-family: 'PT Serif', serif;
+            font-size: 32px; font-weight: 700;
+            color: var(--blue-dark); line-height: 1;
+            margin-bottom: 6px;
+        }
+        .stat-sub {
+            font-size: 11px; color: var(--gray-600);
+            display: flex; flex-wrap: wrap; gap: 8px;
+        }
+        .stat-pill {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 2px 8px; border-radius: 10px;
+            font-size: 10px; font-weight: 600;
+        }
+        .stat-pill.approved  { background: var(--green-pale);  color: var(--green);  border: 1px solid var(--green-border); }
+        .stat-pill.pending   { background: var(--orange-pale); color: var(--orange); border: 1px solid var(--orange-border); }
+        .stat-pill.ongoing   { background: var(--sky-pale);    color: var(--sky-dark); border: 1px solid var(--sky-border); }
+        .stat-pill.completed { background: var(--green-pale);  color: var(--green);  border: 1px solid var(--green-border); }
+        .stat-pill.upcoming  { background: var(--orange-pale); color: var(--orange); border: 1px solid var(--orange-border); }
+        .stat-pill.high      { background: var(--red-pale);    color: var(--red);    border: 1px solid var(--red-border); }
+        .stat-pill.today     { background: var(--blue-pale);   color: var(--blue);   border: 1px solid #C7D8F5; }
+
+        /* Two-column section */
+        .content-body {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 0;
+        }
+        .content-panel {
+            padding: 20px 22px;
+        }
+        .content-panel + .content-panel {
+            border-left: 1px solid var(--gray-100);
+        }
+        .panel-title {
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            color: var(--gray-400); margin-bottom: 14px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .panel-title::after {
+            content: '';
+            flex: 1; height: 1px;
+            background: var(--gray-100);
+        }
+
+        /* Recent activity table */
+        .activity-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        .activity-table th {
+            text-align: left;
+            padding: 7px 10px;
+            color: var(--gray-400);
+            font-weight: 600;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .activity-table td {
+            padding: 9px 10px;
+            border-bottom: 1px solid var(--gray-100);
+            vertical-align: middle;
+        }
+        .activity-table tr:last-child td { border-bottom: none; }
+        .activity-table tr:hover td { background: var(--gray-50); }
+
+        .action-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .action-badge.cat-household    { background: var(--blue-pale);    color: var(--blue-dark); }
+        .action-badge.cat-distribution { background: var(--green-pale);   color: var(--green); }
+        .action-badge.cat-auth         { background: var(--sky-pale);     color: var(--sky-dark); }
+        .action-badge.cat-qr_code      { background: var(--orange-pale);  color: var(--orange); }
+        .action-badge.cat-general      { background: var(--gray-100);     color: var(--gray-600); }
+
+        .severity-dot {
+            display: inline-block;
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .severity-dot.high   { background: var(--red); }
+        .severity-dot.medium { background: var(--orange); }
+        .severity-dot.low    { background: var(--green); }
+
+        .time-ago { color: var(--gray-400); white-space: nowrap; font-size: 11px; }
+        .user-cell { font-weight: 600; color: var(--gray-800); }
+        .desc-cell { color: var(--gray-600); max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* Quick-links panel */
+        .quick-link-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 12.5px; font-weight: 500;
+            color: var(--gray-600);
+            transition: background 0.12s, color 0.12s;
+            margin-bottom: 4px;
+        }
+        .quick-link-item:hover {
+            background: var(--blue-pale);
+            color: var(--blue);
+        }
+        .quick-link-icon {
+            width: 30px; height: 30px;
+            border-radius: 4px;
+            background: var(--gray-100);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.12s;
+        }
+        .quick-link-item:hover .quick-link-icon { background: #d0e1f7; }
+        .quick-link-icon svg { width: 15px; height: 15px; color: var(--blue); }
+        .quick-link-arrow { margin-left: auto; color: var(--gray-200); }
+        .quick-link-item:hover .quick-link-arrow { color: var(--blue-light); }
+
+        .ql-divider {
+            border: none;
+            border-top: 1px solid var(--gray-100);
+            margin: 8px 0;
+        }
+
+        .view-all-link {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            font-size: 11px; font-weight: 600;
+            color: var(--blue-light);
+            text-decoration: none;
+            border-top: 1px solid var(--gray-100);
+            margin-top: 4px;
+            transition: background 0.12s, color 0.12s;
+        }
+        .view-all-link:hover { background: var(--blue-pale); color: var(--blue); }
 
         /* ─── FOOTER ─── */
         footer {
@@ -503,6 +678,8 @@
         /* ════════════════════════════════════════
            RESPONSIVE
            ════════════════════════════════════════ */
+
+        /* Tablet — sidebar collapses to drawer */
         @media (max-width: 900px) {
             .shell {
                 grid-template-rows: 36px auto 1fr 48px;
@@ -515,7 +692,6 @@
                 height: 100vh;
                 overflow: hidden;
             }
-
             .sidebar {
                 grid-area: unset;
                 position: fixed;
@@ -530,9 +706,7 @@
             .sidebar-overlay { display: block; }
             .sidebar-close { display: flex; }
             .sidebar .nav-section-label { padding-top: 52px; }
-
             .hamburger { display: flex; }
-
             header { padding: 0 16px; gap: 10px; }
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
@@ -540,19 +714,35 @@
             .header-user-badge { padding: 6px 10px; gap: 8px; }
             .user-name { font-size: 12px; }
             .user-role { display: none; }
-
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
-
             .main-content { padding: 20px 16px; }
+
+            /* Quick nav: 2 columns */
             .quick-nav { grid-template-columns: repeat(2, 1fr); }
+
+            /* Stat cards: 2 columns */
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+            .stat-card { border-right: none; border-bottom: 1px solid var(--gray-100); }
+            .stat-card:last-child { border-bottom: none; }
+
+            /* Content body: stack vertically */
+            .content-body { grid-template-columns: 1fr; }
+            .content-panel + .content-panel {
+                border-left: none;
+                border-top: 1px solid var(--gray-100);
+            }
+
+            /* Activity table: hide Description column */
+            .activity-table .col-desc { display: none; }
+            .desc-cell { display: none; }
         }
 
+        /* Large mobile */
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
             .status-indicator { display: none; }
-
             header { padding: 0 12px; gap: 8px; }
             .header-logos img { height: 36px; width: 36px; }
             .logo-divider { display: none; }
@@ -562,33 +752,68 @@
             .header-user-badge { padding: 5px 8px; }
             .user-avatar { width: 28px; height: 28px; font-size: 11px; }
             .user-name { font-size: 11px; }
-
             .main-content { padding: 16px 12px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; }
             .page-h1 { font-size: 18px; }
             .page-date { text-align: left; }
-
             .welcome-card { padding: 16px 18px; gap: 14px; }
             .welcome-card img { width: 38px; height: 38px; }
             .welcome-heading { font-size: 16px; }
             .welcome-desc { display: none; }
-
             .access-notice { padding: 12px 14px; }
             .access-notice-text { font-size: 11px; }
 
+            /* Quick nav: 2 columns, compact */
             .quick-nav { grid-template-columns: 1fr 1fr; gap: 10px; }
             .qnav-card { padding: 14px; gap: 8px; }
             .qnav-title { font-size: 12px; }
             .qnav-desc { display: none; }
             .qnav-readonly { display: none; }
 
+            /* Stat cards: 2 columns, compact */
+            .stat-grid { grid-template-columns: 1fr 1fr; }
+            .stat-number { font-size: 26px; }
+            .stat-label { font-size: 9px; }
+            .stat-card { padding: 14px 14px 12px; }
+
+            /* Content area header: hide subtitle */
+            .ca-subtitle { display: none; }
+
+            /* Activity table: show only User + Action + Time */
+            .activity-table .col-desc,
+            .activity-table .col-user { display: none; }
+            .desc-cell, .user-cell { display: none; }
+            .activity-table th, .activity-table td { padding: 8px 8px; }
+
+            /* Quick links: tighten */
+            .quick-link-item { padding: 9px 8px; font-size: 12px; }
+            .quick-link-icon { width: 26px; height: 26px; }
+
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
         }
 
-        @media (max-width: 380px) {
+        /* Small mobile */
+        @media (max-width: 420px) {
+            .quick-nav { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .qnav-card { padding: 12px 10px; }
+
+            /* Stat cards: full width stack */
+            .stat-grid { grid-template-columns: 1fr; }
+            .stat-card { padding: 14px 16px; }
+            .stat-number { font-size: 28px; }
+
+            /* Activity table: show only severity + action + time */
+            .activity-table .col-user { display: none; }
+            .user-cell { display: none; }
+
+            .content-panel { padding: 16px 14px; }
+        }
+
+        @media (max-width: 360px) {
             .quick-nav { grid-template-columns: 1fr; }
+            .main-content { padding: 12px 10px; }
         }
     </style>
 </head>
@@ -630,9 +855,9 @@
         </div>
         <div class="header-spacer"></div>
         <div class="header-user-badge">
-            <div class="user-avatar">A</div>
+            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">Auditor</div>
+                <div class="user-name">{{ auth()->user()->name }}</div>
                 <div class="user-role">View-Only Access</div>
             </div>
         </div>
@@ -649,7 +874,7 @@
 
         <div class="nav-section-label">Auditor Menu</div>
 
-        <a href="#" class="nav-item active" onclick="closeSidebar()">
+        <a href="{{ route('auditor.dashboard') }}" class="nav-item active" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="7" height="7" rx="1"/>
                 <rect x="14" y="3" width="7" height="7" rx="1"/>
@@ -681,6 +906,7 @@
             List of Households
             <span class="nav-badge-view">View</span>
         </a>
+
         <a href="{{ route('auditor.audit.trail') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"/>
@@ -728,7 +954,7 @@
             <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO">
             <div>
                 <div class="welcome-label">Welcome</div>
-                <div class="welcome-heading">Good day, <em>Auditor!</em></div>
+                <div class="welcome-heading">Good day, <em>{{ auth()->user()->name }}!</em></div>
                 <div class="welcome-desc">You have read-only access to family profiles, distribution logs, household records, reports, and the system audit trail.</div>
             </div>
         </div>
@@ -756,7 +982,8 @@
                 <div class="qnav-title">Family Profiles</div>
                 <div class="qnav-desc">View all registered household profiles</div>
             </a>
-            <a href="#" class="qnav-card">
+
+            <a href="{{ route('auditor.distribution.logs') }}" class="qnav-card">
                 <span class="qnav-readonly">Read Only</span>
                 <div class="qnav-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -767,6 +994,18 @@
                 </div>
                 <div class="qnav-title">Distribution Logs</div>
                 <div class="qnav-desc">View all relief distribution records per event</div>
+            </a>
+
+            <a href="{{ route('auditor.households.index') }}" class="qnav-card">
+                <span class="qnav-readonly">Read Only</span>
+                <div class="qnav-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                        <path d="M9 22V12h6v10"/>
+                    </svg>
+                </div>
+                <div class="qnav-title">Households</div>
+                <div class="qnav-desc">View household records and QR codes</div>
             </a>
 
             <a href="{{ route('auditor.audit.trail') }}" class="qnav-card">
@@ -782,22 +1021,204 @@
             </a>
         </div>
 
+        {{-- ═══════════════════════════════════════════
+             CONTENT AREA — System Overview
+             ═══════════════════════════════════════════ --}}
         <div class="content-area">
+
             <div class="content-area-header">
-                <div class="ca-dot"></div>
-                <div class="ca-title">Content Area</div>
-            </div>
-            <div class="content-placeholder-body">
-                <div class="ph-icon-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                    </svg>
+                <div class="ca-header-left">
+                    <div class="ca-dot"></div>
+                    <div class="ca-title">System Overview</div>
                 </div>
-                <div class="ph-title">No content to display</div>
-                <div class="ph-sub">Select a module from the sidebar or the quick links above to view records.</div>
+                <div class="ca-subtitle">Live summary — read-only view</div>
             </div>
+
+            {{-- ── STAT CARDS ── --}}
+            <div class="stat-grid">
+
+                {{-- Households --}}
+                <div class="stat-card">
+                    <div class="stat-card-accent"></div>
+                    <div class="stat-label">Total Households</div>
+                    <div class="stat-number">{{ number_format($totalHouseholds) }}</div>
+                    <div class="stat-sub">
+                        <span class="stat-pill approved">
+                            ✓ {{ number_format($approvedHouseholds) }} Approved
+                        </span>
+                        <span class="stat-pill pending">
+                            ⏳ {{ number_format($pendingHouseholds) }} Pending
+                        </span>
+                    </div>
+                </div>
+
+                {{-- Distribution Events --}}
+                <div class="stat-card">
+                    <div class="stat-card-accent yellow"></div>
+                    <div class="stat-label">Distribution Events</div>
+                    <div class="stat-number">{{ number_format($totalEvents) }}</div>
+                    <div class="stat-sub">
+                        <span class="stat-pill ongoing">● {{ number_format($ongoingEvents) }} Ongoing</span>
+                        <span class="stat-pill upcoming">◌ {{ number_format($upcomingEvents) }} Upcoming</span>
+                        <span class="stat-pill completed">✓ {{ number_format($completedEvents) }} Done</span>
+                    </div>
+                </div>
+
+                {{-- Relief Distributed --}}
+                <div class="stat-card">
+                    <div class="stat-card-accent green"></div>
+                    <div class="stat-label">Relief Distributed</div>
+                    <div class="stat-number">{{ number_format($totalDistributed) }}</div>
+                    <div class="stat-sub" style="color:var(--gray-400)">
+                        Total distribution log entries
+                    </div>
+                </div>
+
+                {{-- Audit Logs --}}
+                <div class="stat-card">
+                    <div class="stat-card-accent {{ $highSeverityLogs > 0 ? 'red' : '' }}"></div>
+                    <div class="stat-label">Audit Log Entries</div>
+                    <div class="stat-number">{{ number_format($totalLogs) }}</div>
+                    <div class="stat-sub">
+                        @if($highSeverityLogs > 0)
+                            <span class="stat-pill high">⚠ {{ number_format($highSeverityLogs) }} High Severity</span>
+                        @endif
+                        <span class="stat-pill today">{{ number_format($todayLogs) }} Today</span>
+                    </div>
+                </div>
+
+            </div>
+            {{-- ── END STAT CARDS ── --}}
+
+            {{-- ── TWO-COLUMN BODY ── --}}
+            <div class="content-body">
+
+                {{-- LEFT: Recent Activity --}}
+                <div class="content-panel">
+                    <div class="panel-title">Recent Activity</div>
+
+                    @if($recentLogs->isEmpty())
+                        <div style="padding: 32px; text-align:center; color:var(--gray-400); font-size:12px;">
+                            No activity logs found.
+                        </div>
+                    @else
+                        <table class="activity-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:20px"></th>
+                                    <th class="col-user">User</th>
+                                    <th>Action</th>
+                                    <th class="col-desc">Description</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($recentLogs as $log)
+                                <tr>
+                                    <td style="width:20px; padding-left:10px;">
+                                        <span class="severity-dot {{ $log->severity }}"></span>
+                                    </td>
+                                    <td class="user-cell">{{ $log->user_name ?? '—' }}</td>
+                                    <td>
+                                        <span class="action-badge cat-{{ $log->category }}">
+                                            {{ str_replace('_', ' ', $log->action) }}
+                                        </span>
+                                    </td>
+                                    <td class="desc-cell" title="{{ $log->description }}">
+                                        {{ $log->description ?? '—' }}
+                                    </td>
+                                    <td class="time-ago">
+                                        {{ $log->created_at->diffForHumans() }}
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <a href="{{ route('auditor.audit.trail') }}" class="view-all-link">
+                            View all audit logs →
+                        </a>
+                    @endif
+                </div>
+
+                {{-- RIGHT: Quick Links + Status --}}
+                <div class="content-panel">
+                    <div class="panel-title">Quick Access</div>
+
+                    <a href="{{ route('auditor.households.index') }}?filter=pending" class="quick-link-item">
+                        <div class="quick-link-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                                <path d="M9 22V12h6v10"/>
+                            </svg>
+                        </div>
+                        Pending Households
+                        <span style="margin-left:auto; background:var(--orange-pale); color:var(--orange); border:1px solid var(--orange-border); border-radius:10px; font-size:10px; font-weight:700; padding:2px 8px;">
+                            {{ $pendingHouseholds }}
+                        </span>
+                    </a>
+
+                    <a href="{{ route('auditor.households.index') }}?filter=approved" class="quick-link-item">
+                        <div class="quick-link-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        Approved Households
+                        <span style="margin-left:auto; background:var(--green-pale); color:var(--green); border:1px solid var(--green-border); border-radius:10px; font-size:10px; font-weight:700; padding:2px 8px;">
+                            {{ $approvedHouseholds }}
+                        </span>
+                    </a>
+
+                    <a href="{{ route('auditor.distribution.logs') }}" class="quick-link-item">
+                        <div class="quick-link-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                                <rect x="9" y="3" width="6" height="4" rx="1"/>
+                                <line x1="9" y1="12" x2="15" y2="12"/>
+                            </svg>
+                        </div>
+                        Distribution Logs
+                        <svg class="quick-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </a>
+
+                    <hr class="ql-divider">
+
+                    <a href="{{ route('auditor.audit.trail') }}?severity=high" class="quick-link-item">
+                        <div class="quick-link-icon" style="background:var(--red-pale);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--red)">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </div>
+                        <span style="color:var(--red)">High-Severity Logs</span>
+                        <span style="margin-left:auto; background:var(--red-pale); color:var(--red); border:1px solid var(--red-border); border-radius:10px; font-size:10px; font-weight:700; padding:2px 8px;">
+                            {{ $highSeverityLogs }}
+                        </span>
+                    </a>
+
+                    <a href="{{ route('auditor.audit.trail') }}" class="quick-link-item">
+                        <div class="quick-link-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+                            </svg>
+                        </div>
+                        All Audit Logs
+                        <svg class="quick-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </a>
+
+                </div>
+
+            </div>
+            {{-- ── END TWO-COLUMN BODY ── --}}
+
         </div>
+        {{-- ═══ END CONTENT AREA ═══ --}}
 
     </main>
 

@@ -236,40 +236,33 @@
             padding: 12px 20px; border-bottom: 1px solid var(--gray-100);
             background: var(--white); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
         }
-        .search-form { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
-        .search-input-wrap { position: relative; flex: 1; }
-        .search-input-wrap svg {
-            position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
-            width: 14px; height: 14px; color: var(--gray-400); pointer-events: none;
-        }
-        .search-input {
-            width: 100%; padding: 8px 12px 8px 32px;
-            font-family: 'Open Sans', sans-serif; font-size: 13px; color: var(--gray-800);
-            border: 1px solid var(--gray-200); border-radius: 3px;
-            background: var(--gray-50); outline: none;
-            transition: border-color 0.15s, background 0.15s;
-        }
-        .search-input:focus { border-color: var(--blue-light); background: var(--white); box-shadow: 0 0 0 3px rgba(36,89,168,0.08); }
-        .search-input::placeholder { color: var(--gray-400); }
-        .btn-search {
-            display: inline-flex; align-items: center; gap: 5px; padding: 8px 14px;
-            background: var(--blue); color: var(--white); font-family: 'Open Sans', sans-serif;
-            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
-            border: none; border-radius: 3px; cursor: pointer; transition: background 0.15s; white-space: nowrap;
-        }
-        .btn-search:hover { background: var(--blue-dark); }
-        .btn-search svg { width: 12px; height: 12px; }
-        .btn-clear-search {
-            display: inline-flex; align-items: center; gap: 5px; padding: 8px 12px;
-            background: var(--white); color: var(--gray-600); font-family: 'Open Sans', sans-serif;
-            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
-            border: 1px solid var(--gray-200); border-radius: 3px; text-decoration: none;
-            transition: background 0.15s, color 0.15s; white-space: nowrap;
-        }
-        .btn-clear-search:hover { background: var(--gray-100); color: var(--red); border-color: var(--red); }
-        .btn-clear-search svg { width: 11px; height: 11px; }
 
-        /* ─── FILTER PANEL TOGGLE ─── */
+        /* Scope combo */
+        .search-combo { display: flex; align-items: stretch; border: 1px solid var(--gray-200); border-radius: 3px; overflow: hidden; background: var(--gray-50); transition: border-color 0.15s, box-shadow 0.15s; flex: 1; min-width: 260px; }
+        .search-combo:focus-within { border-color: var(--blue-light); box-shadow: 0 0 0 3px rgba(36,89,168,0.08); background: var(--white); }
+        .search-combo .scope-sel { border: none !important; border-right: 1px solid var(--gray-200) !important; background: var(--gray-100) !important; padding: 8px 22px 8px 10px !important; font-size: 11px !important; font-weight: 700 !important; color: var(--gray-600) !important; font-family: 'Open Sans', sans-serif !important; outline: none !important; appearance: none !important; -webkit-appearance: none !important; cursor: pointer; flex-shrink: 0; min-width: 100px; width: auto !important; box-shadow: none !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239AA3B0' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important; background-position: right 6px center !important; }
+        .search-combo .scope-sel:hover { background-color: var(--blue-pale) !important; color: var(--blue) !important; }
+        .search-combo .srch-input { border: none !important; background: transparent !important; padding: 8px 10px !important; font-size: 13px !important; color: var(--gray-800) !important; font-family: 'Open Sans', sans-serif !important; outline: none !important; flex: 1; min-width: 0; width: auto !important; box-shadow: none !important; }
+        .search-combo .srch-input::placeholder { color: var(--gray-400); }
+        .search-combo .srch-clear { display: none; align-items: center; justify-content: center; padding: 0 10px; border: none !important; background: transparent !important; color: var(--gray-400); cursor: pointer; font-size: 18px; line-height: 1; width: auto !important; transition: color 0.12s; }
+        .search-combo .srch-clear:hover { color: var(--red) !important; }
+        .search-combo.has-value .srch-clear { display: flex; }
+
+        /* Highlight */
+        mark.hl { background: #FFF176; color: inherit; border-radius: 2px; padding: 0 1px; font-style: normal; }
+
+        /* Active filter tags */
+        .active-filters-row { padding: 7px 20px 10px; background: var(--white); border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .active-filters-row.hidden { display: none; }
+        .filter-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; background: var(--blue-pale); border: 1px solid #C7D9F5; border-radius: 10px; font-size: 11px; color: var(--blue); font-weight: 600; }
+        .filter-tag a { color: var(--blue); text-decoration: none; margin-left: 2px; opacity: 0.6; font-weight: 700; }
+        .filter-tag a:hover { opacity: 1; }
+        .clear-all-link { font-size: 11px; color: var(--red); text-decoration: none; font-weight: 600; margin-left: 4px; }
+        .clear-all-link:hover { text-decoration: underline; }
+
+        /* Filter toggle button */
         .btn-filter-toggle {
             display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px;
             background: var(--white); color: var(--blue); font-family: 'Open Sans', sans-serif;
@@ -280,23 +273,7 @@
         .btn-filter-toggle:hover, .btn-filter-toggle.active { background: var(--blue); color: var(--white); }
         .btn-filter-toggle svg { width: 13px; height: 13px; }
         .filter-active-pills { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-        .filter-pill {
-            display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px;
-            background: var(--blue-pale); color: var(--blue);
-            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
-            border: 1px solid #C7D9F3; border-radius: 10px;
-        }
-        .btn-reset-filter {
-            display: inline-flex; align-items: center; gap: 5px; padding: 7px 12px;
-            background: var(--white); color: var(--gray-600); font-family: 'Open Sans', sans-serif;
-            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
-            border: 1px solid var(--gray-200); border-radius: 3px; text-decoration: none;
-            transition: background 0.15s, color 0.15s;
-        }
-        .btn-reset-filter:hover { background: #FEF2F2; color: var(--red); border-color: var(--red); }
-        .btn-reset-filter svg { width: 11px; height: 11px; }
-        .search-result-info { font-size: 11px; color: var(--gray-400); margin-top: 6px; width: 100%; }
-        .search-result-info strong { color: var(--blue); }
+        .filter-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; background: var(--blue-pale); color: var(--blue); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; border: 1px solid #C7D9F3; border-radius: 10px; }
 
         /* ─── FILTER PANEL ─── */
         .filter-panel {
@@ -822,67 +799,61 @@
             {{-- Search + Filter bar --}}
             @php
                 $hasFilters = request()->hasAny(['event_id', 'date_from', 'date_to']);
+                $activeFilters = array_filter([
+                    'search'   => request('search'),
+                    'event'    => request('event_id') ? 'Event #'.request('event_id') : null,
+                    'date_from'=> request('date_from'),
+                    'date_to'  => request('date_to'),
+                ]);
             @endphp
-            <div class="search-bar-wrap">
-                <form method="GET" action="{{ route('staff.scan.history') }}" class="search-form">
-                    <div class="search-input-wrap">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                        </svg>
-                        <input
-                            type="text" name="search" class="search-input"
-                            placeholder="Search by household name or serial code…"
+
+            <form method="GET" action="{{ route('staff.scan.history') }}" id="searchForm">
+                <input type="hidden" name="scope" id="scopeHidden" value="{{ request('scope','all') }}">
+                @foreach(['event_id','date_from','date_to'] as $fp)
+                    @if(request($fp))<input type="hidden" name="{{ $fp }}" value="{{ request($fp) }}">@endif
+                @endforeach
+
+                <div class="search-bar-wrap">
+                    {{-- Scope combo --}}
+                    <div class="search-combo" id="searchCombo">
+                        <select class="scope-sel" id="scopeSelect" onchange="updateScope(this.value)">
+                            <option value="all"    {{ request('scope','all')==='all'    ? 'selected':'' }}>All Fields</option>
+                            <option value="name"   {{ request('scope')==='name'   ? 'selected':'' }}>Household Name</option>
+                            <option value="serial" {{ request('scope')==='serial' ? 'selected':'' }}>Serial Code</option>
+                            <option value="event"  {{ request('scope')==='event'  ? 'selected':'' }}>Event Name</option>
+                        </select>
+                        <input type="text" name="search" class="srch-input" id="searchInput"
+                            placeholder="Search scan history..."
                             value="{{ request('search') }}" autocomplete="off"
-                        >
+                            oninput="onSearchType(this)"
+                            onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('searchForm').submit();}">
+                        <button type="button" class="srch-clear" onclick="clearSearch()" title="Clear">×</button>
                     </div>
-                    <button type="submit" class="btn-search">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+
+                    {{-- Filter toggle --}}
+                    <button class="btn-filter-toggle {{ $hasFilters ? 'active' : '' }}" id="filterToggleBtn" onclick="toggleFilter()" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
                         </svg>
-                        Search
+                        Filters
+                        @if($hasFilters)<span style="background:#fff;color:var(--blue);border-radius:10px;font-size:10px;padding:1px 6px;margin-left:2px;">{{ count(array_filter([request('event_id'), request('date_from'), request('date_to')])) }}</span>@endif
                     </button>
-                    @if(request('search'))
-                        <a href="{{ route('staff.scan.history') }}" class="btn-clear-search">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                            </svg>
-                            Clear
-                        </a>
-                    @endif
-                </form>
+                </div>
+            </form>
 
-                <button class="btn-filter-toggle {{ $hasFilters ? 'active' : '' }}" id="filterToggleBtn" onclick="toggleFilter()" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
-                    </svg>
-                    Filters{{ $hasFilters ? ' (Active)' : '' }}
-                </button>
-
-                @if($hasFilters)
-                    <div class="filter-active-pills">
-                        @if(request('event_id'))
-                            <span class="filter-pill">Event filtered</span>
-                        @endif
-                        @if(request('date_from') || request('date_to'))
-                            <span class="filter-pill">
-                                {{ request('date_from') ?: '…' }} → {{ request('date_to') ?: '…' }}
-                            </span>
-                        @endif
-                        <a href="{{ route('staff.scan.history', array_filter(['search' => request('search')])) }}" class="btn-reset-filter">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                            </svg>
-                            Reset
-                        </a>
-                    </div>
-                @endif
-
-                @if(request('search'))
-                    <div class="search-result-info">
-                        Showing results for <strong>"{{ request('search') }}"</strong> — {{ $logs->total() }} record(s) found
-                    </div>
-                @endif
+            {{-- Active filter tags --}}
+            @if(count($activeFilters))
+            <div class="active-filters-row">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9AA3B0" stroke-width="2.5" style="flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                @foreach($activeFilters as $key => $val)
+                    <span class="filter-tag">
+                        {{ ucfirst(str_replace('_',' ',$key)) }}: {{ $val }}
+                        <a href="{{ request()->fullUrlWithQuery([$key === 'event' ? 'event_id' : $key => null]) }}">×</a>
+                    </span>
+                @endforeach
+                <a href="{{ route('staff.scan.history') }}" class="clear-all-link">Clear all</a>
             </div>
+            @endif
 
             {{-- Filter panel --}}
             <div class="filter-panel {{ $hasFilters ? 'open' : '' }}" id="filterPanel">
@@ -973,7 +944,7 @@
                                     {{ $logs->firstItem() + $loop->index }}
                                 </td>
                                 <td class="td-household">
-                                    <strong>{{ $log->household->household_head_name ?? '—' }}</strong>
+                                    <strong class="hl-name">{{ $log->household->household_head_name ?? '—' }}</strong>
                                     <small>
                                         {{ $barangayStr }}
                                         @if($log->household)
@@ -982,11 +953,11 @@
                                     </small>
                                 </td>
                                 <td>
-                                    <span class="serial-code">{{ $log->serial_code }}</span>
+                                    <span class="serial-code hl-serial">{{ $log->serial_code }}</span>
                                 </td>
                                 <td>
                                     <div class="event-name">
-                                        {{ $log->event->event_name ?? '—' }}
+                                        <span class="hl-event">{{ $log->event->event_name ?? '—' }}</span>
                                         @if($log->event && $log->event->event_date ?? null)
                                             <small>{{ \Carbon\Carbon::parse($log->event->event_date)->format('M d, Y') }}</small>
                                         @endif
@@ -1097,6 +1068,70 @@
 </div>
 
 <script>
+    /* ── Search scope ── */
+    const SEARCH_PH = {
+        all:    'Search by household name or serial code…',
+        name:   'Search by household name…',
+        serial: 'Search by serial code…',
+        event:  'Search by event name…',
+    };
+    function updateScope(val) {
+        document.getElementById('scopeHidden').value = val;
+        const inp = document.getElementById('searchInput');
+        if (inp) inp.placeholder = SEARCH_PH[val] || 'Search…';
+    }
+
+    /* typing: highlight + clear btn only — submit on Enter */
+    function onSearchType(input) {
+        const combo = document.getElementById('searchCombo');
+        if (combo) combo.classList.toggle('has-value', input.value.length > 0);
+        applyHighlight(input.value, document.getElementById('scopeSelect').value);
+    }
+    function clearSearch() {
+        const inp = document.getElementById('searchInput');
+        if (!inp) return;
+        inp.value = '';
+        document.getElementById('searchCombo').classList.remove('has-value');
+        removeHighlight();
+        document.getElementById('searchForm').submit();
+    }
+
+    /* ── Live highlight ── */
+    const HL_SCOPE = {
+        all:    ['hl-name','hl-serial','hl-event'],
+        name:   ['hl-name'],
+        serial: ['hl-serial'],
+        event:  ['hl-event'],
+    };
+    function _re(s) { return s.replace(/[-[\]{}()*+?.,\^$|#\s]/g, '\$&'); }
+    function applyHighlight(term, scope) {
+        removeHighlight();
+        if (!term) return;
+        const re = new RegExp('(' + _re(term) + ')', 'gi');
+        (HL_SCOPE[scope] || HL_SCOPE.all).forEach(cls => {
+            document.querySelectorAll('.' + cls).forEach(el => {
+                el.innerHTML = el.textContent.replace(re, '<mark class="hl">$1</mark>');
+            });
+        });
+    }
+    function removeHighlight() {
+        document.querySelectorAll('mark.hl').forEach(m => {
+            m.parentNode.replaceChild(document.createTextNode(m.textContent), m);
+            m.parentNode.normalize();
+        });
+    }
+
+    /* Init on load */
+    (function() {
+        const inp   = document.getElementById('searchInput');
+        const scope = document.getElementById('scopeSelect');
+        if (inp && inp.value) {
+            document.getElementById('searchCombo').classList.add('has-value');
+            applyHighlight(inp.value, scope ? scope.value : 'all');
+        }
+        if (scope) updateScope(scope.value);
+    })();
+
     function pad(n){ return String(n).padStart(2,'0'); }
     function updateClock() {
         const now = new Date();

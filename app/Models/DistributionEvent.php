@@ -14,6 +14,7 @@ class DistributionEvent extends Model
         'relief_type',
         'relief_items',
         'target_barangay',
+        'scan_mode',                // ← ADDED — was missing, caused silent save failure
         'event_date',
         'description',
         'status',
@@ -30,31 +31,22 @@ class DistributionEvent extends Model
 
     protected $casts = [
         'event_date'       => 'date',
-        'relief_items'     => 'array',   // JSON array of {key, name, qty}
-        'target_barangay'  => 'array',   // JSON array — DB has a CHECK constraint requiring valid JSON
+        'relief_items'     => 'array',
+        'target_barangay'  => 'array',
         'started_at'       => 'datetime',
         'ended_at'         => 'datetime',
         'cancelled_at'     => 'datetime',
         'distribution_lat' => 'float',
         'distribution_lng' => 'float',
-        // relief_type is a plain comma-separated string — no cast needed
     ];
 
     // ─── Display Accessors ────────────────────────────────────────────────────
 
-    /**
-     * relief_type is stored as a plain comma-separated string.
-     * e.g. "Food Pack, Hygiene Kit"
-     */
     public function getReliefTypeDisplayAttribute(): string
     {
         return $this->relief_type ?? '—';
     }
 
-    /**
-     * target_barangay is stored as a plain comma-separated string.
-     * e.g. "Sabang, Molino, Halang"
-     */
     public function getTargetBarangayDisplayAttribute(): string
     {
         $val = $this->target_barangay;
@@ -62,13 +54,9 @@ class DistributionEvent extends Model
         return is_array($val) ? implode(', ', $val) : $val;
     }
 
-    /**
-     * relief_items is stored as JSON array of objects: [{key, name, qty}, ...]
-     * Returns a readable string like "5 kg Rice, 2 cans Canned Goods"
-     */
     public function getReliefItemsDisplayAttribute(): string
     {
-        $items = $this->relief_items; // already decoded by cast
+        $items = $this->relief_items;
         if (empty($items)) return '—';
 
         return collect($items)->map(function ($item) {
@@ -76,6 +64,17 @@ class DistributionEvent extends Model
             $name = $item['name'] ?? $item['key'] ?? '?';
             return $qty ? "{$qty} {$name}" : $name;
         })->implode(', ');
+    }
+
+    /**
+     * Human-readable scan mode label
+     */
+    public function getScanModeLabelAttribute(): string
+    {
+        return match($this->scan_mode ?? 'household') {
+            'family_head' => 'Per Family Head',
+            default       => 'Per Household',
+        };
     }
 
     // ─── Relationships ────────────────────────────────────────────────────────
@@ -88,6 +87,11 @@ class DistributionEvent extends Model
     public function logs()
     {
         return $this->hasMany(DistributionLog::class, 'event_id');
+    }
+
+    public function scanAttempts()
+    {
+        return $this->hasMany(ScanAttempt::class, 'event_id');
     }
 
     // ─── Scopes ───────────────────────────────────────────────────────────────

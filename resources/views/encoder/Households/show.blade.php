@@ -370,26 +370,24 @@
         </div>
         @endif
 
+        {{-- ── Section 1A: Household Head & Contact ── --}}
         <div class="card">
             <div class="card-header">
                 <div class="card-dot"></div>
-                <div class="card-title">Household Head Information</div>
+                <div class="card-title">Section 1A — Location &amp; Contact</div>
+                <span style="margin-left:auto;font-size:10px;font-weight:700;background:var(--blue-pale);color:var(--blue);padding:3px 10px;border-radius:10px;">
+                    @if($household->serial_code)
+                        {{ $household->serial_code }}
+                    @else
+                        No Serial Yet
+                    @endif
+                </span>
             </div>
             <div class="card-body">
                 <div class="field-grid" style="margin-bottom:16px;">
-                    <div class="field">
-                        <label>Serial Code</label>
-                        <div class="field-val">
-                            @if($household->serial_code)
-                                <span class="serial-chip">{{ $household->serial_code }}</span>
-                            @else
-                                <span class="empty">Not yet assigned</span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>Full Name</label>
-                        <div class="field-val">{{ $household->household_head_name }}</div>
+                    <div class="field" style="grid-column:span 2;">
+                        <label>Household Head Full Name</label>
+                        <div class="field-val" style="font-size:15px;font-weight:700;color:var(--blue-dark);">{{ $household->household_head_name }}</div>
                     </div>
                     <div class="field">
                         <label>Status</label>
@@ -401,52 +399,29 @@
                             @endif
                         </div>
                     </div>
-                </div>
-                <div class="field-grid">
-                    <div class="field">
-                        <label>Sex</label>
-                        <div class="field-val">{{ $household->sex }}</div>
-                    </div>
-                    <div class="field">
-                        <label>Birthday</label>
-                        <div class="field-val">
-                            {{ $household->birthday ? \Carbon\Carbon::parse($household->birthday)->format('F d, Y') : '—' }}
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>Civil Status</label>
-                        <div class="field-val">{{ ucfirst($household->civil_status) }}</div>
-                    </div>
                     <div class="field">
                         <label>Contact Number</label>
                         <div class="field-val">{{ $household->contact_number ?? '—' }}</div>
                     </div>
                     <div class="field">
+                        <label>Email Address</label>
+                        <div class="field-val">{{ $household->email ?? '—' }}</div>
+                    </div>
+                    <div class="field">
                         <label>Listahanan ID</label>
                         <div class="field-val mono">{{ $household->listahanan_id ?? '—' }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div class="card-dot"></div>
-                <div class="card-title">Address</div>
-            </div>
-            <div class="card-body">
-                <div class="field-grid">
-                    <div class="field">
-                        <label>House No.</label>
-                        <div class="field-val">{{ $household->house_number ?? '—' }}</div>
-                    </div>
-                    <div class="field">
-                        <label>Street / Purok</label>
-                        <div class="field-val">{{ $household->street_purok ?? '—' }}</div>
                     </div>
                     <div class="field">
                         <label>Barangay</label>
                         <div class="field-val">{{ $household->barangay }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Barangay Area / Purok / Zoning</label>
+                        <div class="field-val">{{ $household->barangay_area ?? '—' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Location / Street / Sitio</label>
+                        <div class="field-val">{{ $household->location ?? '—' }}</div>
                     </div>
                     <div class="field">
                         <label>Municipality</label>
@@ -456,82 +431,240 @@
                         <label>Province</label>
                         <div class="field-val">{{ $household->province }}</div>
                     </div>
+                    <div class="field">
+                        <label>Coordinates</label>
+                        <div class="field-val mono" style="font-size:11px;">
+                            @if($household->latitude && $household->longitude)
+                                {{ $household->latitude }}, {{ $household->longitude }}
+                            @else
+                                <span class="empty">—</span>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
+        {{-- ── Section 1B: Housing Unit ── --}}
         <div class="card">
             <div class="card-header">
                 <div class="card-dot"></div>
-                <div class="card-title">Beneficiary Classification</div>
+                <div class="card-title">Section 1B — Housing Unit</div>
             </div>
             <div class="card-body">
-                @if($household->is_4ps_beneficiary || $household->is_pwd || $household->is_senior || $household->is_solo_parent)
-                    @if($household->is_4ps_beneficiary) <span class="badge badge-4ps">4Ps Beneficiary</span> @endif
-                    @if($household->is_pwd)             <span class="badge badge-pwd">Person with Disability (PWD)</span> @endif
-                    @if($household->is_senior)          <span class="badge badge-senior">Senior Citizen</span> @endif
-                    @if($household->is_solo_parent)     <span class="badge badge-solo">Solo Parent</span> @endif
-                @else
-                    <span class="badge badge-none">No beneficiary tags</span>
-                @endif
+                <div class="field-grid">
+                    <div class="field">
+                        <label>Year Built</label>
+                        <div class="field-val">{{ $household->year_built ?? '—' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Type of Housing Unit</label>
+                        <div class="field-val">{{ $household->housing_type ?? '—' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Housing Material</label>
+                        <div class="field-val">{{ $household->housing_material ?? '—' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Type of Ownership</label>
+                        <div class="field-val">{{ $household->ownership_type ?? '—' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Electricity Source</label>
+                        <div class="field-val">{{ $household->electricity_source ?? '—' }}</div>
+                    </div>
+                </div>
             </div>
         </div>
 
+        {{-- ── Section 1C: Utilities & Sanitation ── --}}
         <div class="card">
             <div class="card-header">
                 <div class="card-dot"></div>
-                <div class="card-title">Family Members</div>
+                <div class="card-title">Section 1C — Utilities &amp; Sanitation</div>
+            </div>
+            <div class="card-body">
+                <div class="field-grid">
+                    <div class="field">
+                        <label>Source of Water</label>
+                        <div class="field-val">{{ $household->water_source ?? '—' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Toilet Access</label>
+                        <div class="field-val">{{ $household->toilet_access ?? '—' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Waste Disposal</label>
+                        <div class="field-val">{{ $household->waste_disposal ?? '—' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ── Individual Section: Nuclear Families & Members ── --}}
+        <div class="card">
+            <div class="card-header">
+                <div class="card-dot"></div>
+                <div class="card-title">Individual Section — Household Members</div>
                 <span style="margin-left:auto;background:var(--blue-pale);color:var(--blue);font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;border:1px solid #C5D9F5;">
+                    {{ $household->nuclearFamilies->count() }} {{ Str::plural('Nuclear Family', $household->nuclearFamilies->count()) }}
+                    &nbsp;·&nbsp;
                     {{ $household->members->count() }} {{ Str::plural('Member', $household->members->count()) }}
                 </span>
             </div>
-            @if($household->members->count() > 0)
-            <div class="table-scroll">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Full Name</th>
-                            <th>Relationship</th>
-                            <th>Sex</th>
-                            <th>Birthday</th>
-                            <th>Tags</th>
-                            <th>Occupation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($household->members as $i => $member)
-                        <tr>
-                            <td style="color:var(--gray-400);font-size:12px;">{{ $i + 1 }}</td>
-                            <td><span class="member-name">{{ $member->full_name }}</span></td>
-                            <td style="font-size:12px;">{{ $member->relationship }}</td>
-                            <td style="font-size:12px;">{{ $member->sex }}</td>
-                            <td style="font-size:12px;">
-                                {{ $member->birthday ? \Carbon\Carbon::parse($member->birthday)->format('M d, Y') : '—' }}
-                            </td>
-                            <td>
-                                @if($member->is_pwd)    <span class="badge badge-pwd">PWD</span> @endif
-                                @if($member->is_student)<span class="badge badge-senior">Student</span> @endif
-                                @if(!$member->is_pwd && !$member->is_student) <span style="font-size:11px;color:var(--gray-400);">—</span> @endif
-                            </td>
-                            <td style="font-size:12px;color:var(--gray-600);">{{ $member->occupation ?? '—' }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="card-body" style="padding:16px;">
+                @forelse($household->nuclearFamilies as $nfIdx => $nf)
+                <div style="border:1px solid var(--gray-200);border-radius:6px;margin-bottom:14px;overflow:hidden;">
+                    {{-- NF Header --}}
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:linear-gradient(135deg,#f0f5ff,#e8f0fa);border-bottom:1px solid var(--gray-200);">
+                        <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--blue);color:#fff;font-size:11px;font-weight:700;border-radius:50%;">{{ $nfIdx + 1 }}</span>
+                        <strong style="font-size:13px;color:var(--blue-dark);">
+                            Nuclear Family — {{ $nf->family_name ?: 'Unnamed' }}
+                        </strong>
+                        @if($nf->is_primary)
+                            <span style="font-size:9px;font-weight:700;background:var(--yellow);color:var(--blue-dark);padding:2px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:.5px;">Primary</span>
+                        @endif
+                        <span style="margin-left:auto;font-size:11px;color:var(--gray-400);">
+                            Type: <strong style="color:var(--gray-600);">{{ $nf->family_type ?? '—' }}</strong>
+                            &nbsp;·&nbsp; Head: <strong style="color:var(--gray-600);">{{ $nf->family_head ?? '—' }}</strong>
+                        </span>
+                    </div>
+                    {{-- Members table --}}
+                    @if($nf->members->count() > 0)
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Full Name</th>
+                                    <th>Relationship</th>
+                                    <th>Sex</th>
+                                    <th>Birthday / Age</th>
+                                    <th>Civil Status</th>
+                                    <th>Education</th>
+                                    <th>Employment</th>
+                                    <th>Vulnerable Sector</th>
+                                    <th>Tags</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($nf->members as $i => $member)
+                                <tr>
+                                    <td style="color:var(--gray-400);font-size:12px;white-space:nowrap;">
+                                        {{ $i + 1 }}
+                                        @if($member->is_family_head)
+                                            <span style="display:inline-block;background:var(--blue);color:#fff;font-size:8px;font-weight:700;padding:1px 5px;border-radius:8px;margin-left:2px;">HEAD</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <span class="member-name">{{ $member->full_name }}</span>
+                                        @if($member->qr_code_path)
+                                            <span style="display:inline-block;background:var(--green-pale);color:var(--green);font-size:8px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px;">QR</span>
+                                        @endif
+                                    </td>
+                                    <td style="font-size:12px;">{{ $member->relationship }}</td>
+                                    <td style="font-size:12px;">{{ $member->sex ?? '—' }}</td>
+                                    <td style="font-size:12px;white-space:nowrap;">
+                                        {{ $member->birthday ? \Carbon\Carbon::parse($member->birthday)->format('M d, Y') : '—' }}
+                                        @if($member->birthday)
+                                            <small style="display:block;color:var(--gray-400);font-size:10px;">Age {{ \Carbon\Carbon::parse($member->birthday)->age }}</small>
+                                        @endif
+                                    </td>
+                                    <td style="font-size:12px;">{{ $member->civil_status ?? '—' }}</td>
+                                    <td style="font-size:11px;color:var(--gray-600);">{{ $member->educational_attainment ?? '—' }}</td>
+                                    <td style="font-size:11px;color:var(--gray-600);">
+                                        {{ $member->detail?->employment_status ?? '—' }}
+                                        @if($member->detail?->job_title)
+                                            <small style="display:block;color:var(--gray-400);font-size:10px;">{{ $member->detail->job_title }}</small>
+                                        @endif
+                                    </td>
+                                    <td style="font-size:11px;">{{ $member->detail?->vulnerable_sector ?? '—' }}</td>
+                                    <td style="white-space:nowrap;">
+                                        @if($member->is_pwd)     <span class="badge badge-pwd">PWD</span> @endif
+                                        @if($member->is_student) <span class="badge" style="background:#EFF6FF;color:#1D4ED8;font-size:9px;">Student</span> @endif
+                                        @if($member->detail?->is_lgbtqia) <span class="badge" style="background:#FDF4FF;color:#7E22CE;font-size:9px;">LGBTQIA+</span> @endif
+                                        @if(!$member->is_pwd && !$member->is_student && !$member->detail?->is_lgbtqia)
+                                            <span style="font-size:11px;color:var(--gray-400);">—</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @else
+                        <div class="empty-members">No members in this nuclear family.</div>
+                    @endif
+                </div>
+                @empty
+                    <div class="empty-members">No nuclear families recorded.</div>
+                @endforelse
             </div>
-            @else
-            <div class="empty-members">No family members recorded for this household.</div>
-            @endif
+        </div>
 
-            <div class="meta-row">
-                <span>Encoded by: <strong>{{ $household->encoder->name ?? 'Unknown' }}</strong></span>
-                <span>Date encoded: <strong>{{ $household->created_at ? $household->created_at->format('F d, Y') : '—' }}</strong></span>
-                <span>Last updated: <strong>{{ $household->updated_at ? $household->updated_at->format('F d, Y') : '—' }}</strong></span>
-                @if($household->approved_by)
-                    <span>Approved by: <strong>{{ $household->approver->name ?? 'Admin' }}</strong></span>
-                @endif
+        {{-- ── Section 3: Risk & Economic Profile ── --}}
+        @if($household->riskProfile)
+        <div class="card">
+            <div class="card-header">
+                <div class="card-dot"></div>
+                <div class="card-title">Continuation — Household Risk &amp; Economic Profile</div>
             </div>
+            <div class="card-body">
+                @php $rp = $household->riskProfile; @endphp
+                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-600);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--blue-pale);">Section 3A — Disaster Awareness &amp; Access</div>
+                <div class="field-grid" style="margin-bottom:20px;">
+                    <div class="field">
+                        <label>Access to Early Warning System</label>
+                        <div class="field-val">{{ $rp->early_warning ? 'Yes' : 'No' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>EWS Sources</label>
+                        <div class="field-val">{{ $rp->ews_sources ? implode(', ', array_map('strtoupper', explode(',', $rp->ews_sources))) : '—' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Hazard Awareness</label>
+                        <div class="field-val">{{ $rp->hazard_awareness ? 'Yes' : 'No' }}</div>
+                    </div>
+                </div>
+                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-600);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--blue-pale);">Section 3B — Economic &amp; Social Profile</div>
+                <div class="field-grid">
+                    <div class="field">
+                        <label>Average Monthly Income</label>
+                        <div class="field-val">{{ $rp->income_average ? '₱ ' . number_format($rp->income_average, 2) : '—' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Literacy Rate</label>
+                        <div class="field-val">{{ $rp->literacy_rate !== null ? $rp->literacy_rate . '%' : '—' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Access to Financial Assistance</label>
+                        <div class="field-val">{{ $rp->financial_assistance ? 'Yes' : 'No' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Access to Information</label>
+                        <div class="field-val">{{ $rp->access_info ? 'Yes' : 'No' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Willingness to Relocate / Retrofit</label>
+                        <div class="field-val">{{ $rp->relocate_willingness ? 'Yes' : 'No' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>Remarks</label>
+                        <div class="field-val">{{ $rp->remarks ?? '—' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- ── Meta footer ── --}}
+        <div class="meta-row">
+            <span>Encoded by: <strong>{{ $household->encoder->name ?? 'Unknown' }}</strong></span>
+            <span>Date encoded: <strong>{{ $household->created_at ? $household->created_at->format('F d, Y') : '—' }}</strong></span>
+            <span>Last updated: <strong>{{ $household->updated_at ? $household->updated_at->format('F d, Y') : '—' }}</strong></span>
+            @if($household->approved_by)
+                <span>Approved by: <strong>{{ $household->approver->name ?? 'Admin' }}</strong></span>
+            @endif
         </div>
 
     </main>

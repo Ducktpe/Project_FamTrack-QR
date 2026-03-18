@@ -133,28 +133,53 @@
         .summary-sub { font-size: 11px; color: var(--gray-400); margin-top: 3px; }
 
         /* --- FILTER BOX --- */
-        .filter-box { background: var(--white); border: 1px solid var(--gray-200); padding: 16px 20px; margin-bottom: 16px; }
-        .filter-box-header { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 12px; }
-        .filters { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto auto; gap: 10px; align-items: end; }
+        .filter-box { background: var(--white); border: 1px solid var(--gray-200); margin-bottom: 16px; overflow: hidden; }
+        .filter-box-header { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); padding: 10px 20px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+        .filter-box-header .ftb-count { background: var(--blue); color: #fff; border-radius: 10px; font-size: 10px; padding: 1px 7px; display: none; margin-left: 4px; }
+        .filter-box-header .ftb-count.show { display: inline; }
+        .filter-box-body { padding: 14px 20px; display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
         .filter-group { display: flex; flex-direction: column; gap: 4px; }
         .filter-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); }
-        .filter-box input[type="text"],
+
+        /* Search scope combo — scoped carefully so it doesn't bleed into other selects */
+        .search-combo { display: flex; align-items: stretch; border: 1px solid var(--gray-200); border-radius: 3px; overflow: hidden; background: var(--gray-50); transition: border-color 0.15s, box-shadow 0.15s; flex: 1; min-width: 280px; }
+        .search-combo:focus-within { border-color: var(--blue-light); box-shadow: 0 0 0 3px rgba(36,89,168,0.1); background: var(--white); }
+        .search-combo .scope-sel { border: none !important; border-right: 1px solid var(--gray-200) !important; background: var(--gray-100) !important; padding: 8px 22px 8px 10px !important; font-size: 11px !important; font-weight: 700 !important; color: var(--gray-600) !important; font-family: 'Open Sans', sans-serif !important; outline: none !important; appearance: none !important; -webkit-appearance: none !important; cursor: pointer; flex-shrink: 0; min-width: 100px; width: auto !important; box-shadow: none !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239AA3B0' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important; background-position: right 6px center !important; }
+        .search-combo .scope-sel:hover { background-color: var(--blue-pale) !important; color: var(--blue) !important; }
+        .search-combo .srch-input { border: none !important; background: transparent !important; padding: 8px 10px !important; font-size: 13px !important; color: var(--gray-800) !important; font-family: 'Open Sans', sans-serif !important; outline: none !important; flex: 1; min-width: 0; width: auto !important; box-shadow: none !important; }
+        .search-combo .srch-input::placeholder { color: var(--gray-400); }
+        .search-combo .srch-clear { display: none; align-items: center; justify-content: center; padding: 0 10px; border: none !important; background: transparent !important; color: var(--gray-400); cursor: pointer; font-size: 18px; line-height: 1; transition: color 0.12s; width: auto !important; }
+        .search-combo .srch-clear:hover { color: var(--red) !important; background: transparent !important; border: none !important; box-shadow: none !important; }
+        .search-combo.has-value .srch-clear { display: flex; }
+
+        /* Shared date/select/text styles for filter row (NOT the combo) */
         .filter-box input[type="date"],
-        .filter-box select,
+        .filter-group select,
         .modal-body input[type="text"],
         .export-filter-group input[type="date"],
         .export-filter-group select {
             width: 100%; padding: 8px 10px; border: 1px solid var(--gray-200); border-radius: 3px;
             font-family: 'Open Sans', sans-serif; font-size: 13px; color: var(--gray-800); background: var(--white); outline: none;
         }
-        .filter-box input:focus, .filter-box select:focus,
+        .filter-box input[type="date"]:focus, .filter-group select:focus,
         .export-filter-group input:focus, .export-filter-group select:focus,
         .modal-body input:focus { border-color: var(--blue-light); box-shadow: 0 0 0 3px rgba(36,89,168,0.1); }
-        .filter-box input::placeholder, .modal-body input::placeholder { color: var(--gray-400); }
-        .btn-filter { padding: 8px 16px; background: var(--blue); color: var(--white); border: none; border-radius: 3px; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: background 0.15s; white-space: nowrap; align-self: end; }
-        .btn-filter:hover { background: var(--blue-dark); }
-        .btn-clear { padding: 8px 14px; background: var(--white); color: var(--gray-600); border: 1px solid var(--gray-200); border-radius: 3px; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap; align-self: end; display: inline-block; text-align: center; transition: background 0.15s; }
-        .btn-clear:hover { background: var(--gray-100); }
+        .modal-body input::placeholder { color: var(--gray-400); }
+
+        /* Highlight */
+        mark.hl { background: #FFF176; color: inherit; border-radius: 2px; padding: 0 1px; font-style: normal; }
+
+        /* Active filter tags */
+        .active-filters { padding: 8px 20px; border-top: 1px solid var(--gray-100); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .filter-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; background: var(--blue-pale); border: 1px solid #C7D9F5; border-radius: 10px; font-size: 11px; color: var(--blue); font-weight: 600; }
+        .filter-tag a { color: var(--blue); text-decoration: none; margin-left: 2px; opacity: 0.6; font-weight: 700; }
+        .filter-tag a:hover { opacity: 1; }
+        .clear-all-link { font-size: 11px; color: var(--red); text-decoration: none; font-weight: 600; margin-left: 4px; }
+        .clear-all-link:hover { text-decoration: underline; }
+
+
 
         /* --- TABLE --- */
         .table-wrap { background: var(--white); border: 1px solid var(--gray-200); overflow: hidden; }
@@ -560,25 +585,68 @@
         </div>
 
         {{-- Filters --}}
+        @php
+            $activeFilters = array_filter([
+                'search'    => request('search'),
+                'date_from' => request('date_from'),
+                'date_to'   => request('date_to'),
+                'status'    => request('status'),
+                'barangay'  => request('barangay'),
+            ]);
+        @endphp
+
         <div class="filter-box">
-            <div class="filter-box-header">Filter Events</div>
-            <form method="GET">
-                <div class="filters">
-                    <div class="filter-group">
+            <div class="filter-box-header">
+                <span style="display:flex;align-items:center;gap:7px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                    Filter Events
+                    <span class="ftb-count {{ count($activeFilters) ? 'show' : '' }}">{{ count($activeFilters) ?: '' }}</span>
+                </span>
+                @if(count($activeFilters))
+                    <a href="{{ route('admin.distribution.logs') }}" class="clear-all-link">Clear all filters</a>
+                @endif
+            </div>
+
+            <form method="GET" id="filterForm">
+                <input type="hidden" name="scope" id="scopeHidden" value="{{ request('scope','all') }}">
+
+                <div class="filter-box-body">
+
+                    {{-- ── Search scope combo ── --}}
+                    <div class="filter-group" style="flex:1;min-width:280px;">
                         <div class="filter-label">Search</div>
-                        <input type="text" name="search" placeholder="Event name, relief type..." value="{{ request('search') }}">
+                        <div class="search-combo" id="searchCombo">
+                            <select class="scope-sel" id="scopeSelect" onchange="updateScope(this.value)">
+                                <option value="all"        {{ request('scope','all')==='all'        ? 'selected':'' }}>All Fields</option>
+                                <option value="event_name" {{ request('scope')==='event_name' ? 'selected':'' }}>Event Name</option>
+                                <option value="relief"     {{ request('scope')==='relief'     ? 'selected':'' }}>Relief Type</option>
+                                <option value="barangay"   {{ request('scope')==='barangay'   ? 'selected':'' }}>Barangay</option>
+                                <option value="status"     {{ request('scope')==='status'     ? 'selected':'' }}>Status</option>
+                                <option value="date"       {{ request('scope')==='date'       ? 'selected':'' }}>Date</option>
+                            </select>
+                            <input type="text" name="search" class="srch-input" id="searchInput"
+                                placeholder="Search distribution events..."
+                                value="{{ request('search') }}"
+                                oninput="onSearchInput(this)"
+                                autocomplete="off">
+                            <button type="button" class="srch-clear" onclick="clearSearch()" title="Clear">×</button>
+                        </div>
                     </div>
+
+                    {{-- ── Date range ── --}}
                     <div class="filter-group">
                         <div class="filter-label">From Date</div>
-                        <input type="date" name="date_from" value="{{ request('date_from') }}">
+                        <input type="date" name="date_from" value="{{ request('date_from') }}" onchange="this.form.submit()">
                     </div>
                     <div class="filter-group">
                         <div class="filter-label">To Date</div>
-                        <input type="date" name="date_to" value="{{ request('date_to') }}">
+                        <input type="date" name="date_to" value="{{ request('date_to') }}" onchange="this.form.submit()">
                     </div>
+
+                    {{-- ── Status ── --}}
                     <div class="filter-group">
                         <div class="filter-label">Status</div>
-                        <select name="status">
+                        <select name="status" onchange="this.form.submit()">
                             <option value="">All Status</option>
                             <option value="upcoming"  {{ request('status')=='upcoming'  ? 'selected':'' }}>Upcoming</option>
                             <option value="ongoing"   {{ request('status')=='ongoing'   ? 'selected':'' }}>Ongoing</option>
@@ -586,18 +654,34 @@
                             <option value="cancelled" {{ request('status')=='cancelled' ? 'selected':'' }}>Cancelled</option>
                         </select>
                     </div>
+
+                    {{-- ── Barangay ── --}}
                     <div class="filter-group">
                         <div class="filter-label">Barangay</div>
-                        <select name="barangay">
+                        <select name="barangay" onchange="this.form.submit()">
                             <option value="">All Barangays</option>
                             @foreach($allBarangays as $brgy)
                                 <option value="{{ $brgy }}" {{ request('barangay')==$brgy ? 'selected':'' }}>{{ $brgy }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <button type="submit" class="btn-filter">Filter</button>
-                    <a href="{{ route('admin.distribution.logs') }}" class="btn-clear">Clear</a>
+
+
                 </div>
+
+                {{-- ── Active filter tags ── --}}
+                @if(count($activeFilters))
+                <div class="active-filters">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9AA3B0" stroke-width="2.5" style="flex-shrink:0"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                    @foreach($activeFilters as $key => $val)
+                        <span class="filter-tag">
+                            {{ ucfirst(str_replace('_',' ',$key)) }}: {{ $val }}
+                            <a href="{{ request()->fullUrlWithQuery([$key => null]) }}">×</a>
+                        </span>
+                    @endforeach
+                    <a href="{{ route('admin.distribution.logs') }}" class="clear-all-link">Clear all</a>
+                </div>
+                @endif
             </form>
         </div>
 
@@ -635,6 +719,7 @@
                                 <th>Barangay</th>
                                 <th>Date</th>
                                 <th>Status</th>
+                                <th>Scan Mode</th>
                                 <th style="text-align:center">Distributed</th>
                                 <th style="text-align:center">Households</th>
                                 <th>Actions</th>
@@ -647,26 +732,13 @@
 
                                     {{-- Event Name + cancellation reason shown inline when cancelled --}}
                                     <td>
-                                        <div style="font-weight:600; color:var(--blue-dark);">{{ $event->event_name }}</div>
+                                        <div style="font-weight:600; color:var(--blue-dark);" class="hl-event">{{ $event->event_name }}</div>
                                         @if($event->description)
                                             <div style="font-size:11px; color:var(--gray-400); margin-top:2px;">{{ Str::limit($event->description, 50) }}</div>
                                         @endif
-                                        @if(strtolower($event->status) === 'cancelled' && $event->cancellation_reason)
-                                            <div class="cancel-reason-inline">
-                                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5">
-                                                    <circle cx="12" cy="12" r="10"/>
-                                                    <line x1="15" y1="9" x2="9" y2="15"/>
-                                                    <line x1="9" y1="9" x2="15" y2="15"/>
-                                                </svg>
-                                                <div>
-                                                    <div class="cancel-reason-label">Cancellation Reason</div>
-                                                    <div class="cancel-reason-text">{{ $event->cancellation_reason }}</div>
-                                                </div>
-                                            </div>
-                                        @endif
                                     </td>
 
-                                    <td style="font-size:12px; color:var(--gray-600);">{{ is_array($event->relief_type) ? implode(', ', $event->relief_type) : ($event->relief_type ?? '-') }}</td>
+                                    <td style="font-size:12px; color:var(--gray-600);" class="hl-relief">{{ is_array($event->relief_type) ? implode(', ', $event->relief_type) : ($event->relief_type ?? '-') }}</td>
                                     <td>
                                         @php
                                             $brgys = is_array($event->target_barangay)
@@ -703,7 +775,20 @@
                                     </td>
                                     <td>
                                         @php $s = strtolower($event->status); @endphp
-                                        <span class="badge badge-{{ $s }}">{{ ucfirst($s) }}</span>
+                                        <span class="badge badge-{{ $s }} hl-status">{{ ucfirst($s) }}</span>
+                                    </td>
+                                    <td>
+                                        @if(($event->scan_mode ?? 'household') === 'family_head')
+                                            <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#F5F3FF;color:#6D28D9;border:1px solid #DDD6FE;">
+                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+                                                Per Family Head
+                                            </span>
+                                        @else
+                                            <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#EAF0FA;color:#1B3F7A;border:1px solid #C7D9F5;">
+                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+                                                Per Household
+                                            </span>
+                                        @endif
                                     </td>
                                     <td style="text-align:center; font-weight:700; color:var(--blue-dark);">
                                         {{ $event->total_distributed ?? 0 }}
@@ -800,6 +885,7 @@
                         'createdAt'           => $event->created_at->setTimezone('Asia/Manila')->format('M d, Y h:i A'),
                         'hhCount'             => $event->logs->unique('household_id')->count(),
                         'logCount'            => $event->logs->count(),
+                        'scanMode'            => $event->scan_mode ?? 'household',
                         'reliefPills'         => $reliefPills,
                         'barangays'           => $barangays,
                         'logs'                => $logRows,
@@ -956,28 +1042,31 @@
                 <div class="export-cols-grid" id="hhColsGrid">
                     @php
                         $hhCols = [
-                            'id'                 => 'ID',
-                            'qr_code_path'       => 'QR Code Path',
-                            'household_head_name'=> 'Household Head Name',
-                            'sex'                => 'Sex',
-                            'birthday'           => 'Birthday',
-                            'civil_status'       => 'Civil Status',
-                            'contact_number'     => 'Contact Number',
-                            'house_number'       => 'House Number',
-                            'street_purok'       => 'Street / Purok',
-                            'barangay'           => 'Barangay',
-                            'municipality'       => 'Municipality',
-                            'province'           => 'Province',
-                            'listahanan_id'      => 'Listahan ID',
-                            'is_4ps_beneficiary' => 'Is 4Ps Beneficiary',
-                            'is_pwd'             => 'Is PWD',
-                            'is_senior'          => 'Is Senior',
-                            'is_solo_parent'     => 'Is Solo Parent',
-                            'status'             => 'Status',
-                            'encoded_by'         => 'Encoded By',
-                            'approved_by'        => 'Approved By',
-                            'created_at'         => 'Created At',
-                            'updated_at'         => 'Updated At',
+                            'household_head_name' => 'Household Head Name',
+                            'listahanan_id'        => 'Listahan ID',
+                            'contact_number'       => 'Contact Number',
+                            'email'                => 'Email',
+                            'street_purok'         => 'Street / Purok',
+                            'location'             => 'Location / Address',
+                            'barangay'             => 'Barangay',
+                            'municipality'         => 'Municipality',
+                            'province'             => 'Province',
+                            'housing_type'         => 'Housing Type',
+                            'housing_material'     => 'Housing Material',
+                            'ownership_type'       => 'Ownership Type',
+                            'electricity_source'   => 'Electricity Source',
+                            'water_source'         => 'Water Source',
+                            'toilet_access'        => 'Toilet Access',
+                            'waste_disposal'       => 'Waste Disposal',
+                            'is_4ps_beneficiary'   => 'Is 4Ps Beneficiary',
+                            'is_pwd'               => 'Is PWD',
+                            'is_senior'            => 'Is Senior',
+                            'is_solo_parent'       => 'Is Solo Parent',
+                            'status'               => 'Status',
+                            'encoded_by'           => 'Encoded By',
+                            'approved_by'          => 'Approved By',
+                            'created_at'           => 'Created At',
+                            'updated_at'           => 'Updated At',
                         ];
                     @endphp
                     @foreach($hhCols as $key => $label)
@@ -988,11 +1077,67 @@
                     @endforeach
                 </div>
             </div>
+
+            <div class="export-section">
+                <div class="export-section-title">
+                    Family Head Columns
+                    <span>
+                        <a onclick="toggleGroup('fh', true)">Select All</a> &nbsp;·&nbsp;
+                        <a onclick="toggleGroup('fh', false)">Deselect All</a>
+                    </span>
+                </div>
+                <div class="export-cols-grid" id="fhColsGrid">
+                    @php
+                        $fhCols = [
+                            'fh_name'                   => 'Family Head Name',
+                            'fh_sex'                    => 'Sex',
+                            'fh_birthday'               => 'Birthday',
+                            'fh_civil_status'           => 'Civil Status',
+                            'fh_occupation'             => 'Occupation',
+                            'fh_educational_attainment' => 'Educational Attainment',
+                        ];
+                    @endphp
+                    @foreach($fhCols as $key => $label)
+                        <div class="export-col-toggle checked" data-group="fh" onclick="this.querySelector('input').click()">
+                            <input type="checkbox" name="fh_cols[]" value="{{ $key }}" checked onchange="syncToggleStyle(this)" onclick="event.stopPropagation()">
+                            <span>{{ $label }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="export-section">
+                <div class="export-section-title">
+                    Risk Profile Columns
+                    <span>
+                        <a onclick="toggleGroup('risk', true)">Select All</a> &nbsp;·&nbsp;
+                        <a onclick="toggleGroup('risk', false)">Deselect All</a>
+                    </span>
+                </div>
+                <div class="export-cols-grid" id="riskColsGrid">
+                    @php
+                        $riskCols = [
+                            'income_average'       => 'Monthly Income (Avg)',
+                            'early_warning'        => 'Early Warning System',
+                            'hazard_awareness'     => 'Hazard Awareness',
+                            'financial_assistance' => 'Financial Assistance',
+                            'access_info'          => 'Access to Info',
+                            'relocate_willingness' => 'Willing to Relocate',
+                        ];
+                    @endphp
+                    @foreach($riskCols as $key => $label)
+                        <div class="export-col-toggle checked" data-group="risk" onclick="this.querySelector('input').click()">
+                            <input type="checkbox" name="risk_cols[]" value="{{ $key }}" checked onchange="syncToggleStyle(this)" onclick="event.stopPropagation()">
+                            <span>{{ $label }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
 
         <div class="export-modal-footer">
             <div class="export-info">
-                <strong id="exportColCount">28</strong> columns selected &nbsp;·&nbsp; XLSX format
+                <strong id="exportColCount">42</strong> columns selected &nbsp;·&nbsp; XLSX format
             </div>
             <div class="export-footer-btns">
                 <button class="btn-export-cancel" onclick="closeExportModal()">Cancel</button>
@@ -1115,6 +1260,74 @@
 <div id="brgyTooltip" style="display:none;"></div>
 
 <script>
+    /* --- Search scope --- */
+    const SEARCH_PH = {
+        all:        'Search event name, relief type, barangay, status...',
+        event_name: 'Search by event name...',
+        relief:     'e.g. Rice, Canned Goods...',
+        barangay:   'Search by barangay...',
+        status:     'e.g. Upcoming, Ongoing, Completed...',
+        date:       'e.g. 2025-06-15...',
+    };
+    function updateScope(val) {
+        document.getElementById('scopeHidden').value = val;
+        const input = document.getElementById('searchInput');
+        if (input) input.placeholder = SEARCH_PH[val] || 'Search...';
+    }
+
+    function onSearchType(input) {
+        const combo = document.getElementById('searchCombo');
+        if (combo) combo.classList.toggle('has-value', input.value.length > 0);
+        applyHighlight(input.value, document.getElementById('scopeSelect').value);
+    }
+    function clearSearch() {
+        const input = document.getElementById('searchInput');
+        if (!input) return;
+        input.value = '';
+        const combo = document.getElementById('searchCombo');
+        if (combo) combo.classList.remove('has-value');
+        removeHighlight();
+        document.getElementById('filterForm').submit();
+    }
+
+    const HL_SCOPE = {
+        all:        ['hl-event','hl-relief','hl-status'],
+        event_name: ['hl-event'],
+        relief:     ['hl-relief'],
+        barangay:   [],
+        status:     ['hl-status'],
+        date:       [],
+    };
+    function _re(s) { return s.replace(/[-[\]{}()*+?.,\^$|#\s]/g, '\$&'); }
+    function applyHighlight(term, scope) {
+        removeHighlight();
+        if (!term) return;
+        const re = new RegExp('(' + _re(term) + ')', 'gi');
+        (HL_SCOPE[scope] || HL_SCOPE.all).forEach(cls => {
+            document.querySelectorAll('.' + cls).forEach(el => {
+                el.innerHTML = el.textContent.replace(re, '<mark class="hl">$1</mark>');
+            });
+        });
+    }
+    function removeHighlight() {
+        document.querySelectorAll('mark.hl').forEach(m => {
+            m.parentNode.replaceChild(document.createTextNode(m.textContent), m);
+            m.parentNode.normalize();
+        });
+    }
+
+    /* Init on load */
+    (function() {
+        const input = document.getElementById('searchInput');
+        const scope = document.getElementById('scopeSelect');
+        if (input && input.value) {
+            const combo = document.getElementById('searchCombo');
+            if (combo) combo.classList.add('has-value');
+            applyHighlight(input.value, scope ? scope.value : 'all');
+        }
+        if (scope) updateScope(scope.value);
+    })();
+
     /* --- Clock --- */
     function pad(n){ return String(n).padStart(2,'0'); }
     function updateClock() {
@@ -1196,6 +1409,11 @@
                              <div style="font-size:12px;font-weight:600;color:#122D5A;margin-top:2px;">${d.hhCount} household(s)</div></div>
                         <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9AA3B0;">Total Distributions</div>
                              <div style="font-size:12px;font-weight:600;color:#122D5A;margin-top:2px;">${d.logCount} record(s)</div></div>
+                        <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9AA3B0;">Scan Mode</div>
+                             <div style="margin-top:4px;">${d.scanMode === 'family_head'
+                                ? '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;background:#F5F3FF;color:#6D28D9;border:1px solid #DDD6FE;">👤 Per Family Head</span>'
+                                : '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;background:#EAF0FA;color:#1B3F7A;border:1px solid #C7D9F5;">🏠 Per Household</span>'
+                             }</div></div>
                     </div>
                 </div>
                 <span class="badge ${statusClass}" style="flex-shrink:0;align-self:flex-start;">${esc(d.status)}</span>
@@ -1325,20 +1543,19 @@
     }
 
     function syncToggleStyle(cb) {
-        const wrapper = cb.closest('.export-col-toggle');
-        if (cb.checked) wrapper.classList.add('checked');
-        else wrapper.classList.remove('checked');
+        const toggle = cb.closest('.export-col-toggle');
+        if (toggle) toggle.classList.toggle('checked', cb.checked);
         updateExportColCount();
     }
-
     function toggleGroup(group, checked) {
-        document.querySelectorAll(`.export-col-toggle[data-group="${group}"] input[type="checkbox"]`).forEach(cb => {
+        document.querySelectorAll(`[data-group="${group}"] input[type="checkbox"]`).forEach(cb => {
             cb.checked = checked; syncToggleStyle(cb);
         });
     }
-
     function updateExportColCount() {
-        const count = document.querySelectorAll('.export-col-toggle input[type="checkbox"]:checked').length;
+        const count = document.querySelectorAll(
+            'input[name="log_cols[]"]:checked, input[name="hh_cols[]"]:checked, input[name="fh_cols[]"]:checked, input[name="risk_cols[]"]:checked'
+        ).length;
         document.getElementById('exportColCount').textContent = count;
         document.getElementById('btnDoExport').disabled = count === 0;
     }
@@ -1347,6 +1564,8 @@
         if (!currentExportEventId) return;
         const logCols  = [...document.querySelectorAll('input[name="log_cols[]"]:checked')].map(c => c.value);
         const hhCols   = [...document.querySelectorAll('input[name="hh_cols[]"]:checked')].map(c => c.value);
+        const fhCols   = [...document.querySelectorAll('input[name="fh_cols[]"]:checked')].map(c => c.value);
+        const riskCols = [...document.querySelectorAll('input[name="risk_cols[]"]:checked')].map(c => c.value);
         const barangay = document.getElementById('exportBarangay').value;
         const dateFrom = document.getElementById('exportDateFrom').value;
         const dateTo   = document.getElementById('exportDateTo').value;
@@ -1361,8 +1580,10 @@
             form.appendChild(input);
         };
         addField('_token', document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}');
-        logCols.forEach(v => addField('log_cols[]', v));
-        hhCols.forEach(v  => addField('hh_cols[]', v));
+        logCols.forEach(v    => addField('log_cols[]', v));
+        hhCols.forEach(v     => addField('hh_cols[]', v));
+        fhCols.forEach(v     => addField('fh_cols[]', v));
+        riskCols.forEach(v   => addField('risk_cols[]', v));
         if (barangay) addField('barangay', barangay);
         if (dateFrom) addField('date_from', dateFrom);
         if (dateTo)   addField('date_to', dateTo);

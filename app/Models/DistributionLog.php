@@ -12,6 +12,7 @@ class DistributionLog extends Model
     protected $fillable = [
         'event_id',
         'household_id',
+        'family_member_id',  // ← REQUIRED for family_head scan mode — was missing, caused silent save failure
         'serial_code',
         'distributed_by',
         'distributed_at',
@@ -38,5 +39,10 @@ class DistributionLog extends Model
     public function staff()
     {
         return $this->belongsTo(User::class, 'distributed_by');
+    }
+
+    public function familyMember()
+    {
+        return $this->belongsTo(FamilyMember::class, 'family_member_id');
     }
 }

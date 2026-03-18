@@ -49,7 +49,6 @@
                 "sidebar main"
                 "footer  footer";
             height: 100vh;
-            overflow: hidden;
         }
 
         /* ─── TOP UTILITY BAR ─── */
@@ -181,9 +180,9 @@
         .badge-gray     { background: var(--gray-100); color: var(--gray-600); }
 
         /* ─── TWO-COLUMN DETAIL LAYOUT ─── */
-        .detail-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
-        .detail-main { display: flex; flex-direction: column; gap: 20px; }
-        .detail-side { display: flex; flex-direction: column; gap: 20px; }
+        .detail-layout { display: flex; gap: 20px; align-items: flex-start; }
+        .detail-main { order: 1; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+        .detail-side { order: 2; width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
 
         /* ─── SECTION CARD ─── */
         .section-card { background: var(--white); border: 1px solid var(--gray-200); }
@@ -214,7 +213,7 @@
 
         /* ─── MEMBERS TABLE ─── */
         .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .members-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+        .members-table { width: 100%; border-collapse: collapse; min-width: 700px; }
         .members-table thead th { padding: 10px 14px; background: var(--blue); color: var(--white); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; white-space: nowrap; }
         .members-table tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; }
         .members-table tbody tr:hover { background: var(--blue-pale); }
@@ -226,19 +225,79 @@
         .no-members { padding: 32px; text-align: center; color: var(--gray-400); font-style: italic; font-size: 13px; }
 
         /* ─── QR CARD ─── */
-        .qr-card { padding: 24px; text-align: center; }
-        .qr-frame { display: inline-block; border: 2px solid var(--blue-pale); padding: 12px; background: var(--white); margin-bottom: 14px; }
-        .qr-frame img { width: 180px; height: 180px; display: block; }
-        .qr-serial { font-family: monospace; font-size: 15px; font-weight: 700; color: var(--blue); letter-spacing: 1.5px; margin-bottom: 4px; }
-        .qr-name { font-size: 12px; color: var(--gray-600); margin-bottom: 3px; }
+        .qr-card { padding: 20px; text-align: center; }
+        .qr-frame { display: inline-block; padding: 10px; background: var(--white); margin-bottom: 12px; }
+        .qr-frame-household { border: 2px solid var(--blue-pale); }
+        .qr-frame-head { border: 2px solid #DDD6FE; }
+        .qr-frame img { width: 160px; height: 160px; display: block; }
+        .qr-serial { font-family: monospace; font-size: 14px; font-weight: 700; color: var(--blue); letter-spacing: 1.5px; margin-bottom: 3px; }
+        .qr-name { font-size: 12px; color: var(--gray-600); margin-bottom: 6px; }
+        .qr-type-pill { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; margin-bottom: 6px; }
+        .qr-pill-household { background: var(--blue-pale); color: var(--blue); border: 1px solid #C7D9F3; }
+        .qr-pill-head { background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; }
         .qr-meta { font-size: 11px; color: var(--gray-400); line-height: 1.6; }
-        .qr-placeholder { padding: 32px 20px; text-align: center; background: var(--gray-50); border: 2px dashed var(--gray-200); }
-        .qr-placeholder-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
-        .qr-placeholder-icon svg { width: 22px; height: 22px; color: var(--gray-400); }
-        .qr-placeholder p { font-size: 12px; color: var(--gray-400); margin-bottom: 12px; }
+        .qr-placeholder { padding: 24px 20px; text-align: center; background: var(--gray-50); border: 2px dashed var(--gray-200); margin: 0 16px 16px; }
+        .qr-placeholder-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+        .qr-placeholder-icon svg { width: 20px; height: 20px; color: var(--gray-400); }
+        .qr-placeholder p { font-size: 12px; color: var(--gray-400); margin-bottom: 8px; }
         .qr-must-approve { font-size: 12px; font-weight: 700; color: var(--red); }
 
-        /* ─── RECORD INFO CARD ─── */
+        /* QR section sub-labels */
+        .qr-section-label { display: flex; align-items: center; gap: 7px; padding: 8px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; border-bottom: 1px solid var(--gray-100); }
+        .qr-section-label svg { width: 13px; height: 13px; flex-shrink: 0; }
+        .qr-label-household { background: var(--blue-pale); color: var(--blue); }
+        .qr-label-head      { background: #F5F3FF; color: #6D28D9; }
+        .qr-divider { border: none; border-top: 2px dashed var(--gray-200); margin: 4px 0; }
+
+        /* Member family head badge */
+        .member-head-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; border-radius: 10px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: #FFF7ED; color: #92400E; border: 1px solid #FDE68A; margin-left: 6px; white-space: nowrap; }
+        .member-head-badge svg { width: 9px; height: 9px; flex-shrink: 0; }
+
+        /* Employment status badges */
+        .emp-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; white-space: nowrap; }
+        .emp-employed        { background:#DCFCE7; color:#15803D; border:1px solid #BBF7D0; }
+        .emp-unemployed      { background:#FEF2F2; color:#C0392B; border:1px solid #FECACA; }
+        .emp-part_time       { background:#FFFBEB; color:#92400E; border:1px solid #FDE68A; }
+        .emp-full_time       { background:#EAF0FA; color:#1B3F7A; border:1px solid #C7D9F3; }
+        .emp-self_employed   { background:#F5F3FF; color:#6D28D9; border:1px solid #DDD6FE; }
+        .emp-pension         { background:#F0FDF4; color:#166534; border:1px solid #BBF7D0; }
+        .emp-freelance       { background:#FFF7ED; color:#9A3412; border:1px solid #FED7AA; }
+        .emp-other           { background:var(--gray-100); color:var(--gray-600); border:1px solid var(--gray-200); }
+
+        /* QR type tag in members table */
+        .qr-type-tag { display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; white-space: nowrap; }
+        .qr-type-tag svg { width: 10px; height: 10px; flex-shrink: 0; }
+        .qr-tag-head { background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; }
+        .qr-tag-none { background: var(--gray-100); color: var(--gray-400); border: 1px solid var(--gray-200); font-style: italic; font-weight: 500; }
+
+        /* ─── CUSTOM CONFIRM MODAL ─── */
+        .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; pointer-events:none; }
+        .modal-backdrop.show { display:flex; pointer-events:auto; }
+        .modal-box { background:var(--white); border-radius:6px; box-shadow:0 8px 32px rgba(0,0,0,0.22); width:100%; max-width:400px; margin:16px; overflow:hidden; animation:modalIn .18s ease; }
+        @keyframes modalIn { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+        .modal-header { padding:18px 22px 14px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--gray-100); }
+        .modal-icon { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .modal-icon svg { width:18px; height:18px; }
+        .modal-icon.confirm  { background:var(--blue-pale); color:var(--blue); }
+        .modal-icon.danger   { background:var(--red-pale);  color:var(--red); }
+        .modal-icon.warning  { background:#FFFBEB; color:#D97706; }
+        .modal-icon.purple   { background:#F5F3FF; color:#7C3AED; }
+        .modal-title { font-family:'PT Serif',serif; font-size:16px; font-weight:700; color:var(--blue-dark); }
+        .modal-body { padding:14px 22px 20px; font-size:13px; color:var(--gray-600); line-height:1.6; }
+        .modal-footer { padding:12px 22px; background:var(--gray-50); border-top:1px solid var(--gray-100); display:flex; justify-content:flex-end; gap:8px; }
+        .modal-btn { font-family:'Open Sans',sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:9px 20px; border-radius:3px; border:none; cursor:pointer; transition:background .15s; }
+        .modal-btn-cancel  { background:var(--white); color:var(--gray-600); border:1px solid var(--gray-200); }
+        .modal-btn-cancel:hover  { background:var(--gray-100); }
+        .modal-btn-confirm { background:var(--green); color:var(--white); }
+        .modal-btn-confirm:hover { background:var(--green-dark); }
+        .modal-btn-danger  { background:var(--red); color:var(--white); }
+        .modal-btn-danger:hover  { background:#A93226; }
+        .modal-btn-blue    { background:var(--blue); color:var(--white); }
+        .modal-btn-blue:hover    { background:var(--blue-dark); }
+        .modal-btn-purple  { background:#7C3AED; color:var(--white); }
+        .modal-btn-purple:hover  { background:#6D28D9; }
+        .modal-btn-warning { background:#D97706; color:var(--white); }
+        .modal-btn-warning:hover { background:#B45309; }
         .record-info-stack { display: flex; flex-direction: column; gap: 0; }
         .record-info-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid var(--gray-100); gap: 12px; }
         .record-info-row:last-child { border-bottom: none; }
@@ -291,8 +350,9 @@
            RESPONSIVE
            ════════════════════════════════════════ */
         @media (max-width: 1100px) {
-            .detail-layout { grid-template-columns: 1fr; }
-            .detail-side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+            .detail-layout { flex-direction: column; }
+            .detail-side { width: 100%; flex-direction: row; flex-wrap: wrap; }
+            .detail-side .section-card { flex: 1; min-width: 280px; }
         }
         @media (max-width: 900px) {
             .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
@@ -467,13 +527,16 @@
             </div>
             <div class="hero-info">
                 <div class="hero-name">{{ $household->household_head_name }}</div>
+                @php $heroHead = $household->members->firstWhere('is_family_head', 1); @endphp
                 <div class="hero-meta">
-                    <span>{{ $household->sex }}</span>
-                    <span class="hero-meta-sep">|</span>
-                    <span>{{ $household->age }} years old</span>
-                    <span class="hero-meta-sep">|</span>
-                    <span>{{ $household->civil_status }}</span>
-                    <span class="hero-meta-sep">|</span>
+                    @if($heroHead)
+                        <span>{{ $heroHead->sex }}</span>
+                        <span class="hero-meta-sep">|</span>
+                        <span>{{ $heroHead->age }} years old</span>
+                        <span class="hero-meta-sep">|</span>
+                        <span>{{ $heroHead->civil_status ?? '—' }}</span>
+                        <span class="hero-meta-sep">|</span>
+                    @endif
                     <span>{{ $household->barangay }}, {{ $household->municipality }}</span>
                 </div>
                 <div class="hero-badges">
@@ -524,6 +587,7 @@
             <div class="detail-main">
 
                 {{-- Household Head Info --}}
+                @php $headMember = $household->members->firstWhere('is_family_head', 1); @endphp
                 <div class="section-card">
                     <div class="section-header">
                         <div class="ca-dot"></div>
@@ -537,24 +601,35 @@
                             </div>
                             <div class="info-item">
                                 <div class="info-label">Sex</div>
-                                <div class="info-value">{{ $household->sex }}</div>
+                                <div class="info-value">{{ $headMember->sex ?? '—' }}</div>
                             </div>
                             <div class="info-item">
                                 <div class="info-label">Birthday</div>
-                                <div class="info-value">{{ $household->birthday->format('F d, Y') }}</div>
+                                <div class="info-value">
+                                    {{ $headMember && $headMember->birthday ? $headMember->birthday->format('F d, Y') : '—' }}
+                                </div>
                             </div>
                             <div class="info-item">
                                 <div class="info-label">Age</div>
-                                <div class="info-value">{{ $household->age }} years old</div>
+                                <div class="info-value">
+                                    {{ $headMember && $headMember->age !== null ? $headMember->age . ' years old' : '—' }}
+                                </div>
                             </div>
                             <div class="info-item">
                                 <div class="info-label">Civil Status</div>
-                                <div class="info-value">{{ $household->civil_status }}</div>
+                                <div class="info-value">{{ $headMember->civil_status ?? '—' }}</div>
                             </div>
                             <div class="info-item">
                                 <div class="info-label">Contact Number</div>
                                 <div class="info-value">
                                     @if($household->contact_number) {{ $household->contact_number }}
+                                    @else <em>N/A</em> @endif
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Email Address</div>
+                                <div class="info-value">
+                                    @if($household->email) {{ $household->email }}
                                     @else <em>N/A</em> @endif
                                 </div>
                             </div>
@@ -592,98 +667,368 @@
                     </div>
                 </div>
 
-                {{-- DSWD / Sector Flags --}}
+                {{-- Nuclear Families — grouped with full member details per family --}}
+                @if($household->nuclearFamilies && $household->nuclearFamilies->count() > 0)
+                @foreach($household->nuclearFamilies as $nfIdx => $nf)
                 <div class="section-card">
-                    <div class="section-header">
-                        <div class="ca-dot"></div>
-                        <div class="section-title">DSWD / Listahanan Sector Flags</div>
+                    <div class="section-header" style="background:{{ $nf->is_primary ? 'var(--blue-pale)' : 'var(--gray-50)' }};">
+                        <div class="ca-dot" style="background:#7C3AED;border-color:#6D28D9;"></div>
+                        <div class="section-title" style="flex:1;">
+                            Nuclear Family {{ $nfIdx + 1 }}
+                            @if($nf->family_name) — {{ $nf->family_name }} @endif
+                            @if($nf->is_primary)
+                                <span class="badge badge-blue" style="margin-left:8px;font-size:9px;">Primary</span>
+                            @endif
+                        </div>
+                        <div style="display:flex;gap:16px;font-size:11px;color:var(--gray-600);">
+                            @if($nf->family_type)
+                                <span style="background:var(--gray-100);padding:2px 8px;border-radius:10px;font-weight:600;">{{ $nf->family_type }}</span>
+                            @endif
+                            <span>Head: <strong style="color:var(--blue-dark);">{{ $nf->family_head ?? '—' }}</strong></span>
+                            <span>{{ $nf->members->count() }} member{{ $nf->members->count() !== 1 ? 's' : '' }}</span>
+                        </div>
                     </div>
-                    <div class="section-body">
-                        @php
-                            $hasAnyFlag = $household->is_4ps_beneficiary || $household->is_pwd || $household->is_senior || $household->is_solo_parent;
-                        @endphp
-                        @if($hasAnyFlag)
-                            <div class="sector-flags">
-                                @if($household->is_4ps_beneficiary)
-                                    <span class="sector-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>4Ps Beneficiary</span>
-                                @endif
-                                @if($household->is_pwd)
-                                    <span class="sector-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Has PWD Member</span>
-                                @endif
-                                @if($household->is_senior)
-                                    <span class="sector-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Has Senior Citizen</span>
-                                @endif
-                                @if($household->is_solo_parent)
-                                    <span class="sector-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Has Solo Parent</span>
-                                @endif
-                            </div>
-                        @else
-                            <span class="sector-none">No special sector flags recorded.</span>
-                        @endif
+                    @if($nf->members->count() > 0)
+                    <div class="table-wrapper">
+                        <table class="members-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Full Name</th>
+                                    <th>Relationship</th>
+                                    <th>Sex</th>
+                                    <th>Age</th>
+                                    <th>Birthday</th>
+                                    <th>Civil Status</th>
+                                    <th>Education</th>
+                                    <th>Employment</th>
+                                    <th>Vulnerable Sector</th>
+                                    <th>Flags</th>
+                                    <th>PhilHealth</th>
+                                    <th>QR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($nf->members as $mi => $member)
+                                @php $det = $member->detail; @endphp
+                                <tr @if($member->is_family_head) style="background:var(--blue-pale);" @endif>
+                                    <td style="color:var(--gray-400);font-size:11px;">{{ $mi + 1 }}</td>
+                                    <td>
+                                        <span class="member-name">{{ $member->full_name }}</span>
+                                        @if($member->is_family_head)
+                                            <span class="member-head-badge">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                                Head
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td style="font-size:12px;">{{ $member->relationship ?? '—' }}</td>
+                                    <td style="font-size:12px;">{{ $member->sex ?? '—' }}</td>
+                                    <td style="font-size:12px;white-space:nowrap;">
+                                        {{ $member->age !== null ? $member->age . ' y/o' : '—' }}
+                                    </td>
+                                    <td style="white-space:nowrap;font-size:12px;">
+                                        {{ $member->birthday ? $member->birthday->format('M d, Y') : '—' }}
+                                    </td>
+                                    <td style="font-size:12px;">{{ $member->civil_status ?? '—' }}</td>
+                                    <td style="font-size:12px;">{{ $member->educational_attainment ?? '—' }}</td>
+                                    <td>
+                                        @if($det && $det->employment_status)
+                                            <span class="emp-badge emp-{{ Str::slug($det->employment_status,'_') }}">{{ $det->employment_status }}</span>
+                                            @if($det->job_title)
+                                                <small style="display:block;font-size:10px;color:var(--gray-600);margin-top:2px;">{{ $det->job_title }}</small>
+                                            @endif
+                                        @else
+                                            <span style="color:var(--gray-400);font-size:11px;">—</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($det && $det->vulnerable_sector && $det->vulnerable_sector !== 'None')
+                                            <span class="badge badge-blue" style="font-size:9px;">{{ $det->vulnerable_sector }}</span>
+                                            @if($det->vuln_registered !== null)
+                                                <small style="display:block;font-size:10px;color:var(--gray-600);margin-top:2px;">
+                                                    {{ $det->vuln_registered ? '✓ Registered' : '✗ Not Registered' }}
+                                                    @if($det->vuln_id_number) — ID: {{ $det->vuln_id_number }} @endif
+                                                </small>
+                                            @endif
+                                        @else
+                                            <span style="color:var(--gray-400);font-size:11px;">None</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div style="display:flex;flex-direction:column;gap:2px;">
+                                            @if($det && $det->is_lgbtqia)
+                                                <span class="badge" style="background:#FDF4FF;color:#7E22CE;border:1px solid #E9D5FF;font-size:9px;">LGBTQIA+</span>
+                                            @endif
+                                            @if($member->is_pwd)
+                                                <span class="badge badge-blue" style="font-size:9px;">PWD</span>
+                                            @endif
+                                            @if($member->is_student)
+                                                <span class="badge badge-gray" style="font-size:9px;">Student</span>
+                                            @endif
+                                            @if($member->is_senior_citizen)
+                                                <span class="badge badge-blue" style="font-size:9px;">Senior</span>
+                                            @endif
+                                            @php
+                                                $anyFlag = ($det && $det->is_lgbtqia) || $member->is_pwd || $member->is_student || $member->is_senior_citizen;
+                                            @endphp
+                                            @if(!$anyFlag)
+                                                <span style="color:var(--gray-400);font-size:11px;">—</span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td style="font-size:11px;color:var(--gray-600);">
+                                        {{ $member->philhealth_no ?? '—' }}
+                                    </td>
+                                    <td>
+                                        @if($member->is_family_head && $member->qr_code_path)
+                                            <span class="qr-type-tag qr-tag-head">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="14" y1="14" x2="14" y2="21"/></svg>
+                                                Has QR
+                                            </span>
+                                        @elseif($member->is_family_head)
+                                            <span class="qr-type-tag qr-tag-none">No QR</span>
+                                        @else
+                                            <span style="font-size:11px;color:var(--gray-400);">—</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
+                    @else
+                        <div class="no-members">No members in this nuclear family.</div>
+                    @endif
                 </div>
-
-                {{-- Family Members --}}
+                @endforeach
+                @else
                 <div class="section-card">
                     <div class="section-header">
                         <div class="ca-dot"></div>
                         <div class="section-title">Family Members ({{ $household->members->count() }})</div>
                     </div>
-                    @if($household->members->count() > 0)
-                        <div class="table-wrapper">
-                            <table class="members-table">
-                                <thead>
-                                    <tr>
-                                        <th>Full Name</th>
-                                        <th>Relationship</th>
-                                        <th>Sex / Age</th>
-                                        <th>Birthday</th>
-                                        <th>Occupation</th>
-                                        <th>Flags</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($household->members as $member)
-                                        <tr>
-                                            <td><span class="member-name">{{ $member->full_name }}</span></td>
-                                            <td>{{ $member->relationship }}</td>
-                                            <td>{{ $member->sex }}, {{ $member->age }} y/o</td>
-                                            <td>{{ $member->birthday->format('M d, Y') }}</td>
-                                            <td>{{ $member->occupation ?? '—' }}</td>
-                                            <td>
-                                                <div style="display:flex;gap:4px;flex-wrap:wrap;">
-                                                    @if($member->is_pwd)<span class="badge badge-blue">PWD</span>@endif
-                                                    @if($member->is_student)<span class="badge badge-gray">Student</span>@endif
-                                                    @if($member->isSenior())<span class="badge badge-blue">Senior</span>@endif
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <div class="no-members">No additional family members registered.</div>
-                    @endif
+                    <div class="no-members">No nuclear families registered yet.</div>
                 </div>
+                @endif
+
+                {{-- Housing Information --}}
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="ca-dot" style="background:#D97706;border-color:#B45309;"></div>
+                        <div class="section-title">Housing Information</div>
+                    </div>
+                    <div class="section-body">
+                        <div class="info-grid info-grid-3">
+                            <div class="info-item">
+                                <div class="info-label">Housing Type</div>
+                                <div class="info-value">{{ $household->housing_type ? ucfirst(str_replace('_',' ',$household->housing_type)) : '—' }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Housing Material</div>
+                                <div class="info-value">{{ $household->housing_material ? ucfirst(str_replace('_',' ',$household->housing_material)) : '—' }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Ownership Type</div>
+                                <div class="info-value">{{ $household->ownership_type ? ucfirst(str_replace('_',' ',$household->ownership_type)) : '—' }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Year Built</div>
+                                <div class="info-value">{{ $household->year_built ?? '—' }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Electricity Source</div>
+                                <div class="info-value">{{ $household->electricity_source ? ucfirst(str_replace('_',' ',$household->electricity_source)) : '—' }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Water Source</div>
+                                <div class="info-value">{{ $household->water_source ? ucfirst(str_replace('_',' ',$household->water_source)) : '—' }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Toilet Access</div>
+                                <div class="info-value">{{ $household->toilet_access ? ucfirst(str_replace('_',' ',$household->toilet_access)) : '—' }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Waste Disposal</div>
+                                <div class="info-value">{{ $household->waste_disposal ? ucfirst(str_replace('_',' ',$household->waste_disposal)) : '—' }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Barangay Area</div>
+                                <div class="info-value">{{ $household->barangay_area ?? '—' }}</div>
+                            </div>
+                        </div>
+                        @if($household->latitude && $household->longitude)
+                        <div style="margin-top:12px;">
+                            <div class="info-item" style="border-left-color:#16A34A;">
+                                <div class="info-label">GPS Coordinates</div>
+                                <div class="info-value mono">{{ $household->latitude }}, {{ $household->longitude }}</div>
+                            </div>
+                        </div>
+                        @endif
+                        @if($household->coordinates_image)
+                        <div style="margin-top:12px;">
+                            <div class="info-label" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-400);margin-bottom:8px;">Location Photo</div>
+                            <img src="{{ asset('storage/' . $household->coordinates_image) }}"
+                                 alt="Location photo"
+                                 style="max-width:100%;max-height:280px;border-radius:6px;border:1px solid var(--gray-200);object-fit:cover;display:block;">
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Risk Profile --}}
+                @if($household->riskProfile)
+                @php $rp = $household->riskProfile; @endphp
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="ca-dot" style="background:#C0392B;border-color:#922B21;"></div>
+                        <div class="section-title">Household Risk Profile</div>
+                    </div>
+                    <div class="section-body">
+                        <div class="info-grid info-grid-3">
+                            <div class="info-item">
+                                <div class="info-label">Early Warning System</div>
+                                <div class="info-value">
+                                    @if($rp->early_warning)
+                                        <span class="badge badge-approved">Yes</span>
+                                        @if($rp->ews_sources)
+                                            <div style="font-size:11px;color:var(--gray-600);margin-top:4px;">{{ implode(', ', array_map('strtoupper', explode(',', $rp->ews_sources))) }}</div>
+                                        @endif
+                                    @else
+                                        <span class="badge badge-gray">No</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Hazard Awareness</div>
+                                <div class="info-value">
+                                    @if($rp->hazard_awareness)<span class="badge badge-approved">Yes</span>
+                                    @else<span class="badge badge-gray">No</span>@endif
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Financial Assistance</div>
+                                <div class="info-value">
+                                    @if($rp->financial_assistance)<span class="badge badge-approved">Yes</span>
+                                    @else<span class="badge badge-gray">No</span>@endif
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Access to Information</div>
+                                <div class="info-value">
+                                    @if($rp->access_info)<span class="badge badge-approved">Yes</span>
+                                    @else<span class="badge badge-gray">No</span>@endif
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Willing to Relocate</div>
+                                <div class="info-value">
+                                    @if($rp->relocate_willingness)<span class="badge badge-approved">Yes</span>
+                                    @else<span class="badge badge-gray">No</span>@endif
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Literacy Rate</div>
+                                <div class="info-value">{{ $rp->literacy_rate !== null ? $rp->literacy_rate . '%' : '—' }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Average Income</div>
+                                <div class="info-value">{{ $rp->income_average ? '₱ ' . number_format($rp->income_average, 2) : '—' }}</div>
+                            </div>
+                        </div>
+                        @if($rp->remarks)
+                        <div style="margin-top:12px;">
+                            <div class="info-item" style="border-left-color:#C0392B;">
+                                <div class="info-label">Remarks</div>
+                                <div class="info-value">{{ $rp->remarks }}</div>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                @endif
+
+                {{-- Distribution History --}}
+                @if($household->distributionLogs && $household->distributionLogs->count() > 0)
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="ca-dot" style="background:#16A34A;border-color:#15803D;"></div>
+                        <div class="section-title">Distribution History ({{ $household->distributionLogs->count() }} record{{ $household->distributionLogs->count() !== 1 ? 's' : '' }})</div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="members-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Event</th>
+                                    <th>Serial Code</th>
+                                    <th>Items Received</th>
+                                    <th>Distributed By</th>
+                                    <th>Date & Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($household->distributionLogs->sortByDesc('distributed_at') as $li => $log)
+                                <tr>
+                                    <td style="color:var(--gray-400);font-size:11px;">{{ $li + 1 }}</td>
+                                    <td style="font-weight:600;color:var(--blue-dark);font-size:12px;">
+                                        {{ $log->event?->event_name ?? '—' }}
+                                        @if($log->event)
+                                            <small style="display:block;font-size:10px;color:var(--gray-400);font-weight:400;">
+                                                {{ ucfirst($log->event->status) }}
+                                            </small>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <code style="background:var(--blue-pale);padding:2px 6px;border-radius:3px;font-size:11px;color:var(--blue);">
+                                            {{ $log->serial_code ?? '—' }}
+                                        </code>
+                                    </td>
+                                    <td style="font-size:12px;color:var(--gray-600);">
+                                        @if($log->items_received && count($log->items_received))
+                                            {{ collect($log->items_received)->map(fn($item) => ($item['qty'] ?? '') . ' ' . ($item['name'] ?? $item['key'] ?? ''))->implode(', ') }}
+                                        @elseif($log->goods_detail)
+                                            {{ $log->goods_detail }}
+                                        @else
+                                            <em style="color:var(--gray-400);">—</em>
+                                        @endif
+                                    </td>
+                                    <td style="font-size:12px;color:var(--gray-600);">{{ $log->staff?->name ?? '—' }}</td>
+                                    <td style="font-size:12px;white-space:nowrap;color:var(--gray-600);">
+                                        {{ $log->distributed_at?->setTimezone('Asia/Manila')->format('M d, Y g:i A') ?? '—' }}
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @endif
 
             </div>{{-- /detail-main --}}
 
             <div class="detail-side">
 
-                {{-- QR Code --}}
+                {{-- QR Codes --}}
                 <div class="section-card">
                     <div class="section-header">
                         <div class="ca-dot"></div>
-                        <div class="section-title">QR Code</div>
+                        <div class="section-title">QR Codes</div>
+                    </div>
+
+                    {{-- Household QR --}}
+                    <div class="qr-section-label qr-label-household">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+                        Household QR Code
                     </div>
                     @if($household->qrCode)
                         <div class="qr-card">
-                            <div class="qr-frame">
-                                <img src="{{ asset('storage/' . $household->qrCode->file_path) }}" alt="QR Code">
+                            <div class="qr-frame qr-frame-household">
+                                <img src="{{ asset('storage/' . $household->qrCode->file_path) }}" alt="Household QR Code">
                             </div>
                             <div class="qr-serial">{{ $household->serial_code }}</div>
                             <div class="qr-name">{{ $household->household_head_name }}</div>
+                            <div class="qr-type-pill qr-pill-household">🏠 Household</div>
                             <div class="qr-meta">
                                 Generated: {{ $household->qrCode->generated_at->format('M d, Y') }}<br>
                                 Reprint Count: {{ $household->qrCode->reprint_count }}
@@ -698,11 +1043,80 @@
                                     <line x1="14" y1="14" x2="21" y2="14"/>
                                 </svg>
                             </div>
-                            <p>QR Code not generated yet.</p>
+                            <p>Household QR not generated yet.</p>
                             @if(!$household->isApproved())
                                 <p class="qr-must-approve">Approve household first</p>
                             @endif
                         </div>
+                    @endif
+
+                    {{-- Divider --}}
+                    <div class="qr-divider"></div>
+
+                    {{-- Family Head QR — one card per family head (one per nuclear family) --}}
+                    @php
+    // Collect family heads from all nuclear families.
+    // Primary source: is_family_head=1. Fallback: first member of each nuclear family
+    // whose name matches nuclear_families.family_head (handles legacy data where is_family_head=0).
+    $allFamilyHeads = $household->members->filter(function($m) use ($household) {
+        if ($m->is_family_head) return true;
+        // Fallback: check if this member is named as the head of their nuclear family
+        if ($m->nuclearFamily && $m->nuclearFamily->family_head) {
+            return strtolower(trim($m->full_name)) === strtolower(trim($m->nuclearFamily->family_head));
+        }
+        return false;
+    })->unique('id');
+@endphp
+                    <div class="qr-section-label qr-label-head">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+                        Family Head QR Code{{ $allFamilyHeads->count() > 1 ? 's (' . $allFamilyHeads->count() . ')' : '' }}
+                    </div>
+                    @if($allFamilyHeads->isEmpty())
+                        <div class="qr-placeholder">
+                            <div class="qr-placeholder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg></div>
+                            <p>No family head registered yet.</p>
+                        </div>
+                    @else
+                        @foreach($allFamilyHeads as $familyHead)
+                            @if($familyHead->qr_code_path)
+                                <div class="qr-card" style="{{ !$loop->first ? 'border-top:1px dashed var(--gray-200);padding-top:16px;' : '' }}">
+                                    <div class="qr-frame qr-frame-head">
+                                        <img src="{{ asset('storage/' . $familyHead->qr_code_path) }}" alt="Family Head QR Code">
+                                    </div>
+                                    <div class="qr-serial" style="color:#6D28D9;">{{ basename($familyHead->qr_code_path, '.svg') }}</div>
+                                    <div class="qr-name">{{ $familyHead->full_name }}</div>
+                                    <div class="qr-type-pill qr-pill-head">👤 Family Head</div>
+                                    <div class="qr-meta">Linked to household record</div>
+                                    <a href="{{ route('admin.households.qr.download-head', [$household, $familyHead]) }}"
+                                       style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:6px 12px;background:#F5F3FF;color:#6D28D9;border:1px solid #DDD6FE;border-radius:3px;font-size:11px;font-weight:700;text-decoration:none;">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                        Download
+                                    </a>
+                                </div>
+                            @else
+                                <div class="qr-placeholder" style="{{ !$loop->first ? 'border-top:1px dashed var(--gray-200);margin-top:8px;' : '' }}">
+                                    <div class="qr-placeholder-icon" style="background:#F5F3FF;">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.5">
+                                            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
+                                        </svg>
+                                    </div>
+                                    <p style="font-size:12px;color:var(--gray-600);font-weight:600;">{{ $familyHead->full_name }}</p>
+                                    <p>Family Head QR not generated yet.</p>
+                                    @if($household->isApproved())
+                                        <form method="POST" action="{{ route('admin.households.qr.generate-head', [$household, $familyHead]) }}" style="margin-top:8px;">
+                                            @csrf
+                                            <button type="button" class="btn-action btn-action-approve" style="background:#7C3AED;font-size:11px;padding:8px 12px;"
+                                                onclick="openModal('head-qr', this.closest('form'), 'Generate Family Head QR', 'Generate a personal QR code for <strong>{{ $familyHead->full_name }}</strong>? This QR will be linked to their family head record.', 'Generate QR', 'purple')">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="14" y2="21"/><line x1="14" y1="14" x2="21" y2="14"/></svg>
+                                                Generate Head QR
+                                            </button>
+                                        </form>
+                                    @else
+                                        <p class="qr-must-approve">Approve household first</p>
+                                    @endif
+                                </div>
+                            @endif
+                        @endforeach
                     @endif
                 </div>
 
@@ -716,7 +1130,8 @@
                         @if(!$household->isApproved())
                             <form method="POST" action="{{ route('admin.households.approve', $household) }}">
                                 @csrf
-                                <button type="submit" class="btn-action btn-action-approve" onclick="return confirm('Approve this household?')">
+                                <button type="button" class="btn-action btn-action-approve"
+                                    onclick="openModal('approve', this.closest('form'), 'Approve Household', 'Approve <strong>{{ $household->household_head_name }}</strong> and assign a serial code? This action will lock the record for editing.', 'Approve', 'confirm')">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                                     Approve Household
                                 </button>
@@ -724,7 +1139,8 @@
                         @else
                             <form method="POST" action="{{ route('admin.households.unapprove', $household) }}">
                                 @csrf
-                                <button type="submit" class="btn-action btn-action-unapprove" onclick="return confirm('Remove approval from this household?')">
+                                <button type="button" class="btn-action btn-action-unapprove"
+                                    onclick="openModal('unapprove', this.closest('form'), 'Remove Approval', 'Remove approval from <strong>{{ $household->household_head_name }}</strong>? The serial code will be revoked and the record will go back to pending.', 'Remove Approval', 'warning')">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                                     Unapprove
                                 </button>
@@ -733,13 +1149,14 @@
                         @if($household->isApproved() && !$household->qrCode)
                             <form method="POST" action="{{ route('admin.households.qr.generate', $household) }}">
                                 @csrf
-                                <button type="submit" class="btn-action btn-action-approve" onclick="return confirm('Generate QR code for this household?')" style="background: var(--blue);">
+                                <button type="button" class="btn-action btn-action-approve" style="background: var(--blue);"
+                                    onclick="openModal('qr', this.closest('form'), 'Generate Household QR Code', 'Generate a QR code for <strong>{{ $household->household_head_name }}</strong> ({{ $household->serial_code }})? The QR code will be linked to this household record.', 'Generate QR', 'blue')">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
                                         <rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="14" y2="21"/>
                                         <line x1="14" y1="14" x2="21" y2="14"/>
                                     </svg>
-                                    Generate QR Code
+                                    Generate Household QR
                                 </button>
                             </form>
                         @endif
@@ -749,15 +1166,46 @@
                                     <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
                                     <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
                                 </svg>
-                                Download QR Code
+                                Download Household QR
                             </a>
                         @endif
+                        {{-- Generate / Download for EVERY family head (one per nuclear family) --}}
+                        @foreach($household->members->filter(function($m) use ($household) {
+    if ($m->is_family_head) return true;
+    if ($m->nuclearFamily && $m->nuclearFamily->family_head) {
+        return strtolower(trim($m->full_name)) === strtolower(trim($m->nuclearFamily->family_head));
+    }
+    return false;
+})->unique('id') as $familyHeadAction)
+                            @if($household->isApproved() && !$familyHeadAction->qr_code_path)
+                                <form method="POST" action="{{ route('admin.households.qr.generate-head', [$household, $familyHeadAction]) }}">
+                                    @csrf
+                                    <button type="button" class="btn-action" style="background:#7C3AED;color:#fff;"
+                                        onclick="openModal('head-qr', this.closest('form'), 'Generate Family Head QR', 'Generate a personal QR code for <strong>{{ $familyHeadAction->full_name }}</strong>?', 'Generate QR', 'purple')">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
+                                        </svg>
+                                        Generate Head QR — {{ $familyHeadAction->full_name }}
+                                    </button>
+                                </form>
+                            @endif
+                            @if($familyHeadAction->qr_code_path)
+                                <a href="{{ route('admin.households.qr.download-head', [$household, $familyHeadAction]) }}" class="btn-action" style="background:#F5F3FF;color:#6D28D9;border:1px solid #DDD6FE;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                        <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                                    </svg>
+                                    Download Head QR — {{ $familyHeadAction->full_name }}
+                                </a>
+                            @endif
+                        @endforeach
                         @if(!$household->isApproved())
                             <hr class="actions-divider">
                             <form method="POST" action="{{ route('admin.households.destroy', $household) }}">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn-action btn-action-delete" onclick="return confirm('Permanently delete this household? This cannot be undone.')">
+                                <button type="button" class="btn-action btn-action-delete"
+                                    onclick="openModal('delete', this.closest('form'), 'Delete Household', '⚠️ This will <strong>permanently delete</strong> the household record of <strong>{{ $household->household_head_name }}</strong> and all associated members. This cannot be undone.', 'Delete Permanently', 'danger')">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
                                         <path d="M10 11v6"/><path d="M14 11v6"/>
@@ -826,6 +1274,25 @@
         </a>
     </footer>
 
+
+
+</div>{{-- /shell --}}
+
+<!-- ── CUSTOM CONFIRM MODAL ── -->
+<div class="modal-backdrop" id="confirmModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-icon" id="modalIcon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="modal-title" id="modalTitle">Confirm Action</div>
+        </div>
+        <div class="modal-body" id="modalBody">Are you sure?</div>
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-cancel" onclick="closeModal()">Cancel</button>
+            <button class="modal-btn" id="modalConfirmBtn" onclick="submitModalForm()">Confirm</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -845,7 +1312,51 @@
     const overlay = document.getElementById('sidebarOverlay');
     function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSidebar(); closeModal(); } });
+
+    /* ── Custom Confirm Modal ── */
+    let _modalForm = null;
+
+    const iconMap = {
+        confirm : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`,
+        warning : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+        danger  : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>`,
+        blue    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="14" y1="14" x2="14" y2="21"/></svg>`,
+        purple  : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>`,
+    };
+
+    function openModal(type, form, title, body, confirmLabel, style) {
+        _modalForm = form;
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalBody').innerHTML = body;
+
+        const icon = document.getElementById('modalIcon');
+        icon.className = 'modal-icon ' + style;
+        icon.innerHTML = iconMap[style] || iconMap.confirm;
+
+        const btn = document.getElementById('modalConfirmBtn');
+        btn.textContent = confirmLabel;
+        btn.className = 'modal-btn modal-btn-' + style;
+
+        document.getElementById('confirmModal').classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('confirmModal').classList.remove('show');
+        document.body.style.overflow = '';
+        _modalForm = null;
+    }
+
+    function submitModalForm() {
+        if (_modalForm) _modalForm.submit();
+        closeModal();
+    }
+
+    // Close on backdrop click
+    document.getElementById('confirmModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
 </script>
 </body>
 </html>

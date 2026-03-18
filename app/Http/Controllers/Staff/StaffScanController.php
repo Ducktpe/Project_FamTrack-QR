@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DistributionEvent;
 use App\Models\DistributionLog;
 use App\Models\Household;
+use App\Models\FamilyMember;
 use App\Models\AuditLog;
 use App\Models\ScanAttempt;
 use Illuminate\Http\Request;
@@ -34,10 +35,64 @@ class StaffScanController extends Controller
             'event_id'    => 'required|exists:distribution_events,id',
         ]);
 
-        // Find household by serial code
-        $household = Household::where('serial_code', $validated['serial_code'])
-            ->with('members')
-            ->first();
+        $serialCode = trim($validated['serial_code']);
+        $event      = DistributionEvent::findOrFail($validated['event_id']);
+        $scanMode   = $event->scan_mode ?? 'household'; // 'household' | 'family_head'
+
+        // ── STEP 1: QR TYPE VALIDATION ─────────────────────────────────────
+        // Household QR  serial: NIC-TB-HH-2026-00001       (contains -HH-)
+        // Family Head QR serial: NIC-TB-FH-2026-00001-M{id} (contains -FH-)
+
+        $isHouseholdQr  = str_contains($serialCode, '-HH-');
+        $isFamilyHeadQr = str_contains($serialCode, '-FH-');
+
+        if ($scanMode === 'household' && !$isHouseholdQr) {
+            return response()->json([
+                'status'        => 'wrong_qr_type',
+                'expected_mode' => 'household',
+                'scanned_code'  => $serialCode,
+                'event_name'    => $event->event_name,
+                'message'       => 'This event requires a Household QR card. You scanned a Family Head QR.',
+            ], 200);
+        }
+
+        if ($scanMode === 'family_head' && !$isFamilyHeadQr) {
+            return response()->json([
+                'status'        => 'wrong_qr_type',
+                'expected_mode' => 'family_head',
+                'scanned_code'  => $serialCode,
+                'event_name'    => $event->event_name,
+                'message'       => 'This event requires a Family Head personal QR card. You scanned a Household QR.',
+            ], 200);
+        }
+        // ── END QR TYPE VALIDATION ──────────────────────────────────────────
+
+        // ── STEP 2: RESOLVE HOUSEHOLD & FAMILY MEMBER ──────────────────────
+        $familyMember = null;
+
+        if ($isFamilyHeadQr) {
+            // Convert FH serial back to HH serial to find the household.
+            // New format includes a member suffix: NIC-TB-FH-2026-00001-M2
+            // Strip the -M{id} suffix first, then swap -FH- → -HH-
+            $baseSerial      = preg_replace('/-M\d+$/', '', $serialCode);
+            $householdSerial = str_replace('-FH-', '-HH-', $baseSerial);
+
+            $household = Household::where('serial_code', $householdSerial)
+                ->with('members')
+                ->first();
+
+            if ($household) {
+                // Find the family head member linked to this household
+                $familyMember = FamilyMember::where('household_id', $household->id)
+                    ->where('is_family_head', 1)
+                    ->first();
+            }
+        } else {
+            // Standard household QR
+            $household = Household::where('serial_code', $serialCode)
+                ->with('members')
+                ->first();
+        }
 
         if (!$household) {
             return response()->json([
@@ -53,17 +108,11 @@ class StaffScanController extends Controller
                 'message' => 'This household is not yet approved by Admin.',
             ], 400);
         }
+        // ── END RESOLVE ─────────────────────────────────────────────────────
 
-        // ── BARANGAY CHECK ─────────────────────────────────────────────────
-        // Prevent scanning households outside the event's target barangay.
-        // target_barangay is stored as "All Barangays" OR "Sabang, Bucana, ..."
-        $event      = DistributionEvent::findOrFail($validated['event_id']);
-
-        // target_barangay is now a JSON-cast array e.g. ["Sabang","Bucana"] or ["All Barangays"]
+        // ── STEP 3: BARANGAY CHECK ──────────────────────────────────────────
         $targetList = is_array($event->target_barangay) ? $event->target_barangay : [];
-
-        // Skip check if empty or contains "All Barangays"
-        $skipCheck = empty($targetList) || in_array('All Barangays', $targetList);
+        $skipCheck  = empty($targetList) || in_array('All Barangays', $targetList);
 
         if (!$skipCheck) {
             $targetList = array_map('trim', $targetList);
@@ -78,19 +127,24 @@ class StaffScanController extends Controller
                 ], 200);
             }
         }
-        // ── END BARANGAY CHECK ─────────────────────────────────────────────
+        // ── END BARANGAY CHECK ──────────────────────────────────────────────
 
-        // Check for duplicate release
-        $existingLog = DistributionLog::where('event_id', $validated['event_id'])
-            ->where('household_id', $household->id)
-            ->first();
+        // ── STEP 4: DUPLICATE CHECK ─────────────────────────────────────────
+        // For household mode  → check by household_id (one per household)
+        // For family_head mode → check by serial_code (one per family head QR)
+        $existingLog = $scanMode === 'family_head'
+            ? DistributionLog::where('event_id', $event->id)
+                ->where('serial_code', $serialCode)
+                ->first()
+            : DistributionLog::where('event_id', $event->id)
+                ->where('household_id', $household->id)
+                ->first();
 
         if ($existingLog) {
-            // Persist the blocked duplicate so the counter survives page refresh
             ScanAttempt::create([
-                'event_id'     => $validated['event_id'],
+                'event_id'     => $event->id,
                 'household_id' => $household->id,
-                'serial_code'  => $validated['serial_code'],
+                'serial_code'  => $serialCode,
                 'scanned_by'   => auth()->id(),
                 'result'       => 'duplicate',
                 'scanned_at'   => now(),
@@ -100,30 +154,33 @@ class StaffScanController extends Controller
                 'status'  => 'duplicate',
                 'message' => 'ALREADY RECEIVED',
                 'household' => [
-                    'name'         => $household->household_head_name,
-                    'serial_code'  => $household->serial_code,
-                    'members_count'=> $household->total_members,
+                    'name'        => $household->household_head_name,
+                    'serial_code' => $serialCode,
                 ],
                 'previous_release' => [
                     'date'  => $existingLog->distributed_at->format('M d, Y h:i A'),
-                    'staff' => $existingLog->staff->name,
+                    'staff' => $existingLog->staff->name ?? '—',
                 ],
             ], 200);
         }
+        // ── END DUPLICATE CHECK ─────────────────────────────────────────────
 
-        // Return household info + event relief_items for confirmation
+        // Return household info for confirmation
         return response()->json([
             'status'  => 'success',
             'message' => 'Household found. Ready to confirm release.',
             'household' => [
                 'id'            => $household->id,
                 'name'          => $household->household_head_name,
-                'serial_code'   => $household->serial_code,
+                'serial_code'   => $serialCode, // return scanned serial (may be FH)
                 'address'       => "{$household->street_purok}, {$household->barangay}",
                 'members_count' => $household->total_members,
                 'is_4ps'        => $household->is_4ps_beneficiary,
                 'is_pwd'        => $household->is_pwd,
                 'is_senior'     => $household->is_senior,
+                // Pass along for confirm() to use
+                'family_member_id' => $familyMember?->id,
+                'scan_mode'        => $scanMode,
             ],
             'relief_items' => $event->relief_items ?? [],
         ], 200);
@@ -135,19 +192,30 @@ class StaffScanController extends Controller
     public function confirm(Request $request)
     {
         $validated = $request->validate([
-            'household_id'   => 'required|exists:households,id',
-            'event_id'       => 'required|exists:distribution_events,id',
-            'items_received' => 'nullable|array',
-            'goods_detail'   => 'nullable|string',
-            'remarks'        => 'nullable|string',
+            'household_id'     => 'required|exists:households,id',
+            'event_id'         => 'required|exists:distribution_events,id',
+            'items_received'   => 'nullable|array',
+            'goods_detail'     => 'nullable|string',
+            'remarks'          => 'nullable|string',
         ]);
 
         $household = Household::findOrFail($validated['household_id']);
+        $event     = DistributionEvent::findOrFail($validated['event_id']);
+        $scanMode  = $event->scan_mode ?? 'household';
 
-        // Double-check for duplicate (race condition protection)
-        $existing = DistributionLog::where('event_id', $validated['event_id'])
-            ->where('household_id', $household->id)
-            ->first();
+        // Reconstruct the scanned serial from scan_mode
+        // The blade passes back household.serial_code which is already the scanned serial
+        $scannedSerial    = $request->input('serial_code', $household->serial_code);
+        $familyMemberId   = $request->input('family_member_id');
+
+        // ── RACE CONDITION DUPLICATE PROTECTION ────────────────────────────
+        $existing = $scanMode === 'family_head'
+            ? DistributionLog::where('event_id', $validated['event_id'])
+                ->where('serial_code', $scannedSerial)
+                ->first()
+            : DistributionLog::where('event_id', $validated['event_id'])
+                ->where('household_id', $household->id)
+                ->first();
 
         if ($existing) {
             return response()->json([
@@ -155,56 +223,54 @@ class StaffScanController extends Controller
                 'message' => 'Duplicate detected. This household already received ayuda for this event.',
             ], 400);
         }
+        // ── END DUPLICATE PROTECTION ────────────────────────────────────────
 
-        // Build items_received from submitted items (staff-edited) or fall back to event defaults
-        $itemsReceived = null;
-        if ($request->filled('items_received')) {
-            $itemsReceived = $request->input('items_received');
-        } else {
-            $event = DistributionEvent::find($validated['event_id']);
-            $itemsReceived = $event->relief_items ?? null;
-        }
+        // Build items_received
+        $itemsReceived = $request->filled('items_received')
+            ? $request->input('items_received')
+            : ($event->relief_items ?? null);
 
         // Create distribution log
         $log = DistributionLog::create([
-            'event_id'        => $validated['event_id'],
-            'household_id'    => $household->id,
-            'serial_code'     => $household->serial_code,
-            'distributed_by'  => auth()->id(),
-            'distributed_at'  => now(),
-            'items_received'  => $itemsReceived,
-            'goods_detail'    => $validated['goods_detail'] ?? null,
-            'remarks'         => $validated['remarks'] ?? null,
+            'event_id'         => $validated['event_id'],
+            'household_id'     => $household->id,
+            'family_member_id' => $scanMode === 'family_head' ? $familyMemberId : null,
+            'serial_code'      => $scannedSerial,
+            'distributed_by'   => auth()->id(),
+            'distributed_at'   => now(),
+            'items_received'   => $itemsReceived,
+            'goods_detail'     => $validated['goods_detail'] ?? null,
+            'remarks'          => $validated['remarks'] ?? null,
         ]);
 
-        // Persist the successful scan so confirmed_today counter survives refresh
+        // Persist successful scan attempt
         ScanAttempt::create([
             'event_id'     => $validated['event_id'],
             'household_id' => $household->id,
-            'serial_code'  => $household->serial_code,
+            'serial_code'  => $scannedSerial,
             'scanned_by'   => auth()->id(),
             'result'       => 'success',
             'scanned_at'   => now(),
         ]);
 
         // Audit log
-        $event = DistributionEvent::find($validated['event_id']);
-
         AuditLog::log('distributed_ayuda', [
             'model'         => 'DistributionLog',
             'record_id'     => $log->id,
             'affected_name' => $household->household_head_name,
-            'description'   => "Released ayuda to {$household->household_head_name} ({$household->serial_code})",
+            'description'   => "Released ayuda to {$household->household_head_name} ({$scannedSerial}) via {$scanMode} mode",
             'new_values'    => [
-                'household'      => $household->household_head_name,
-                'serial_code'    => $household->serial_code,
-                'event_id'       => $validated['event_id'],
-                'event_name'     => $event->event_name ?? null,
-                'relief_type'    => $event->relief_type ?? null,
-                'relief_items'   => $event->relief_items ?? null,
-                'items_received' => $log->items_received,
-                'goods_detail'   => $log->goods_detail,
-                'remarks'        => $log->remarks,
+                'household'        => $household->household_head_name,
+                'serial_code'      => $scannedSerial,
+                'scan_mode'        => $scanMode,
+                'family_member_id' => $familyMemberId,
+                'event_id'         => $validated['event_id'],
+                'event_name'       => $event->event_name ?? null,
+                'relief_type'      => $event->relief_type ?? null,
+                'relief_items'     => $event->relief_items ?? null,
+                'items_received'   => $log->items_received,
+                'goods_detail'     => $log->goods_detail,
+                'remarks'          => $log->remarks,
             ],
         ]);
 
@@ -231,8 +297,6 @@ class StaffScanController extends Controller
         if ($request->boolean('stats_only')) {
             $eventId = $request->input('event_id');
 
-            // When an event is selected, scope to that event (regardless of date).
-            // When no event is selected, fall back to today across all events.
             $attemptBase = ScanAttempt::where('scanned_by', $staffId)
                 ->when($eventId,
                     fn($q, $id) => $q->where('event_id', $id),
@@ -242,8 +306,6 @@ class StaffScanController extends Controller
             $confirmedFromAttempts  = (clone $attemptBase)->where('result', 'success')->count();
             $duplicatesFromAttempts = (clone $attemptBase)->where('result', 'duplicate')->count();
 
-            // ScanAttempt only exists from this feature onwards.
-            // Fall back to DistributionLog for historical confirmed counts.
             if ($confirmedFromAttempts === 0) {
                 $confirmedToday = DistributionLog::where('distributed_by', $staffId)
                     ->when($eventId,
@@ -284,7 +346,6 @@ class StaffScanController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        // Stats — always unfiltered totals for this staff member
         $totalScans  = DistributionLog::where('distributed_by', $staffId)->count();
         $todayScans  = DistributionLog::where('distributed_by', $staffId)
                         ->whereDate('distributed_at', today())->count();
@@ -293,7 +354,6 @@ class StaffScanController extends Controller
         $lastScanAt  = DistributionLog::where('distributed_by', $staffId)
                         ->latest('distributed_at')->value('distributed_at');
 
-        // Only events this staff member has actually worked — for the filter dropdown
         $events = DistributionEvent::whereHas('logs', fn($q) =>
             $q->where('distributed_by', $staffId)
         )->orderBy('event_name')->get();

@@ -8,18 +8,20 @@ class FamilyMemberDetail extends Model
 {
     protected $fillable = [
         'family_member_id',
+        'is_lgbtqia',        // moved before vulnerable_sector to match form column order
         'vulnerable_sector',
         'vuln_registered',
         'vuln_id_number',
-        'is_lgbtqia',
         'employment_status',
         'job_title',
     ];
 
     protected $casts = [
-        'is_lgbtqia'     => 'integer',
+        'is_lgbtqia'      => 'integer',
         'vuln_registered' => 'integer',
     ];
+
+    // ── Relationships ────────────────────────────────────
 
     public function member()
     {

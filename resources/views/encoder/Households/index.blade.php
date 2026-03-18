@@ -451,6 +451,7 @@
         .empty-title { font-size: 14px; font-weight: 600; color: var(--gray-600); margin-bottom: 5px; }
         .empty-sub { font-size: 12px; color: var(--gray-400); margin-bottom: 16px; }
 
+        /* ── Search bar wrap ── */
         .search-bar-wrap {
             padding: 12px 20px;
             border-bottom: 1px solid var(--gray-100);
@@ -460,74 +461,73 @@
             gap: 10px;
             flex-wrap: wrap;
         }
-        .search-form {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-            min-width: 0;
-        }
-        .search-input-wrap {
-            position: relative;
-            flex: 1;
-        }
-        .search-input-wrap svg {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 14px; height: 14px;
-            color: var(--gray-400);
-            pointer-events: none;
-        }
-        .search-input {
-            width: 100%;
-            padding: 8px 12px 8px 32px;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 13px;
-            color: var(--gray-800);
-            border: 1px solid var(--gray-200);
-            border-radius: 3px;
-            background: var(--gray-50);
-            outline: none;
-            transition: border-color 0.15s, background 0.15s;
-        }
-        .search-input:focus {
-            border-color: var(--blue-light);
-            background: var(--white);
-            box-shadow: 0 0 0 3px rgba(36,89,168,0.08);
-        }
-        .search-input::placeholder { color: var(--gray-400); }
-        .btn-search {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 8px 14px;
-            background: var(--blue); color: var(--white);
-            font-family: 'Open Sans', sans-serif;
-            font-size: 11px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            border: none; border-radius: 3px;
-            cursor: pointer; transition: background 0.15s;
-            white-space: nowrap;
-        }
-        .btn-search:hover { background: var(--blue-dark); }
-        .btn-search svg { width: 12px; height: 12px; }
-        .btn-clear-search {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 8px 12px;
-            background: var(--white); color: var(--gray-600);
-            font-family: 'Open Sans', sans-serif;
-            font-size: 11px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.5px;
+
+        /* ── Search scope combo ── */
+        .search-combo {
+            display: flex; align-items: stretch;
             border: 1px solid var(--gray-200); border-radius: 3px;
-            text-decoration: none; transition: background 0.15s, color 0.15s;
-            white-space: nowrap;
+            overflow: hidden; background: var(--gray-50);
+            transition: border-color 0.15s, box-shadow 0.15s;
+            flex: 1; min-width: 260px;
         }
-        .btn-clear-search:hover { background: var(--gray-100); color: var(--red); border-color: var(--red); }
-        .btn-clear-search svg { width: 11px; height: 11px; }
-        .search-result-info {
-            font-size: 11px; color: var(--gray-400); margin-top: 6px;
+        .search-combo:focus-within {
+            border-color: var(--blue-light);
+            box-shadow: 0 0 0 3px rgba(36,89,168,0.08);
+            background: var(--white);
         }
-        .search-result-info strong { color: var(--blue); }
+        .search-combo .scope-sel {
+            border: none !important; border-right: 1px solid var(--gray-200) !important;
+            background: var(--gray-100) !important;
+            padding: 8px 22px 8px 10px !important;
+            font-size: 11px !important; font-weight: 700 !important;
+            color: var(--gray-600) !important;
+            font-family: 'Open Sans', sans-serif !important;
+            outline: none !important; appearance: none !important; -webkit-appearance: none !important;
+            cursor: pointer; flex-shrink: 0; min-width: 100px; width: auto !important;
+            box-shadow: none !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239AA3B0' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important; background-position: right 6px center !important;
+        }
+        .search-combo .scope-sel:hover { background-color: var(--blue-pale) !important; color: var(--blue) !important; }
+        .search-combo .srch-input {
+            border: none !important; background: transparent !important;
+            padding: 8px 10px !important; font-size: 13px !important;
+            color: var(--gray-800) !important;
+            font-family: 'Open Sans', sans-serif !important;
+            outline: none !important; flex: 1; min-width: 0; width: auto !important;
+            box-shadow: none !important;
+        }
+        .search-combo .srch-input::placeholder { color: var(--gray-400); }
+        .search-combo .srch-clear {
+            display: none; align-items: center; justify-content: center;
+            padding: 0 10px; border: none !important; background: transparent !important;
+            color: var(--gray-400); cursor: pointer; font-size: 18px; line-height: 1;
+            width: auto !important; transition: color 0.12s;
+        }
+        .search-combo .srch-clear:hover { color: var(--red) !important; background: transparent !important; }
+        .search-combo.has-value .srch-clear { display: flex; }
+
+        /* Highlight */
+        mark.hl { background: #FFF176; color: inherit; border-radius: 2px; padding: 0 1px; font-style: normal; }
+
+        /* Active filter tags */
+        .active-filters-row {
+            display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+            padding: 6px 20px 10px;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .active-filters-row.hidden { display: none; }
+        .filter-tag {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 3px 8px; background: var(--blue-pale);
+            border: 1px solid #C7D9F5; border-radius: 10px;
+            font-size: 11px; color: var(--blue); font-weight: 600;
+        }
+        .filter-tag a { color: var(--blue); text-decoration: none; margin-left: 2px; opacity: 0.6; font-weight: 700; }
+        .filter-tag a:hover { opacity: 1; }
+        .clear-all-link { font-size: 11px; color: var(--red); text-decoration: none; font-weight: 600; margin-left: 4px; }
+        .clear-all-link:hover { text-decoration: underline; }
 
         .btn-filter-toggle {
             display: inline-flex; align-items: center; gap: 7px;
@@ -539,19 +539,13 @@
             border: 1px solid var(--blue-light); border-radius: 3px;
             cursor: pointer; transition: background 0.15s, color 0.15s;
         }
-        .btn-filter-toggle:hover, .btn-filter-toggle.active {
-            background: var(--blue); color: var(--white);
-        }
+        .btn-filter-toggle:hover, .btn-filter-toggle.active { background: var(--blue); color: var(--white); }
         .btn-filter-toggle svg { width: 13px; height: 13px; }
-        .filter-active-pills {
-            display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex: 1;
-        }
+        .filter-active-pills { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex: 1; }
         .filter-pill {
             display: inline-flex; align-items: center; gap: 5px;
-            padding: 3px 9px;
-            background: var(--blue-pale); color: var(--blue);
-            font-size: 10px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.4px;
+            padding: 3px 9px; background: var(--blue-pale); color: var(--blue);
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
             border: 1px solid #C7D9F3; border-radius: 10px;
         }
         .filter-pill svg { width: 10px; height: 10px; opacity: 0.7; }
@@ -939,79 +933,70 @@
 
             @php
                 $hasFilters = request()->hasAny(['status', 'sex', 'date_from', 'date_to', 'is_4ps', 'is_pwd', 'is_senior', 'is_solo_parent']);
+                $activeFilters = array_filter([
+                    'search'        => request('search'),
+                    'status'        => request('status'),
+                    'sex'           => request('sex'),
+                    'date_from'     => request('date_from'),
+                    'date_to'       => request('date_to'),
+                    'is_4ps'        => request('is_4ps') ? '4Ps' : null,
+                    'is_pwd'        => request('is_pwd') ? 'PWD' : null,
+                    'is_senior'     => request('is_senior') ? 'Senior' : null,
+                    'is_solo_parent'=> request('is_solo_parent') ? 'Solo Parent' : null,
+                ]);
             @endphp
-            <div class="search-bar-wrap">
-                <form method="GET" action="{{ route('encoder.households.index') }}" class="search-form">
-                    <div class="search-input-wrap">
+
+            <form method="GET" action="{{ route('encoder.households.index') }}" id="searchForm">
+                <input type="hidden" name="scope" id="scopeHidden" value="{{ request('scope','all') }}">
+                {{-- carry filter params through search --}}
+                @foreach(['status','sex','date_from','date_to','is_4ps','is_pwd','is_senior','is_solo_parent'] as $fp)
+                    @if(request($fp))<input type="hidden" name="{{ $fp }}" value="{{ request($fp) }}">@endif
+                @endforeach
+
+                <div class="search-bar-wrap">
+                    {{-- ── Scope combo ── --}}
+                    <div class="search-combo" id="searchCombo">
+                        <select class="scope-sel" id="scopeSelect" onchange="updateScope(this.value)">
+                            <option value="all"      {{ request('scope','all')==='all'      ? 'selected':'' }}>All Fields</option>
+                            <option value="name"     {{ request('scope')==='name'     ? 'selected':'' }}>Head Name</option>
+                            <option value="barangay" {{ request('scope')==='barangay' ? 'selected':'' }}>Barangay</option>
+                            <option value="street"   {{ request('scope')==='street'   ? 'selected':'' }}>Street / Purok</option>
+                            <option value="serial"   {{ request('scope')==='serial'   ? 'selected':'' }}>Serial Code</option>
+                            <option value="status"   {{ request('scope')==='status'   ? 'selected':'' }}>Status</option>
+                        </select>
+                        <input type="text" name="search" class="srch-input" id="searchInput"
+                            placeholder="Search households..."
+                            value="{{ request('search') }}"
+                            oninput="onSearchType(this)"
+                            onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('searchForm').submit();}"
+                            autocomplete="off">
+                        <button type="button" class="srch-clear" onclick="clearSearch()" title="Clear">×</button>
+                    </div>
+
+                    {{-- ── Filter toggle ── --}}
+                    <button class="btn-filter-toggle {{ $hasFilters ? 'active' : '' }}" id="filterToggleBtn" onclick="toggleFilter()" type="button">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
                         </svg>
-                        <input type="text" name="search" class="search-input"
-                            placeholder="Search by name, barangay, street, or serial code…"
-                            value="{{ request('search') }}" autocomplete="off">
-                    </div>
-                    <button type="submit" class="btn-search">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                        </svg>
-                        Search
+                        Filters
+                        @if($hasFilters)<span style="background:#fff;color:var(--blue);border-radius:10px;font-size:10px;padding:1px 6px;margin-left:2px;">{{ count(array_filter([$hasFilters])) }}</span>@endif
                     </button>
-                    @if(request('search'))
-                        <a href="{{ route('encoder.households.index') }}" class="btn-clear-search">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                            </svg>
-                            Clear
-                        </a>
-                    @endif
-                </form>
+                </div>
+            </form>
 
-                <button class="btn-filter-toggle {{ $hasFilters ? 'active' : '' }}" id="filterToggleBtn" onclick="toggleFilter()" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
-                    </svg>
-                    Filters{{ $hasFilters ? ' (Active)' : '' }}
-                </button>
-
-                @if($hasFilters)
-                    <div class="filter-active-pills">
-                        @if(request('status'))
-                            <span class="filter-pill">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                                Status: {{ ucfirst(request('status')) }}
-                            </span>
-                        @endif
-                        @if(request('sex'))
-                            <span class="filter-pill">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                Sex: {{ request('sex') }}
-                            </span>
-                        @endif
-                        @if(request('date_from') || request('date_to'))
-                            <span class="filter-pill">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                Date: {{ request('date_from') ?: '…' }} → {{ request('date_to') ?: '…' }}
-                            </span>
-                        @endif
-                        @if(request('is_4ps')) <span class="filter-pill">4Ps Beneficiary</span> @endif
-                        @if(request('is_pwd')) <span class="filter-pill">PWD</span> @endif
-                        @if(request('is_senior')) <span class="filter-pill">Senior Citizen</span> @endif
-                        @if(request('is_solo_parent')) <span class="filter-pill">Solo Parent</span> @endif
-                        <a href="{{ route('encoder.households.index', array_filter(['search' => request('search')])) }}" class="btn-reset-filter">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                            </svg>
-                            Reset
-                        </a>
-                    </div>
-                @endif
-
-                @if(request('search'))
-                    <div class="search-result-info">
-                        Showing results for <strong>"{{ request('search') }}"</strong> — {{ $households->total() }} record(s) found
-                    </div>
-                @endif
+            {{-- ── Active filter tags ── --}}
+            @if(count($activeFilters))
+            <div class="active-filters-row">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9AA3B0" stroke-width="2.5" style="flex-shrink:0"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                @foreach($activeFilters as $key => $val)
+                    <span class="filter-tag">
+                        {{ ucfirst(str_replace('_',' ',$key)) }}: {{ $val }}
+                        <a href="{{ request()->fullUrlWithQuery([$key => null]) }}">×</a>
+                    </span>
+                @endforeach
+                <a href="{{ route('encoder.households.index') }}" class="clear-all-link">Clear all</a>
             </div>
+            @endif
 
             <div class="filter-panel {{ $hasFilters ? 'open' : '' }}" id="filterPanel">
                 <form method="GET" action="{{ route('encoder.households.index') }}" id="filterForm">
@@ -1093,22 +1078,22 @@
                         @forelse($households as $household)
                             <tr>
                                 <td class="td-name">
-                                    <strong>{{ $household->household_head_name }}</strong>
+                                    <strong class="hl-name">{{ $household->household_head_name }}</strong>
                                     <small>{{ $household->sex }}, {{ $household->age }} years old</small>
                                 </td>
                                 <td class="td-address">
-                                    {{ $household->street_purok }}, {{ $household->barangay }}
+                                    <span class="hl-street">{{ $household->street_purok }}</span>, <span class="hl-barangay">{{ $household->barangay }}</span>
                                     <small>{{ $household->municipality }}, {{ $household->province }}</small>
                                 </td>
                                 <td>{{ $household->total_members }} person(s)</td>
                                 <td>
                                     @if($household->isApproved())
-                                        <span class="badge badge-approved">
+                                        <span class="badge badge-approved hl-status">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                                             Approved
                                         </span>
                                     @else
-                                        <span class="badge badge-pending">
+                                        <span class="badge badge-pending hl-status">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                             Pending
                                         </span>
@@ -1116,7 +1101,7 @@
                                 </td>
                                 <td>
                                     @if($household->serial_code)
-                                        <span class="serial-code">{{ $household->serial_code }}</span>
+                                        <span class="serial-code hl-serial">{{ $household->serial_code }}</span>
                                     @else
                                         <span class="serial-none">Not assigned yet</span>
                                     @endif
@@ -1193,6 +1178,75 @@
 </div>
 
 <script>
+    /* ── Search scope ── */
+    const SEARCH_PH = {
+        all:      'Search by name, barangay, street, or serial code…',
+        name:     'Search by household head name…',
+        barangay: 'Search by barangay…',
+        street:   'Search by street or purok…',
+        serial:   'Search by serial code…',
+        status:   'e.g. Approved, Pending…',
+    };
+    function updateScope(val) {
+        document.getElementById('scopeHidden').value = val;
+        const inp = document.getElementById('searchInput');
+        if (inp) inp.placeholder = SEARCH_PH[val] || 'Search…';
+    }
+
+    /* typing: only update highlight + clear btn — no auto-submit */
+    function onSearchType(input) {
+        const combo = document.getElementById('searchCombo');
+        if (combo) combo.classList.toggle('has-value', input.value.length > 0);
+        applyHighlight(input.value, document.getElementById('scopeSelect').value);
+    }
+    function clearSearch() {
+        const inp = document.getElementById('searchInput');
+        if (!inp) return;
+        inp.value = '';
+        const combo = document.getElementById('searchCombo');
+        if (combo) combo.classList.remove('has-value');
+        removeHighlight();
+        document.getElementById('searchForm').submit();
+    }
+
+    const HL_SCOPE = {
+        all:      ['hl-name','hl-barangay','hl-street','hl-serial','hl-status'],
+        name:     ['hl-name'],
+        barangay: ['hl-barangay'],
+        street:   ['hl-street'],
+        serial:   ['hl-serial'],
+        status:   ['hl-status'],
+    };
+    function _re(s) { return s.replace(/[-[\]{}()*+?.,\^$|#\s]/g, '\$&'); }
+    function applyHighlight(term, scope) {
+        removeHighlight();
+        if (!term) return;
+        const re = new RegExp('(' + _re(term) + ')', 'gi');
+        (HL_SCOPE[scope] || HL_SCOPE.all).forEach(cls => {
+            document.querySelectorAll('.' + cls).forEach(el => {
+                el.innerHTML = el.textContent.replace(re, '<mark class="hl">$1</mark>');
+            });
+        });
+    }
+    function removeHighlight() {
+        document.querySelectorAll('mark.hl').forEach(m => {
+            m.parentNode.replaceChild(document.createTextNode(m.textContent), m);
+            m.parentNode.normalize();
+        });
+    }
+
+    /* Init on load */
+    (function() {
+        const inp   = document.getElementById('searchInput');
+        const scope = document.getElementById('scopeSelect');
+        if (inp && inp.value) {
+            const combo = document.getElementById('searchCombo');
+            if (combo) combo.classList.add('has-value');
+            applyHighlight(inp.value, scope ? scope.value : 'all');
+        }
+        if (scope) updateScope(scope.value);
+    })();
+
     function pad(n){ return String(n).padStart(2,'0'); }
     function updateClock() {
         const now = new Date();

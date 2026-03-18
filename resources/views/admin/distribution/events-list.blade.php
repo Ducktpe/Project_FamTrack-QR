@@ -54,6 +54,13 @@
                 <div class="event-card">
                     <div class="event-name">{{ $event->event_name }}</div>
                     <div class="event-date">📅 {{ $event->event_date }} — <strong>{{ $event->status }}</strong></div>
+                    <div style="margin-bottom:10px;">
+                        @if(($event->scan_mode ?? 'household') === 'family_head')
+                            <span style="display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;background:#F5F3FF;color:#6D28D9;border:1px solid #DDD6FE;">👤 Per Family Head</span>
+                        @else
+                            <span style="display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;background:#EAF0FA;color:#1B3F7A;border:1px solid #C7D9F5;">🏠 Per Household</span>
+                        @endif
+                    </div>
                     <div class="event-stats">
                         <div class="stat">
                             <div class="stat-number">{{ $event->total_distributed }}</div>

@@ -287,7 +287,7 @@
             <div>
                 <div class="page-breadcrumb">Home / Staff / <span>QR Code Scanner</span></div>
                 <div class="page-h1">QR Code Scanner</div>
-                <div class="page-sub">Scan household QR cards to validate and record ayuda distribution</div>
+                <div class="page-sub" id="page-sub-text">Scan QR cards to validate and record ayuda distribution</div>
             </div>
         </div>
 
@@ -338,6 +338,14 @@
                         @endforeach
                     </select>
                 </div>
+                {{-- Scan Mode Indicator (shown after event is selected) --}}
+                <div id="scan-mode-indicator" style="display:none;margin-top:12px;padding:10px 14px;border-radius:4px;align-items:center;gap:10px;font-size:12px;font-weight:600;">
+                    <div id="smi-icon" style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
+                    <div>
+                        <div id="smi-title" style="font-size:12px;font-weight:700;"></div>
+                        <div id="smi-hint" style="font-size:11px;font-weight:400;margin-top:1px;"></div>
+                    </div>
+                </div>
             </div>
 
             {{-- RESULT CARD --}}
@@ -347,7 +355,7 @@
             <div class="section-card" id="scanner-container">
                 <div class="section-card-header green-top">
                     <div class="ca-dot-green"></div>
-                    <div class="section-title">Camera Scanner — Point at Household QR Card</div>
+                    <div class="section-title" id="scanner-title">Camera Scanner — Ready to Scan</div>
                 </div>
                 <div class="section-card-body">
                     <div class="scanner-label">Scan Area Active</div>
@@ -435,30 +443,67 @@
     if (eventSelect?.value && !scannerRunning) {
         startScanner();
         fetchTodayStats();
+        updateScanModeUI(eventSelect.value);
     }
 
     /* ── Only start scanner once; switching events does NOT restart camera ── */
+    // Map of event id → scan_mode (populated from blade)
+    const eventScanModes = {
+        @foreach($events as $event)
+        {{ $event->id }}: '{{ $event->scan_mode ?? 'household' }}',
+        @endforeach
+    };
+
+    function updateScanModeUI(eventId) {
+        const indicator = document.getElementById('scan-mode-indicator');
+        const mode = eventScanModes[eventId] || 'household';
+        const isHousehold = mode === 'household';
+
+        indicator.style.display = 'flex';
+        indicator.style.background    = isHousehold ? 'var(--blue-pale)' : '#F5F3FF';
+        indicator.style.border        = isHousehold ? '1px solid #C7D9F5' : '1px solid #DDD6FE';
+
+        const icon = document.getElementById('smi-icon');
+        icon.style.background = isHousehold ? 'var(--blue)' : '#7C3AED';
+        icon.innerHTML = isHousehold
+            ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>'
+            : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>';
+
+        document.getElementById('smi-title').style.color = isHousehold ? 'var(--blue-dark)' : '#5B21B6';
+        document.getElementById('smi-title').textContent = isHousehold ? 'Household QR Mode' : 'Family Head QR Mode';
+
+        document.getElementById('smi-hint').style.color = isHousehold ? 'var(--blue)' : '#7C3AED';
+        document.getElementById('smi-hint').textContent = isHousehold
+            ? 'Scan the household QR card — one release per household'
+            : 'Scan the family head personal QR — one release per family head';
+
+        document.getElementById('scanner-title').textContent = isHousehold
+            ? 'Camera Scanner — Point at Household QR Card'
+            : 'Camera Scanner — Point at Family Head Personal QR Card';
+
+        document.getElementById('page-sub-text').textContent = isHousehold
+            ? 'Scan household QR cards to validate and record ayuda distribution'
+            : 'Scan family head personal QR cards to validate and record ayuda distribution';
+    }
+
     eventSelect?.addEventListener('change', function () {
         if (!this.value) {
-            // No event chosen — hide scanner and reset counters to zero
             stopScanner();
             scanCount = 0;
             duplicateCount = 0;
             document.getElementById('scan-count').textContent      = 0;
             document.getElementById('duplicate-count').textContent = 0;
+            document.getElementById('scan-mode-indicator').style.display = 'none';
             return;
         }
         if (!scannerRunning) {
-            // First time an event is selected → start camera
             startScanner();
         }
-        // If scanner is already running, just leave it — no restart
-        // Clear any previous result when switching events
         resultCard.style.display = 'none';
         resultCard.innerHTML = '';
         currentHouseholdData = null;
-        // Refresh counters to show stats for the newly selected event
         fetchTodayStats();
+        updateScanModeUI(this.value);
     });
 
     function startScanner() {
@@ -511,8 +556,9 @@
                 document.getElementById('duplicate-count').textContent = duplicateCount;
                 showDuplicateResult(data);
             } else if (data.status === 'wrong_barangay') {
-                // ← Barangay restriction response
                 showBarangayBlockResult(data);
+            } else if (data.status === 'wrong_qr_type') {
+                showWrongQrTypeResult(data);
             } else {
                 showErrorResult(data.message);
             }
@@ -741,6 +787,38 @@
         resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
+    function showWrongQrTypeResult(data) {
+        resultCard.style.display = 'block';
+        resultCard.innerHTML = `
+            <div class="result-inner error">
+                <div class="result-header error">
+                    <div class="result-status-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                    </div>
+                    <div class="result-status-text">Wrong QR Type — ${data.expected_mode === 'household' ? 'Household QR Required' : 'Family Head QR Required'}</div>
+                </div>
+                <div class="result-body">
+                    <table class="info-table">
+                        <tr><td>Scanned Code</td><td><strong>${data.scanned_code}</strong></td></tr>
+                        <tr><td>Expected QR Type</td><td><strong>${data.expected_mode === 'household' ? '🏠 Household QR Card' : '👤 Family Head Personal QR'}</strong></td></tr>
+                        <tr><td>Event Mode</td><td>${data.event_name}</td></tr>
+                    </table>
+                    <p style="font-size:12px;color:var(--red);margin-bottom:16px;">
+                        ${data.expected_mode === 'household'
+                            ? 'This event requires the <strong>household QR card</strong>. Please scan the correct card.'
+                            : 'This event requires the <strong>family head personal QR card</strong>. Please scan the correct card.'}
+                    </p>
+                    <div class="btn-row">
+                        <button class="btn btn-secondary" onclick="resetScanner()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
     function showErrorResult(message) {
         resultCard.style.display = 'block';
         resultCard.innerHTML = `
@@ -781,9 +859,11 @@
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                 },
                 body: JSON.stringify({
-                    household_id:   currentHouseholdData.id,
-                    event_id:       eventId,
-                    items_received: getEditedItems(currentHouseholdData.relief_items),
+                    household_id:      currentHouseholdData.id,
+                    event_id:          eventId,
+                    serial_code:       currentHouseholdData.serial_code,
+                    family_member_id:  currentHouseholdData.family_member_id ?? null,
+                    items_received:    getEditedItems(currentHouseholdData.relief_items),
                 }),
             });
             const data = await response.json();

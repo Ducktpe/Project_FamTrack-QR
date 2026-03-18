@@ -34,6 +34,21 @@
             <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#9AA3B0; margin-bottom:2px;">Total Distributed</div>
             <div style="font-size:13px; font-weight:600; color:#122D5A;">{{ $households->count() }}</div>
         </div>
+        <div style="width:1px; height:32px; background:#C7D9F3;"></div>
+        <div>
+            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#9AA3B0; margin-bottom:2px;">Scan Mode</div>
+            @if(($event->scan_mode ?? 'household') === 'family_head')
+                <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;text-transform:uppercase;background:#F5F3FF;color:#6D28D9;border:1px solid #DDD6FE;">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+                    Per Family Head
+                </span>
+            @else
+                <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;text-transform:uppercase;background:#EAF0FA;color:#1B3F7A;border:1px solid #C7D9F5;">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+                    Per Household
+                </span>
+            @endif
+        </div>
         <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
             <a href="{{ route(auth()->user()->role.'.distribution.events.export.xlsx', $event) }}"
                target="_blank"
@@ -77,6 +92,9 @@
                         <th style="padding:9px 12px; background:#F7F8FA; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#5A6372; border-bottom:1px solid #DEE2E8;">#</th>
                         <th style="padding:9px 12px; background:#F7F8FA; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#5A6372; border-bottom:1px solid #DEE2E8;">Serial Code</th>
                         <th style="padding:9px 12px; background:#F7F8FA; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#5A6372; border-bottom:1px solid #DEE2E8;">Household Head</th>
+                        @if(($event->scan_mode ?? 'household') === 'family_head')
+                        <th style="padding:9px 12px; background:#F7F8FA; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#6D28D9; border-bottom:1px solid #DEE2E8;">Family Head (Scanned)</th>
+                        @endif
                         <th style="padding:9px 12px; background:#F7F8FA; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#5A6372; border-bottom:1px solid #DEE2E8;">Barangay</th>
                         <th style="padding:9px 12px; background:#F7F8FA; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#5A6372; border-bottom:1px solid #DEE2E8;">Distributed By</th>
                         <th style="padding:9px 12px; background:#F7F8FA; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#5A6372; border-bottom:1px solid #DEE2E8;">Date & Time</th>
@@ -95,6 +113,11 @@
                             <td style="padding:9px 12px; font-weight:600; color:#122D5A;">
                                 {{ $household->household_head_name ?? 'N/A' }}
                             </td>
+                            @if(($event->scan_mode ?? 'household') === 'family_head')
+                            <td style="padding:9px 12px; font-size:12px; color:#6D28D9; font-weight:600;">
+                                {{ $household->distributionLog?->familyMember?->full_name ?? '—' }}
+                            </td>
+                            @endif
                             <td style="padding:9px 12px; color:#5A6372; font-size:12px;">
                                 {{ $household->barangay ?? 'N/A' }}
                             </td>
