@@ -17,7 +17,7 @@ class Household extends Model
         // Section 1A — Location & Contact
         'household_head_name',
         'contact_number',
-        'listahanan_id',
+        'national_id',
         'email',
         'barangay',
         'municipality',
@@ -161,7 +161,7 @@ class Household extends Model
 
     public function scopeListahanan($query)
     {
-        return $query->whereNotNull('listahanan_id');
+        return $query->whereNotNull('national_id');
     }
 
     public function scope4Ps($query)

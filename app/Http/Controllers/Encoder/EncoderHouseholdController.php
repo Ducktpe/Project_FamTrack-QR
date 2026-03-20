@@ -75,7 +75,7 @@ class EncoderHouseholdController extends Controller
         $request->validate([
             'household_head_name'    => 'required|string|max:150',
             'contact_number'         => 'nullable|string|max:20',
-            'listahanan_id'          => 'nullable|string|max:50',
+            'national_id'          => 'nullable|string|max:50',
             'email'                  => 'nullable|email|max:150',
             'barangay'               => 'required|string|max:100',
             'municipality'           => 'required|string|max:100',
@@ -103,7 +103,7 @@ class EncoderHouseholdController extends Controller
                 // Section 1A
                 'household_head_name' => $request->household_head_name,
                 'contact_number'      => $request->contact_number,
-                'listahanan_id'       => $request->listahanan_id,
+                'national_id'       => $request->national_id,
                 'email'               => $request->email,
                 'barangay'            => $request->barangay,
                 'municipality'        => $request->municipality ?? 'Naic',
@@ -156,10 +156,9 @@ class EncoderHouseholdController extends Controller
             ]);
 
             // ── 3. nuclear_families + family_members + family_member_details ─
-            // Lookup tables: blade sends numeric index, DB stores string label
+            // Lookup tables: blade sends numeric index for vuln/civil/famType,
+            // but sends label text directly for employment_status & educational_attainment
             $vulnLabels    = ['None','Senior','PWD','Solo Parent','4Ps Member','Young','Old'];
-            $employLabels  = ['Unemployed','Employed','Part-time','Full-time','Self-employed','Pension/Retired','Freelance','Other'];
-            $educLabels    = ['Elementary Undergraduate','Elementary Graduate','High School Undergraduate','High School Graduate','Vocational','College Undergraduate','College Graduate','Master','Doctorate','TESDA','Other'];
             $famTypeLabels = ['Nuclear Family','Extended Family','Single Parent Family','Blended Family','Childless Couple','Grandparent-headed','Skipped Generation','Other'];
             $civilLabels   = ['Single','Married','Legally Separated','Widowed'];
 
@@ -183,8 +182,6 @@ class EncoderHouseholdController extends Controller
                 ]);
 
                 // ── For Nuclear Family 1: insert household head as first member ──
-                // The head's sex, birthday, civil_status come from the member form row
-                // (fam[1][m][1][...]) — NOT from Section 1 fields (those were removed).
                 if ($isPrimaryFamily) {
                     $headRow = $famData['m'][1] ?? [];
 
@@ -192,16 +189,20 @@ class EncoderHouseholdController extends Controller
                         $headCivilIdx = isset($headRow['civil_status']) && $headRow['civil_status'] !== ''
                             ? (int) $headRow['civil_status'] : null;
 
+                        // employment_status & educational_attainment are sent as label text from blade
+                        $headEmpStr  = !empty($headRow['employment_status'])     ? $headRow['employment_status']     : null;
+                        $headEducStr = !empty($headRow['educational_attainment'])? $headRow['educational_attainment']: null;
+
                         $headMember = FamilyMember::create([
                             'household_id'           => $household->id,
                             'nuclear_family_id'      => $nf->id,
-                            'is_family_head'         => 1,   // ← marks this member as the head
+                            'is_family_head'         => 1,
                             'full_name'              => $headRow['full_name'],
                             'relationship'           => 'Head',
                             'sex'                    => $headRow['sex']      ?? null,
                             'birthday'               => $headRow['birthday'],
                             'civil_status'           => $headCivilIdx !== null ? ($civilLabels[$headCivilIdx] ?? null) : null,
-                            'educational_attainment' => null,
+                            'educational_attainment' => $headEducStr,
                             'is_pwd'                 => 0,
                             'is_student'             => 0,
                         ]);
@@ -212,8 +213,9 @@ class EncoderHouseholdController extends Controller
                             'vulnerable_sector' => null,
                             'vuln_registered'   => null,
                             'vuln_id_number'    => null,
-                            'employment_status' => null,
-                            'job_title'         => null,
+                            'employment_status' => $headEmpStr,
+                            'job_title'         => $headRow['job_title']          ?? null,
+                            'employment_other'  => $headRow['employment_other']   ?? null,
                         ]);
                     }
                 }
@@ -226,16 +228,16 @@ class EncoderHouseholdController extends Controller
                     if (empty($m['full_name'])) continue;
                     if (empty($m['birthday']))  continue;
 
-                    // Decode numeric indexes → string labels
-                    $vulnIdx  = isset($m['vuln_sector'])           && $m['vuln_sector']           !== '' ? (int) $m['vuln_sector']           : null;
-                    $empIdx   = isset($m['employment_status'])     && $m['employment_status']     !== '' ? (int) $m['employment_status']     : null;
-                    $educIdx  = isset($m['educational_attainment'])&& $m['educational_attainment']!== '' ? (int) $m['educational_attainment'] : null;
-                    $civilIdx = isset($m['civil_status'])          && $m['civil_status']          !== '' ? (int) $m['civil_status']          : null;
+                    // vuln and civil still use numeric index; emp and educ are now label text
+                    $vulnIdx  = isset($m['vuln_sector'])  && $m['vuln_sector']  !== '' ? (int) $m['vuln_sector']  : null;
+                    $civilIdx = isset($m['civil_status']) && $m['civil_status'] !== '' ? (int) $m['civil_status'] : null;
 
-                    $vulnStr  = $vulnIdx  !== null ? ($vulnLabels[$vulnIdx]    ?? null) : null;
-                    $empStr   = $empIdx   !== null ? ($employLabels[$empIdx]   ?? null) : null;
-                    $educStr  = $educIdx  !== null ? ($educLabels[$educIdx]    ?? null) : null;
-                    $civilStr = $civilIdx !== null ? ($civilLabels[$civilIdx]  ?? null) : null;
+                    $vulnStr  = $vulnIdx  !== null ? ($vulnLabels[$vulnIdx]   ?? null) : null;
+                    $civilStr = $civilIdx !== null ? ($civilLabels[$civilIdx] ?? null) : null;
+
+                    // employment_status & educational_attainment sent as label text directly
+                    $empStr  = !empty($m['employment_status'])      ? $m['employment_status']      : null;
+                    $educStr = !empty($m['educational_attainment']) ? $m['educational_attainment'] : null;
 
                     $member = FamilyMember::create([
                         'household_id'           => $household->id,
@@ -255,10 +257,11 @@ class EncoderHouseholdController extends Controller
                         'family_member_id'  => $member->id,
                         'is_lgbtqia'        => isset($m['is_lgbtqia']) ? 1 : 0,
                         'vulnerable_sector' => $vulnStr,
-                        'vuln_registered'   => $m['vuln_registered'] ?? null,
-                        'vuln_id_number'    => $m['vuln_id_number']  ?? null,
+                        'vuln_registered'   => $m['vuln_registered']    ?? null,
+                        'vuln_id_number'    => $m['vuln_id_number']     ?? null,
                         'employment_status' => $empStr,
-                        'job_title'         => $m['job_title']       ?? null,
+                        'job_title'         => $m['job_title']          ?? null,
+                        'employment_other'  => $m['employment_other']   ?? null,
                     ]);
 
                     // Bubble vulnerability flags up to household
@@ -368,7 +371,7 @@ class EncoderHouseholdController extends Controller
             // Section 1A
             'household_head_name' => 'required|string|max:150',
             'contact_number'      => 'nullable|string|max:20',
-            'listahanan_id'       => 'nullable|string|max:50',
+            'national_id'       => 'nullable|string|max:50',
             'email'               => 'nullable|email|max:150',
             'barangay'            => 'required|string|max:100',
             'barangay_area'       => 'nullable|string|max:50',
@@ -411,7 +414,7 @@ class EncoderHouseholdController extends Controller
             $household->update([
                 'household_head_name' => $request->household_head_name,
                 'contact_number'      => $request->contact_number,
-                'listahanan_id'       => $request->listahanan_id,
+                'national_id'       => $request->national_id,
                 'email'               => $request->email,
                 'barangay'            => $request->barangay,
                 'municipality'        => $request->municipality ?? $household->municipality,
@@ -492,6 +495,7 @@ class EncoderHouseholdController extends Controller
                         'vulnerable_sector' => $m['vulnerable_sector'] ?? null,
                         'employment_status' => $m['employment_status'] ?? null,
                         'job_title'         => $m['job_title']         ?? null,
+                        'employment_other'  => $m['employment_other']  ?? null,
                     ]
                 );
 

@@ -1912,7 +1912,7 @@
         'Humbac':                       [14.3508, 120.7558],
         'Ibayo Estacion':               [14.3333, 120.7722],
         'Ibayo Silangan':               [14.3350, 120.7756],
-        'Kanluran Rizal':               [14.3261, 120.7578],
+        'Kanluran':                     [14.3261, 120.7578],
         'Latoria':                      [14.3183, 120.7503],
         'Labac':                        [14.3397, 120.7683],
         'Mabolo':                       [14.3139, 120.7639],
@@ -1944,7 +1944,7 @@
             allBarangayNames = [
                 'Bagong Kalsada','Balsahan','Bancaan','Bucana Malaki','Bucana Sasahan',
                 'Calubcob','Capt. C. Nazareno (Poblacion)','Gombalza (Poblacion)',
-                'Halang','Humbac','Ibayo Estacion','Ibayo Silangan','Kanluran Rizal',
+                'Halang','Humbac','Ibayo Estacion','Ibayo Silangan','Kanluran',
                 'Latoria','Labac','Mabolo','Malainen Bago','Malainen Luma','Makina',
                 'Molino','Munting Mapino','Muzon','Palangue 2 & 3','Palangue Central',
                 'Sabang','San Roque','Santulan','Sapa','Timalan Balsahan','Timalan Concepcion'

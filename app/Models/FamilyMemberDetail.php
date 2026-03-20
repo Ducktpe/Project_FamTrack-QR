@@ -14,6 +14,7 @@ class FamilyMemberDetail extends Model
         'vuln_id_number',
         'employment_status',
         'job_title',
+        'employment_other',
     ];
 
     protected $casts = [
@@ -27,4 +28,4 @@ class FamilyMemberDetail extends Model
     {
         return $this->belongsTo(FamilyMember::class, 'family_member_id');
     }
-}
+}   

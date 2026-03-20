@@ -311,15 +311,15 @@
                             @error('email')<div class="field-error">{{ $message }}</div>@enderror
                         </div>
                         <div class="form-group">
-                            <label>Listahanan ID</label>
-                            <input type="text" name="listahanan_id" class="form-control @error('listahanan_id') is-error @enderror"
-                                value="{{ old('listahanan_id', $household->listahanan_id) }}" placeholder="4Ps Listahanan ID (if any)">
-                            @error('listahanan_id')<div class="field-error">{{ $message }}</div>@enderror
+                            <label>National ID</label>
+                            <input type="text" name="national_id" class="form-control @error('national_id') is-error @enderror"
+                                value="{{ old('national_id', $household->national_id) }}" placeholder="4Ps National ID (if any)">
+                            @error('national_id')<div class="field-error">{{ $message }}</div>@enderror
                         </div>
                         <div class="form-group">
                             <label>Barangay <span class="required">*</span></label>
                             <select name="barangay" class="form-control @error('barangay') is-error @enderror" required>
-                                @foreach(['Bagong Kalsada','Balsahan','Bancaan','Bucana Malaki','Bucana Sasahan','Calubcob','Capt. C. Nazareno (Poblacion)','Gombalza (Poblacion)','Halang','Humbac','Ibayo Estacion','Ibayo Silangan','Kanluran Rizal','Latoria','Labac','Mabolo','Malainen Bago','Malainen Luma','Makina','Molino','Munting Mapino','Muzon','Palangue 2 & 3','Palangue Central','Sabang','San Roque','Santulan','Sapa','Timalan Balsahan','Timalan Concepcion'] as $brgy)
+                                @foreach(['Bagong Kalsada','Balsahan','Bancaan','Bucana Malaki','Bucana Sasahan','Calubcob','Capt. C. Nazareno (Poblacion)','Gombalza (Poblacion)','Halang','Humbac','Ibayo Estacion','Ibayo Silangan','Kanluran','Latoria','Labac','Mabolo','Malainen Bago','Malainen Luma','Makina','Molino','Munting Mapino','Muzon','Palangue 2 & 3','Palangue Central','Sabang','San Roque','Santulan','Sapa','Timalan Balsahan','Timalan Concepcion'] as $brgy)
                                     <option value="{{ $brgy }}" @selected(old('barangay', $household->barangay) == $brgy)>{{ $brgy }}</option>
                                 @endforeach
                             </select>
@@ -632,17 +632,23 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Employment Status</label>
-                                            <select name="members[{{ $mid }}][employment_status]" class="form-control">
+                                            <select name="members[{{ $mid }}][employment_status]" class="form-control emp-status-sel"
+                                                onchange="onEditEmp(this)">
                                                 <option value="">— Select —</option>
                                                 @foreach(['Unemployed','Employed','Part-time','Full-time','Self-employed','Pension/Retired','Freelance','Other'] as $emp)
                                                     <option value="{{ $emp }}" @selected($det && $det->employment_status === $emp)>{{ $emp }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group emp-job-group" style="{{ ($det && $det->employment_status && $det->employment_status !== 'Unemployed' && $det->employment_status !== 'Pension/Retired' && $det->employment_status !== 'Other') ? '' : 'display:none' }}">
                                             <label>Job Title</label>
                                             <input type="text" name="members[{{ $mid }}][job_title]" class="form-control"
                                                 value="{{ $det?->job_title ?? '' }}" placeholder="If employed">
+                                        </div>
+                                        <div class="form-group emp-other-group" style="{{ ($det && $det->employment_status === 'Other') ? '' : 'display:none' }}">
+                                            <label>Please Specify</label>
+                                            <input type="text" name="members[{{ $mid }}][employment_other]" class="form-control"
+                                                value="{{ $det?->employment_other ?? '' }}" placeholder="Specify employment type...">
                                         </div>
                                         <div class="form-group">
                                             <label>Vulnerable Sector</label>
@@ -809,6 +815,25 @@
         const tog=document.getElementById('member_tog_'+id);
         const collapsed=fields.classList.toggle('collapsed');
         tog.textContent=collapsed?'▼ Edit':'▲ Close';
+    }
+
+    /* ─── Employment Status: show/hide job title or "other" field ─── */
+    const EMPLOYED_OPTS = ['Employed','Part-time','Full-time','Self-employed','Freelance'];
+    function onEditEmp(sel){
+        const row = sel.closest('.form-group').parentElement;
+        const jobGroup   = row.querySelector('.emp-job-group');
+        const otherGroup = row.querySelector('.emp-other-group');
+        const v = sel.value;
+        if(v === 'Other'){
+            if(jobGroup)   jobGroup.style.display   = 'none';
+            if(otherGroup) otherGroup.style.display = '';
+        } else if(EMPLOYED_OPTS.includes(v)){
+            if(jobGroup)   jobGroup.style.display   = '';
+            if(otherGroup) otherGroup.style.display = 'none';
+        } else {
+            if(jobGroup)   jobGroup.style.display   = 'none';
+            if(otherGroup) otherGroup.style.display = 'none';
+        }
     }
 </script>
 </body>

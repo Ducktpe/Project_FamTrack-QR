@@ -70,7 +70,7 @@ class AdminHouseholdController extends Controller
             'Capt. C. Nazareno (Poblacion)' => 'CCN', 'Gombalza (Poblacion)'   => 'GMB',
             'Halang'                        => 'HLG', 'Humbac'                 => 'HMB',
             'Ibayo Estacion'                => 'IBE', 'Ibayo Silangan'         => 'IBS',
-            'Kanluran Rizal'                => 'KR',  'Latoria'                => 'LAT',
+            'Kanluran'                      => 'KR',  'Latoria'                => 'LAT',
             'Labac'                         => 'LAB', 'Mabolo'                 => 'MBL',
             'Malainen Bago'                 => 'MLB', 'Malainen Luma'          => 'MLL',
             'Makina'                        => 'MKN', 'Molino'                 => 'MOL',

@@ -408,8 +408,8 @@
                         <div class="field-val">{{ $household->email ?? '—' }}</div>
                     </div>
                     <div class="field">
-                        <label>Listahanan ID</label>
-                        <div class="field-val mono">{{ $household->listahanan_id ?? '—' }}</div>
+                        <label>National ID</label>
+                        <div class="field-val mono">{{ $household->national_id ?? '—' }}</div>
                     </div>
                     <div class="field">
                         <label>Barangay</label>

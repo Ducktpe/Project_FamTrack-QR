@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('province', 100);
 
             // --- DSWD / Listahanan Flags ---
-            $table->string('listahanan_id', 50)->nullable(); // DSWD Listahanan HH ID
+            $table->string('national_id', 50)->nullable(); // DSWD Listahanan HH ID
             $table->boolean('is_4ps_beneficiary')->default(false);
             $table->boolean('is_pwd')->default(false);       // has PWD member
             $table->boolean('is_senior')->default(false);    // has senior (60+) member

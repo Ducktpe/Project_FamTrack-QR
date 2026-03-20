@@ -549,10 +549,10 @@
 
             <div class="form-row cols-2">
                 <div class="form-group">
-                    <label class="form-label">Listahanan ID</label>
-                    {{-- DB: households.listahanan_id --}}
-                    <input type="text" class="form-input" name="listahanan_id"
-                        value="{{ old('listahanan_id') }}" placeholder="4Ps Listahanan ID (if any)">
+                    <label class="form-label">National ID</label>
+                    {{-- DB: households.national_id --}}
+                    <input type="text" class="form-input" name="national_id"
+                        value="{{ old('national_id') }}" placeholder="National ID (if any)">
                 </div>
                 <div class="form-group">
                     <label class="form-label" id="lbl-email">Email Address</label>
@@ -572,7 +572,7 @@
                         <option>Bucana Malaki</option><option>Bucana Sasahan</option><option>Calubcob</option>
                         <option>Capt. C. Nazareno (Poblacion)</option><option>Gombalza (Poblacion)</option>
                         <option>Halang</option><option>Humbac</option><option>Ibayo Estacion</option>
-                        <option>Ibayo Silangan</option><option>Kanluran Rizal</option><option>Latoria</option>
+                        <option>Ibayo Silangan</option><option>Kanluran</option><option>Latoria</option>
                         <option>Labac</option><option>Mabolo</option><option>Malainen Bago</option>
                         <option>Malainen Luma</option><option>Makina</option><option>Molino</option>
                         <option>Munting Mapino</option><option>Muzon</option><option>Palangue 2 &amp; 3</option>
@@ -961,6 +961,7 @@ const EN = {
     'opt-select':'— Select —','opt-male':'Male','opt-female':'Female',
     'vuln-reg':'Registered','vuln-unreg':'Unregistered','vuln-id-ph':'ID Number','vuln-hh-id':'Household ID No.',
     'employ-spec-ph':'Specify job title...',
+    'employ-other-ph':'Please specify...',
     'confirm-reset':'Clear all form data?','save-ok':'✓ Record Saved!',
 };
 
@@ -1030,6 +1031,7 @@ const TL = {
     'opt-select':'— Pumili —','opt-male':'Lalaki','opt-female':'Babae',
     'vuln-reg':'Rehistrado','vuln-unreg':'Hindi Rehistrado','vuln-id-ph':'ID Number','vuln-hh-id':'Household ID No.',
     'employ-spec-ph':'Tukuyin ang trabaho...',
+    'employ-other-ph':'Pakitukoy...',
     'confirm-reset':'Burahin ang lahat ng datos sa form?','save-ok':'✓ Nai-save ang Rekord!',
 };
 
@@ -1121,6 +1123,10 @@ let familyCount = 0;
 
 function makeSelOpts(key){
     return T(key).map((lbl,i)=>`<option value="${i}">${lbl}</option>`).join('');
+}
+// Use label text as the stored value (for employment_status, educational_attainment)
+function makeSelOptsLabels(key){
+    return T(key).map(lbl=>`<option value="${lbl}">${lbl}</option>`).join('');
 }
 
 function familyMemberTableHTML(fi){
@@ -1257,8 +1263,8 @@ function updateFamilyLabel(fi, val){
 function headInfoPanelHTML(fi){
     const sp=T('opt-select'), sm=T('opt-male'), sf=T('opt-female');
     const civil=makeSelOpts('sel-civil'), vuln=makeSelOpts('sel-vuln'),
-          emp=makeSelOpts('sel-employ'), educ=makeSelOpts('sel-educ');
-    const espPh=T('employ-spec-ph');
+          emp=makeSelOptsLabels('sel-employ'), educ=makeSelOptsLabels('sel-educ');
+    const espPh=T('employ-spec-ph'), otherPh=T('employ-other-ph');
     return `
     <div id="head_panel_${fi}" style="background:var(--blue-pale);border:1px solid #c3d8f5;border-radius:6px;padding:14px 16px;margin-bottom:16px;">
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
@@ -1337,9 +1343,11 @@ function headInfoPanelHTML(fi){
                     <option value="">${sp}</option>${emp}
                 </select>
                 <div id="ed_${fi}_1" style="display:none;margin-top:4px;">
-                    <input type="text" class="form-input" name="fam[${fi}][m][1][job_title]"
+                    <input type="text" class="form-input emp-job-input" name="fam[${fi}][m][1][job_title]"
                         placeholder="${espPh}" style="font-size:11px;padding:4px 8px;"
                         id="hp_job_${fi}">
+                    <input type="text" class="form-input emp-other-input" name="fam[${fi}][m][1][employment_other]"
+                        placeholder="${otherPh}" style="font-size:11px;padding:4px 8px;display:none;">
                 </div>
             </div>
             <div class="form-group" style="grid-column:span 2;">
@@ -1473,8 +1481,8 @@ function updateResidentsCount(){
 function familyMemberRowHTML(fi, mi){
     const sp=T('opt-select'), sm=T('opt-male'), sf=T('opt-female');
     const civil=makeSelOpts('sel-civil'), vuln=makeSelOpts('sel-vuln'),
-          emp=makeSelOpts('sel-employ'), educ=makeSelOpts('sel-educ');
-    const espPh=T('employ-spec-ph'), namePh=T('th-name');
+          emp=makeSelOptsLabels('sel-employ'), educ=makeSelOptsLabels('sel-educ');
+    const espPh=T('employ-spec-ph'), namePh=T('th-name'), otherPh=T('employ-other-ph');
     const uid=`${fi}_${mi}`;
     // DB field mapping:
     // fam[fi][m][mi][full_name]       → family_members.full_name
@@ -1533,7 +1541,8 @@ function familyMemberRowHTML(fi, mi){
         <select class="form-select" name="fam[${fi}][m][${mi}][employment_status]" style="min-width:135px;font-size:11px;padding:5px 6px" onchange="onEmp(this,'${uid}')">
             <option value="">${sp}</option>${emp}</select>
         <div id="ed_${uid}" style="display:none;margin-top:4px">
-            <input type="text" class="form-input" name="fam[${fi}][m][${mi}][job_title]" placeholder="${espPh}" style="font-size:11px;padding:4px 8px">
+            <input type="text" class="form-input emp-job-input" name="fam[${fi}][m][${mi}][job_title]" placeholder="${espPh}" style="font-size:11px;padding:4px 8px">
+            <input type="text" class="form-input emp-other-input" name="fam[${fi}][m][${mi}][employment_other]" placeholder="${otherPh}" style="font-size:11px;padding:4px 8px;display:none">
         </div>
       </td>
       <td><select class="form-select" name="fam[${fi}][m][${mi}][educational_attainment]" style="min-width:145px;font-size:11px;padding:5px 6px">
@@ -1561,6 +1570,11 @@ function rebuildAllFamilyRows(){
                     else el.value=saved[el.name];
                 }
             });
+            // Re-trigger onEmp and onVuln so sub-fields show correctly after rebuild
+            const empSel  = tr.querySelector(`[name="fam[${fi}][m][${mi}][employment_status]"]`);
+            const vulnSel = tr.querySelector(`[name="fam[${fi}][m][${mi}][vuln_sector]"]`);
+            if(empSel)  onEmp(empSel,  `${fi}_${mi}`);
+            if(vulnSel) onVuln(vulnSel,`${fi}_${mi}`);
         });
     });
 }
@@ -1594,7 +1608,28 @@ function onVuln(sel,id){
 }
 
 function onEmp(sel,id){
-    document.getElementById(`ed_${id}`).style.display=sel.value==='1'?'block':'none';
+    const div = document.getElementById(`ed_${id}`);
+    const v = sel.value;
+    // employment_status now stores the label text as value
+    const showJob   = ['Employed – specify job','Part-time','Full-time','Self-employed','Freelance',
+                       'May Trabaho – tukuyin ang trabaho','Negosyante/Sariling Trabaho'];
+    const showOther = (v === 'Other' || v === 'Iba pa');
+
+    if(showOther){
+        div.style.display='block';
+        const jobInput   = div.querySelector('.emp-job-input');
+        const otherInput = div.querySelector('.emp-other-input');
+        if(jobInput)   jobInput.style.display   = 'none';
+        if(otherInput) otherInput.style.display = 'block';
+    } else if(showJob.includes(v)){
+        div.style.display='block';
+        const jobInput   = div.querySelector('.emp-job-input');
+        const otherInput = div.querySelector('.emp-other-input');
+        if(jobInput)   jobInput.style.display   = 'block';
+        if(otherInput) otherInput.style.display = 'none';
+    } else {
+        div.style.display='none';
+    }
 }
 
 function syncMemberCount(v){ /* no-op, now auto-counted */ }

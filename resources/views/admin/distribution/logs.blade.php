@@ -1043,7 +1043,7 @@
                     @php
                         $hhCols = [
                             'household_head_name' => 'Household Head Name',
-                            'listahanan_id'        => 'Listahan ID',
+                            'national_id'        => 'Listahan ID',
                             'contact_number'       => 'Contact Number',
                             'email'                => 'Email',
                             'street_purok'         => 'Street / Purok',

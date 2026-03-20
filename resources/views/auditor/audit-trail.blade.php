@@ -867,7 +867,7 @@
                                                         'barangay'            => 'Barangay',
                                                         'municipality'        => 'Municipality',
                                                         'province'            => 'Province',
-                                                        'listahanan_id'       => 'Listahanan ID',
+                                                        'national_id'       => 'National ID',
                                                         'is_4ps_beneficiary'  => '4Ps Beneficiary',
                                                         'is_pwd'              => 'PWD',
                                                         'is_senior'           => 'Senior Citizen',
@@ -921,7 +921,7 @@
                                                             @php
                                                                 // Pre-check which sections have data, so we don't render empty section headers
                                                                 $hasPersonal = !empty($hv['sex']) || !empty($hv['birthday']) || !empty($hv['civil_status']) || !empty($hv['contact_number']);
-                                                                $hasClassify = isset($hv['is_4ps_beneficiary']) || isset($hv['is_pwd']) || isset($hv['is_senior']) || isset($hv['is_solo_parent']) || !empty($hv['listahanan_id']);
+                                                                $hasClassify = isset($hv['is_4ps_beneficiary']) || isset($hv['is_pwd']) || isset($hv['is_senior']) || isset($hv['is_solo_parent']) || !empty($hv['national_id']);
                                                                 $hasRecord   = !empty($hv['status']) || (isset($hv['encoded_by']) && $hv['encoded_by'] !== null && !$isCreated) || (isset($hv['approved_by']) && $hv['approved_by'] !== null && !$isApproved) || !empty($hv['created_at']) || (!empty($hv['updated_at']) && !$isCreated);
                                                                 $totalFields = ($hasPersonal?1:0) + ($hasClassify?1:0) + ($hasRecord?1:0);
                                                             @endphp
@@ -974,10 +974,10 @@
                                                                             </div>
                                                                         @endif
                                                                     @endforeach
-                                                                    @if(!empty($hv['listahanan_id']))
+                                                                    @if(!empty($hv['national_id']))
                                                                         <div class="hh-field">
-                                                                            <div class="hh-field-label">Listahanan ID</div>
-                                                                            <div class="hh-field-val mono">{{ $hv['listahanan_id'] }}</div>
+                                                                            <div class="hh-field-label">National ID</div>
+                                                                            <div class="hh-field-val mono">{{ $hv['national_id'] }}</div>
                                                                         </div>
                                                                     @endif
                                                                 @endif

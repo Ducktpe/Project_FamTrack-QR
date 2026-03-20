@@ -424,11 +424,11 @@
                         <div class="info-grid">
                             <div class="info-item"><div class="info-label">Full Name</div><div class="info-value">{{ $household->household_head_name }}</div></div>
                             <div class="info-item"><div class="info-label">Sex</div><div class="info-value">{{ $household->sex }}</div></div>
-                            <div class="info-item"><div class="info-label">Birthday</div><div class="info-value">{{ $household->birthday->format('F d, Y') }}</div></div>
+                            <div class="info-item"><div class="info-label">Birthday</div><div class="info-value">{{ $household->birthday ? $household->birthday->format('F d, Y') : 'N/A' }}</div></div>
                             <div class="info-item"><div class="info-label">Age</div><div class="info-value">{{ $household->age }} years old</div></div>
                             <div class="info-item"><div class="info-label">Civil Status</div><div class="info-value">{{ $household->civil_status }}</div></div>
                             <div class="info-item"><div class="info-label">Contact Number</div><div class="info-value">@if($household->contact_number){{ $household->contact_number }}@else<em>N/A</em>@endif</div></div>
-                            <div class="info-item"><div class="info-label">Listahanan ID</div><div class="info-value">@if($household->listahanan_id)<span class="mono">{{ $household->listahanan_id }}</span>@else<em>Not enrolled</em>@endif</div></div>
+                            <div class="info-item"><div class="info-label">National ID</div><div class="info-value">@if($household->national_id)<span class="mono">{{ $household->national_id }}</span>@else<em>Not enrolled</em>@endif</div></div>
                             <div class="info-item"><div class="info-label">Total Household Members</div><div class="info-value">{{ $household->total_members }} person(s)</div></div>
                         </div>
                     </div>
@@ -470,8 +470,16 @@
                                             <td><span class="member-name">{{ $member->full_name }}</span></td>
                                             <td>{{ $member->relationship }}</td>
                                             <td>{{ $member->sex }}, {{ $member->age }} y/o</td>
-                                            <td>{{ $member->birthday->format('M d, Y') }}</td>
-                                            <td>{{ $member->occupation ?? '&mdash;' }}</td>
+                                            <td>{{ $member->birthday ? $member->birthday->format('M d, Y') : 'N/A' }}</td>
+                                            <td>
+                                                @php
+                                                    $emp   = $member->detail?->employment_status;
+                                                    $job   = $member->detail?->job_title;
+                                                    $other = $member->detail?->employment_other;
+                                                    $label = $job ?: ($other ?: $emp);
+                                                @endphp
+                                                {{ $label ?? '—' }}
+                                            </td>
                                             <td>
                                                 <div style="display:flex;gap:4px;flex-wrap:wrap;">
                                                     @if($member->is_pwd)

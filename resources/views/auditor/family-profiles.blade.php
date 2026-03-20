@@ -793,7 +793,7 @@
                 <div class="modal-section-label">System Information</div>
                 <div class="modal-grid">
                     <div class="modal-field">
-                        <label>Listahanan ID</label>
+                        <label>National ID</label>
                         <div class="field-val mono" id="modal-listahanan">—</div>
                     </div>
                     <div class="modal-field">
@@ -885,7 +885,7 @@ const householdsData = @json($households->getCollection()->keyBy('id'));
         document.getElementById('modal-barangay').textContent    = hh.barangay || '—';
         document.getElementById('modal-municipality').textContent= hh.municipality || '—';
         document.getElementById('modal-province').textContent    = hh.province || '—';
-        document.getElementById('modal-listahanan').textContent  = hh.listahanan_id || '—';
+        document.getElementById('modal-listahanan').textContent  = hh.national_id || '—';
         document.getElementById('modal-created').textContent = hh.created_at ? formatDate(hh.created_at) : '—';
         document.getElementById('modal-updated').textContent = hh.updated_at ? formatDate(hh.updated_at) : '—';
 

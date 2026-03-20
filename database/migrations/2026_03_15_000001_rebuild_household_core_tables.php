@@ -46,7 +46,7 @@ return new class extends Migration
             // Section 1A — Location & Contact
             $table->string('household_head_name', 150);
             $table->string('contact_number', 20)->nullable();
-            $table->string('listahanan_id', 50)->nullable();
+            $table->string('national_id', 50)->nullable();
             $table->string('email', 150)->nullable();
             $table->string('barangay', 100);
             $table->string('municipality', 100)->default('Naic');

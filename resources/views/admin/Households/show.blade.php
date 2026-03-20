@@ -634,9 +634,9 @@
                                 </div>
                             </div>
                             <div class="info-item">
-                                <div class="info-label">Listahanan ID</div>
+                                <div class="info-label">National ID</div>
                                 <div class="info-value">
-                                    @if($household->listahanan_id) <span class="mono">{{ $household->listahanan_id }}</span>
+                                    @if($household->national_id) <span class="mono">{{ $household->national_id }}</span>
                                     @else <em>Not enrolled</em> @endif
                                 </div>
                             </div>

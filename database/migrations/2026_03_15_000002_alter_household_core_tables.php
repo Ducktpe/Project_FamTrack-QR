@@ -50,8 +50,8 @@ return new class extends Migration
             // Section 1A — Location & Contact
             "`household_head_name` varchar(150)      NOT NULL                  AFTER `qr_code_path`",
             "`contact_number`      varchar(20)        DEFAULT NULL              AFTER `household_head_name`",
-            "`listahanan_id`       varchar(50)        DEFAULT NULL              AFTER `contact_number`",
-            "`email`               varchar(150)       DEFAULT NULL              AFTER `listahanan_id`",
+            "`national_id`       varchar(50)        DEFAULT NULL              AFTER `contact_number`",
+            "`email`               varchar(150)       DEFAULT NULL              AFTER `national_id`",
             "`barangay`            varchar(100)       NOT NULL                  AFTER `email`",
             "`municipality`        varchar(100)       NOT NULL                  AFTER `barangay`",
             "`province`            varchar(100)       NOT NULL                  AFTER `municipality`",

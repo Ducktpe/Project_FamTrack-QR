@@ -35,7 +35,7 @@ class DistributionEventExport
     // ── All available household columns ───────────────────────────────────────
     const HH_COLS = [
         'household_head_name' => 'Household Head Name',
-        'listahanan_id'       => 'Listahan ID',
+        'national_id'       => 'Listahan ID',
         'contact_number'      => 'Contact Number',
         'email'               => 'Email',
         'street_purok'        => 'Street / Purok',
@@ -222,7 +222,7 @@ class DistributionEventExport
 
         return match($col) {
             'household_head_name' => $hh->household_head_name ?? '—',
-            'listahanan_id'       => $hh->listahanan_id ?? '—',
+            'national_id'       => $hh->national_id ?? '—',
             'contact_number'      => $hh->contact_number ?? '—',
             'email'               => $hh->email ?? '—',
             'street_purok'        => $hh->street_purok ?? '—',
