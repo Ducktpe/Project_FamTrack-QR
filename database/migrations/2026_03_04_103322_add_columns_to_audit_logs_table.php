@@ -27,6 +27,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (!Schema::hasTable('audit_logs')) {
+            return;
+        }
+
         Schema::table('audit_logs', function (Blueprint $table) {
             $table->dropColumn(['category', 'severity', 'affected_name', 'description']);
         });

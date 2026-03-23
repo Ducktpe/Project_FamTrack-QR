@@ -33,7 +33,8 @@ return new class extends Migration
             $table->string('province', 100);
 
             // --- DSWD / Listahanan Flags ---
-            $table->string('national_id', 50)->nullable(); // DSWD Listahanan HH ID
+            $table->string('valid_id_type', 100)->nullable(); // e.g. Driver's License, PhilSys
+            $table->string('valid_id_num', 100)->nullable();  // ID number as provided
             $table->boolean('is_4ps_beneficiary')->default(false);
             $table->boolean('is_pwd')->default(false);       // has PWD member
             $table->boolean('is_senior')->default(false);    // has senior (60+) member
@@ -60,6 +61,8 @@ return new class extends Migration
 
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('households');
+        Schema::enableForeignKeyConstraints();
     }
 };

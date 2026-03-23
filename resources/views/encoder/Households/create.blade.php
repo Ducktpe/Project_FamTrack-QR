@@ -218,7 +218,15 @@
         .btn-add-member:hover{background:#d4e4f7;}
         .btn-remove{background:none;border:none;color:var(--gray-400);cursor:pointer;padding:4px;border-radius:3px;transition:color .15s;}
         .btn-remove:hover{color:var(--red);}
-        .id-input{font-size:11px;padding:4px 8px;border:1px solid var(--gray-200);border-radius:3px;font-family:'Open Sans',sans-serif;width:120px;}
+        .form-input.is-error,.form-select.is-error{border-color:var(--red);background:#FFF8F8;}
+        .form-input.is-error:focus,.form-select.is-error:focus{box-shadow:0 0 0 3px rgba(192,57,43,.12);}
+        .field-error-msg{font-size:11px;color:var(--red);margin-top:3px;display:flex;align-items:center;gap:4px;}
+        .field-error-msg::before{content:'⚠';font-size:10px;}
+        .alert-errors{background:#FEF2F2;border:1px solid #FECACA;border-left:4px solid var(--red);padding:14px 18px;margin-bottom:16px;border-radius:2px;}
+        .alert-errors-title{font-size:12px;font-weight:700;color:#7F1D1D;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+        .alert-errors-title svg{width:14px;height:14px;flex-shrink:0;}
+        .alert-errors ul{margin-left:16px;}
+        .alert-errors ul li{font-size:12px;color:#991B1B;margin-bottom:2px;}
         .id-input:focus{outline:none;border-color:var(--blue-light);}
         /* ── Individual Section ── */
         .ind-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
@@ -515,6 +523,20 @@
     </div>
 
     {{-- POST to your Laravel route: route('households.store') --}}
+    @if($errors->any())
+    <div class="alert-errors">
+        <div class="alert-errors-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Please fix the following before saving:
+        </div>
+        <ul>
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
     <form id="householdForm" method="POST" action="{{ route('encoder.households.store') }}" enctype="multipart/form-data" onsubmit="handleSubmit(event)">
     @csrf
     {{-- Always Naic, Cavite --}}
@@ -536,8 +558,9 @@
                 <div class="form-group" style="grid-column:span 2;">
                     <label class="form-label">Household Head Full Name <span class="req">*</span></label>
                     {{-- DB: households.household_head_name --}}
-                    <input type="text" class="form-input" name="household_head_name" required
+                    <input type="text" class="form-input @error('household_head_name') is-error @enderror" name="household_head_name" required
                         id="inp-hhname" value="{{ old('household_head_name') }}" placeholder="Last Name, First Name M.I." oninput="syncSection1ToNF1()">
+                    @error('household_head_name')<div class="field-error-msg">{{ $message }}</div>@enderror
                 </div>
                 <div class="form-group">
                     <label class="form-label">Contact Number</label>
@@ -549,15 +572,52 @@
 
             <div class="form-row cols-2">
                 <div class="form-group">
-                    <label class="form-label">National ID</label>
-                    {{-- DB: households.national_id --}}
-                    <input type="text" class="form-input" name="national_id"
-                        value="{{ old('national_id') }}" placeholder="National ID (if any)">
+                    <label class="form-label">Valid ID</label>
+                    {{-- DB: households.valid_id_type + households.valid_id_num --}}
+                    <select class="form-select" id="sel-valid-id-type" name="valid_id_type" onchange="onValidIdType(this)">
+                        <option value="">— None / Not Applicable —</option>
+                        <optgroup label="Government-Issued IDs">
+                            <option value="PhilSys (National ID)">PhilSys (National ID)</option>
+                            <option value="SSS ID">SSS ID (Social Security System)</option>
+                            <option value="GSIS ID">GSIS ID (Gov't Service Insurance System)</option>
+                            <option value="PhilHealth ID">PhilHealth ID</option>
+                            <option value="Pag-IBIG ID">Pag-IBIG ID (HDMF)</option>
+                            <option value="Postal ID">Postal ID</option>
+                            <option value="Voter's ID">Voter's ID / COMELEC Card</option>
+                            <option value="Driver's License">Driver's License (LTO)</option>
+                            <option value="Passport">Philippine Passport (DFA)</option>
+                            <option value="PRC ID">PRC ID (Professional Regulation Commission)</option>
+                            <option value="NBI Clearance">NBI Clearance</option>
+                            <option value="Police Clearance">Police Clearance</option>
+                            <option value="Senior Citizen ID">Senior Citizen ID (OSCA)</option>
+                            <option value="PWD ID">PWD ID (Persons with Disability)</option>
+                            <option value="Solo Parent ID">Solo Parent ID (DSWD)</option>
+                            <option value="4Ps / NHTS ID">4Ps / NHTS ID (DSWD)</option>
+                            <option value="OWWA ID">OWWA ID (Overseas Workers Welfare Admin)</option>
+                            <option value="OFW ID">OFW ID (iDOLE)</option>
+                            <option value="UMID">UMID (Unified Multi-Purpose ID)</option>
+                            <option value="TIN ID">TIN ID (Bureau of Internal Revenue)</option>
+                            <option value="BIR Card">BIR Card</option>
+                            <option value="TESDA Certificate">TESDA Certificate / ID</option>
+                        </optgroup>
+                        <optgroup label="Local / Other IDs">
+                            <option value="Barangay ID">Barangay ID</option>
+                            <option value="Company ID">Company / School ID</option>
+                            <option value="PhilHealth MDR">PhilHealth Member Data Record</option>
+                        </optgroup>
+                    </select>
+                    <div id="valid-id-num-wrap" style="display:none;margin-top:6px;">
+                        <input type="text" class="form-input" name="valid_id_num"
+                            id="inp-valid-id-num"
+                            value="{{ old('valid_id_num') }}"
+                            placeholder="Paste or type ID number here">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label" id="lbl-email">Email Address</label>
                     {{-- DB: households.email --}}
-                    <input type="email" class="form-input" name="email" id="inp-email" value="{{ old('email') }}">
+                    <input type="email" class="form-input @error('email') is-error @enderror" name="email" id="inp-email" value="{{ old('email') }}">
+                    @error('email')<div class="field-error-msg">{{ $message }}</div>@enderror
                 </div>
             </div>
             <hr class="form-section-divider" style="margin-top:4px;">
@@ -566,7 +626,7 @@
                 <div class="form-group">
                     <label class="form-label"><span id="lbl-barangay">Barangay</span> <span class="req">*</span></label>
                     {{-- DB: households.barangay --}}
-                    <select class="form-select" name="barangay" required id="sel-barangay">
+                    <select class="form-select @error('barangay') is-error @enderror" name="barangay" required id="sel-barangay">
                         <option value="" id="opt-brgy">— Select Barangay —</option>
                         <option>Bagong Kalsada</option><option>Balsahan</option><option>Bancaan</option>
                         <option>Bucana Malaki</option><option>Bucana Sasahan</option><option>Calubcob</option>
@@ -580,6 +640,7 @@
                         <option>Santulan</option><option>Sapa</option><option>Timalan Balsahan</option>
                         <option>Timalan Concepcion</option>
                     </select>
+                    @error('barangay')<div class="field-error-msg">{{ $message }}</div>@enderror
                 </div>
             </div>
             <div class="form-row cols-3">
@@ -596,7 +657,8 @@
                 <div class="form-group">
                     <label class="form-label" id="lbl-year">When Was the House Built?</label>
                     {{-- DB: households.year_built --}}
-                    <input type="number" class="form-input" name="year_built" id="inp-year" min="1900" max="2025" value="{{ old('year_built') }}">
+                    <input type="number" class="form-input @error('year_built') is-error @enderror" name="year_built" id="inp-year" min="1900" max="2025" value="{{ old('year_built') }}">
+                    @error('year_built')<div class="field-error-msg">{{ $message }}</div>@enderror
                 </div>
             </div>
             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -652,12 +714,14 @@
                 <div class="coord-inputs" style="margin-top:12px;">
                     <div class="form-group">
                         <label class="form-label"><span id="lbl-lat">Latitude</span></label>
-                        <input type="text" class="form-input" name="latitude" id="inp-lat" placeholder="e.g. 14.3124" value="{{ old('latitude') }}" oninput="onManualCoord()">
+                        <input type="text" class="form-input @error('latitude') is-error @enderror" name="latitude" id="inp-lat" placeholder="e.g. 14.3124" value="{{ old('latitude') }}" oninput="onManualCoord()">
+                        @error('latitude')<div class="field-error-msg">{{ $message }}</div>@enderror
                         <div class="coord-manual-hint">Auto-filled by map pin · or type manually</div>
                     </div>
                     <div class="form-group">
                         <label class="form-label"><span id="lbl-lon">Longitude</span></label>
-                        <input type="text" class="form-input" name="longitude" id="inp-lng" placeholder="e.g. 120.7606" value="{{ old('longitude') }}" oninput="onManualCoord()">
+                        <input type="text" class="form-input @error('longitude') is-error @enderror" name="longitude" id="inp-lng" placeholder="e.g. 120.7606" value="{{ old('longitude') }}" oninput="onManualCoord()">
+                        @error('longitude')<div class="field-error-msg">{{ $message }}</div>@enderror
                         <div class="coord-manual-hint">Auto-filled by map pin · or type manually</div>
                     </div>
                 </div>
@@ -963,6 +1027,20 @@ const EN = {
     'employ-spec-ph':'Specify job title...',
     'employ-other-ph':'Please specify...',
     'confirm-reset':'Clear all form data?','save-ok':'✓ Record Saved!',
+    // nuclear family section
+    'nf-remove':'Remove',
+    'nf-members':'members','nf-member':'member',
+    'th-relationship':'Relationship','th-head':'Head',
+    'hd-panel-title':'Household Head Details',
+    'hd-full-name':'Full Name','hd-age':'Age','hd-birthdate':'Birthdate',
+    'hd-sex':'Sex','hd-civil':'Civil Status','hd-lgbtqia':'LGBTQIA+',
+    'hd-vuln':'Vulnerable Sector','hd-employ':'Employment Status','hd-educ':'Educational Attainment',
+    'civil-single':'Single','civil-married':'Married','civil-separated':'Legally Separated','civil-widowed':'Widowed',
+    'famname-autofill':'Auto-filled from household head',
+    'famname-ph':'e.g. Dela Cruz',
+    'famhead-autofill':'Auto-filled from household head name',
+    'famhead-ph':'Full name of head',
+    'famtype-other-ph':'Please specify family type...',
 };
 
 const TL = {
@@ -1033,6 +1111,20 @@ const TL = {
     'employ-spec-ph':'Tukuyin ang trabaho...',
     'employ-other-ph':'Pakitukoy...',
     'confirm-reset':'Burahin ang lahat ng datos sa form?','save-ok':'✓ Nai-save ang Rekord!',
+    // nuclear family section
+    'nf-remove':'Alisin',
+    'nf-members':'miyembro','nf-member':'miyembro',
+    'th-relationship':'Relasyon','th-head':'Ulo',
+    'hd-panel-title':'Detalye ng Ulo ng Sambahayan',
+    'hd-full-name':'Buong Pangalan','hd-age':'Edad','hd-birthdate':'Petsa ng Kapanganakan',
+    'hd-sex':'Kasarian','hd-civil':'Katayuang Sibil','hd-lgbtqia':'LGBTQIA+',
+    'hd-vuln':'Bulnerableng Sektor','hd-employ':'Katayuan sa Trabaho','hd-educ':'Pinakamataas na Antas ng Pag-aaral',
+    'civil-single':'Walang Asawa','civil-married':'May Asawa','civil-separated':'Legal na Hiwalay','civil-widowed':'Balo',
+    'famname-autofill':'Awtomatikong napunan mula sa ulo ng sambahayan',
+    'famname-ph':'hal. Dela Cruz',
+    'famhead-autofill':'Awtomatikong napunan mula sa pangalan ng ulo',
+    'famhead-ph':'Buong pangalan ng ulo',
+    'famtype-other-ph':'Pakitukoy ang uri ng pamilya...',
 };
 
 // Build MIX: English label (Tagalog)
@@ -1116,6 +1208,56 @@ function applyLang(){
     // update btn-add-family-lbl
     const bfl = document.getElementById('btn-add-family-lbl');
     if(bfl) bfl.textContent = T('btn-add-family-lbl');
+
+    // ── NF meta labels (class-based, one per NF card) ──
+    document.querySelectorAll('.lbl-family-name-s').forEach(el => el.textContent = T('lbl-family-name'));
+    document.querySelectorAll('.lbl-family-type-s').forEach(el => el.textContent = T('lbl-family-type'));
+    document.querySelectorAll('.lbl-family-head-s').forEach(el => el.textContent = T('lbl-family-head'));
+    document.querySelectorAll('.members-title-s').forEach(el => el.textContent = T('members-title'));
+    document.querySelectorAll('.btn-add-lbl-s').forEach(el => el.textContent = T('btn-add-lbl'));
+    document.querySelectorAll('.nf-label').forEach(el => {
+        // Preserve any " — FamilyName" suffix after the label
+        el.textContent = el.textContent.replace(/^[^—]+/, m => {
+            const num = m.trim().split(' ').pop();
+            return `${T('family-lbl')} ${num} `;
+        });
+    });
+
+    // ── Rebuild all member table headers ──
+    document.querySelectorAll('[id^="fam_table_"]').forEach(tbl => {
+        const thead = tbl.querySelector('thead tr');
+        if(!thead) return;
+        thead.innerHTML = `
+            <th>#</th>
+            <th class="th-name-h">${T('th-name')}</th>
+            <th>${T('th-relationship')}</th>
+            <th>${T('th-head')}</th>
+            <th class="th-age-h">${T('th-age')}</th>
+            <th class="th-bdate-h">${T('th-bdate')}</th>
+            <th class="th-sex-h">${T('th-sex')}</th>
+            <th>${T('hd-lgbtqia')}</th>
+            <th class="th-civil-h">${T('th-civil')}</th>
+            <th class="th-vuln-h">${T('th-vuln')}</th>
+            <th class="th-employ-h">${T('th-employ')}</th>
+            <th class="th-educ-h">${T('th-educ')}</th>
+            <th></th>`;
+    });
+
+    // ── NF card sublabels (Name of Family Head: —) ──
+    document.querySelectorAll('[id^="nf_sub_"]').forEach(el => {
+        const fi = el.id.replace('nf_sub_','');
+        const headInput = document.getElementById(`nf_fhead_${fi}`);
+        const headVal = headInput ? headInput.value.trim() : '';
+        el.textContent = `${T('lbl-family-head')}: ${headVal || '—'}`;
+    });
+
+    // ── NF remove buttons ──
+    document.querySelectorAll('.nf-remove-btn').forEach(btn => {
+        // Keep the SVG, just update the text node after it
+        const svg = btn.querySelector('svg');
+        btn.textContent = T('nf-remove');
+        if(svg) btn.prepend(svg);
+    });
 }
 
 /* ─── Nuclear Family system ─── */
@@ -1126,7 +1268,11 @@ function makeSelOpts(key){
 }
 // Use label text as the stored value (for employment_status, educational_attainment)
 function makeSelOptsLabels(key){
-    return T(key).map(lbl=>`<option value="${lbl}">${lbl}</option>`).join('');
+    return T(key).map((lbl,i)=>{
+        // For sel-vuln, the first option ("None") should submit empty so it stores as null
+        const val = (key === 'sel-vuln' && i === 0) ? '' : lbl;
+        return `<option value="${val}">${lbl}</option>`;
+    }).join('');
 }
 
 function familyMemberTableHTML(fi){
@@ -1134,17 +1280,17 @@ function familyMemberTableHTML(fi){
         <table class="member-table" id="fam_table_${fi}">
             <thead><tr>
                 <th>#</th>
-                <th class="th-name-h">Name</th>
-                <th>Relationship</th>
-                <th>Head</th>
-                <th class="th-age-h">Age</th>
-                <th class="th-bdate-h">Birthdate</th>
-                <th class="th-sex-h">Sex</th>
-                <th>LGBTQIA+</th>
-                <th class="th-civil-h">Civil Status</th>
-                <th class="th-vuln-h">Vulnerable Sector</th>
-                <th class="th-employ-h">Employment Status</th>
-                <th class="th-educ-h">Educational Attainment</th>
+                <th class="th-name-h">${T('th-name')}</th>
+                <th>${T('th-relationship')}</th>
+                <th>${T('th-head')}</th>
+                <th class="th-age-h">${T('th-age')}</th>
+                <th class="th-bdate-h">${T('th-bdate')}</th>
+                <th class="th-sex-h">${T('th-sex')}</th>
+                <th>${T('hd-lgbtqia')}</th>
+                <th class="th-civil-h">${T('th-civil')}</th>
+                <th class="th-vuln-h">${T('th-vuln')}</th>
+                <th class="th-employ-h">${T('th-employ')}</th>
+                <th class="th-educ-h">${T('th-educ')}</th>
                 <th></th>
             </tr></thead>
             <tbody id="fam_body_${fi}"></tbody>
@@ -1176,13 +1322,13 @@ function addNuclearFamily(){
                 </div>
                 <div class="nf-pills">
                     <span class="nf-type-badge" id="nf_badge_${fi}">—</span>
-                    <span class="nf-count-badge" id="nf_cnt_${fi}">0 members</span>
+                    <span class="nf-count-badge" id="nf_cnt_${fi}">0 ${T('nf-members')}</span>
                 </div>
                 <svg class="nf-toggle" id="nf_tog_${fi}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
             <button type="button" class="nf-remove-btn" onclick="removeFamily(${fi})">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-                Remove
+                ${T('nf-remove')}
             </button>
         </div>
         <div class="nf-body" id="nf_body_${fi}">
@@ -1197,7 +1343,7 @@ function addNuclearFamily(){
                         <input type="text" class="form-input" name="fam[${fi}][family_name]"
                             id="nf_fname_${fi}"
                             style="font-size:12px;padding:6px 10px;${fi === 1 ? 'background:var(--gray-50);color:var(--gray-600);' : ''}"
-                            placeholder="${fi === 1 ? 'Auto-filled from household head' : 'e.g. Dela Cruz'}"
+                            placeholder="${fi === 1 ? T('famname-autofill') : T('famname-ph')}"
                             ${fi === 1 ? 'readonly' : ''}
                             oninput="${fi !== 1 ? `updateFamilyLabel(${fi},this.value)` : ''}">
                     </div>
@@ -1207,6 +1353,11 @@ function addNuclearFamily(){
                         <select class="form-select" name="fam[${fi}][family_type]" style="font-size:12px;padding:6px 10px;" onchange="updateFamilyTypeBadge(this,${fi})">
                             <option value="">${T('opt-select')}</option>${T('sel-famtype').map((lbl,i)=>`<option value="${i}">${lbl}</option>`).join('')}
                         </select>
+                        <div id="famtype_other_${fi}" style="display:none;margin-top:6px;">
+                            <input type="text" class="form-input" name="fam[${fi}][family_type_other]"
+                                placeholder="${T('famtype-other-ph')}"
+                                style="font-size:12px;padding:6px 10px;">
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">
@@ -1217,7 +1368,7 @@ function addNuclearFamily(){
                         <input type="text" class="form-input" name="fam[${fi}][family_head]"
                             id="nf_fhead_${fi}"
                             style="font-size:12px;padding:6px 10px;${fi === 1 ? 'background:var(--gray-50);color:var(--gray-600);' : ''}"
-                            placeholder="${fi === 1 ? 'Auto-filled from household head name' : 'Full name of head'}"
+                            placeholder="${fi === 1 ? T('famhead-autofill') : T('famhead-ph')}"
                             ${fi === 1 ? 'readonly' : ''}
                             oninput="${fi !== 1 ? `updateFamilyHead(${fi},this.value)` : ''}">
                     </div>
@@ -1262,40 +1413,40 @@ function updateFamilyLabel(fi, val){
 /* ── Head info panel HTML (Nuclear Family 1 only) ── */
 function headInfoPanelHTML(fi){
     const sp=T('opt-select'), sm=T('opt-male'), sf=T('opt-female');
-    const civil=makeSelOpts('sel-civil'), vuln=makeSelOpts('sel-vuln'),
+    const civil=makeSelOpts('sel-civil'), vuln=makeSelOptsLabels('sel-vuln'),
           emp=makeSelOptsLabels('sel-employ'), educ=makeSelOptsLabels('sel-educ');
     const espPh=T('employ-spec-ph'), otherPh=T('employ-other-ph');
     return `
     <div id="head_panel_${fi}" style="background:var(--blue-pale);border:1px solid #c3d8f5;border-radius:6px;padding:14px 16px;margin-bottom:16px;">
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            Household Head Details
+            ${T('hd-panel-title')}
         </div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
             <input type="hidden" name="fam[${fi}][m][1][is_family_head]" value="1">
             <div class="form-group" style="grid-column:span 2;">
-                <label class="form-label" style="font-size:10px;">Full Name <span class="req">*</span></label>
+                <label class="form-label" style="font-size:10px;">${T('hd-full-name')} <span class="req">*</span></label>
                 <input type="text" class="form-input" name="fam[${fi}][m][1][full_name]"
                     style="font-size:12px;padding:6px 8px;"
                     id="hp_name_${fi}"
                     oninput="syncHeadNameToSection1(this.value)">
             </div>
             <div class="form-group">
-                <label class="form-label" style="font-size:10px;">Age</label>
+                <label class="form-label" style="font-size:10px;">${T('hd-age')}</label>
                 <input type="number" class="form-input" name="fam[${fi}][m][1][age_display]" min="0" max="120"
                     style="font-size:12px;padding:6px 8px;background:var(--gray-50);color:var(--gray-600);"
                     title="Auto-calculated from Birthdate" readonly tabindex="-1"
                     id="hp_age_${fi}">
             </div>
             <div class="form-group" style="grid-column:span 2;">
-                <label class="form-label" style="font-size:10px;">Birthdate</label>
+                <label class="form-label" style="font-size:10px;">${T('hd-birthdate')}</label>
                 <input type="date" class="form-input" name="fam[${fi}][m][1][birthday]"
                     style="font-size:12px;padding:6px 8px;"
                     id="hp_bday_${fi}"
                     oninput="calcAge(this,'hp_age_${fi}')">
             </div>
             <div class="form-group">
-                <label class="form-label" style="font-size:10px;">Sex</label>
+                <label class="form-label" style="font-size:10px;">${T('hd-sex')}</label>
                 <select class="form-select" name="fam[${fi}][m][1][sex]"
                     style="font-size:12px;padding:6px 8px;"
                     id="hp_sex_${fi}">
@@ -1305,19 +1456,19 @@ function headInfoPanelHTML(fi){
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label" style="font-size:10px;">Civil Status</label>
+                <label class="form-label" style="font-size:10px;">${T('hd-civil')}</label>
                 <select class="form-select" name="fam[${fi}][m][1][civil_status]"
                     style="font-size:12px;padding:6px 8px;"
                     id="hp_civil_${fi}">
                     <option value="">${sp}</option>
-                    <option value="Single">Single</option>
-                    <option value="Married">Married</option>
-                    <option value="Legally Separated">Legally Separated</option>
-                    <option value="Widowed">Widowed</option>
+                    <option value="Single">${T('civil-single')}</option>
+                    <option value="Married">${T('civil-married')}</option>
+                    <option value="Legally Separated">${T('civil-separated')}</option>
+                    <option value="Widowed">${T('civil-widowed')}</option>
                 </select>
             </div>
             <div class="form-group" style="display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:4px;">
-                <label class="form-label" style="font-size:10px;">LGBTQIA+</label>
+                <label class="form-label" style="font-size:10px;">${T('hd-lgbtqia')}</label>
                 <div style="padding:8px 0;">
                     <input type="checkbox" name="fam[${fi}][m][1][is_lgbtqia]" value="1"
                         style="accent-color:var(--blue);width:16px;height:16px;"
@@ -1325,7 +1476,7 @@ function headInfoPanelHTML(fi){
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label" style="font-size:10px;">Vulnerable Sector</label>
+                <label class="form-label" style="font-size:10px;">${T('hd-vuln')}</label>
                 <select class="form-select" name="fam[${fi}][m][1][vuln_sector]"
                     style="font-size:12px;padding:6px 8px;"
                     id="hp_vuln_${fi}"
@@ -1335,7 +1486,7 @@ function headInfoPanelHTML(fi){
                 <div id="vd_${fi}_1" style="display:none;margin-top:5px;font-size:11px;"></div>
             </div>
             <div class="form-group" style="grid-column:span 2;">
-                <label class="form-label" style="font-size:10px;">Employment Status</label>
+                <label class="form-label" style="font-size:10px;">${T('hd-employ')}</label>
                 <select class="form-select" name="fam[${fi}][m][1][employment_status]"
                     style="font-size:12px;padding:6px 8px;"
                     id="hp_emp_${fi}"
@@ -1351,7 +1502,7 @@ function headInfoPanelHTML(fi){
                 </div>
             </div>
             <div class="form-group" style="grid-column:span 2;">
-                <label class="form-label" style="font-size:10px;">Educational Attainment</label>
+                <label class="form-label" style="font-size:10px;">${T('hd-educ')}</label>
                 <select class="form-select" name="fam[${fi}][m][1][educational_attainment]"
                     style="font-size:12px;padding:6px 8px;"
                     id="hp_educ_${fi}">
@@ -1436,7 +1587,17 @@ function updateFamilyTypeBadge(sel, fi){
     const badge = document.getElementById(`nf_badge_${fi}`);
     const opts = T('sel-famtype');
     const idx = parseInt(sel.value);
-    badge.textContent = (!isNaN(idx) && opts[idx]) ? opts[idx] : '—';
+    const label = (!isNaN(idx) && opts[idx]) ? opts[idx] : '—';
+    badge.textContent = label;
+
+    // "Other" is the last option (index 7)
+    const otherWrap = document.getElementById(`famtype_other_${fi}`);
+    if(otherWrap){
+        const isOther = (!isNaN(idx) && idx === opts.length - 1);
+        otherWrap.style.display = isOther ? 'block' : 'none';
+        const otherInput = otherWrap.querySelector('input');
+        if(otherInput && !isOther) otherInput.value = '';
+    }
 }
 
 /* per-family member counters */
@@ -1471,7 +1632,7 @@ function updateResidentsCount(){
         const n = tb.children.length + panelCount;
         total += n;
         const badge = document.getElementById(`nf_cnt_${fi}`);
-        if(badge) badge.textContent = `${n} member${n!==1?'s':''}`;
+        if(badge) badge.textContent = `${n} ${T('nf-members')}`;
     });
     const el = document.getElementById('numResidents');
     if(el) el.value = total || '';
@@ -1480,7 +1641,7 @@ function updateResidentsCount(){
 
 function familyMemberRowHTML(fi, mi){
     const sp=T('opt-select'), sm=T('opt-male'), sf=T('opt-female');
-    const civil=makeSelOpts('sel-civil'), vuln=makeSelOpts('sel-vuln'),
+    const civil=makeSelOpts('sel-civil'), vuln=makeSelOptsLabels('sel-vuln'),
           emp=makeSelOptsLabels('sel-employ'), educ=makeSelOptsLabels('sel-educ');
     const espPh=T('employ-spec-ph'), namePh=T('th-name'), otherPh=T('employ-other-ph');
     const uid=`${fi}_${mi}`;
@@ -1553,6 +1714,33 @@ function familyMemberRowHTML(fi, mi){
 }
 
 function rebuildAllFamilyRows(){
+    // ── Rebuild NF1 head panel (NF1 only — lives outside the member table) ──
+    const headPanel = document.getElementById('head_panel_1');
+    if(headPanel){
+        // Save all current field values
+        const saved = {};
+        headPanel.querySelectorAll('[name]').forEach(el => {
+            saved[el.name] = el.type === 'checkbox' ? el.checked : el.value;
+        });
+        // Re-render with current language
+        headPanel.outerHTML = headInfoPanelHTML(1);
+        // Restore saved values
+        const newPanel = document.getElementById('head_panel_1');
+        if(newPanel){
+            newPanel.querySelectorAll('[name]').forEach(el => {
+                if(saved[el.name] !== undefined){
+                    if(el.type === 'checkbox') el.checked = saved[el.name];
+                    else el.value = saved[el.name];
+                }
+            });
+            // Re-trigger sub-fields
+            const empSel  = newPanel.querySelector('[name="fam[1][m][1][employment_status]"]');
+            const vulnSel = newPanel.querySelector('[name="fam[1][m][1][vuln_sector]"]');
+            if(empSel)  onEmp(empSel,  '1_1');
+            if(vulnSel) onVuln(vulnSel,'1_1');
+        }
+    }
+
     document.querySelectorAll('[id^="fam_body_"]').forEach(tb=>{
         const fi = tb.id.replace('fam_body_','');
         tb.querySelectorAll('tr').forEach(tr=>{
@@ -1585,9 +1773,17 @@ function onVuln(sel,id){
     // DB: family_member_details.vuln_registered  → name="fam[fi][m][mi][vuln_registered]"
     // DB: family_member_details.vuln_id_number   → name="fam[fi][m][mi][vuln_id_number]"
     const div=document.getElementById(`vd_${id}`);
-    const idx=parseInt(sel.value);
+    const v=sel.value;
     const parts=id.split('_'); const fi=parts[0]; const mi=parts[1];
-    if(idx>=1 && idx<=3){
+
+    // Sectors that require Registered/Unregistered + ID number
+    const showReg = ['Senior','PWD','Solo Parent',
+                     'Senior Citizen','Mag-iisang Magulang',
+                     'Lolo/Lola-pinamunuan','Matanda'];
+    // 4Ps member — just show household ID input
+    const show4ps = (v === '4Ps Member' || v === 'Miyembro ng 4Ps');
+
+    if(showReg.some(s => v === s)){
         div.style.display='block';
         div.innerHTML=`
           <label style="display:flex;align-items:center;gap:5px;margin-bottom:4px">
@@ -1599,7 +1795,7 @@ function onVuln(sel,id){
             <input type="radio" name="fam[${fi}][m][${mi}][vuln_registered]" value="0" style="accent-color:var(--blue)">
             <span>${T('vuln-unreg')}</span>
           </label>`;
-    } else if(idx===4){
+    } else if(show4ps){
         div.style.display='block';
         div.innerHTML=`<input type="text" class="id-input" name="fam[${fi}][m][${mi}][vuln_id_number]" placeholder="${T('vuln-hh-id')}" style="width:100%">`;
     } else {
@@ -1647,6 +1843,24 @@ function setLang(lang){
     applyLang();
 }
 
+/* ─── Valid ID type toggle ─── */
+function onValidIdType(sel){
+    const wrap  = document.getElementById('valid-id-num-wrap');
+    const input = document.getElementById('inp-valid-id-num');
+    if(sel.value){
+        wrap.style.display = 'block';
+        input.placeholder  = `Enter ${sel.value} number`;
+    } else {
+        wrap.style.display = 'none';
+        input.value        = '';
+    }
+}
+// On page load, ensure correct initial state
+(function(){
+    const sel = document.getElementById('sel-valid-id-type');
+    if(sel) onValidIdType(sel);
+})();
+
 /* ─── Age auto-calculator ─── */
 function calcAge(bdayInput, ageFieldId){
     const ageEl = document.getElementById(ageFieldId);
@@ -1690,6 +1904,19 @@ function handleSubmit(e){
     document.getElementById('householdForm').submit();
 }
 
+// On page load: if there are validation errors, scroll to the error banner
+document.addEventListener('DOMContentLoaded', function(){
+    const errBanner = document.querySelector('.alert-errors');
+    if(errBanner){
+        errBanner.scrollIntoView({behavior:'smooth', block:'start'});
+        // Re-enable save button in case it was disabled before redirect
+        const btn = document.getElementById('btn-save');
+        const lbl = document.getElementById('btn-save-lbl');
+        if(btn){ btn.disabled=false; btn.style.background=''; }
+        if(lbl){ lbl.textContent='Save Household Record'; }
+    }
+});
+
 function confirmReset(){
     if(confirm(T('confirm-reset'))){
         document.getElementById('householdForm').reset();
@@ -1716,6 +1943,15 @@ requestAnimationFrame(()=>{ _pageInitialising = false; window.scrollTo(0,0); });
 (function(){
     const name = document.getElementById('inp-hhname')?.value;
     if(name) syncSection1ToNF1();
+})();
+
+// On load: re-trigger onVuln and onEmp for head panel so sub-fields
+// show correctly when old() values exist after a validation fail
+(function(){
+    const vulnSel = document.querySelector('[name="fam[1][m][1][vuln_sector]"]');
+    const empSel  = document.querySelector('[name="fam[1][m][1][employment_status]"]');
+    if(vulnSel && vulnSel.value) onVuln(vulnSel, '1_1');
+    if(empSel  && empSel.value)  onEmp(empSel,   '1_1');
 })();
 </script>
 </body>

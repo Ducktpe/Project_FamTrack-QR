@@ -75,7 +75,8 @@ class EncoderHouseholdController extends Controller
         $request->validate([
             'household_head_name'    => 'required|string|max:150',
             'contact_number'         => 'nullable|string|max:20',
-            'national_id'          => 'nullable|string|max:50',
+            'valid_id_type'          => 'nullable|string|max:100',
+            'valid_id_num'           => 'nullable|string|max:100',
             'email'                  => 'nullable|email|max:150',
             'barangay'               => 'required|string|max:100',
             'municipality'           => 'required|string|max:100',
@@ -103,7 +104,8 @@ class EncoderHouseholdController extends Controller
                 // Section 1A
                 'household_head_name' => $request->household_head_name,
                 'contact_number'      => $request->contact_number,
-                'national_id'       => $request->national_id,
+                'valid_id_type'       => $request->valid_id_type ?: null,
+                'valid_id_num'        => $request->valid_id_num  ?: null,
                 'email'               => $request->email,
                 'barangay'            => $request->barangay,
                 'municipality'        => $request->municipality ?? 'Naic',
@@ -190,8 +192,17 @@ class EncoderHouseholdController extends Controller
                             ? (int) $headRow['civil_status'] : null;
 
                         // employment_status & educational_attainment are sent as label text from blade
-                        $headEmpStr  = !empty($headRow['employment_status'])     ? $headRow['employment_status']     : null;
-                        $headEducStr = !empty($headRow['educational_attainment'])? $headRow['educational_attainment']: null;
+                        $headEmpStr  = !empty($headRow['employment_status'])      ? $headRow['employment_status']      : null;
+                        $headEducStr = !empty($headRow['educational_attainment']) ? $headRow['educational_attainment'] : null;
+
+                        // vuln_sector is now sent as label text (makeSelOptsLabels)
+                        $headVulnStr = !empty($headRow['vuln_sector']) ? $headRow['vuln_sector'] : null;
+
+                        // Bubble head vulnerability into household flags
+                        if ($headVulnStr === 'PWD')        $flagPwd        = true;
+                        if ($headVulnStr === 'Senior')      $flagSenior     = true;
+                        if ($headVulnStr === 'Solo Parent') $flagSoloParent = true;
+                        if ($headVulnStr === '4Ps Member')  $flag4ps        = true;
 
                         $headMember = FamilyMember::create([
                             'household_id'           => $household->id,
@@ -203,19 +214,19 @@ class EncoderHouseholdController extends Controller
                             'birthday'               => $headRow['birthday'],
                             'civil_status'           => $headCivilIdx !== null ? ($civilLabels[$headCivilIdx] ?? null) : null,
                             'educational_attainment' => $headEducStr,
-                            'is_pwd'                 => 0,
+                            'is_pwd'                 => ($headVulnStr === 'PWD') ? 1 : 0,
                             'is_student'             => 0,
                         ]);
 
                         FamilyMemberDetail::create([
                             'family_member_id'  => $headMember->id,
                             'is_lgbtqia'        => isset($headRow['is_lgbtqia']) ? 1 : 0,
-                            'vulnerable_sector' => null,
-                            'vuln_registered'   => null,
-                            'vuln_id_number'    => null,
+                            'vulnerable_sector' => $headVulnStr,
+                            'vuln_registered'   => $headRow['vuln_registered'] ?? null,
+                            'vuln_id_number'    => $headRow['vuln_id_number']  ?? null,
                             'employment_status' => $headEmpStr,
-                            'job_title'         => $headRow['job_title']          ?? null,
-                            'employment_other'  => $headRow['employment_other']   ?? null,
+                            'job_title'         => $headRow['job_title']         ?? null,
+                            'employment_other'  => $headRow['employment_other']  ?? null,
                         ]);
                     }
                 }
@@ -228,11 +239,10 @@ class EncoderHouseholdController extends Controller
                     if (empty($m['full_name'])) continue;
                     if (empty($m['birthday']))  continue;
 
-                    // vuln and civil still use numeric index; emp and educ are now label text
-                    $vulnIdx  = isset($m['vuln_sector'])  && $m['vuln_sector']  !== '' ? (int) $m['vuln_sector']  : null;
+                    // vuln_sector is now sent as label text (makeSelOptsLabels); civil still uses index
+                    $vulnStr  = !empty($m['vuln_sector'])  ? $m['vuln_sector']  : null;
                     $civilIdx = isset($m['civil_status']) && $m['civil_status'] !== '' ? (int) $m['civil_status'] : null;
 
-                    $vulnStr  = $vulnIdx  !== null ? ($vulnLabels[$vulnIdx]   ?? null) : null;
                     $civilStr = $civilIdx !== null ? ($civilLabels[$civilIdx] ?? null) : null;
 
                     // employment_status & educational_attainment sent as label text directly
@@ -371,7 +381,8 @@ class EncoderHouseholdController extends Controller
             // Section 1A
             'household_head_name' => 'required|string|max:150',
             'contact_number'      => 'nullable|string|max:20',
-            'national_id'       => 'nullable|string|max:50',
+            'valid_id_type'       => 'nullable|string|max:100',
+            'valid_id_num'        => 'nullable|string|max:100',
             'email'               => 'nullable|email|max:150',
             'barangay'            => 'required|string|max:100',
             'barangay_area'       => 'nullable|string|max:50',
@@ -414,7 +425,8 @@ class EncoderHouseholdController extends Controller
             $household->update([
                 'household_head_name' => $request->household_head_name,
                 'contact_number'      => $request->contact_number,
-                'national_id'       => $request->national_id,
+                'valid_id_type'       => $request->valid_id_type ?: null,
+                'valid_id_num'        => $request->valid_id_num  ?: null,
                 'email'               => $request->email,
                 'barangay'            => $request->barangay,
                 'municipality'        => $request->municipality ?? $household->municipality,

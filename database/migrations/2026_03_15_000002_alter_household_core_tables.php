@@ -50,8 +50,9 @@ return new class extends Migration
             // Section 1A — Location & Contact
             "`household_head_name` varchar(150)      NOT NULL                  AFTER `qr_code_path`",
             "`contact_number`      varchar(20)        DEFAULT NULL              AFTER `household_head_name`",
-            "`national_id`       varchar(50)        DEFAULT NULL              AFTER `contact_number`",
-            "`email`               varchar(150)       DEFAULT NULL              AFTER `national_id`",
+            "`valid_id_type`       varchar(100)       DEFAULT NULL              AFTER `contact_number`",
+            "`valid_id_num`        varchar(100)       DEFAULT NULL              AFTER `valid_id_type`",
+            "`email`               varchar(150)       DEFAULT NULL              AFTER `valid_id_num`",
             "`barangay`            varchar(100)       NOT NULL                  AFTER `email`",
             "`municipality`        varchar(100)       NOT NULL                  AFTER `barangay`",
             "`province`            varchar(100)       NOT NULL                  AFTER `municipality`",
@@ -138,34 +139,37 @@ return new class extends Migration
 
     public function down(): void
     {
-        // ── Reverse nuclear_families ──────────────────────────────────────────
-        Schema::table('nuclear_families', function (Blueprint $table) {
-            $table->dropColumn('is_primary');
-        });
+        if (Schema::hasTable('nuclear_families')) {
+            Schema::table('nuclear_families', function (Blueprint $table) {
+                $table->dropColumn('is_primary');
+            });
+        }
 
-        // ── Restore dropped households columns ────────────────────────────────
-        Schema::table('households', function (Blueprint $table) {
-            // Re-add as nullable since we no longer have the original data
-            $table->enum('sex', ['Male', 'Female'])->nullable()->after('household_head_name');
-            $table->date('birthday')->nullable()->after('sex');
-            $table->string('civil_status', 30)->nullable()->after('birthday');
-            $table->string('house_number', 30)->nullable()->after('civil_status');
-        });
+        if (Schema::hasTable('households')) {
+            Schema::table('households', function (Blueprint $table) {
+                $table->enum('sex', ['Male', 'Female'])->nullable()->after('household_head_name');
+                $table->date('birthday')->nullable()->after('sex');
+                $table->string('civil_status', 30)->nullable()->after('birthday');
+                $table->string('house_number', 30)->nullable()->after('civil_status');
+            });
+        }
 
-        // ── Reverse family_member_details column order ────────────────────────
-        DB::statement("ALTER TABLE `family_member_details`
-            MODIFY COLUMN `is_lgbtqia` tinyint(4) NOT NULL DEFAULT 0
-            AFTER `vuln_id_number`"
-        );
+        if (Schema::hasTable('family_member_details')) {
+            DB::statement("ALTER TABLE `family_member_details`
+                MODIFY COLUMN `is_lgbtqia` tinyint(4) NOT NULL DEFAULT 0
+                AFTER `vuln_id_number`"
+            );
+        }
 
-        // ── Reverse family_members changes ───────────────────────────────────
-        Schema::table('family_members', function (Blueprint $table) {
-            $table->dropColumn(['qr_code_path', 'is_family_head']);
-        });
+        if (Schema::hasTable('family_members')) {
+            Schema::table('family_members', function (Blueprint $table) {
+                $table->dropColumn(['qr_code_path', 'is_family_head']);
+            });
 
-        DB::statement("ALTER TABLE `family_members`
-            MODIFY COLUMN `civil_status` varchar(30) DEFAULT NULL
-            AFTER `relationship`"
-        );
+            DB::statement("ALTER TABLE `family_members`
+                MODIFY COLUMN `civil_status` varchar(30) DEFAULT NULL
+                AFTER `relationship`"
+            );
+        }
     }
 };

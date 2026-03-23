@@ -250,7 +250,7 @@
         </div>
         <div class="header-spacer"></div>
         <div class="header-user-badge">
-            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+            <div class="user-avatar">E</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
                 <div class="user-role">Data Entry Access</div>
@@ -399,6 +399,26 @@
                             @endif
                         </div>
                     </div>
+                    <div class="field" style="grid-column:span 2;">
+                        <label>Household Flags</label>
+                        <div class="field-val" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;">
+                            @if($household->is_4ps_beneficiary)
+                                <span class="badge badge-4ps">4Ps Beneficiary</span>
+                            @endif
+                            @if($household->is_pwd)
+                                <span class="badge badge-pwd">PWD Member</span>
+                            @endif
+                            @if($household->is_senior)
+                                <span class="badge badge-senior">Senior Member</span>
+                            @endif
+                            @if($household->is_solo_parent)
+                                <span class="badge badge-solo">Solo Parent</span>
+                            @endif
+                            @if(!$household->is_4ps_beneficiary && !$household->is_pwd && !$household->is_senior && !$household->is_solo_parent)
+                                <span style="font-size:12px;color:var(--gray-400);font-style:italic;">None</span>
+                            @endif
+                        </div>
+                    </div>
                     <div class="field">
                         <label>Contact Number</label>
                         <div class="field-val">{{ $household->contact_number ?? '—' }}</div>
@@ -408,8 +428,12 @@
                         <div class="field-val">{{ $household->email ?? '—' }}</div>
                     </div>
                     <div class="field">
-                        <label>National ID</label>
-                        <div class="field-val mono">{{ $household->national_id ?? '—' }}</div>
+                        <label>Valid ID</label>
+                        <div class="field-val">{{ $household->valid_id_type ?? '—' }}</div>
+                    </div>
+                    <div class="field">
+                        <label>ID Number</label>
+                        <div class="field-val mono">{{ $household->valid_id_num ?? '—' }}</div>
                     </div>
                     <div class="field">
                         <label>Barangay</label>

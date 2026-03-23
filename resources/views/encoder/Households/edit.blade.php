@@ -200,7 +200,7 @@
         </div>
         <div class="header-spacer"></div>
         <div class="header-user-badge">
-            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+            <div class="user-avatar">E</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
                 <div class="user-role">Data Entry Access</div>
@@ -311,10 +311,48 @@
                             @error('email')<div class="field-error">{{ $message }}</div>@enderror
                         </div>
                         <div class="form-group">
-                            <label>National ID</label>
-                            <input type="text" name="national_id" class="form-control @error('national_id') is-error @enderror"
-                                value="{{ old('national_id', $household->national_id) }}" placeholder="4Ps National ID (if any)">
-                            @error('national_id')<div class="field-error">{{ $message }}</div>@enderror
+                            <label>Valid ID</label>
+                            <select name="valid_id_type" id="edit-sel-valid-id-type" class="form-control @error('valid_id_type') is-error @enderror"
+                                onchange="onEditValidIdType(this)">
+                                <option value="">— None / Not Applicable —</option>
+                                <optgroup label="Government-Issued IDs">
+                                    <option value="PhilSys (National ID)" @selected(old('valid_id_type', $household->valid_id_type) == 'PhilSys (National ID)')>PhilSys (National ID)</option>
+                                    <option value="SSS ID" @selected(old('valid_id_type', $household->valid_id_type) == 'SSS ID')>SSS ID (Social Security System)</option>
+                                    <option value="GSIS ID" @selected(old('valid_id_type', $household->valid_id_type) == 'GSIS ID')>GSIS ID (Gov't Service Insurance System)</option>
+                                    <option value="PhilHealth ID" @selected(old('valid_id_type', $household->valid_id_type) == 'PhilHealth ID')>PhilHealth ID</option>
+                                    <option value="Pag-IBIG ID" @selected(old('valid_id_type', $household->valid_id_type) == 'Pag-IBIG ID')>Pag-IBIG ID (HDMF)</option>
+                                    <option value="Postal ID" @selected(old('valid_id_type', $household->valid_id_type) == 'Postal ID')>Postal ID</option>
+                                    <option value="Voter's ID" @selected(old('valid_id_type', $household->valid_id_type) == "Voter's ID")>Voter's ID / COMELEC Card</option>
+                                    <option value="Driver's License" @selected(old('valid_id_type', $household->valid_id_type) == "Driver's License")>Driver's License (LTO)</option>
+                                    <option value="Passport" @selected(old('valid_id_type', $household->valid_id_type) == 'Passport')>Philippine Passport (DFA)</option>
+                                    <option value="PRC ID" @selected(old('valid_id_type', $household->valid_id_type) == 'PRC ID')>PRC ID (Professional Regulation Commission)</option>
+                                    <option value="NBI Clearance" @selected(old('valid_id_type', $household->valid_id_type) == 'NBI Clearance')>NBI Clearance</option>
+                                    <option value="Police Clearance" @selected(old('valid_id_type', $household->valid_id_type) == 'Police Clearance')>Police Clearance</option>
+                                    <option value="Senior Citizen ID" @selected(old('valid_id_type', $household->valid_id_type) == 'Senior Citizen ID')>Senior Citizen ID (OSCA)</option>
+                                    <option value="PWD ID" @selected(old('valid_id_type', $household->valid_id_type) == 'PWD ID')>PWD ID (Persons with Disability)</option>
+                                    <option value="Solo Parent ID" @selected(old('valid_id_type', $household->valid_id_type) == 'Solo Parent ID')>Solo Parent ID (DSWD)</option>
+                                    <option value="4Ps / NHTS ID" @selected(old('valid_id_type', $household->valid_id_type) == '4Ps / NHTS ID')>4Ps / NHTS ID (DSWD)</option>
+                                    <option value="OWWA ID" @selected(old('valid_id_type', $household->valid_id_type) == 'OWWA ID')>OWWA ID (Overseas Workers Welfare Admin)</option>
+                                    <option value="OFW ID" @selected(old('valid_id_type', $household->valid_id_type) == 'OFW ID')>OFW ID (iDOLE)</option>
+                                    <option value="UMID" @selected(old('valid_id_type', $household->valid_id_type) == 'UMID')>UMID (Unified Multi-Purpose ID)</option>
+                                    <option value="TIN ID" @selected(old('valid_id_type', $household->valid_id_type) == 'TIN ID')>TIN ID (Bureau of Internal Revenue)</option>
+                                    <option value="BIR Card" @selected(old('valid_id_type', $household->valid_id_type) == 'BIR Card')>BIR Card</option>
+                                    <option value="TESDA Certificate" @selected(old('valid_id_type', $household->valid_id_type) == 'TESDA Certificate')>TESDA Certificate / ID</option>
+                                </optgroup>
+                                <optgroup label="Local / Other IDs">
+                                    <option value="Barangay ID" @selected(old('valid_id_type', $household->valid_id_type) == 'Barangay ID')>Barangay ID</option>
+                                    <option value="Company ID" @selected(old('valid_id_type', $household->valid_id_type) == 'Company ID')>Company / School ID</option>
+                                    <option value="PhilHealth MDR" @selected(old('valid_id_type', $household->valid_id_type) == 'PhilHealth MDR')>PhilHealth Member Data Record</option>
+                                </optgroup>
+                            </select>
+                            @error('valid_id_type')<div class="field-error">{{ $message }}</div>@enderror
+                            <div id="edit-valid-id-num-wrap" style="margin-top:6px;">
+                                <input type="text" name="valid_id_num" id="edit-inp-valid-id-num"
+                                    class="form-control @error('valid_id_num') is-error @enderror"
+                                    value="{{ old('valid_id_num', $household->valid_id_num) }}"
+                                    placeholder="Paste or type ID number here">
+                                @error('valid_id_num')<div class="field-error">{{ $message }}</div>@enderror
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Barangay <span class="required">*</span></label>
@@ -794,6 +832,16 @@
         ageEl.value = age >= 0 ? age : '';
     }
 
+    // Re-calculate all ages on page load from existing birthday values
+    document.addEventListener('DOMContentLoaded', function(){
+        document.querySelectorAll('input[type="date"][id^="bday_"]').forEach(function(input){
+            if(input.value){
+                const mid = input.id.replace('bday_', '');
+                calcAge(input, 'age_' + mid);
+            }
+        });
+    });
+
     function pad(n){return String(n).padStart(2,'0');}
     function updateClock(){
         const now=new Date();
@@ -831,8 +879,16 @@
             if(jobGroup)   jobGroup.style.display   = '';
             if(otherGroup) otherGroup.style.display = 'none';
         } else {
-            if(jobGroup)   jobGroup.style.display   = 'none';
-            if(otherGroup) otherGroup.style.display = 'none';
+        /* ─── Valid ID type toggle ─── */
+    function onEditValidIdType(sel){
+        const wrap  = document.getElementById('edit-valid-id-num-wrap');
+        const input = document.getElementById('edit-inp-valid-id-num');
+        if(sel.value){
+            wrap.style.display = 'block';
+            input.placeholder  = `Enter ${sel.value} number`;
+        } else {
+            wrap.style.display = 'none';
+            input.value        = '';
         }
     }
 </script>

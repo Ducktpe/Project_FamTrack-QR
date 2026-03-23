@@ -22,6 +22,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (!Schema::hasTable('family_members')) {
+            return;
+        }
+
         Schema::table('family_members', function (Blueprint $table) {
             $table->dropForeign('fk_fm_nuclear_family');
             $table->dropIndex('idx_fm_nuclear_family');

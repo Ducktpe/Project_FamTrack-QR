@@ -509,7 +509,14 @@
                                 data-status="{{ $household->isApproved() ? 'approved' : 'pending' }}">
                                 <td class="td-name">
                                     <strong>{{ $household->household_head_name }}</strong>
-                                    <small>{{ $household->sex }}, {{ $household->age }} years old</small>
+                                    <small>
+                                        @php $headMember = $household->members->firstWhere('is_family_head', 1); @endphp
+                                        @if($headMember)
+                                            {{ $headMember->sex }}, {{ $headMember->age }} years old
+                                        @else
+                                            —
+                                        @endif
+                                    </small>
                                 </td>
                                 <td class="td-address">
                                     {{ $household->street_purok }}, {{ $household->barangay }}

@@ -30,19 +30,21 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
+     * Note: kept at varchar(25) to avoid truncation errors on migrate:refresh
+     * when serial codes longer than 20 chars already exist in the database.
      */
     public function down(): void
     {
         Schema::table('households', function (Blueprint $table) {
-            $table->string('serial_code', 20)->nullable()->change();
+            $table->string('serial_code', 25)->nullable()->change();
         });
 
         Schema::table('distribution_logs', function (Blueprint $table) {
-            $table->string('serial_code', 20)->change();
+            $table->string('serial_code', 25)->change();
         });
 
         Schema::table('qr_codes', function (Blueprint $table) {
-            $table->string('serial_code', 20)->change();
+            $table->string('serial_code', 25)->change();
         });
     }
 };

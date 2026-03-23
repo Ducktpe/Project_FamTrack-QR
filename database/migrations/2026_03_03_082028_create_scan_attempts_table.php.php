@@ -11,15 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-       // database/migrations/xxxx_create_scan_attempts_table.php
-    Schema::create('scan_attempts', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('event_id')->constrained('distribution_events');
-    $table->foreignId('household_id')->nullable()->constrained('households');
-    $table->string('serial_code');
-    $table->foreignId('scanned_by')->constrained('users');
-    $table->enum('result', ['success', 'duplicate', 'not_found', 'wrong_barangay']);
-    $table->timestamp('scanned_at');
+        Schema::dropIfExists('scan_attempts');
+        Schema::create('scan_attempts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('event_id')->constrained('distribution_events');
+            $table->foreignId('household_id')->nullable()->constrained('households');
+            $table->string('serial_code');
+            $table->foreignId('scanned_by')->constrained('users');
+            $table->enum('result', ['success', 'duplicate', 'not_found', 'wrong_barangay']);
+            $table->timestamp('scanned_at');
         });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('scan_attempts');
     }
 };

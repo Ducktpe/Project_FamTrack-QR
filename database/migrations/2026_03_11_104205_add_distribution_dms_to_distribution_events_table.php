@@ -15,6 +15,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (!Schema::hasTable('distribution_events')) {
+            return;
+        }
+
         Schema::table('distribution_events', function (Blueprint $table) {
             $table->dropColumn('distribution_dms');
         });

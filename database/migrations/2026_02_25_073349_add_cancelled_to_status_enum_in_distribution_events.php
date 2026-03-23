@@ -12,6 +12,10 @@ return new class extends Migration
 
     public function down(): void
     {
-        DB::statement("ALTER TABLE distribution_events MODIFY COLUMN status ENUM('upcoming', 'ongoing', 'completed') NOT NULL DEFAULT 'upcoming'");
+        if (!Schema::hasTable('distribution_events')) {
+            return;
+        }
+
+        DB::statement("ALTER TABLE distribution_events MODIFY COLUMN status ENUM('upcoming', 'ongoing', 'completed', 'cancelled') NOT NULL DEFAULT 'upcoming'");
     }
 };

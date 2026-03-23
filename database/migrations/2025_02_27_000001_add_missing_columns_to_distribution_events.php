@@ -45,18 +45,17 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('distribution_events', function (Blueprint $table) {
-            $table->dropColumn([
-                'target_barangay',
-                'started_at',
-                'ended_at',
-                'cancelled_at',
-                'cancellation_reason',
-            ]);
+        if (!Schema::hasTable('distribution_events')) {
+            return;
+        }
 
-            $table->enum('status', ['upcoming', 'ongoing', 'completed'])
-                  ->default('upcoming')
-                  ->change();
+        Schema::table('distribution_events', function (Blueprint $table) {
+            $cols = ['target_barangay', 'started_at', 'ended_at', 'cancelled_at', 'cancellation_reason'];
+            foreach ($cols as $col) {
+                if (Schema::hasColumn('distribution_events', $col)) {
+                    $table->dropColumn($col);
+                }
+            }
         });
     }
 };

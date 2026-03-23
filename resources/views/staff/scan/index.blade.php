@@ -416,6 +416,46 @@
     let currentHouseholdData = null;
     let scanCount            = 0;       // local session tally (added to server count)
     let duplicateCount       = 0;
+    let currentEditorItems   = {};      // ← FIX: declared here to avoid TDZ error
+
+    // Full master catalogue — all items available across all categories
+    const ALL_ITEMS = {
+        'rice':                  { name: 'Rice',                        unit: 'kg',   step: '0.5', cat: 'food_pack' },
+        'canned_goods':          { name: 'Canned Goods',                unit: 'cans', step: '1',   cat: 'food_pack' },
+        'instant_noodles':       { name: 'Instant Noodles',             unit: 'pcs',  step: '1',   cat: 'food_pack' },
+        'coffee':                { name: 'Coffee',                      unit: 'pack', step: '1',   cat: 'food_pack' },
+        'bar_soap':              { name: 'Bar Soap',                    unit: 'bars', step: '1',   cat: 'hygiene_kit' },
+        'shampoo':               { name: 'Shampoo',                     unit: 'btl',  step: '1',   cat: 'hygiene_kit' },
+        'toothbrush':            { name: 'Toothbrush',                  unit: 'pcs',  step: '1',   cat: 'hygiene_kit' },
+        'toothpaste':            { name: 'Toothpaste',                  unit: 'tube', step: '1',   cat: 'hygiene_kit' },
+        'deodorant':             { name: 'Deodorant',                   unit: 'pcs',  step: '1',   cat: 'hygiene_kit' },
+        'towel':                 { name: 'Towel / Face Towel',          unit: 'pcs',  step: '1',   cat: 'hygiene_kit' },
+        'bucket':                { name: 'Bucket',                      unit: 'pcs',  step: '1',   cat: 'hygiene_kit' },
+        'dipper':                { name: 'Dipper (Tabo)',               unit: 'pcs',  step: '1',   cat: 'hygiene_kit' },
+        'feminine_hygiene_wash': { name: 'Feminine Hygiene Wash',       unit: 'btl',  step: '1',   cat: 'dignity_kit' },
+        'sanitary_pads':         { name: 'Sanitary Pads / Napkins',     unit: 'pack', step: '1',   cat: 'dignity_kit' },
+        'tissue_wipes':          { name: 'Tissue / Wipes',              unit: 'pack', step: '1',   cat: 'dignity_kit' },
+        'underwear':             { name: 'Underwear',                   unit: 'pcs',  step: '1',   cat: 'dignity_kit' },
+        'alcohol':               { name: 'Alcohol',                     unit: 'btl',  step: '1',   cat: 'first_aid_kit' },
+        'bandaid':               { name: 'Band-aid',                    unit: 'box',  step: '1',   cat: 'first_aid_kit' },
+        'bandage':               { name: 'Bandage',                     unit: 'roll', step: '1',   cat: 'first_aid_kit' },
+        'betadine':              { name: 'Betadine',                    unit: 'btl',  step: '1',   cat: 'first_aid_kit' },
+        'elastic_bandage':       { name: 'Elastic Bandage',             unit: 'roll', step: '1',   cat: 'first_aid_kit' },
+        'emergency_medicine':    { name: 'Emergency Medicine',          unit: 'pcs',  step: '1',   cat: 'first_aid_kit' },
+        'gauze_pad':             { name: 'Gauze Pad',                   unit: 'pcs',  step: '1',   cat: 'first_aid_kit' },
+        'gauze_roll':            { name: 'Gauze Roll',                  unit: 'roll', step: '1',   cat: 'first_aid_kit' },
+        'medical_tape':          { name: 'Medical Tape',                unit: 'roll', step: '1',   cat: 'first_aid_kit' },
+        'cash_aid':              { name: 'Cash Aid',                    unit: 'PHP',  step: '0.01',cat: 'cash_aid' },
+    };
+
+    const CAT_META = {
+        'food_pack':    { label: 'Food Pack',     icon: '🍱', accent: '#92400E', bg: '#FFFBEB', border: '#FDE68A', headBg: '#FEF3C7' },
+        'hygiene_kit':  { label: 'Hygiene Kit',   icon: '🧴', accent: '#1D4ED8', bg: '#EFF6FF', border: '#BFDBFE', headBg: '#DBEAFE' },
+        'dignity_kit':  { label: 'Dignity Kit',   icon: '🎀', accent: '#7E22CE', bg: '#FAF5FF', border: '#E9D5FF', headBg: '#F3E8FF' },
+        'first_aid_kit':{ label: 'First Aid Kit', icon: '🩹', accent: '#B91C1C', bg: '#FFF1F2', border: '#FECDD3', headBg: '#FFE4E6' },
+        'cash_aid':     { label: 'Cash Aid',      icon: '💵', accent: '#15803D', bg: '#F0FDF4', border: '#BBF7D0', headBg: '#DCFCE7' },
+        'other':        { label: 'Other Items',   icon: '📦', accent: '#374151', bg: '#F9FAFB', border: '#E5E7EB', headBg: '#F3F4F6' },
+    };
 
     /* ── Load today's real counts from the server, filtered by selected event ── */
     async function fetchTodayStats() {
@@ -569,65 +609,49 @@
 
     /* ── Result renderers ── */
 
+    // Tracks items currently shown in the editor (key → {name, qty, unit})
+
     function buildItemsEditor(reliefItems) {
-        if (!reliefItems || Object.keys(reliefItems).length === 0) return '';
-
-        // Category metadata — maps item keys to their category
-        const CATEGORIES = {
-            'food_pack':  {
-                label: 'Food Pack', icon: '🍱',
-                accent: '#92400E', bg: '#FFFBEB', border: '#FDE68A', headBg: '#FEF3C7',
-                keys: ['rice','canned_goods','instant_noodles','coffee'],
-            },
-            'hygiene_kit': {
-                label: 'Hygiene Kit', icon: '🧴',
-                accent: '#1D4ED8', bg: '#EFF6FF', border: '#BFDBFE', headBg: '#DBEAFE',
-                keys: ['bar_soap','shampoo','toothbrush','toothpaste','deodorant','towel','bucket','dipper'],
-            },
-            'dignity_kit': {
-                label: 'Dignity Kit', icon: '🎀',
-                accent: '#7E22CE', bg: '#FAF5FF', border: '#E9D5FF', headBg: '#F3E8FF',
-                keys: ['feminine_hygiene_wash','sanitary_pads','tissue_wipes','underwear'],
-            },
-            'first_aid_kit': {
-                label: 'First Aid Kit', icon: '🩹',
-                accent: '#B91C1C', bg: '#FFF1F2', border: '#FECDD3', headBg: '#FFE4E6',
-                keys: ['alcohol','bandaid','bandage','betadine','elastic_bandage','emergency_medicine','gauze_pad','gauze_roll','medical_tape'],
-            },
-            'cash_aid': {
-                label: 'Cash Aid', icon: '💵',
-                accent: '#15803D', bg: '#F0FDF4', border: '#BBF7D0', headBg: '#DCFCE7',
-                keys: ['cash_aid'],
-            },
-        };
-
-        // Group incoming items by category
-        const grouped = {};
-        for (const [key, item] of Object.entries(reliefItems)) {
-            let foundCat = 'other';
-            for (const [catKey, cat] of Object.entries(CATEGORIES)) {
-                if (cat.keys.includes(key)) { foundCat = catKey; break; }
+        currentEditorItems = {};
+        if (reliefItems && Object.keys(reliefItems).length > 0) {
+            for (const [key, item] of Object.entries(reliefItems)) {
+                currentEditorItems[key] = { name: item.name, qty: item.qty, unit: item.unit };
             }
-            if (!grouped[foundCat]) grouped[foundCat] = [];
-            grouped[foundCat].push([key, item]);
+        }
+        return renderItemsEditor();
+    }
+
+    function renderItemsEditor() {
+        if (Object.keys(currentEditorItems).length === 0) {
+            return `
+            <div id="items-editor-wrap" style="margin:16px 0;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B3F7A" stroke-width="2.5"><path d="M20 7H4a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 3h-8l-2 4h12l-2-4z"/></svg>
+                    <span style="font-size:12px;font-weight:700;color:#1B3F7A;text-transform:uppercase;letter-spacing:0.6px;">Items to Release</span>
+                </div>
+                <div id="items-sections"></div>
+                ${buildAddItemButton()}
+            </div>`;
         }
 
-        if (Object.keys(grouped).length === 0) return '';
+        // Group by category
+        const grouped = {};
+        for (const [key, item] of Object.entries(currentEditorItems)) {
+            const catKey = ALL_ITEMS[key]?.cat || 'other';
+            if (!grouped[catKey]) grouped[catKey] = [];
+            grouped[catKey].push([key, item]);
+        }
 
         let sectionsHtml = '';
         for (const [catKey, items] of Object.entries(grouped)) {
-            const cat = CATEGORIES[catKey] || {
-                label: 'Other Items', icon: '📦',
-                accent: '#374151', bg: '#F9FAFB', border: '#E5E7EB', headBg: '#F3F4F6',
-                keys: []
-            };
-
+            const cat = CAT_META[catKey] || CAT_META['other'];
             let itemRows = '';
             items.forEach(([key, item]) => {
                 const isCash = item.unit === 'PHP';
+                const step = ALL_ITEMS[key]?.step || '1';
                 itemRows += `
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid ${cat.border};background:#fff;">
-                        <div style="display:flex;align-items:center;gap:8px;">
+                    <div data-item-row="${key}" style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid ${cat.border};background:#fff;">
+                        <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
                             <div style="width:6px;height:6px;border-radius:50%;background:${cat.accent};flex-shrink:0;"></div>
                             <span style="font-size:13px;color:#374151;font-weight:500;">${item.name}</span>
                         </div>
@@ -638,12 +662,16 @@
                                 data-item-key="${key}"
                                 value="${item.qty}"
                                 min="0"
-                                step="${item.unit === 'kg' ? '0.5' : item.unit === 'PHP' ? '0.01' : '1'}"
+                                step="${step}"
                                 style="width:72px;padding:5px 8px;border:1px solid ${cat.border};border-radius:4px;font-size:13px;font-family:inherit;text-align:right;background:${cat.bg};color:#1f2937;outline:none;transition:border-color 0.15s,box-shadow 0.15s;"
                                 onfocus="this.style.borderColor='${cat.accent}';this.style.boxShadow='0 0 0 2px ${cat.border}';"
                                 onblur="this.style.borderColor='${cat.border}';this.style.boxShadow='none';"
                             >
                             <span style="font-size:11px;color:${cat.accent};font-weight:700;min-width:28px;">${isCash ? 'PHP' : item.unit}</span>
+                            <button type="button" onclick="removeItem('${key}', '${item.name}')"
+                                style="width:24px;height:24px;border-radius:50%;border:1px solid #FECACA;background:#FEF2F2;color:#C0392B;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;line-height:1;transition:background 0.12s;"
+                                onmouseover="this.style.background='#FECACA';" onmouseout="this.style.background='#FEF2F2';"
+                                title="Remove this item">×</button>
                         </div>
                     </div>`;
             });
@@ -655,34 +683,88 @@
                         <span style="font-size:12px;font-weight:700;color:${cat.accent};text-transform:uppercase;letter-spacing:0.6px;">${cat.label}</span>
                         <span style="margin-left:auto;font-size:11px;color:${cat.accent};opacity:0.7;">${items.length} item${items.length > 1 ? 's' : ''}</span>
                     </div>
-                    ${itemRows.replace(/<div style="[^"]*border-bottom:[^"]*"[^>]*>\s*$/, d => d.replace('border-bottom:1px solid '+cat.border+';', ''))}
+                    ${itemRows}
                 </div>`;
         }
 
         return `
-            <div style="margin:16px 0;">
+            <div id="items-editor-wrap" style="margin:16px 0;">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B3F7A" stroke-width="2.5"><path d="M20 7H4a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 3h-8l-2 4h12l-2-4z"/></svg>
                     <span style="font-size:12px;font-weight:700;color:#1B3F7A;text-transform:uppercase;letter-spacing:0.6px;">Items to Release</span>
-                    <span style="font-size:11px;color:#9AA3B0;margin-left:2px;">— adjust quantities if needed</span>
+                    <span style="font-size:11px;color:#9AA3B0;margin-left:2px;">— adjust quantities, add or remove items</span>
                 </div>
-                ${sectionsHtml}
+                <div id="items-sections">${sectionsHtml}</div>
+                ${buildAddItemButton()}
             </div>`;
     }
 
+    function buildAddItemButton() {
+        // Build dropdown of items not already in currentEditorItems
+        const missing = Object.entries(ALL_ITEMS).filter(([key]) => !currentEditorItems[key]);
+        if (missing.length === 0) return '';
+
+        const opts = missing.map(([key, meta]) => {
+            const cat = CAT_META[meta.cat] || CAT_META['other'];
+            return `<option value="${key}">${cat.icon} ${meta.name} (${meta.unit})</option>`;
+        }).join('');
+
+        return `
+            <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+                <select id="add-item-select" style="flex:1;padding:7px 10px;border:1px dashed #C5D9F5;border-radius:4px;font-size:12px;font-family:inherit;color:#1B3F7A;background:#EAF0FA;outline:none;">
+                    <option value="">+ Add an item...</option>
+                    ${opts}
+                </select>
+                <button type="button" onclick="addItemFromSelect()"
+                    style="padding:7px 14px;background:#1B3F7A;color:#fff;border:none;border-radius:4px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap;transition:background 0.15s;"
+                    onmouseover="this.style.background='#122D5A';" onmouseout="this.style.background='#1B3F7A';">
+                    Add
+                </button>
+            </div>`;
+    }
+
+    function addItemFromSelect() {
+        const sel = document.getElementById('add-item-select');
+        const key = sel?.value;
+        if (!key || !ALL_ITEMS[key]) return;
+        const meta = ALL_ITEMS[key];
+        currentEditorItems[key] = { name: meta.name, qty: 1, unit: meta.unit };
+        refreshItemsEditorInPlace();
+        sel.value = '';
+    }
+
+    function removeItem(key, name) {
+        if (!confirm(`Remove "${name}" from this release?\n\nThis will not affect future releases — only this specific one.`)) return;
+        delete currentEditorItems[key];
+        refreshItemsEditorInPlace();
+    }
+
+    function refreshItemsEditorInPlace() {
+        const wrap = document.getElementById('items-editor-wrap');
+        if (!wrap) return;
+        wrap.outerHTML = renderItemsEditor();
+    }
+
     function getEditedItems(reliefItems) {
-        if (!reliefItems || Object.keys(reliefItems).length === 0) return null;
+        // Use currentEditorItems as the source of truth (add/remove already applied)
+        if (Object.keys(currentEditorItems).length === 0) return null;
         const result = {};
         document.querySelectorAll('[data-item-key]').forEach(input => {
             const key = input.dataset.itemKey;
-            if (reliefItems[key]) {
+            if (currentEditorItems[key]) {
                 result[key] = {
-                    name: reliefItems[key].name,
+                    name: currentEditorItems[key].name,
                     qty:  parseFloat(input.value) || 0,
-                    unit: reliefItems[key].unit,
+                    unit: currentEditorItems[key].unit,
                 };
             }
         });
+        // Include any items in currentEditorItems not yet rendered (edge case)
+        for (const [key, item] of Object.entries(currentEditorItems)) {
+            if (!result[key]) {
+                result[key] = { name: item.name, qty: item.qty, unit: item.unit };
+            }
+        }
         return result;
     }
 

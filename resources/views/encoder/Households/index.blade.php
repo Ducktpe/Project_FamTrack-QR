@@ -1079,7 +1079,14 @@
                             <tr>
                                 <td class="td-name">
                                     <strong class="hl-name">{{ $household->household_head_name }}</strong>
-                                    <small>{{ $household->sex }}, {{ $household->age }} years old</small>
+                                    <small>
+                                        @php $headMember = $household->primaryFamily?->headMember; @endphp
+                                        @if($headMember)
+                                            {{ $headMember->sex }}, {{ $headMember->age }} years old
+                                        @else
+                                            —
+                                        @endif
+                                    </small>
                                 </td>
                                 <td class="td-address">
                                     <span class="hl-street">{{ $household->street_purok }}</span>, <span class="hl-barangay">{{ $household->barangay }}</span>

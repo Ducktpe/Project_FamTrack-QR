@@ -357,7 +357,10 @@
             </div>
         </div>
 
-        @php $scanCount = $household->distributionLogs->count(); @endphp
+        @php
+            $scanCount  = $household->distributionLogs->count();
+            $headMember = $household->members->firstWhere('is_family_head', 1);
+        @endphp
 
         <div class="household-hero">
             <div class="hero-avatar">
@@ -368,11 +371,11 @@
             <div class="hero-info">
                 <div class="hero-name">{{ $household->household_head_name }}</div>
                 <div class="hero-meta">
-                    <span>{{ $household->sex }}</span>
+                    <span>{{ $headMember?->sex ?? '—' }}</span>
                     <span class="hero-meta-sep">|</span>
-                    <span>{{ $household->age }} years old</span>
+                    <span>{{ $headMember?->age !== null ? $headMember->age . ' years old' : '—' }}</span>
                     <span class="hero-meta-sep">|</span>
-                    <span>{{ $household->civil_status }}</span>
+                    <span>{{ $headMember?->civil_status ?? '—' }}</span>
                     <span class="hero-meta-sep">|</span>
                     <span>{{ $household->barangay }}, {{ $household->municipality }}</span>
                 </div>
@@ -423,12 +426,13 @@
                     <div class="section-body">
                         <div class="info-grid">
                             <div class="info-item"><div class="info-label">Full Name</div><div class="info-value">{{ $household->household_head_name }}</div></div>
-                            <div class="info-item"><div class="info-label">Sex</div><div class="info-value">{{ $household->sex }}</div></div>
-                            <div class="info-item"><div class="info-label">Birthday</div><div class="info-value">{{ $household->birthday ? $household->birthday->format('F d, Y') : 'N/A' }}</div></div>
-                            <div class="info-item"><div class="info-label">Age</div><div class="info-value">{{ $household->age }} years old</div></div>
-                            <div class="info-item"><div class="info-label">Civil Status</div><div class="info-value">{{ $household->civil_status }}</div></div>
+                            <div class="info-item"><div class="info-label">Sex</div><div class="info-value">{{ $headMember?->sex ?? '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">Birthday</div><div class="info-value">{{ $headMember?->birthday ? \Carbon\Carbon::parse($headMember->birthday)->format('F d, Y') : '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">Age</div><div class="info-value">{{ $headMember?->age !== null ? $headMember->age . ' years old' : '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">Civil Status</div><div class="info-value">{{ $headMember?->civil_status ?? '—' }}</div></div>
                             <div class="info-item"><div class="info-label">Contact Number</div><div class="info-value">@if($household->contact_number){{ $household->contact_number }}@else<em>N/A</em>@endif</div></div>
-                            <div class="info-item"><div class="info-label">National ID</div><div class="info-value">@if($household->national_id)<span class="mono">{{ $household->national_id }}</span>@else<em>Not enrolled</em>@endif</div></div>
+                            <div class="info-item"><div class="info-label">Valid ID</div><div class="info-value">@if($household->valid_id_type){{ $household->valid_id_type }}@else<em>—</em>@endif</div></div>
+                            <div class="info-item"><div class="info-label">ID Number</div><div class="info-value">@if($household->valid_id_num)<span class="mono">{{ $household->valid_id_num }}</span>@else<em>—</em>@endif</div></div>
                             <div class="info-item"><div class="info-label">Total Household Members</div><div class="info-value">{{ $household->total_members }} person(s)</div></div>
                         </div>
                     </div>
