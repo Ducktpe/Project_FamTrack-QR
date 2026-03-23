@@ -9,40 +9,52 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Call PSGC Seeder FIRST
+        // ── Call PSGC Seeder FIRST ───────────────────────────────
         $this->call(PSGCSeeder::class);
 
-        // Create one account per role for testing
+        // ── Super Admin ──────────────────────────────────────────
         User::create([
-            'name'     => 'Administrator',
-            'email'    => 'admin@barangay.gov.ph',
-            'password' => bcrypt('Admin@1234'),
-            'role'     => 'admin',
+            'name'     => 'Super Administrator',
+            'email'    => 'superadmin@mdrrmo.gov.ph',
+            'password' => bcrypt('SuperAdmin@1234'),
+            'role'     => 'super_admin',
             'status'   => 'active',
         ]);
 
-        User::create([
-            'name'     => 'Test Encoder',
-            'email'    => 'encoder@barangay.gov.ph',
-            'password' => bcrypt('Encoder@1234'),
-            'role'     => 'encoder',
-            'status'   => 'active',
-        ]);
+        // // ── Admin ────────────────────────────────────────────────
+        // User::create([
+        //     'name'     => 'Administrator',
+        //     'email'    => 'admin@barangay.gov.ph',
+        //     'password' => bcrypt('Admin@1234'),
+        //     'role'     => 'admin',
+        //     'status'   => 'active',
+        // ]);
 
-        User::create([
-            'name'     => 'Test Staff',
-            'email'    => 'staff@barangay.gov.ph',
-            'password' => bcrypt('Staff@1234'),
-            'role'     => 'staff',
-            'status'   => 'active',
-        ]);
+        // // ── Encoder ──────────────────────────────────────────────
+        // User::create([
+        //     'name'     => 'Test Encoder',
+        //     'email'    => 'encoder@barangay.gov.ph',
+        //     'password' => bcrypt('Encoder@1234'),
+        //     'role'     => 'encoder',
+        //     'status'   => 'active',
+        // ]);
 
-        User::create([
-            'name'     => 'Test Auditor',
-            'email'    => 'auditor@barangay.gov.ph',
-            'password' => bcrypt('Auditor@1234'),
-            'role'     => 'auditor',
-            'status'   => 'active',
-        ]);
+        // // ── Staff ────────────────────────────────────────────────
+        // User::create([
+        //     'name'     => 'Test Staff',
+        //     'email'    => 'staff@barangay.gov.ph',
+        //     'password' => bcrypt('Staff@1234'),
+        //     'role'     => 'staff',
+        //     'status'   => 'active',
+        // ]);
+
+        // // ── Auditor ──────────────────────────────────────────────
+        // User::create([
+        //     'name'     => 'Test Auditor',
+        //     'email'    => 'auditor@barangay.gov.ph',
+        //     'password' => bcrypt('Auditor@1234'),
+        //     'role'     => 'auditor',
+        //     'status'   => 'active',
+        // ]);
     }
 }

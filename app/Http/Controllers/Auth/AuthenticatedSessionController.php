@@ -33,31 +33,36 @@ class AuthenticatedSessionController extends Controller
         if ($user->status === 'inactive') {
             Auth::logout();
             return back()->withErrors([
-                'email' => 'Your account has been deactivated.',
+                'email' => 'Your account has been deactivated. Please contact the Super Administrator.',
             ]);
         }
 
-        // Update last login
+        // Update last login timestamp
         $user->update(['last_login_at' => now()]);
 
-        // Log the login
+        // Audit log
         \App\Models\AuditLog::create([
             'user_id'    => $user->id,
             'user_name'  => $user->name,
             'action'     => 'login',
+            'category'   => 'auth',
+            'severity'   => 'medium',
             'model'      => 'User',
             'record_id'  => $user->id,
+            'affected_name' => $user->name,
+            'description'   => "{$user->name} logged in",
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
 
-        // Redirect by role
+        // ── Redirect by role ─────────────────────────────────
         return match($user->role) {
-            'admin'   => redirect()->route('admin.dashboard'),
-            'encoder' => redirect()->route('encoder.dashboard'),
-            'staff'   => redirect()->route('staff.dashboard'),
-            'auditor' => redirect()->route('auditor.dashboard'),
-            default   => redirect('/'),
+            'super_admin' => redirect()->route('superadmin.dashboard'),
+            'admin'       => redirect()->route('admin.dashboard'),
+            'encoder'     => redirect()->route('encoder.dashboard'),
+            'staff'       => redirect()->route('staff.dashboard'),
+            'auditor'     => redirect()->route('auditor.dashboard'),
+            default       => redirect()->route('login'),
         };
     }
 
@@ -69,7 +74,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
