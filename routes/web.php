@@ -34,6 +34,10 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('superadmin')->name('sup
     Route::post('/accounts',                            [SuperAdminController::class, 'accountsStore'])       ->name('accounts.store');
     Route::patch('/accounts/{user}/toggle-status',      [SuperAdminController::class, 'accountsToggleStatus'])->name('accounts.toggle');
     Route::post('/accounts/{user}/resend-invite',       [SuperAdminController::class, 'accountsResendInvite'])->name('accounts.resend');
+    Route::get('/accounts/archived',                      [SuperAdminController::class, 'accountsArchived'])     ->name('accounts.archived');
+    Route::post('/accounts/{id}/restore',                [SuperAdminController::class, 'accountsRestore'])      ->name('accounts.restore');
+    Route::delete('/accounts/{id}/force-delete',         [SuperAdminController::class, 'accountsForceDelete'])  ->name('accounts.force-delete');
+    Route::get('/accounts/{user}',                        [SuperAdminController::class, 'accountsShow'])         ->name('accounts.show');
     Route::delete('/accounts/{user}',                   [SuperAdminController::class, 'accountsDestroy'])     ->name('accounts.destroy');
 
     Route::get('/roles',           [SuperAdminController::class, 'rolesIndex'])    ->name('roles.index');

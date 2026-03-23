@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -38,6 +39,7 @@ class User extends Authenticatable
             'email_verified_at'  => 'datetime',
             'last_login_at'      => 'datetime',
             'invite_expires_at'  => 'datetime',
+            'deleted_at'         => 'datetime',
             'password'           => 'hashed',
             'is_setup_complete'  => 'boolean',
         ];
@@ -67,49 +69,26 @@ class User extends Authenticatable
     public function rolePrivileges(): array
     {
         return match($this->role) {
-            'admin' => [
-                'Manage households and residents',
-                'Approve or reject household records',
-                'Create and manage distribution events',
-                'Generate and download QR codes',
-                'View distribution logs and export reports',
-                'View audit trail logs',
-            ],
-            'encoder' => [
-                'Encode new household records',
-                'Edit existing household records',
-                'View assigned household data',
-            ],
-            'staff' => [
-                'Scan QR codes during relief distribution',
-                'View active distribution events',
-                'View scan history',
-            ],
-            'auditor' => [
-                'View household and family profiles (read-only)',
-                'View distribution logs',
-                'View full audit trail',
-            ],
-            default => ['Access to assigned system modules'],
+            'admin'   => ['Manage households and residents', 'Approve or reject household records', 'Create and manage distribution events', 'Generate and download QR codes', 'View distribution logs and export reports', 'View audit trail logs'],
+            'encoder' => ['Encode new household records', 'Edit existing household records', 'View assigned household data'],
+            'staff'   => ['Scan QR codes during relief distribution', 'View active distribution events', 'View scan history'],
+            'auditor' => ['View household and family profiles (read-only)', 'View distribution logs', 'View full audit trail'],
+            default   => ['Access to assigned system modules'],
         };
     }
 
     // ── Account Code Generator ───────────────────────────────
 
-    /**
-     * Generate next sequential account code for a role.
-     * A001 → A002 → ... → A999 → B001 → B002 ...
-     */
     public static function generateAccountCode(string $role): string
     {
-        $last = self::where('role', $role)
+        // Include trashed so codes never repeat
+        $last = self::withTrashed()
+            ->where('role', $role)
             ->whereNotNull('account_code')
             ->orderByDesc('id')
             ->value('account_code');
 
-        if (! $last) {
-            return 'A001';
-        }
+        if (! $last) return 'A001';
 
         $letter = $last[0];
         $number = (int) substr($last, 1);
@@ -118,14 +97,9 @@ class User extends Authenticatable
             return $letter . str_pad($number + 1, 3, '0', STR_PAD_LEFT);
         }
 
-        // A999 → B001
         return chr(ord($letter) + 1) . '001';
     }
 
-    /**
-     * Generate system login email from role + code.
-     * admin + A001 → adminA001@barangay.gov.ph
-     */
     public static function generateSystemEmail(string $role, string $code): string
     {
         $prefix = match($role) {
@@ -139,9 +113,6 @@ class User extends Authenticatable
         return strtolower($prefix . $code) . '@barangay.gov.ph';
     }
 
-    /**
-     * Generate a secure invite token, store hashed, return plain for URL.
-     */
     public function generateInviteToken(): string
     {
         $plain = Str::random(64);
@@ -154,19 +125,10 @@ class User extends Authenticatable
         return $plain;
     }
 
-    /**
-     * Validate plain token against stored hash and expiry.
-     */
     public function hasValidInviteToken(string $plain): bool
     {
-        if (! $this->invite_token || ! $this->invite_expires_at) {
-            return false;
-        }
-
-        if ($this->invite_expires_at->isPast()) {
-            return false;
-        }
-
+        if (! $this->invite_token || ! $this->invite_expires_at) return false;
+        if ($this->invite_expires_at->isPast()) return false;
         return hash_equals($this->invite_token, hash('sha256', $plain));
     }
 
@@ -174,7 +136,8 @@ class User extends Authenticatable
 
     public function creator()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        // withTrashed so deleted creators still show their name
+        return $this->belongsTo(User::class, 'created_by')->withTrashed();
     }
 
     public function createdUsers()

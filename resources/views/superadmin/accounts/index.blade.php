@@ -15,6 +15,7 @@
             <span>{{ now()->format('l') }}</span>
             <strong>{{ now()->format('F j, Y') }}</strong>
         </div>
+        <a href="{{ route('superadmin.accounts.archived') }}" class="btn btn-ghost" style="color:var(--orange);border-color:var(--orange);">🗂️ Archived</a>
         <a href="{{ route('superadmin.accounts.create') }}" class="btn btn-super">
             📧 Send Invite
         </a>
@@ -198,6 +199,9 @@
                     {{-- Actions --}}
                     <td>
                         <div class="action-btns">
+
+                            {{-- View Details --}}
+                            <a href="{{ route('superadmin.accounts.show', $u) }}" class="icon-btn view" title="View Details">👁️</a>
 
                             {{-- Resend Invite (only if setup not complete) --}}
                             @if(! $u->is_setup_complete)
