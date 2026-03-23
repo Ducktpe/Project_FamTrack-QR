@@ -20,6 +20,7 @@ class SuperAdminController extends Controller
             'active'   => User::whereNotIn('role', ['super_admin'])->where('status', 'active')->count(),
             'inactive' => User::whereNotIn('role', ['super_admin'])->where('status', 'inactive')->count(),
             'pending'  => User::whereNotIn('role', ['super_admin'])->where('is_setup_complete', false)->count(),
+            'deleted'  => User::withTrashed()->whereNotIn('role', ['super_admin'])->whereNotNull('deleted_at')->count(),
             'by_role'  => User::whereNotIn('role', ['super_admin'])
                 ->selectRaw('role, count(*) as count')
                 ->groupBy('role')
@@ -48,15 +49,32 @@ class SuperAdminController extends Controller
 
         if ($request->filled('role'))   $query->where('role', $request->role);
         if ($request->filled('status')) $query->where('status', $request->status);
-
-        if ($request->filled('setup')) {
-            $query->where('is_setup_complete', $request->setup === 'complete');
-        }
+        if ($request->filled('setup'))  $query->where('is_setup_complete', $request->setup === 'complete');
 
         $users        = $query->latest()->paginate(15)->withQueryString();
         $pendingUsers = User::whereNotIn('role', ['super_admin'])->where('is_setup_complete', false)->count();
 
         return view('superadmin.accounts.index', compact('users', 'pendingUsers'));
+    }
+
+    // ── VIEW USER DETAILS ────────────────────────────────────
+
+    public function accountsShow(User $user)
+    {
+        $pendingUsers = User::whereNotIn('role', ['super_admin'])->where('is_setup_complete', false)->count();
+        $user->load('creator');
+
+        $auditLogs = AuditLog::where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                  ->orWhere(function ($q2) use ($user) {
+                      $q2->where('model', 'User')->where('record_id', $user->id);
+                  });
+            })
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return view('superadmin.accounts.show', compact('user', 'pendingUsers', 'auditLogs'));
     }
 
     // ── CREATE ACCOUNT FORM ──────────────────────────────────
@@ -92,11 +110,7 @@ class SuperAdminController extends Controller
         ]);
 
         $plainToken = $user->generateInviteToken();
-
-        $setupUrl = route('account.setup.show', [
-            'id'    => $user->id,
-            'token' => $plainToken,
-        ]);
+        $setupUrl   = route('account.setup.show', ['id' => $user->id, 'token' => $plainToken]);
 
         try {
             Mail::to($user->personal_email)->send(new AccountInviteMail($user, $setupUrl));
@@ -137,11 +151,8 @@ class SuperAdminController extends Controller
         }
 
         AuditLog::log('resent_account_invite', [
-            'model'         => 'User',
-            'record_id'     => $user->id,
-            'affected_name' => $user->email,
-            'category'      => 'auth',
-            'severity'      => 'low',
+            'model'         => 'User', 'record_id' => $user->id,
+            'affected_name' => $user->email, 'category' => 'auth', 'severity' => 'low',
             'description'   => "Invite resent to {$user->personal_email} ({$user->email})",
         ]);
 
@@ -161,18 +172,15 @@ class SuperAdminController extends Controller
         $user->save();
 
         AuditLog::log('toggled_user_status', [
-            'model'         => 'User',
-            'record_id'     => $user->id,
-            'affected_name' => $user->email,
-            'description'   => "Status changed from {$old} to {$user->status}",
-            'old_values'    => ['status' => $old],
-            'new_values'    => ['status' => $user->status],
+            'model' => 'User', 'record_id' => $user->id, 'affected_name' => $user->email,
+            'description' => "Status changed from {$old} to {$user->status}",
+            'old_values'  => ['status' => $old], 'new_values' => ['status' => $user->status],
         ]);
 
         return back()->with('success', "Account {$user->email} " . ($user->status === 'active' ? 'activated' : 'deactivated') . '.');
     }
 
-    // ── DELETE ───────────────────────────────────────────────
+    // ── SOFT DELETE ──────────────────────────────────────────
 
     public function accountsDestroy(User $user)
     {
@@ -182,17 +190,81 @@ class SuperAdminController extends Controller
 
         $email = $user->email;
         $role  = $user->roleLabel();
+        $name  = $user->name;
+
+        $user->update(['status' => 'inactive']);
+        $user->delete(); // Soft delete — sets deleted_at only
 
         AuditLog::log('deleted_user_account', [
-            'model'         => 'User',
-            'record_id'     => $user->id,
-            'affected_name' => $email,
-            'description'   => "Deleted {$email} ({$role})",
+            'model'         => 'User', 'record_id' => $user->id, 'affected_name' => $email,
+            'category'      => 'auth', 'severity'  => 'high',
+            'description'   => "Archived account {$email} ({$role}) — {$name}",
+            'old_values'    => ['email' => $email, 'role' => $role, 'name' => $name],
+        ]);
+
+        return back()->with('success', "Account {$email} has been archived. You can restore it from Archived Accounts.");
+    }
+
+    // ── ARCHIVED ACCOUNTS ────────────────────────────────────
+
+    public function accountsArchived(Request $request)
+    {
+        $pendingUsers = User::whereNotIn('role', ['super_admin'])->where('is_setup_complete', false)->count();
+
+        $query = User::onlyTrashed()
+            ->whereNotIn('role', ['super_admin'])
+            ->with('creator');
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%')
+                  ->orWhere('personal_email', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if ($request->filled('role')) $query->where('role', $request->role);
+
+        $archivedUsers = $query->latest('deleted_at')->paginate(15)->withQueryString();
+
+        return view('superadmin.accounts.archived', compact('archivedUsers', 'pendingUsers'));
+    }
+
+    // ── RESTORE ──────────────────────────────────────────────
+
+    public function accountsRestore(int $id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->restore();
+        $user->update(['status' => 'inactive']);
+
+        AuditLog::log('restored_user_account', [
+            'model'         => 'User', 'record_id' => $user->id, 'affected_name' => $user->email,
+            'category'      => 'auth', 'severity'  => 'medium',
+            'description'   => "Restored archived account {$user->email} ({$user->roleLabel()})",
+        ]);
+
+        return back()->with('success', "Account {$user->email} restored. Activate it from Account Management.");
+    }
+
+    // ── FORCE DELETE ─────────────────────────────────────────
+
+    public function accountsForceDelete(int $id)
+    {
+        $user  = User::onlyTrashed()->findOrFail($id);
+        $email = $user->email;
+        $role  = $user->roleLabel();
+
+        AuditLog::log('permanently_deleted_user', [
+            'model'         => 'User', 'record_id' => $user->id, 'affected_name' => $email,
+            'category'      => 'auth', 'severity'  => 'high',
+            'description'   => "Permanently deleted {$email} ({$role})",
             'old_values'    => $user->toArray(),
         ]);
 
-        $user->delete();
-        return back()->with('success', "Account {$email} ({$role}) deleted.");
+        $user->forceDelete();
+
+        return back()->with('success', "Account {$email} permanently deleted.");
     }
 
     // ── ROLE PERMISSIONS ─────────────────────────────────────
