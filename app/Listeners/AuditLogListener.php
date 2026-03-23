@@ -6,7 +6,7 @@ use App\Models\AuditLog;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 
-class AuditLoginListener
+class AuditLogListener
 {
     public function handleLogin(Login $event): void
     {
