@@ -182,6 +182,29 @@
         .confirmed-name  { font-size: 15px; font-weight: 600; color: var(--gray-800); margin-bottom: 4px; }
         .confirmed-time  { font-size: 12px; color: var(--gray-400); margin-bottom: 24px; }
 
+        /* ─── PHOTO CAPTURE ─── */
+        .photo-step { margin: 16px 0 0; border: 2px dashed var(--gray-200); border-radius: 6px; overflow: hidden; background: var(--gray-50); }
+        .photo-step-header { padding: 10px 16px; background: #FFF7ED; border-bottom: 1px solid #FDE68A; display: flex; align-items: center; gap: 8px; }
+        .photo-step-header svg { width: 16px; height: 16px; color: var(--orange); flex-shrink: 0; }
+        .photo-step-title { font-size: 12px; font-weight: 700; color: #92400E; text-transform: uppercase; letter-spacing: 0.5px; }
+        .photo-step-body { padding: 16px; }
+        .photo-step.captured { border-color: var(--green); border-style: solid; }
+        .photo-step.captured .photo-step-header { background: var(--green-pale); border-bottom-color: #BBF7D0; }
+        .photo-step.captured .photo-step-header svg { color: var(--green); }
+        .photo-step.captured .photo-step-title { color: var(--green-dark); }
+        #photo-video { width: 100%; max-height: 260px; object-fit: cover; border-radius: 4px; display: block; background: #000; }
+        #photo-canvas { display: none; }
+        #photo-preview-wrap { display: none; text-align: center; }
+        #photo-preview { width: 100%; max-height: 260px; object-fit: cover; border-radius: 4px; border: 2px solid var(--green); display: block; }
+        .photo-btn-row { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-capture { flex: 1; padding: 11px 12px; background: var(--orange); color: var(--white); border: none; border-radius: 4px; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s; }
+        .btn-capture:hover { background: #B45309; }
+        .btn-retake { flex: 1; padding: 11px 12px; background: var(--gray-100); color: var(--gray-600); border: 1px solid var(--gray-200); border-radius: 4px; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s; }
+        .btn-retake:hover { background: var(--gray-200); }
+        .btn-capture svg, .btn-retake svg { width: 14px; height: 14px; }
+        .photo-instruction { font-size: 12px; color: var(--gray-600); text-align: center; margin-top: 8px; line-height: 1.5; }
+        .photo-required-note { font-size: 11px; color: var(--orange); font-weight: 600; text-align: center; margin-top: 4px; }
+
         /* ─── FOOTER ─── */
         .page-footer { background: var(--blue-dark); border-top: 3px solid var(--yellow); height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
@@ -417,44 +440,81 @@
     let scanCount            = 0;       // local session tally (added to server count)
     let duplicateCount       = 0;
     let currentEditorItems   = {};      // ← FIX: declared here to avoid TDZ error
+    let recipientStream      = null;   // active MediaStream for the recipient camera
+    let capturedPhotoBlob    = null;   // Blob set after capturePhoto(), sent on confirm
+    let photoTakenAt         = null;   // ISO timestamp captured client-side
 
     // Full master catalogue — all items available across all categories
     const ALL_ITEMS = {
-        'rice':                  { name: 'Rice',                        unit: 'kg',   step: '0.5', cat: 'food_pack' },
-        'canned_goods':          { name: 'Canned Goods',                unit: 'cans', step: '1',   cat: 'food_pack' },
-        'instant_noodles':       { name: 'Instant Noodles',             unit: 'pcs',  step: '1',   cat: 'food_pack' },
-        'coffee':                { name: 'Coffee',                      unit: 'pack', step: '1',   cat: 'food_pack' },
-        'bar_soap':              { name: 'Bar Soap',                    unit: 'bars', step: '1',   cat: 'hygiene_kit' },
-        'shampoo':               { name: 'Shampoo',                     unit: 'btl',  step: '1',   cat: 'hygiene_kit' },
-        'toothbrush':            { name: 'Toothbrush',                  unit: 'pcs',  step: '1',   cat: 'hygiene_kit' },
-        'toothpaste':            { name: 'Toothpaste',                  unit: 'tube', step: '1',   cat: 'hygiene_kit' },
-        'deodorant':             { name: 'Deodorant',                   unit: 'pcs',  step: '1',   cat: 'hygiene_kit' },
-        'towel':                 { name: 'Towel / Face Towel',          unit: 'pcs',  step: '1',   cat: 'hygiene_kit' },
-        'bucket':                { name: 'Bucket',                      unit: 'pcs',  step: '1',   cat: 'hygiene_kit' },
-        'dipper':                { name: 'Dipper (Tabo)',               unit: 'pcs',  step: '1',   cat: 'hygiene_kit' },
-        'feminine_hygiene_wash': { name: 'Feminine Hygiene Wash',       unit: 'btl',  step: '1',   cat: 'dignity_kit' },
-        'sanitary_pads':         { name: 'Sanitary Pads / Napkins',     unit: 'pack', step: '1',   cat: 'dignity_kit' },
-        'tissue_wipes':          { name: 'Tissue / Wipes',              unit: 'pack', step: '1',   cat: 'dignity_kit' },
-        'underwear':             { name: 'Underwear',                   unit: 'pcs',  step: '1',   cat: 'dignity_kit' },
-        'alcohol':               { name: 'Alcohol',                     unit: 'btl',  step: '1',   cat: 'first_aid_kit' },
-        'bandaid':               { name: 'Band-aid',                    unit: 'box',  step: '1',   cat: 'first_aid_kit' },
-        'bandage':               { name: 'Bandage',                     unit: 'roll', step: '1',   cat: 'first_aid_kit' },
-        'betadine':              { name: 'Betadine',                    unit: 'btl',  step: '1',   cat: 'first_aid_kit' },
-        'elastic_bandage':       { name: 'Elastic Bandage',             unit: 'roll', step: '1',   cat: 'first_aid_kit' },
-        'emergency_medicine':    { name: 'Emergency Medicine',          unit: 'pcs',  step: '1',   cat: 'first_aid_kit' },
-        'gauze_pad':             { name: 'Gauze Pad',                   unit: 'pcs',  step: '1',   cat: 'first_aid_kit' },
-        'gauze_roll':            { name: 'Gauze Roll',                  unit: 'roll', step: '1',   cat: 'first_aid_kit' },
-        'medical_tape':          { name: 'Medical Tape',                unit: 'roll', step: '1',   cat: 'first_aid_kit' },
-        'cash_aid':              { name: 'Cash Aid',                    unit: 'PHP',  step: '0.01',cat: 'cash_aid' },
+        'rice':                  { name: 'Rice',                          unit: 'kg',    step: '0.5', cat: 'food_pack' },
+        'canned_goods':          { name: 'Canned Goods',                  unit: 'cans',  step: '1',   cat: 'food_pack' },
+        'instant_noodles':       { name: 'Instant Noodles',               unit: 'pcs',   step: '1',   cat: 'food_pack' },
+        'coffee':                { name: 'Coffee',                        unit: 'pack',  step: '1',   cat: 'food_pack' },
+        'bar_soap':              { name: 'Bar Soap',                      unit: 'bars',  step: '1',   cat: 'hygiene_kit' },
+        'shampoo':               { name: 'Shampoo',                       unit: 'btl',   step: '1',   cat: 'hygiene_kit' },
+        'toothbrush':            { name: 'Toothbrush',                    unit: 'pcs',   step: '1',   cat: 'hygiene_kit' },
+        'toothpaste':            { name: 'Toothpaste',                    unit: 'tube',  step: '1',   cat: 'hygiene_kit' },
+        'deodorant':             { name: 'Deodorant',                     unit: 'pcs',   step: '1',   cat: 'hygiene_kit' },
+        'towel':                 { name: 'Towel / Face Towel',            unit: 'pcs',   step: '1',   cat: 'hygiene_kit' },
+        'bucket':                { name: 'Bucket',                        unit: 'pcs',   step: '1',   cat: 'hygiene_kit' },
+        'dipper':                { name: 'Dipper (Tabo)',                  unit: 'pcs',   step: '1',   cat: 'hygiene_kit' },
+        'feminine_hygiene_wash': { name: 'Feminine Hygiene Wash',         unit: 'btl',   step: '1',   cat: 'dignity_kit' },
+        'sanitary_pads':         { name: 'Sanitary Pads / Napkins',       unit: 'pack',  step: '1',   cat: 'dignity_kit' },
+        'tissue_wipes':          { name: 'Tissue / Wipes',                unit: 'pack',  step: '1',   cat: 'dignity_kit' },
+        'underwear':             { name: 'Underwear',                     unit: 'pcs',   step: '1',   cat: 'dignity_kit' },
+        'alcohol':               { name: 'Alcohol',                       unit: 'btl',   step: '1',   cat: 'first_aid_kit' },
+        'bandaid':               { name: 'Band-aid',                      unit: 'box',   step: '1',   cat: 'first_aid_kit' },
+        'bandage':               { name: 'Bandage',                       unit: 'roll',  step: '1',   cat: 'first_aid_kit' },
+        'betadine':              { name: 'Betadine',                      unit: 'btl',   step: '1',   cat: 'first_aid_kit' },
+        'elastic_bandage':       { name: 'Elastic Bandage',               unit: 'roll',  step: '1',   cat: 'first_aid_kit' },
+        'emergency_medicine':    { name: 'Emergency Medicine',            unit: 'pcs',   step: '1',   cat: 'first_aid_kit' },
+        'gauze_pad':             { name: 'Gauze Pad',                     unit: 'pcs',   step: '1',   cat: 'first_aid_kit' },
+        'gauze_roll':            { name: 'Gauze Roll',                    unit: 'roll',  step: '1',   cat: 'first_aid_kit' },
+        'medical_tape':          { name: 'Medical Tape',                  unit: 'roll',  step: '1',   cat: 'first_aid_kit' },
+        'cash_aid':              { name: 'Cash Aid',                      unit: 'PHP',   step: '0.01',cat: 'cash_aid' },
+        // Family Clothing Kit
+        'bath_towel':            { name: 'Bath Towel',                    unit: 'pcs',   step: '1',   cat: 'clothing_kit' },
+        'ladies_panties':        { name: "Ladies' Panties (Adult)",       unit: 'pcs',   step: '1',   cat: 'clothing_kit' },
+        'girls_panties':         { name: "Girls' Panties",                unit: 'pcs',   step: '1',   cat: 'clothing_kit' },
+        'mens_briefs':           { name: "Men's Briefs",                  unit: 'pcs',   step: '1',   cat: 'clothing_kit' },
+        'boys_briefs':           { name: "Boys' Briefs",                  unit: 'pcs',   step: '1',   cat: 'clothing_kit' },
+        'sando_bra_adult':       { name: 'Sando Bra (Adult)',             unit: 'pcs',   step: '1',   cat: 'clothing_kit' },
+        'sando_bra_girl':        { name: 'Sando Bra (Girls)',             unit: 'pcs',   step: '1',   cat: 'clothing_kit' },
+        'adults_tshirt':         { name: "Adults' T-Shirt",               unit: 'pcs',   step: '1',   cat: 'clothing_kit' },
+        'childrens_tshirt':      { name: "Children's T-Shirt",            unit: 'pcs',   step: '1',   cat: 'clothing_kit' },
+        'adults_short_pants':    { name: "Adults' Short Pants",           unit: 'pcs',   step: '1',   cat: 'clothing_kit' },
+        'childrens_shorts':      { name: "Children's Shorts",             unit: 'pcs',   step: '1',   cat: 'clothing_kit' },
+        'adults_slippers':       { name: "Adults' Slippers",              unit: 'pairs', step: '1',   cat: 'clothing_kit' },
+        'childrens_slippers':    { name: "Children's Slippers",           unit: 'pairs', step: '1',   cat: 'clothing_kit' },
+        'clothing_plastic_box':  { name: 'Plastic Box (Clothing Kit)',    unit: 'pc',    step: '1',   cat: 'clothing_kit' },
+        // Sleeping Kit
+        'blanket':               { name: 'Blanket',                       unit: 'pcs',   step: '1',   cat: 'sleeping_kit' },
+        'plastic_mat':           { name: 'Plastic Mat',                   unit: 'pc',    step: '1',   cat: 'sleeping_kit' },
+        'mosquito_net':          { name: 'Mosquito Net',                  unit: 'pc',    step: '1',   cat: 'sleeping_kit' },
+        'malong':                { name: 'Malong (wrap cloth)',            unit: 'pc',    step: '1',   cat: 'sleeping_kit' },
+        'pillow':                { name: 'Pillow',                        unit: 'pc',    step: '1',   cat: 'sleeping_kit' },
+        'sleeping_plastic_box':  { name: 'Plastic Box (Sleeping Kit)',    unit: 'pc',    step: '1',   cat: 'sleeping_kit' },
+        // Kitchen Kit
+        'spoon':                 { name: 'Spoon',                         unit: 'pcs',   step: '1',   cat: 'kitchen_kit' },
+        'fork':                  { name: 'Fork',                          unit: 'pcs',   step: '1',   cat: 'kitchen_kit' },
+        'drinking_glass':        { name: 'Drinking Glass',                unit: 'pcs',   step: '1',   cat: 'kitchen_kit' },
+        'plate':                 { name: 'Plate',                         unit: 'pcs',   step: '1',   cat: 'kitchen_kit' },
+        'frying_pan':            { name: 'Frying Pan',                    unit: 'pc',    step: '1',   cat: 'kitchen_kit' },
+        'cooking_pan':           { name: 'Cooking Pan',                   unit: 'pc',    step: '1',   cat: 'kitchen_kit' },
+        'ladle':                 { name: 'Ladle',                         unit: 'pc',    step: '1',   cat: 'kitchen_kit' },
+        'kitchen_plastic_box':   { name: 'Plastic Box (Kitchen Kit)',     unit: 'pc',    step: '1',   cat: 'kitchen_kit' },
     };
 
     const CAT_META = {
-        'food_pack':    { label: 'Food Pack',     icon: '🍱', accent: '#92400E', bg: '#FFFBEB', border: '#FDE68A', headBg: '#FEF3C7' },
-        'hygiene_kit':  { label: 'Hygiene Kit',   icon: '🧴', accent: '#1D4ED8', bg: '#EFF6FF', border: '#BFDBFE', headBg: '#DBEAFE' },
-        'dignity_kit':  { label: 'Dignity Kit',   icon: '🎀', accent: '#7E22CE', bg: '#FAF5FF', border: '#E9D5FF', headBg: '#F3E8FF' },
-        'first_aid_kit':{ label: 'First Aid Kit', icon: '🩹', accent: '#B91C1C', bg: '#FFF1F2', border: '#FECDD3', headBg: '#FFE4E6' },
-        'cash_aid':     { label: 'Cash Aid',      icon: '💵', accent: '#15803D', bg: '#F0FDF4', border: '#BBF7D0', headBg: '#DCFCE7' },
-        'other':        { label: 'Other Items',   icon: '📦', accent: '#374151', bg: '#F9FAFB', border: '#E5E7EB', headBg: '#F3F4F6' },
+        'food_pack':    { label: 'Food Pack',             icon: '🍱', accent: '#92400E', bg: '#FFFBEB', border: '#FDE68A', headBg: '#FEF3C7' },
+        'hygiene_kit':  { label: 'Hygiene Kit',           icon: '🧴', accent: '#1D4ED8', bg: '#EFF6FF', border: '#BFDBFE', headBg: '#DBEAFE' },
+        'dignity_kit':  { label: 'Dignity Kit',           icon: '🎀', accent: '#7E22CE', bg: '#FAF5FF', border: '#E9D5FF', headBg: '#F3E8FF' },
+        'first_aid_kit':{ label: 'First Aid Kit',         icon: '🩹', accent: '#B91C1C', bg: '#FFF1F2', border: '#FECDD3', headBg: '#FFE4E6' },
+        'cash_aid':     { label: 'Cash Aid',              icon: '💵', accent: '#15803D', bg: '#F0FDF4', border: '#BBF7D0', headBg: '#DCFCE7' },
+        'clothing_kit': { label: 'Family Clothing Kit',   icon: '👕', accent: '#6D28D9', bg: '#FDF4FF', border: '#E9D5FF', headBg: '#F5F3FF' },
+        'sleeping_kit': { label: 'Sleeping Kit',          icon: '🛏️', accent: '#065F46', bg: '#F0FDF4', border: '#6EE7B7', headBg: '#D1FAE5' },
+        'kitchen_kit':  { label: 'Kitchen Kit',           icon: '🍳', accent: '#C2410C', bg: '#FFF7ED', border: '#FED7AA', headBg: '#FFEDD5' },
+        'other':        { label: 'Other Items',           icon: '📦', accent: '#374151', bg: '#F9FAFB', border: '#E5E7EB', headBg: '#F3F4F6' },
     };
 
     /* ── Load today's real counts from the server, filtered by selected event ── */
@@ -553,6 +613,25 @@
         });
         html5QrcodeScanner.render(onScanSuccess, onScanError);
         scannerRunning = true;
+        autoStartCamera();
+    }
+
+    // Html5QrcodeScanner renders in idle state — programmatically click
+    // "Start Scanning" so the camera opens immediately without user interaction.
+    function autoStartCamera() {
+        // Poll ONLY for the specific camera-permission button by its known ID.
+        // NEVER use a generic querySelector('#reader button') fallback — the library
+        // also renders a file-upload button inside #reader, and clicking that would
+        // open the OS file explorer unexpectedly.
+        const interval = setInterval(() => {
+            const btn = document.getElementById('html5-qrcode-button-camera-permission');
+            if (btn) {
+                clearInterval(interval);
+                btn.click();
+            }
+        }, 100);
+        // Give up after 5 s to avoid infinite polling
+        setTimeout(() => clearInterval(interval), 5000);
     }
 
     function stopScanner() {
@@ -784,7 +863,7 @@
                     <div class="result-status-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                     </div>
-                    <div class="result-status-text">Household Found — Confirm Release</div>
+                    <div class="result-status-text">Household Found — Ready to Release</div>
                 </div>
                 <div class="result-body">
                     <table class="info-table">
@@ -794,9 +873,59 @@
                         <tr><td>Members</td><td>${data.household.members_count} person(s)</td></tr>
                         ${badges.length ? `<tr><td>Program Flags</td><td>${badges.join('')}</td></tr>` : ''}
                     </table>
+
                     ${buildItemsEditor(data.relief_items)}
-                    <div class="btn-row">
-                        <button class="btn btn-confirm" onclick="confirmRelease()">
+
+                    <!-- ─── STEP 2: Photo capture ─── -->
+                    <div class="photo-step" id="photo-step-wrap">
+                        <div class="photo-step-header">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                                <circle cx="12" cy="13" r="4"/>
+                            </svg>
+                            <span class="photo-step-title" id="photo-step-title">Step 2 — Take Photo of Relief Recipient</span>
+                        </div>
+                        <div class="photo-step-body">
+                            <!-- Live camera view -->
+                            <div id="photo-camera-wrap">
+                                <video id="photo-video" autoplay playsinline muted></video>
+                                <canvas id="photo-canvas"></canvas>
+                                <p class="photo-instruction">Position the <strong>relief recipient</strong> in frame, then tap <em>Capture Photo</em>.</p>
+                                <p class="photo-required-note">⚠ A photo is required to enable Confirm Release</p>
+                                <div class="photo-btn-row">
+                                    <button class="btn-capture" onclick="capturePhoto()">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                            <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                                            <circle cx="12" cy="13" r="4"/>
+                                        </svg>
+                                        Capture Photo
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Captured preview (hidden until photo taken) -->
+                            <div id="photo-preview-wrap">
+                                <img id="photo-preview" src="" alt="Recipient photo">
+                                <div class="photo-btn-row">
+                                    <button class="btn-retake" onclick="retakePhoto()">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="23 4 23 10 17 10"/>
+                                            <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/>
+                                        </svg>
+                                        Retake
+                                    </button>
+                                </div>
+                                <p class="photo-instruction" style="color:var(--green);font-weight:600;margin-top:8px;">
+                                    ✓ Photo captured — you may now confirm the release.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ─── Action buttons ─── -->
+                    <div class="btn-row" style="margin-top:16px;">
+                        <button class="btn btn-confirm" id="btn-confirm-release"
+                                onclick="confirmRelease()"
+                                title="Confirm and record release">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                             Confirm Release
                         </button>
@@ -807,7 +936,11 @@
                     </div>
                 </div>
             </div>`;
+
         resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        // Start the recipient camera stream immediately
+        startRecipientCamera();
     }
 
     function showDuplicateResult(data) {
@@ -923,35 +1056,169 @@
             </div>`;
     }
 
+    /* ══════════════════════════════════════════════════════
+       RECIPIENT PHOTO — camera helpers
+    ══════════════════════════════════════════════════════ */
+
+    // recipientStream, capturedPhotoBlob, photoTakenAt declared at top of script
+
+    async function startRecipientCamera() {
+        try {
+            recipientStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+                audio: false,
+            });
+            const video = document.getElementById('photo-video');
+            if (video) {
+                video.srcObject = recipientStream;
+            }
+        } catch (err) {
+            // Camera denied or unavailable — show an upload fallback
+            const cameraWrap = document.getElementById('photo-camera-wrap');
+            if (cameraWrap) {
+                cameraWrap.innerHTML = `
+                    <div style="padding:14px;background:var(--red-pale);border:1px solid #FECACA;border-radius:4px;font-size:12px;color:var(--red);margin-bottom:10px;">
+                        <strong>Camera unavailable:</strong> ${err.message}.<br>
+                        Please upload a photo of the recipient instead.
+                    </div>
+                    <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--gray-600);margin-bottom:7px;">
+                        Upload Recipient Photo
+                    </label>
+                    <input type="file" accept="image/*"
+                           id="photo-file-input"
+                           style="width:100%;padding:8px;border:1px solid var(--gray-200);border-radius:4px;font-size:13px;background:var(--white);"
+                           onchange="handlePhotoFileInput(this)">
+                    <p class="photo-required-note" style="margin-top:8px;">⚠ A photo is required to enable Confirm Release</p>`;
+            }
+        }
+    }
+
+    function stopRecipientCamera() {
+        if (recipientStream) {
+            recipientStream.getTracks().forEach(t => t.stop());
+            recipientStream = null;
+        }
+    }
+
+    function capturePhoto() {
+        const video  = document.getElementById('photo-video');
+        const canvas = document.getElementById('photo-canvas');
+        if (!video || !canvas) return;
+
+        canvas.width  = video.videoWidth  || 1280;
+        canvas.height = video.videoHeight || 720;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        photoTakenAt = new Date().toISOString();
+
+        canvas.toBlob(blob => {
+            capturedPhotoBlob = blob;
+            onPhotoReady(canvas.toDataURL('image/jpeg', 0.85));
+        }, 'image/jpeg', 0.85);
+    }
+
+    function handlePhotoFileInput(input) {
+        const file = input.files[0];
+        if (!file) return;
+        capturedPhotoBlob = file;
+        photoTakenAt = new Date().toISOString();
+        const reader = new FileReader();
+        reader.onload = e => onPhotoReady(e.target.result);
+        reader.readAsDataURL(file);
+    }
+
+    function onPhotoReady(dataUrl) {
+        // Stop live stream only if it was started (file-upload fallback has no stream)
+        if (recipientStream !== null) {
+            stopRecipientCamera();
+        }
+
+        // Show preview
+        const cameraWrap  = document.getElementById('photo-camera-wrap');
+        const previewWrap = document.getElementById('photo-preview-wrap');
+        const preview     = document.getElementById('photo-preview');
+        const stepWrap    = document.getElementById('photo-step-wrap');
+        const stepTitle   = document.getElementById('photo-step-title');
+
+        if (cameraWrap)  cameraWrap.style.display  = 'none';
+        if (previewWrap) previewWrap.style.display  = 'block';
+        if (preview)     preview.src                = dataUrl;
+        if (stepWrap)    stepWrap.classList.add('captured');
+        if (stepTitle)   stepTitle.textContent      = 'Step 2 — Photo Captured ✓';
+    }
+
+    function retakePhoto() {
+        capturedPhotoBlob = null;
+        photoTakenAt      = null;
+
+        // Restore camera view
+        const cameraWrap  = document.getElementById('photo-camera-wrap');
+        const previewWrap = document.getElementById('photo-preview-wrap');
+        const stepWrap    = document.getElementById('photo-step-wrap');
+        const stepTitle   = document.getElementById('photo-step-title');
+
+        if (previewWrap) previewWrap.style.display = 'none';
+        if (cameraWrap)  cameraWrap.style.display  = 'block';
+        if (stepWrap)    stepWrap.classList.remove('captured');
+        if (stepTitle)   stepTitle.textContent     = 'Step 2 — Take Photo of Relief Recipient';
+
+        // Restart camera
+        startRecipientCamera();
+    }
+
+    /* ══════════════════════════════════════════════════════
+       CONFIRM RELEASE — now includes photo upload
+    ══════════════════════════════════════════════════════ */
+
     async function confirmRelease() {
-        const eventId   = eventSelect.value;
-        const confirmBtn = document.querySelector('.btn-confirm');
+        const eventId    = eventSelect.value;
+        const confirmBtn = document.getElementById('btn-confirm-release');
         confirmBtn.disabled = true;
         confirmBtn.innerHTML = `
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;animation:spin 1s linear infinite">
-                <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 style="width:15px;height:15px;animation:spin 1s linear infinite">
+                <polyline points="23 4 23 10 17 10"/>
+                <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/>
             </svg>
             Recording...`;
 
         try {
+            // Build multipart payload — photo + JSON fields together
+            const formData = new FormData();
+            formData.append('household_id',     currentHouseholdData.id);
+            formData.append('event_id',         eventId);
+            formData.append('serial_code',      currentHouseholdData.serial_code);
+            formData.append('family_member_id', currentHouseholdData.family_member_id ?? '');
+            formData.append('items_received',   JSON.stringify(getEditedItems(currentHouseholdData.relief_items)));
+            formData.append('photo_taken_at',   photoTakenAt ?? '');
+            if (capturedPhotoBlob) {
+                formData.append('recipient_photo', capturedPhotoBlob, 'recipient.jpg');
+            }
+            formData.append('_token',           document.querySelector('meta[name="csrf-token"]').content);
+
             const response = await fetch('{{ route("staff.scan.confirm") }}', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                },
-                body: JSON.stringify({
-                    household_id:      currentHouseholdData.id,
-                    event_id:          eventId,
-                    serial_code:       currentHouseholdData.serial_code,
-                    family_member_id:  currentHouseholdData.family_member_id ?? null,
-                    items_received:    getEditedItems(currentHouseholdData.relief_items),
-                }),
+                body:   formData,   // Content-Type set automatically (multipart/form-data)
             });
+
             const data = await response.json();
+
             if (data.status === 'success') {
                 scanCount++;
                 document.getElementById('scan-count').textContent = scanCount;
+
+                // Grab the locally-captured preview src BEFORE clearing state —
+                // this avoids depending on the server-returned URL which may not
+                // be publicly accessible or may take time to resolve.
+                const localPhotoSrc = document.getElementById('photo-preview')?.src || null;
+
+                // Clean up camera resources
+                stopRecipientCamera();
+                capturedPhotoBlob = null;
+                photoTakenAt      = null;
+
                 resultCard.innerHTML = `
                     <div class="result-inner confirmed">
                         <div class="result-header confirmed">
@@ -967,7 +1234,13 @@
                             <div class="confirmed-title">Release Confirmed</div>
                             <div class="confirmed-name">${data.log.household}</div>
                             <div class="confirmed-time">${data.log.time}</div>
-                            <div class="btn-row" style="max-width:300px;margin:0 auto;">
+                            ${localPhotoSrc ? `
+                            <div style="margin:12px auto 0;max-width:240px;">
+                                <img src="${localPhotoSrc}" alt="Recipient photo"
+                                     style="width:100%;border-radius:6px;border:2px solid var(--green);object-fit:cover;max-height:160px;">
+                                <div style="font-size:10px;color:var(--gray-400);text-align:center;margin-top:4px;">Photo recorded ✓</div>
+                            </div>` : ''}
+                            <div class="btn-row" style="max-width:300px;margin:16px auto 0;">
                                 <button class="btn btn-confirm" onclick="resetScanner()">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                                     Scan Next
@@ -976,19 +1249,64 @@
                         </div>
                     </div>`;
             } else {
+                // Re-enable the button so staff can retry
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Confirm Release`;
                 showErrorResult(data.message);
             }
-        } catch {
+        } catch (err) {
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Confirm Release`;
             showErrorResult('Failed to record distribution. Please try again.');
         }
     }
 
     function resetScanner() {
+        // Stop the recipient camera only if it is actually running.
+        // It is started exclusively by showSuccessResult — no other result type starts it.
+        if (recipientStream !== null) {
+            stopRecipientCamera();
+        }
+        capturedPhotoBlob = null;
+        photoTakenAt      = null;
+
         resultCard.style.display = 'none';
-        resultCard.innerHTML = '';
-        currentHouseholdData = null;
-        if (html5QrcodeScanner && scannerRunning) {
-            html5QrcodeScanner.resume();
+        resultCard.innerHTML     = '';
+        currentHouseholdData     = null;
+
+        // Restart the QR scanner. Html5QrcodeScanner (the wrapper) has no
+        // .resume() after .pause(true). Fire clear() best-effort (non-blocking),
+        // then synchronously wipe #reader and mount a fresh scanner so the
+        // restart is never blocked by the async clear() outcome.
+        if (scannerRunning) {
+            // clear() is async — wait for it to fully release the camera before
+            // mounting a new instance, otherwise the new scanner silently fails
+            // to acquire the camera stream.
+            const oldScanner = html5QrcodeScanner;
+            html5QrcodeScanner = null;
+            scannerRunning = false;
+
+            const doRestart = () => {
+                const reader = document.getElementById('reader');
+                if (reader) reader.innerHTML = '';
+                if (scannerContainer) scannerContainer.style.display = 'block';
+                html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+                    fps: 10, qrbox: 250, rememberLastUsedCamera: true,
+                });
+                html5QrcodeScanner.render(onScanSuccess, onScanError);
+                scannerRunning = true;
+                autoStartCamera();
+            };
+
+            if (oldScanner) {
+                oldScanner.clear().then(doRestart).catch(doRestart);
+            } else {
+                doRestart();
+            }
         }
     }
 </script>

@@ -9,6 +9,7 @@ use App\Http\Controllers\SuperAdmin\SuperAdminController;
 
 // ── Public Routes ────────────────────────────────────────────
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
+Route::get('/about', fn () => view('about'))->name('about');
 
 // ── Auth Routes (handled by Breeze in auth.php) ─────────────
 require __DIR__.'/auth.php';
@@ -101,6 +102,37 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
             'toothbrush'            => ['name' => 'Toothbrush',                            'unit' => 'pcs'],
             'toothpaste'            => ['name' => 'Toothpaste',                            'unit' => 'tube'],
             'towel'                 => ['name' => 'Towel / Face Towel',                   'unit' => 'pcs'],
+            // Family Clothing Kit
+            'bath_towel'            => ['name' => 'Bath Towel',                             'unit' => 'pcs'],
+            'ladies_panties'        => ['name' => "Ladies' Panties (Adult)",                'unit' => 'pcs'],
+            'girls_panties'         => ['name' => "Girls' Panties",                         'unit' => 'pcs'],
+            'mens_briefs'           => ['name' => "Men's Briefs",                           'unit' => 'pcs'],
+            'boys_briefs'           => ['name' => "Boys' Briefs",                           'unit' => 'pcs'],
+            'sando_bra_adult'       => ['name' => 'Sando Bra (Adult)',                      'unit' => 'pcs'],
+            'sando_bra_girl'        => ['name' => 'Sando Bra (Girls)',                      'unit' => 'pcs'],
+            'adults_tshirt'         => ['name' => "Adults' T-Shirt",                        'unit' => 'pcs'],
+            'childrens_tshirt'      => ['name' => "Children's T-Shirt",                     'unit' => 'pcs'],
+            'adults_short_pants'    => ['name' => "Adults' Short Pants",                    'unit' => 'pcs'],
+            'childrens_shorts'      => ['name' => "Children's Shorts",                      'unit' => 'pcs'],
+            'adults_slippers'       => ['name' => "Adults' Slippers",                       'unit' => 'pairs'],
+            'childrens_slippers'    => ['name' => "Children's Slippers",                    'unit' => 'pairs'],
+            'clothing_plastic_box'  => ['name' => 'Plastic Box Container (Clothing Kit)',   'unit' => 'pc'],
+            // Sleeping Kit
+            'blanket'               => ['name' => 'Blanket',                                'unit' => 'pcs'],
+            'plastic_mat'           => ['name' => 'Plastic Mat',                            'unit' => 'pc'],
+            'mosquito_net'          => ['name' => 'Mosquito Net',                           'unit' => 'pc'],
+            'malong'                => ['name' => 'Malong (wrap cloth)',                    'unit' => 'pc'],
+            'pillow'                => ['name' => 'Pillow',                                 'unit' => 'pc'],
+            'sleeping_plastic_box'  => ['name' => 'Plastic Box Container (Sleeping Kit)',   'unit' => 'pc'],
+            // Kitchen Kit
+            'spoon'                 => ['name' => 'Spoon',                                  'unit' => 'pcs'],
+            'fork'                  => ['name' => 'Fork',                                   'unit' => 'pcs'],
+            'drinking_glass'        => ['name' => 'Drinking Glass',                         'unit' => 'pcs'],
+            'plate'                 => ['name' => 'Plate',                                  'unit' => 'pcs'],
+            'frying_pan'            => ['name' => 'Frying Pan',                             'unit' => 'pc'],
+            'cooking_pan'           => ['name' => 'Cooking Pan',                            'unit' => 'pc'],
+            'ladle'                 => ['name' => 'Ladle',                                  'unit' => 'pc'],
+            'kitchen_plastic_box'   => ['name' => 'Plastic Box Container (Kitchen Kit)',    'unit' => 'pc'],
         ];
         $reliefItems = [];
         foreach ($request->input('items', []) as $key => $data) {
@@ -138,6 +170,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/distribution/events/{event}/start',              [\App\Http\Controllers\Admin\AdminDistributionEventController::class, 'start'])          ->name('distribution.events.start');
     Route::post('/distribution/events/{event}/end',                [\App\Http\Controllers\Admin\AdminDistributionEventController::class, 'end'])            ->name('distribution.events.end');
     Route::post('/distribution/events/{event}/cancel',             [\App\Http\Controllers\Admin\AdminDistributionEventController::class, 'cancel'])         ->name('distribution.events.cancel');
+    Route::get('/distribution/scan-history',                        [\App\Http\Controllers\Admin\AdminDistributionLogController::class, 'scanHistory'])       ->name('distribution.scan-history');
 
     Route::get('/trail-logs', [\App\Http\Controllers\Admin\AdminTrailController::class, 'index'])->name('traillog.trail');
 });

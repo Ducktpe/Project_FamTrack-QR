@@ -437,6 +437,14 @@
             </svg>
             Trail Logs
         </a>
+        <a href="{{ route('admin.distribution.scan-history') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 7 23 1 17 1"/><polyline points="1 17 1 23 7 23"/>
+                <polyline points="23 17 23 23 17 23"/><polyline points="1 7 1 1 7 1"/>
+                <rect x="8" y="8" width="8" height="8" rx="1"/>
+            </svg>
+            Staff Scan History
+        </a>
 
         <hr class="sidebar-sep">
 

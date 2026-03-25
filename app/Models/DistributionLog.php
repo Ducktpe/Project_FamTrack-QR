@@ -45,4 +45,9 @@ class DistributionLog extends Model
     {
         return $this->belongsTo(FamilyMember::class, 'family_member_id');
     }
+
+    public function releasePhoto()
+    {
+        return $this->hasOne(DistributionReleasePhoto::class);
+    }
 }

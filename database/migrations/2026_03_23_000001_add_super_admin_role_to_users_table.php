@@ -28,9 +28,32 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['created_by']);
-            $table->dropColumn('created_by');
+            if (Schema::hasColumn('users', 'created_by')) {
+                // Check if the foreign key actually exists before dropping
+                $foreignKeys = collect(
+                    DB::select("
+                        SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE
+                        WHERE TABLE_SCHEMA = DATABASE()
+                          AND TABLE_NAME = 'users'
+                          AND COLUMN_NAME = 'created_by'
+                          AND REFERENCED_TABLE_NAME IS NOT NULL
+                    ")
+                )->pluck('CONSTRAINT_NAME')->toArray();
+
+                if (in_array('users_created_by_foreign', $foreignKeys)) {
+                    $table->dropForeign(['created_by']);
+                }
+
+                $table->dropColumn('created_by');
+            }
         });
+
+        // Demote any super_admin rows to 'admin' before removing
+        // 'super_admin' from the ENUM — otherwise MySQL rejects the
+        // ALTER because existing rows would hold an invalid value.
+        DB::table('users')
+            ->where('role', 'super_admin')
+            ->update(['role' => 'admin']);
 
         DB::statement("
             ALTER TABLE users

@@ -177,6 +177,63 @@ class AdminDistributionLogController extends Controller
         return view('admin.distribution.event-households', compact('event', 'households'));
     }
 
+    public function scanHistory(Request $request)
+    {
+        $query = DistributionLog::with(['household', 'staff', 'event', 'releasePhoto']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('serial_code', 'like', "%{$search}%")
+                  ->orWhereHas('household', function ($hq) use ($search) {
+                      $hq->where('household_head_name', 'like', "%{$search}%")
+                         ->orWhere('barangay', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('event', function ($eq) use ($search) {
+                      $eq->where('event_name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('staff', function ($sq) use ($search) {
+                      $sq->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('distributed_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('distributed_at', '<=', $request->date_to);
+        }
+
+        if ($request->filled('event_id')) {
+            $query->where('distribution_event_id', $request->event_id);
+        }
+
+        if ($request->filled('staff_id')) {
+            $query->where('distributed_by', $request->staff_id);
+        }
+
+        $logs = $query->orderByDesc('distributed_at')->paginate(20)->withQueryString();
+
+        // Stat cards
+        $totalScans  = DistributionLog::count();
+        $todayScans  = DistributionLog::whereDate('distributed_at', today())->count();
+        $totalEvents = DistributionEvent::has('logs')->count();
+        $totalStaff  = DistributionLog::distinct('distributed_by')->count('distributed_by');
+
+        // Filter dropdowns
+        $events    = DistributionEvent::orderBy('event_name')->get();
+        $staffList = \App\Models\User::whereIn('id',
+            DistributionLog::distinct('distributed_by')->pluck('distributed_by')
+        )->orderBy('name')->get();
+
+        return view('admin.distribution.admin-scan-history', compact(
+            'logs', 'events', 'staffList',
+            'totalScans', 'todayScans', 'totalEvents', 'totalStaff'
+        ));
+    }
+
     public function cancel(Request $request, DistributionEvent $event)
     {
         $request->validate([

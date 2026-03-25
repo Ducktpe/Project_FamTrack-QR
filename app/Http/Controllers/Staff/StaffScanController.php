@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Staff;
 use App\Http\Controllers\Controller;
 use App\Models\DistributionEvent;
 use App\Models\DistributionLog;
+use App\Models\DistributionReleasePhoto;
 use App\Models\Household;
 use App\Models\FamilyMember;
 use App\Models\AuditLog;
 use App\Models\ScanAttempt;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class StaffScanController extends Controller
 {
@@ -187,26 +189,33 @@ class StaffScanController extends Controller
     }
 
     /**
-     * Confirm and record distribution
+     * Confirm and record distribution.
+     *
+     * Expects multipart/form-data (not JSON) because a photo file is included.
+     * Required new fields:
+     *   recipient_photo  — JPEG/PNG captured by the blade's camera step
+     *   photo_taken_at   — ISO-8601 timestamp recorded client-side at shutter moment
+     *
+     * On success, returns photo_path + photo_url so the blade can render a thumbnail.
      */
     public function confirm(Request $request)
     {
         $validated = $request->validate([
             'household_id'     => 'required|exists:households,id',
             'event_id'         => 'required|exists:distribution_events,id',
-            'items_received'   => 'nullable|array',
+            'items_received'   => 'nullable|string',   // blade sends JSON.stringify'd string via FormData
             'goods_detail'     => 'nullable|string',
             'remarks'          => 'nullable|string',
+            // ── Photo fields (mandatory for both QR modes) ──
+            'recipient_photo'  => 'required|file|image|max:10240', // max 10 MB
+            'photo_taken_at'   => 'required|string',
         ]);
 
-        $household = Household::findOrFail($validated['household_id']);
-        $event     = DistributionEvent::findOrFail($validated['event_id']);
-        $scanMode  = $event->scan_mode ?? 'household';
-
-        // Reconstruct the scanned serial from scan_mode
-        // The blade passes back household.serial_code which is already the scanned serial
-        $scannedSerial    = $request->input('serial_code', $household->serial_code);
-        $familyMemberId   = $request->input('family_member_id');
+        $household      = Household::findOrFail($validated['household_id']);
+        $event          = DistributionEvent::findOrFail($validated['event_id']);
+        $scanMode       = $event->scan_mode ?? 'household';
+        $scannedSerial  = $request->input('serial_code', $household->serial_code);
+        $familyMemberId = $request->input('family_member_id') ?: null;
 
         // ── RACE CONDITION DUPLICATE PROTECTION ────────────────────────────
         $existing = $scanMode === 'family_head'
@@ -225,12 +234,24 @@ class StaffScanController extends Controller
         }
         // ── END DUPLICATE PROTECTION ────────────────────────────────────────
 
-        // Build items_received
-        $itemsReceived = $request->filled('items_received')
-            ? $request->input('items_received')
-            : ($event->relief_items ?? null);
+        // ── STORE RECIPIENT PHOTO ───────────────────────────────────────────
+        // Path: storage/app/public/distribution_photos/YYYY/MM/<hash>.jpg
+        // Accessible via: Storage::url($photoPath)  →  /storage/distribution_photos/…
+        $photoPath = $request->file('recipient_photo')->store(
+            'distribution_photos/' . now()->format('Y/m'),
+            'public'
+        );
+        // ── END PHOTO STORAGE ───────────────────────────────────────────────
 
-        // Create distribution log
+        // items_received arrives as a JSON string from FormData (blade uses JSON.stringify)
+        $itemsReceived = null;
+        if ($request->filled('items_received')) {
+            $decoded = json_decode($request->input('items_received'), true);
+            $itemsReceived = json_last_error() === JSON_ERROR_NONE ? $decoded : null;
+        }
+        $itemsReceived = $itemsReceived ?? ($event->relief_items ?? null);
+
+        // ── CREATE DISTRIBUTION LOG ─────────────────────────────────────────
         $log = DistributionLog::create([
             'event_id'         => $validated['event_id'],
             'household_id'     => $household->id,
@@ -242,8 +263,21 @@ class StaffScanController extends Controller
             'goods_detail'     => $validated['goods_detail'] ?? null,
             'remarks'          => $validated['remarks'] ?? null,
         ]);
+        // ── END LOG ─────────────────────────────────────────────────────────
 
-        // Persist successful scan attempt
+        // ── SAVE PHOTO RECORD ───────────────────────────────────────────────
+        DistributionReleasePhoto::create([
+            'distribution_log_id' => $log->id,
+            'household_id'        => $household->id,
+            'family_member_id'    => $scanMode === 'family_head' ? $familyMemberId : null,
+            'qr_type'             => $scanMode === 'family_head' ? 'family_head' : 'household',
+            'photo_path'          => $photoPath,
+            'photo_taken_at'      => $validated['photo_taken_at'],
+            'taken_by'            => auth()->id(),
+        ]);
+        // ── END PHOTO RECORD ─────────────────────────────────────────────────
+
+        // ── SCAN ATTEMPT ────────────────────────────────────────────────────
         ScanAttempt::create([
             'event_id'     => $validated['event_id'],
             'household_id' => $household->id,
@@ -252,8 +286,9 @@ class StaffScanController extends Controller
             'result'       => 'success',
             'scanned_at'   => now(),
         ]);
+        // ── END SCAN ATTEMPT ────────────────────────────────────────────────
 
-        // Audit log
+        // ── AUDIT LOG ───────────────────────────────────────────────────────
         AuditLog::log('distributed_ayuda', [
             'model'         => 'DistributionLog',
             'record_id'     => $log->id,
@@ -271,13 +306,17 @@ class StaffScanController extends Controller
                 'items_received'   => $log->items_received,
                 'goods_detail'     => $log->goods_detail,
                 'remarks'          => $log->remarks,
+                'photo_path'       => $photoPath,
             ],
         ]);
+        // ── END AUDIT LOG ───────────────────────────────────────────────────
 
         return response()->json([
-            'status'  => 'success',
-            'message' => 'Distribution recorded successfully!',
-            'log'     => [
+            'status'     => 'success',
+            'message'    => 'Distribution recorded successfully!',
+            'photo_path' => $photoPath,
+            'photo_url'  => Storage::url($photoPath),
+            'log'        => [
                 'id'        => $log->id,
                 'household' => $household->household_head_name,
                 'time'      => $log->distributed_at->format('h:i A'),
@@ -330,7 +369,7 @@ class StaffScanController extends Controller
         $dateTo   = $request->input('date_to');
 
         $logs = DistributionLog::where('distributed_by', $staffId)
-            ->with(['household', 'event'])
+            ->with(['household', 'event', 'releasePhoto'])
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('serial_code', 'like', "%{$search}%")

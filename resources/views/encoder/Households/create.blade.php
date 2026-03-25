@@ -411,6 +411,61 @@
 
             .lang-toggle { display: none; }
         }
+
+        /* ── Consent section ── */
+        .consent-item { background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: 6px; padding: 14px 16px; transition: border-color .15s, background .15s; }
+        .consent-item.is-checked { border-color: var(--blue); background: var(--blue-pale); }
+        .consent-label { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+        .consent-text { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+        .consent-text strong { color: var(--blue-dark); }
+        .consent-text em { font-style: normal; color: var(--gray-600); }
+        .ra-link {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-size: 11.5px; font-weight: 700; color: var(--blue-light);
+            background: none; border: none; cursor: pointer;
+            padding: 0; text-decoration: underline; font-family: inherit;
+            margin-left: 4px; transition: color .15s;
+        }
+        .ra-link:hover { color: var(--blue); }
+
+        /* ── RA Modals ── */
+        .ra-modal-bg {
+            display: none; position: fixed; inset: 0;
+            background: rgba(9,18,40,.7); backdrop-filter: blur(3px);
+            z-index: 1000; align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        .ra-modal-bg.open { display: flex; }
+        .ra-modal {
+            background: var(--white); border-radius: 8px; overflow: hidden;
+            width: 100%; max-width: 680px; max-height: 88vh;
+            display: flex; flex-direction: column;
+            box-shadow: 0 24px 64px rgba(0,0,0,.25);
+        }
+        .ra-modal-header {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            gap: 12px; padding: 18px 22px;
+            background: var(--blue-dark); border-bottom: 3px solid var(--yellow);
+            flex-shrink: 0;
+        }
+        .ra-modal-eyebrow { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,.45); margin-bottom: 4px; }
+        .ra-modal-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--white); line-height: 1.2; }
+        .ra-modal-close {
+            background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+            color: rgba(255,255,255,.7); width: 30px; height: 30px; border-radius: 4px;
+            font-size: 20px; line-height: 1; cursor: pointer; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            transition: all .15s; margin-top: 2px;
+        }
+        .ra-modal-close:hover { background: rgba(255,255,255,.2); color: #fff; }
+        .ra-modal-body { overflow-y: auto; padding: 22px 24px; flex: 1; }
+        .ra-section { margin-bottom: 20px; }
+        .ra-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--blue); margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid var(--gray-200); }
+        .ra-section p { font-size: 13px; color: var(--gray-700); line-height: 1.7; margin-bottom: 8px; }
+        .ra-section ul { margin: 0 0 0 18px; padding: 0; }
+        .ra-section ul li { font-size: 13px; color: var(--gray-700); line-height: 1.7; margin-bottom: 4px; }
+        .ra-notice { background: var(--blue-pale); border: 1px solid #C3D8F5; border-left: 4px solid var(--blue); border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: 12.5px; color: var(--blue-dark); line-height: 1.6; margin-top: 8px; }
+        .ra-modal-footer { padding: 14px 22px; border-top: 1px solid var(--gray-200); background: var(--gray-50); display: flex; justify-content: flex-end; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -921,11 +976,82 @@
         </div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════
+         LEGAL CONSENT — Required before saving
+    ═══════════════════════════════════════════════════ -->
+    <div class="form-card" id="consent-card">
+        <div class="form-card-header">
+            <div class="form-card-dot" style="background:var(--blue);"></div>
+            <div class="form-card-title">Data Privacy &amp; Legal Consent</div>
+            <div class="form-card-badge" style="background:#FEF3C7;color:#92400e;border:1px solid #FDE68A;">Required</div>
+        </div>
+        <div class="form-card-body">
+            <p style="font-size:12px;color:var(--gray-600);margin-bottom:16px;line-height:1.6;" id="consent-intro-text">
+                Before saving this household record, the encoder must confirm that data collection complies with Philippine law.
+                Please read and acknowledge both Republic Acts below.
+            </p>
+
+            {{-- Select All --}}
+            <div style="margin-bottom:14px;padding:10px 14px;background:var(--blue-pale);border:1px solid var(--gray-200);border-radius:6px;display:flex;align-items:center;gap:10px;">
+                <input type="checkbox" id="consent_select_all"
+                       style="width:18px;height:18px;accent-color:var(--blue);flex-shrink:0;cursor:pointer;"
+                       onchange="toggleAllConsents(this)">
+                <label for="consent_select_all" id="consent-select-all-lbl" style="font-size:13px;font-weight:600;color:var(--blue-dark);cursor:pointer;user-select:none;">
+                    Select All — I acknowledge and agree to all legal consent items below
+                </label>
+            </div>
+
+            {{-- RA 10173 Consent --}}
+            <div class="consent-item" id="consent-item-1">
+                <label class="consent-label">
+                    <input type="checkbox" id="consent_ra10173" name="consent_ra10173" value="1"
+                           onchange="checkConsents()" required
+                           style="width:18px;height:18px;accent-color:var(--blue);flex-shrink:0;cursor:pointer;">
+                    <span class="consent-text">
+                        <span id="consent-ra10173-text">I acknowledge that the collection of personal information in this form complies with
+                        <strong>Republic Act No. 10173</strong> — the
+                        <em>Data Privacy Act of 2012</em>,
+                        and that the household head has given informed consent for their data to be collected, stored, and processed by MDRRMO Naic, Cavite.</span>
+                        <button type="button" class="ra-link" onclick="openRaModal('ra10173')">
+                            <span id="consent-ra10173-link">Read RA 10173 in full</span>
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        </button>
+                    </span>
+                </label>
+            </div>
+
+            {{-- RA 11315 Consent --}}
+            <div class="consent-item" id="consent-item-2" style="margin-top:12px;">
+                <label class="consent-label">
+                    <input type="checkbox" id="consent_ra11315" name="consent_ra11315" value="1"
+                           onchange="checkConsents()" required
+                           style="width:18px;height:18px;accent-color:var(--blue);flex-shrink:0;cursor:pointer;">
+                    <span class="consent-text">
+                        <span id="consent-ra11315-text">I acknowledge that this data collection is conducted in accordance with
+                        <strong>Republic Act No. 11315</strong> — the
+                        <em>Community-Based Monitoring System (CBMS) Act</em>,
+                        which authorizes local government units to collect household-level socioeconomic data for disaster risk reduction and social protection purposes.</span>
+                        <button type="button" class="ra-link" onclick="openRaModal('ra11315')">
+                            <span id="consent-ra11315-link">Read RA 11315 in full</span>
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        </button>
+                    </span>
+                </label>
+            </div>
+
+            {{-- Consent warning (shows until both are ticked) --}}
+            <div id="consent-warning" style="display:none;margin-top:14px;background:var(--red-pale,#FEF2F2);border:1px solid #FECACA;border-left:4px solid var(--red,#C0392B);padding:10px 14px;font-size:12px;color:#991b1b;border-radius:0 6px 6px 0;">
+                <span id="consent-warning-text">Both acknowledgements must be checked before saving the record.</span>
+            </div>
+        </div>
+    </div>
+
     <!-- ACTIONS -->
     <div class="form-card">
         <div class="form-actions">
             <button type="button" class="btn-secondary" id="btn-reset" onclick="confirmReset()">Reset Form</button>
-            <button type="submit" class="btn-primary" id="btn-save">
+            <button type="submit" class="btn-primary" id="btn-save" disabled
+                    style="opacity:.5;cursor:not-allowed;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                 <span id="btn-save-lbl">Save Household Record</span>
             </button>
@@ -934,6 +1060,26 @@
 
     </form>
 </main>
+
+{{-- ═══════════════════════════════════════════════════
+     RA 10173 MODAL — Data Privacy Act of 2012
+     (content rendered by renderRaModals() in JS)
+═══════════════════════════════════════════════════ --}}
+<div id="modal-ra10173" class="ra-modal-bg" onclick="if(event.target===this)closeRaModal('ra10173')">
+    <div class="ra-modal">
+        <div id="modal-ra10173-inner"></div>
+    </div>
+</div>
+
+{{-- ═══════════════════════════════════════════════════
+     RA 11315 MODAL — CBMS Act
+     (content rendered by renderRaModals() in JS)
+═══════════════════════════════════════════════════ --}}
+<div id="modal-ra11315" class="ra-modal-bg" onclick="if(event.target===this)closeRaModal('ra11315')">
+    <div class="ra-modal">
+        <div id="modal-ra11315-inner"></div>
+    </div>
+</div>
 
 <footer>
     <div class="footer-left">&copy; <span id="footer-year"></span> <strong>MDRRMO Naic, Cavite</strong> &mdash; Municipal Disaster Risk Reduction and Management Office</div>
@@ -1041,6 +1187,53 @@ const EN = {
     'famhead-autofill':'Auto-filled from household head name',
     'famhead-ph':'Full name of head',
     'famtype-other-ph':'Please specify family type...',
+
+    // ── RA Modal: consent card ──
+    'consent-intro':'Before saving this household record, the encoder must confirm that data collection complies with Philippine law. Please read and acknowledge both Republic Acts below.',
+    'consent-select-all':'Select All — I acknowledge and agree to all legal consent items below',
+    'consent-ra10173-text':'I acknowledge that the collection of personal information in this form complies with <strong>Republic Act No. 10173</strong> — the <em>Data Privacy Act of 2012</em>, and that the household head has given informed consent for their data to be collected, stored, and processed by MDRRMO Naic, Cavite.',
+    'consent-ra10173-link':'Read RA 10173 in full',
+    'consent-ra11315-text':'I acknowledge that this data collection is conducted in accordance with <strong>Republic Act No. 11315</strong> — the <em>Community-Based Monitoring System (CBMS) Act</em>, which authorizes local government units to collect household-level socioeconomic data for disaster risk reduction and social protection purposes.',
+    'consent-ra11315-link':'Read RA 11315 in full',
+    'consent-warning-text':'Both acknowledgements must be checked before saving the record.',
+
+    // ── RA 10173 Modal ──
+    'ra10173-eyebrow':'Republic Act No. 10173',
+    'ra10173-title':'Data Privacy Act of 2012',
+    'ra10173-s2-title':'Declaration of Policy (Section 2)',
+    'ra10173-s2-body':'It is the policy of the State to protect the fundamental human right of privacy of communication while ensuring free flow of information to promote innovation and growth. The State recognizes the vital role of information and communications technology in nation-building and its inherent obligation to ensure that personal information in information and communications systems in the government and in the private sector are secured and protected.',
+    'ra10173-s4-title':'Scope (Section 4)',
+    'ra10173-s4-body':'This Act applies to the processing of all types of personal information and to any natural and juridical person involved in personal information processing including those personal information controllers and processors who, although not found or established in the Philippines, use equipment that are located in the Philippines, or those who maintain an office, branch or agency in the Philippines.',
+    'ra10173-s3c-title':'Definition of Personal Information (Section 3c)',
+    'ra10173-s3c-body':'"Personal information" refers to any information whether recorded in a material form or not, from which the identity of an individual is apparent or can be reasonably and directly ascertained by the entity holding the information, or when put together with other information would directly and certainly identify an individual.',
+    'ra10173-s12-title':'Criteria for Lawful Processing (Section 12)',
+    'ra10173-s12-body':'The processing of personal information shall be permitted only if not otherwise prohibited by law, and when at least one of the following conditions exists:',
+    'ra10173-s12-li':['The data subject has given his or her consent;','The processing of personal information is necessary and is related to the fulfillment of a contract with the data subject;','The processing is necessary for compliance with a legal obligation to which the personal information controller is subject;','The processing is necessary to protect vitally important interests of the data subject, including life and health;','The processing is necessary in order to respond to national emergency, to comply with the requirements of public order and safety, or to fulfill functions of public authority.'],
+    'ra10173-s16-title':'Rights of the Data Subject (Section 16)',
+    'ra10173-s16-body':'The data subject is entitled to:',
+    'ra10173-s16-li':['Be informed whether personal information pertaining to him or her shall be, are being or have been processed;','Be furnished the information indicated hereunder before the entry of his or her personal information into the processing system of the personal information controller;','Reasonable access to his or her personal information;','Dispute the inaccuracy or error in the personal information and have the personal information controller correct it immediately;','Suspend, withdraw or order the blocking, removal or destruction of his or her personal information from the personal information controller\'s filing system upon discovery and substantial proof that the personal information are incomplete, outdated, false, unlawfully obtained, used for unauthorized purposes or are no longer necessary for the purposes for which they were collected.'],
+    'ra10173-s20-title':'Security of Personal Information (Section 20)',
+    'ra10173-s20-body':'The personal information controller must implement reasonable and appropriate organizational, physical and technical measures intended for the protection of personal information against any accidental or unlawful destruction, alteration and disclosure, as well as against any other unlawful processing.',
+    'ra10173-notice':'<strong>MDRRMO Naic, Cavite</strong> collects household data solely for disaster risk reduction, social protection profiling, and relief distribution planning. Data is stored securely and is not shared with unauthorized third parties. The household head has the right to access, correct, or request erasure of their information at any time.',
+    'ra-modal-close-btn':'Close',
+
+    // ── RA 11315 Modal ──
+    'ra11315-eyebrow':'Republic Act No. 11315',
+    'ra11315-title':'Community-Based Monitoring System (CBMS) Act',
+    'ra11315-s2-title':'Declaration of Policy (Section 2)',
+    'ra11315-s2-body':'It is hereby declared the policy of the State to promote the rights of every Filipino to a decent standard of living, including adequate food, clothing, shelter, and access to basic social services. In furtherance of such rights, the State shall adopt a systematic, standardized, and government-wide community-based monitoring system that will serve as the mechanism for generating updated, disaggregated data that can be used for planning, program implementation, and resource allocation for poverty reduction and social protection.',
+    'ra11315-s3-title':'Definition of CBMS (Section 3)',
+    'ra11315-s3-body':'"Community-Based Monitoring System" or "CBMS" refers to an organized technology-based system of collecting, processing, and validating necessary data that may be used for planning, program implementation, and impact monitoring at the local level while empowering communities to participate in the process.',
+    'ra11315-s5-title':'Coverage and Data to be Collected (Section 5)',
+    'ra11315-s5-body':'The CBMS shall cover all households in every barangay in the country. Data to be collected shall include, but not be limited to:',
+    'ra11315-s5-li':['Household composition (number of household members, age, sex, civil status, relationship to household head);','Health status (persons with disability, senior citizens, pregnant/lactating women);','Education (literacy, school attendance, educational attainment);','Housing and living conditions (type of housing, roof and wall materials, tenure status, access to water, sanitation, electricity);','Economic status (employment, income, access to social protection programs);','Vulnerability to disasters and climate change.'],
+    'ra11315-s7-title':'Role of Local Government Units (Section 7)',
+    'ra11315-s7-body':'Local government units (LGUs), particularly barangays, cities, and municipalities, shall conduct the CBMS data collection in their respective jurisdictions. The LGU shall be responsible for the training of enumerators, data collection, encoding, validation, and submission of data. The CBMS data shall be used by LGUs for local development planning, budget preparation, program targeting, and monitoring of programs, projects, and activities.',
+    'ra11315-s11-title':'Data Privacy and Confidentiality (Section 11)',
+    'ra11315-s11-body':'All data collected under this Act shall be kept strictly confidential. No individual data shall be released without the consent of the data subject. Aggregate data may be released for statistical and planning purposes only. The provisions of Republic Act No. 10173, otherwise known as the "Data Privacy Act of 2012," shall apply to all personal data collected under this Act.',
+    'ra11315-s14-title':'Sanctions (Section 14)',
+    'ra11315-s14-body':'Any person who willfully discloses or uses for unauthorized purposes any individual data collected under this Act shall be penalized with a fine of not less than Five hundred thousand pesos (₱500,000.00) nor more than Two million pesos (₱2,000,000.00), or imprisonment of not less than six (6) months nor more than three (3) years, or both, at the discretion of the court.',
+    'ra11315-notice':'The MDRRMO Naic uses CBMS-aligned data collection to identify vulnerable households for disaster response and social welfare targeting. All collected data is handled in accordance with RA 11315 and RA 10173 and is used exclusively for the welfare of Naic residents.',
 };
 
 const TL = {
@@ -1125,6 +1318,53 @@ const TL = {
     'famhead-autofill':'Awtomatikong napunan mula sa pangalan ng ulo',
     'famhead-ph':'Buong pangalan ng ulo',
     'famtype-other-ph':'Pakitukoy ang uri ng pamilya...',
+
+    // ── RA Modal: consent card ──
+    'consent-intro':'Bago i-save ang talaan ng sambahayan, dapat kumpirmahin ng encoder na ang pagkolekta ng datos ay sumusunod sa batas ng Pilipinas. Mangyaring basahin at kilalanin ang parehong Republika ng mga Batas sa ibaba.',
+    'consent-select-all':'Piliin Lahat — Kinikilala at sinasang-ayunan ko ang lahat ng legal na mga pahintulot sa ibaba',
+    'consent-ra10173-text':'Kinikilala ko na ang pagkolekta ng personal na impormasyon sa form na ito ay sumusunod sa <strong>Republika ng Batas Blg. 10173</strong> — ang <em>Batas sa Proteksyon ng Datos ng 2012</em>, at na ang ulo ng sambahayan ay nagbigay ng may-kaalamang pahintulot para makolekta, maiimbak, at maproseso ang kanilang datos ng MDRRMO Naic, Cavite.',
+    'consent-ra10173-link':'Basahin ang RA 10173 nang buo',
+    'consent-ra11315-text':'Kinikilala ko na ang pagkolektang ito ng datos ay isinasagawa alinsunod sa <strong>Republika ng Batas Blg. 11315</strong> — ang <em>Batas ng Community-Based Monitoring System (CBMS)</em>, na nagbibigay-kapangyarihan sa mga lokal na pamahalaan na mangolekta ng datos ng sambahayan para sa pagbabawas ng panganib sa kalamidad at mga layuning panlipunang proteksyon.',
+    'consent-ra11315-link':'Basahin ang RA 11315 nang buo',
+    'consent-warning-text':'Ang parehong mga pagkilala ay dapat na lagyan ng tsek bago i-save ang talaan.',
+
+    // ── RA 10173 Modal ──
+    'ra10173-eyebrow':'Republika ng Batas Blg. 10173',
+    'ra10173-title':'Batas sa Proteksyon ng Datos ng 2012',
+    'ra10173-s2-title':'Deklarasyon ng Patakaran (Seksyon 2)',
+    'ra10173-s2-body':'Patakaran ng Estado na pangalagaan ang pangunahing karapatang pantao ng privacy ng komunikasyon habang tinitiyak ang malayang daloy ng impormasyon upang itaguyod ang inobasyon at paglago. Kinikilala ng Estado ang mahalagang papel ng teknolohiya ng impormasyon at komunikasyon sa pagbuo ng bansa at ang likas na obligasyon nitong tiyakin na ang personal na impormasyon sa mga sistema ng impormasyon at komunikasyon sa pamahalaan at sa pribadong sektor ay ligtas at protektado.',
+    'ra10173-s4-title':'Saklaw (Seksyon 4)',
+    'ra10173-s4-body':'Ang Batas na ito ay nalalapat sa pagproseso ng lahat ng uri ng personal na impormasyon at sa anumang natural at juridical na tao na sangkot sa pagproseso ng personal na impormasyon kabilang ang mga personal na kontroler at processor ng impormasyon na, kahit hindi natagpuan o naitatag sa Pilipinas, ay gumagamit ng kagamitan na matatagpuan sa Pilipinas, o yaong nagpapanatili ng opisina, sangay o ahensya sa Pilipinas.',
+    'ra10173-s3c-title':'Kahulugan ng Personal na Impormasyon (Seksyon 3c)',
+    'ra10173-s3c-body':'"Personal na impormasyon" ay tumutukoy sa anumang impormasyon, nakatala man sa materyal na anyo o hindi, kung saan ang pagkakakilanlan ng isang indibidwal ay maliwanag o maaaring makatwirang at direktang matukoy ng entidad na may hawak ng impormasyon, o kapag pinagsama sa ibang impormasyon ay direkta at tiyak na makilala ang isang indibidwal.',
+    'ra10173-s12-title':'Pamantayan para sa Maayos na Pagproseso (Seksyon 12)',
+    'ra10173-s12-body':'Ang pagproseso ng personal na impormasyon ay pahihintulutan lamang kung hindi ipinagbabawal ng batas, at kapag umiiral ang hindi bababa sa isa sa mga sumusunod na kundisyon:',
+    'ra10173-s12-li':['Ang data subject ay nagbigay ng kanyang pahintulot;','Ang pagproseso ng personal na impormasyon ay kinakailangan at nauugnay sa pagtupad ng kontrata sa data subject;','Ang pagproseso ay kinakailangan para sa pagsunod sa legal na obligasyon ng personal na kontroler ng impormasyon;','Ang pagproseso ay kinakailangan upang protektahan ang napakahalagang interes ng data subject, kabilang ang buhay at kalusugan;','Ang pagproseso ay kinakailangan upang tumugon sa pambansang emerhensya, sumunod sa mga kinakailangan ng pampublikong kaayusan at kaligtasan, o tuparin ang mga tungkulin ng pampublikong awtoridad.'],
+    'ra10173-s16-title':'Mga Karapatan ng Data Subject (Seksyon 16)',
+    'ra10173-s16-body':'Ang data subject ay may karapatang:',
+    'ra10173-s16-li':['Mapabatid kung ang personal na impormasyon na nauugnay sa kanya ay ipoproseso, pinoproseso, o naproseso na;','Maibigay ang impormasyong nakalagay sa ibaba bago ipasok ang kanyang personal na impormasyon sa sistema ng pagproseso ng personal na kontroler ng impormasyon;','Makatwirang pag-access sa kanyang personal na impormasyon;','Kuwestyunin ang kawalan ng katumpakan o pagkakamali sa personal na impormasyon at ipapunto sa personal na kontroler ng impormasyon na itama ito agad;','Suspindihin, bawiin o utusan ang pagharang, pag-alis o pagwasak ng kanyang personal na impormasyon mula sa sistema ng pagha-file ng personal na kontroler ng impormasyon sa pagkatuklas at substansyal na patunay na ang personal na impormasyon ay hindi kumpleto, lipas na, mali, hindi legal na nakuha, ginamit para sa mga hindi awtorisadong layunin o hindi na kailangan para sa mga layuning pinangolekta.'],
+    'ra10173-s20-title':'Seguridad ng Personal na Impormasyon (Seksyon 20)',
+    'ra10173-s20-body':'Ang personal na kontroler ng impormasyon ay dapat magpatupad ng makatwirang at angkop na organisasyonal, pisikal at teknikal na mga hakbang na nilalayon para sa proteksyon ng personal na impormasyon laban sa anumang aksidenteng o ilegal na pagwasak, pagbabago at pagsisiwalat, pati na rin laban sa anumang ibang ilegal na pagproseso.',
+    'ra10173-notice':'<strong>MDRRMO Naic, Cavite</strong> ay nangongolekta ng datos ng sambahayan nang eksklusibo para sa pagbabawas ng panganib sa kalamidad, pagpoprofayl ng panlipunang proteksyon, at pagpaplano ng pamamahagi ng tulong. Ang datos ay ligtas na nakaimbak at hindi ibinabahagi sa mga hindi awtorisadong third party. Ang ulo ng sambahayan ay may karapatang ma-access, itama, o hilingin ang pagbura ng kanilang impormasyon anumang oras.',
+    'ra-modal-close-btn':'Isara',
+
+    // ── RA 11315 Modal ──
+    'ra11315-eyebrow':'Republika ng Batas Blg. 11315',
+    'ra11315-title':'Batas ng Community-Based Monitoring System (CBMS)',
+    'ra11315-s2-title':'Deklarasyon ng Patakaran (Seksyon 2)',
+    'ra11315-s2-body':'Dito ay ipinahahayag na patakaran ng Estado na itaguyod ang mga karapatan ng bawat Pilipino sa disente at pamumuhay, kabilang ang sapat na pagkain, damit, tirahan, at access sa mga pangunahing serbisyong panlipunan. Alinsunod sa mga karapatang ito, ang Estado ay magpapatibay ng isang sistematiko, pamantayan, at panserbisyong komunidad na sistema ng pagsubaybay na magsisilbing mekanismo para sa pagbuo ng na-update at disaggregated na datos na maaaring gamitin para sa pagpaplano, pagpapatupad ng programa, at paglaan ng mapagkukunan para sa pagbabawas ng kahirapan at panlipunang proteksyon.',
+    'ra11315-s3-title':'Kahulugan ng CBMS (Seksyon 3)',
+    'ra11315-s3-body':'"Community-Based Monitoring System" o "CBMS" ay tumutukoy sa isang organisadong teknolohiyang sistema ng pagkolekta, pagproseso, at pagpapatunay ng kinakailangang datos na maaaring gamitin para sa pagpaplano, pagpapatupad ng programa, at pagsubaybay ng epekto sa lokal na antas habang binibigyan ng kapangyarihan ang mga komunidad na lumahok sa proseso.',
+    'ra11315-s5-title':'Saklaw at Datos na Kokolektahin (Seksyon 5)',
+    'ra11315-s5-body':'Sasaklawin ng CBMS ang lahat ng sambahayan sa bawat barangay sa buong bansa. Ang datos na kokolektahin ay kinabibilangan ng, ngunit hindi limitado sa:',
+    'ra11315-s5-li':['Komposisyon ng sambahayan (bilang ng mga miyembro ng sambahayan, edad, kasarian, katayuang sibil, relasyon sa ulo ng sambahayan);','Katayuang pangkalusugan (mga taong may kapansanan, mga matatanda, mga buntis/nagpapasusong kababaihan);','Edukasyon (literacy, pagdalo sa paaralan, pinakamataas na antas ng pag-aaral);','Tirahan at kondisyon ng pamumuhay (uri ng tirahan, mga materyales ng bubong at dingding, katayuan ng pagmamay-ari, access sa tubig, sanitasyon, kuryente);','Katayuang pang-ekonomiya (trabaho, kita, access sa mga programa ng panlipunang proteksyon);','Kahinaan sa mga kalamidad at pagbabago ng klima.'],
+    'ra11315-s7-title':'Papel ng mga Lokal na Pamahalaan (Seksyon 7)',
+    'ra11315-s7-body':'Ang mga lokal na pamahalaan (LGU), lalo na ang mga barangay, lungsod, at munisipalidad, ay magsasagawa ng pagkolekta ng datos ng CBMS sa kani-kanilang mga hurisdiksyon. Ang LGU ay magiging responsable sa pagsasanay ng mga taga-enumerate, pagkolekta ng datos, encoding, pagpapatunay, at pagsusumite ng datos. Ang datos ng CBMS ay gagamitin ng mga LGU para sa lokal na pagpaplano ng pag-unlad, paghahanda ng badyet, pag-target ng programa, at pagsubaybay ng mga programa, proyekto, at aktibidad.',
+    'ra11315-s11-title':'Privacy ng Datos at Pagiging Kumpidensyal (Seksyon 11)',
+    'ra11315-s11-body':'Ang lahat ng datos na nakolekta sa ilalim ng Batas na ito ay dapat panatilihing mahigpit na kumpidensyal. Walang indibidwal na datos ang ilalabas nang walang pahintulot ng data subject. Ang pinagsama-samang datos ay maaaring ilabas para sa istatistika at layunin ng pagpaplano lamang. Ang mga probisyon ng Republika ng Batas Blg. 10173, kilala bilang "Data Privacy Act of 2012," ay nalalapat sa lahat ng personal na datos na nakolekta sa ilalim ng Batas na ito.',
+    'ra11315-s14-title':'Mga Parusa (Seksyon 14)',
+    'ra11315-s14-body':'Sinumang taong sadyang nagsisiwalat o gumagamit para sa mga hindi awtorisadong layunin ng anumang indibidwal na datos na nakolekta sa ilalim ng Batas na ito ay paparusahan ng multa na hindi bababa sa Limang daang libong piso (₱500,000.00) o higit pa sa Dalawang milyong piso (₱2,000,000.00), o pagkabilanggo ng hindi bababa sa anim (6) na buwan o higit sa tatlo (3) na taon, o pareho, sa pagpapasya ng hukuman.',
+    'ra11315-notice':'Gumagamit ang MDRRMO Naic ng pagkolekta ng datos na nakahanay sa CBMS upang matukoy ang mga mahihinang sambahayan para sa pagtugon sa kalamidad at pag-target ng kapakanan ng lipunan. Ang lahat ng nakolektang datos ay pinangangasiwaan alinsunod sa RA 11315 at RA 10173 at ginagamit nang eksklusibo para sa kapakanan ng mga residente ng Naic.',
 };
 
 // Build MIX: English label (Tagalog)
@@ -1258,6 +1498,9 @@ function applyLang(){
         btn.textContent = T('nf-remove');
         if(svg) btn.prepend(svg);
     });
+
+    // ── RA Modals & Consent Card ──
+    renderRaModals();
 }
 
 /* ─── Nuclear Family system ─── */
@@ -1945,14 +2188,180 @@ requestAnimationFrame(()=>{ _pageInitialising = false; window.scrollTo(0,0); });
     if(name) syncSection1ToNF1();
 })();
 
-// On load: re-trigger onVuln and onEmp for head panel so sub-fields
-// show correctly when old() values exist after a validation fail
-(function(){
-    const vulnSel = document.querySelector('[name="fam[1][m][1][vuln_sector]"]');
-    const empSel  = document.querySelector('[name="fam[1][m][1][employment_status]"]');
-    if(vulnSel && vulnSel.value) onVuln(vulnSel, '1_1');
-    if(empSel  && empSel.value)  onEmp(empSel,   '1_1');
-})();
+/* ─── Data Privacy Consent ─── */
+function toggleAllConsents(selectAllCb){
+    const cb1 = document.getElementById('consent_ra10173');
+    const cb2 = document.getElementById('consent_ra11315');
+    if(cb1) cb1.checked = selectAllCb.checked;
+    if(cb2) cb2.checked = selectAllCb.checked;
+    checkConsents();
+}
+
+function checkConsents(){
+    const cb1 = document.getElementById('consent_ra10173');
+    const cb2 = document.getElementById('consent_ra11315');
+    const selectAll = document.getElementById('consent_select_all');
+    const btn = document.getElementById('btn-save');
+    const warn = document.getElementById('consent-warning');
+    const item1 = document.getElementById('consent-item-1');
+    const item2 = document.getElementById('consent-item-2');
+
+    const allChecked = cb1 && cb2 && cb1.checked && cb2.checked;
+
+    // Sync the "Select All" checkbox state
+    if(selectAll){
+        selectAll.checked = allChecked;
+        selectAll.indeterminate = !allChecked && ((cb1 && cb1.checked) || (cb2 && cb2.checked));
+    }
+
+    // Visual feedback on each item
+    if(item1) item1.classList.toggle('is-checked', cb1 && cb1.checked);
+    if(item2) item2.classList.toggle('is-checked', cb2 && cb2.checked);
+
+    if(allChecked){
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+        if(warn) warn.style.display = 'none';
+    } else {
+        btn.disabled = true;
+        btn.style.opacity = '.5';
+        btn.style.cursor = 'not-allowed';
+    }
+}
+
+/* Guard: show warning if user tries to submit without checking */
+document.getElementById('btn-save').addEventListener('click', function(e){
+    const cb1 = document.getElementById('consent_ra10173');
+    const cb2 = document.getElementById('consent_ra11315');
+    if(!cb1.checked || !cb2.checked){
+        e.preventDefault();
+        const warn = document.getElementById('consent-warning');
+        if(warn){ warn.style.display = 'block'; warn.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+    }
+}, true);
+
+/* ─── RA Modal open/close ─── */
+function openRaModal(id){
+    const modal = document.getElementById('modal-' + id);
+    if(modal){ modal.classList.add('open'); document.body.style.overflow='hidden'; }
+}
+function closeRaModal(id){
+    const modal = document.getElementById('modal-' + id);
+    if(modal){ modal.classList.remove('open'); document.body.style.overflow=''; }
+}
+document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+        ['ra10173','ra11315'].forEach(id => closeRaModal(id));
+    }
+});
+
+/* ─── Render RA modal content (translatable) ─── */
+function renderRaModals(){
+    function liList(arr){ return arr.map(s=>`<li>${s}</li>`).join(''); }
+
+    // ── Consent card inline text ──
+    const consentIntro = document.getElementById('consent-intro-text');
+    if(consentIntro) consentIntro.textContent = T('consent-intro');
+    const selectAllLbl = document.getElementById('consent-select-all-lbl');
+    if(selectAllLbl) selectAllLbl.textContent = T('consent-select-all');
+    const r10173text = document.getElementById('consent-ra10173-text');
+    if(r10173text) r10173text.innerHTML = T('consent-ra10173-text');
+    const r10173link = document.getElementById('consent-ra10173-link');
+    if(r10173link) r10173link.textContent = T('consent-ra10173-link');
+    const r11315text = document.getElementById('consent-ra11315-text');
+    if(r11315text) r11315text.innerHTML = T('consent-ra11315-text');
+    const r11315link = document.getElementById('consent-ra11315-link');
+    if(r11315link) r11315link.textContent = T('consent-ra11315-link');
+    const warnText = document.getElementById('consent-warning-text');
+    if(warnText) warnText.textContent = T('consent-warning-text');
+
+    // ── RA 10173 Modal ──
+    const m10173 = document.getElementById('modal-ra10173-inner');
+    if(m10173) m10173.innerHTML = `
+        <div class="ra-modal-header">
+            <div>
+                <div class="ra-modal-eyebrow">${T('ra10173-eyebrow')}</div>
+                <div class="ra-modal-title">${T('ra10173-title')}</div>
+            </div>
+            <button type="button" class="ra-modal-close" onclick="closeRaModal('ra10173')">&times;</button>
+        </div>
+        <div class="ra-modal-body">
+            <div class="ra-section">
+                <div class="ra-section-title">${T('ra10173-s2-title')}</div>
+                <p>${T('ra10173-s2-body')}</p>
+            </div>
+            <div class="ra-section">
+                <div class="ra-section-title">${T('ra10173-s4-title')}</div>
+                <p>${T('ra10173-s4-body')}</p>
+            </div>
+            <div class="ra-section">
+                <div class="ra-section-title">${T('ra10173-s3c-title')}</div>
+                <p>${T('ra10173-s3c-body')}</p>
+            </div>
+            <div class="ra-section">
+                <div class="ra-section-title">${T('ra10173-s12-title')}</div>
+                <p>${T('ra10173-s12-body')}</p>
+                <ul>${liList(T('ra10173-s12-li'))}</ul>
+            </div>
+            <div class="ra-section">
+                <div class="ra-section-title">${T('ra10173-s16-title')}</div>
+                <p>${T('ra10173-s16-body')}</p>
+                <ul>${liList(T('ra10173-s16-li'))}</ul>
+            </div>
+            <div class="ra-section">
+                <div class="ra-section-title">${T('ra10173-s20-title')}</div>
+                <p>${T('ra10173-s20-body')}</p>
+            </div>
+            <div class="ra-notice">${T('ra10173-notice')}</div>
+        </div>
+        <div class="ra-modal-footer">
+            <button type="button" class="btn-primary" onclick="closeRaModal('ra10173')">${T('ra-modal-close-btn')}</button>
+        </div>`;
+
+    // ── RA 11315 Modal ──
+    const m11315 = document.getElementById('modal-ra11315-inner');
+    if(m11315) m11315.innerHTML = `
+        <div class="ra-modal-header">
+            <div>
+                <div class="ra-modal-eyebrow">${T('ra11315-eyebrow')}</div>
+                <div class="ra-modal-title">${T('ra11315-title')}</div>
+            </div>
+            <button type="button" class="ra-modal-close" onclick="closeRaModal('ra11315')">&times;</button>
+        </div>
+        <div class="ra-modal-body">
+            <div class="ra-section">
+                <div class="ra-section-title">${T('ra11315-s2-title')}</div>
+                <p>${T('ra11315-s2-body')}</p>
+            </div>
+            <div class="ra-section">
+                <div class="ra-section-title">${T('ra11315-s3-title')}</div>
+                <p>${T('ra11315-s3-body')}</p>
+            </div>
+            <div class="ra-section">
+                <div class="ra-section-title">${T('ra11315-s5-title')}</div>
+                <p>${T('ra11315-s5-body')}</p>
+                <ul>${liList(T('ra11315-s5-li'))}</ul>
+            </div>
+            <div class="ra-section">
+                <div class="ra-section-title">${T('ra11315-s7-title')}</div>
+                <p>${T('ra11315-s7-body')}</p>
+            </div>
+            <div class="ra-section">
+                <div class="ra-section-title">${T('ra11315-s11-title')}</div>
+                <p>${T('ra11315-s11-body')}</p>
+            </div>
+            <div class="ra-section">
+                <div class="ra-section-title">${T('ra11315-s14-title')}</div>
+                <p>${T('ra11315-s14-body')}</p>
+            </div>
+            <div class="ra-notice">${T('ra11315-notice')}</div>
+        </div>
+        <div class="ra-modal-footer">
+            <button type="button" class="btn-primary" onclick="closeRaModal('ra11315')">${T('ra-modal-close-btn')}</button>
+        </div>`;
+}
+
 </script>
 </body>
 </html>

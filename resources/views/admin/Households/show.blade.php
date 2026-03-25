@@ -634,10 +634,18 @@
                                 </div>
                             </div>
                             <div class="info-item">
-                                <div class="info-label">National ID</div>
+                                <div class="info-label">Valid ID</div>
                                 <div class="info-value">
-                                    @if($household->national_id) <span class="mono">{{ $household->national_id }}</span>
-                                    @else <em>Not enrolled</em> @endif
+                                    @if($household->valid_id_type || $household->valid_id_num)
+                                        @if($household->valid_id_type)
+                                            <span>{{ $household->valid_id_type }}</span>
+                                        @endif
+                                        @if($household->valid_id_num)
+                                            — <span class="mono">{{ $household->valid_id_num }}</span>
+                                        @endif
+                                    @else
+                                        <em>Not provided</em>
+                                    @endif
                                 </div>
                             </div>
                             <div class="info-item">

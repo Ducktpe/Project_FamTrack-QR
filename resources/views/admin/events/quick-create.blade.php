@@ -940,6 +940,14 @@
             </svg>
             Trail Logs
         </a>
+        <a href="{{ route('admin.distribution.scan-history') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 7 23 1 17 1"/><polyline points="1 17 1 23 7 23"/>
+                <polyline points="23 17 23 23 17 23"/><polyline points="1 7 1 1 7 1"/>
+                <rect x="8" y="8" width="8" height="8" rx="1"/>
+            </svg>
+            Staff Scan History
+        </a>
         <hr class="sidebar-sep">
         <div class="sidebar-bottom">
             <form method="POST" action="{{ route('logout') }}">
@@ -1016,11 +1024,14 @@
                                 <label class="form-label">Relief Type <span class="req">*</span></label>
                                 <div id="relief_type_hidden_inputs"></div>
                                 <div class="relief-cat-picker" id="reliefCatPicker">
-                                    <button type="button" class="rcp-btn" id="rcp-cash"     onclick="toggleCategory('Cash Aid',    'rcp-cash',    'items-cash')">    <span class="rcp-icon">💵</span><span class="rcp-label">Cash Aid</span></button>
-                                    <button type="button" class="rcp-btn" id="rcp-dignity"  onclick="toggleCategory('Dignity Kit', 'rcp-dignity',  'items-dignity')"> <span class="rcp-icon">🎀</span><span class="rcp-label">Dignity Kit</span></button>
-                                    <button type="button" class="rcp-btn" id="rcp-firstaid" onclick="toggleCategory('First Aid Kit','rcp-firstaid','items-firstaid')"><span class="rcp-icon">🩹</span><span class="rcp-label">First Aid Kit</span></button>
-                                    <button type="button" class="rcp-btn" id="rcp-food"     onclick="toggleCategory('Food Pack',   'rcp-food',    'items-food')">    <span class="rcp-icon">🍱</span><span class="rcp-label">Food Pack</span></button>
-                                    <button type="button" class="rcp-btn" id="rcp-hygiene"  onclick="toggleCategory('Hygiene Kit', 'rcp-hygiene',  'items-hygiene')"> <span class="rcp-icon">🧴</span><span class="rcp-label">Hygiene Kit</span></button>
+                                    <button type="button" class="rcp-btn" id="rcp-cash"     onclick="toggleCategory('Cash Aid',            'rcp-cash',     'items-cash')">    <span class="rcp-icon">💵</span><span class="rcp-label">Cash Aid</span></button>
+                                    <button type="button" class="rcp-btn" id="rcp-dignity"  onclick="toggleCategory('Dignity Kit',          'rcp-dignity',  'items-dignity')"> <span class="rcp-icon">🎀</span><span class="rcp-label">Dignity Kit</span></button>
+                                    <button type="button" class="rcp-btn" id="rcp-firstaid" onclick="toggleCategory('First Aid Kit',        'rcp-firstaid', 'items-firstaid')"><span class="rcp-icon">🩹</span><span class="rcp-label">First Aid Kit</span></button>
+                                    <button type="button" class="rcp-btn" id="rcp-food"     onclick="toggleCategory('Food Pack',            'rcp-food',     'items-food')">    <span class="rcp-icon">🍱</span><span class="rcp-label">Food Pack</span></button>
+                                    <button type="button" class="rcp-btn" id="rcp-hygiene"  onclick="toggleCategory('Hygiene Kit',          'rcp-hygiene',  'items-hygiene')"> <span class="rcp-icon">🧴</span><span class="rcp-label">Hygiene Kit</span></button>
+                                    <button type="button" class="rcp-btn" id="rcp-clothing" onclick="toggleCategory('Family Clothing Kit',  'rcp-clothing', 'items-clothing')"><span class="rcp-icon">👕</span><span class="rcp-label">Family Clothing Kit</span></button>
+                                    <button type="button" class="rcp-btn" id="rcp-sleeping" onclick="toggleCategory('Sleeping Kit',         'rcp-sleeping', 'items-sleeping')"><span class="rcp-icon">🛏️</span><span class="rcp-label">Sleeping Kit</span></button>
+                                    <button type="button" class="rcp-btn" id="rcp-kitchen"  onclick="toggleCategory('Kitchen Kit',          'rcp-kitchen',  'items-kitchen')"> <span class="rcp-icon">🍳</span><span class="rcp-label">Kitchen Kit</span></button>
                                 </div>
                                 <div class="form-hint">Choose one or more categories of goods being distributed in this event.</div>
                             </div>
@@ -1277,6 +1288,172 @@
                                     </div>
                                     <div class="form-hint">Cash amount each household will receive.</div>
                                 </div>
+                            </div>
+                        </div>
+
+                        {{-- Family Clothing Kit --}}
+                        <div class="relief-panel" id="items-clothing" style="display:none;">
+                            <div class="rp-header">
+                                <span class="rp-icon-badge" style="background:#FDF4FF;font-size:18px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;">👕</span>
+                                <div class="rp-header-text">
+                                    <span class="rp-title">Family Clothing Kit</span>
+                                    <span class="rp-hint">Check items included and enter quantity per household</span>
+                                </div>
+                                <button type="button" class="rp-select-all-btn" onclick="selectAllItems('items-clothing')">Select All</button>
+                            </div>
+                            <div class="rp-table">
+                                <div class="rp-table-head">
+                                    <span class="rp-th">Item</span>
+                                    <span class="rp-th qty-head">Qty / Amount</span>
+                                </div>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[bath_towel][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Bath Towel</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[bath_towel][qty]" class="rp-qty-input" min="1" step="1" placeholder="5" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[ladies_panties][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Ladies' Panties (Adult)</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[ladies_panties][qty]" class="rp-qty-input" min="1" step="1" placeholder="2" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[girls_panties][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Girls' Panties</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[girls_panties][qty]" class="rp-qty-input" min="1" step="1" placeholder="3" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[mens_briefs][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Men's Briefs</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[mens_briefs][qty]" class="rp-qty-input" min="1" step="1" placeholder="2" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[boys_briefs][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Boys' Briefs</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[boys_briefs][qty]" class="rp-qty-input" min="1" step="1" placeholder="3" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[sando_bra_adult][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Sando Bra (Adult)</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[sando_bra_adult][qty]" class="rp-qty-input" min="1" step="1" placeholder="2" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[sando_bra_girl][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Sando Bra (Girls)</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[sando_bra_girl][qty]" class="rp-qty-input" min="1" step="1" placeholder="3" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[adults_tshirt][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Adults' T-Shirt</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[adults_tshirt][qty]" class="rp-qty-input" min="1" step="1" placeholder="4" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[childrens_tshirt][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Children's T-Shirt</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[childrens_tshirt][qty]" class="rp-qty-input" min="1" step="1" placeholder="6" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[adults_short_pants][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Adults' Short Pants</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[adults_short_pants][qty]" class="rp-qty-input" min="1" step="1" placeholder="4" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[childrens_shorts][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Children's Shorts</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[childrens_shorts][qty]" class="rp-qty-input" min="1" step="1" placeholder="6" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[adults_slippers][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Adults' Slippers</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[adults_slippers][qty]" class="rp-qty-input" min="1" step="1" placeholder="2" onclick="event.stopPropagation()"><span class="rp-qty-unit">pairs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[childrens_slippers][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Children's Slippers</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[childrens_slippers][qty]" class="rp-qty-input" min="1" step="1" placeholder="3" onclick="event.stopPropagation()"><span class="rp-qty-unit">pairs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[clothing_plastic_box][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Plastic Box Container (packaging)</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[clothing_plastic_box][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pc</span></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- Sleeping Kit --}}
+                        <div class="relief-panel" id="items-sleeping" style="display:none;">
+                            <div class="rp-header">
+                                <span class="rp-icon-badge" style="background:#F0FDF4;font-size:18px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;">🛏️</span>
+                                <div class="rp-header-text">
+                                    <span class="rp-title">Sleeping Kit</span>
+                                    <span class="rp-hint">Check items included and enter quantity per household</span>
+                                </div>
+                                <button type="button" class="rp-select-all-btn" onclick="selectAllItems('items-sleeping')">Select All</button>
+                            </div>
+                            <div class="rp-table">
+                                <div class="rp-table-head">
+                                    <span class="rp-th">Item</span>
+                                    <span class="rp-th qty-head">Qty / Amount</span>
+                                </div>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[blanket][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Blanket</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[blanket][qty]" class="rp-qty-input" min="1" step="1" placeholder="2" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[plastic_mat][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Plastic Mat</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[plastic_mat][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pc</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[mosquito_net][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Mosquito Net</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[mosquito_net][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pc</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[malong][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Malong (wrap cloth)</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[malong][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pc</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[pillow][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Pillow</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[pillow][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pc</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[sleeping_plastic_box][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Plastic Box Container (packaging)</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[sleeping_plastic_box][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pc</span></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- Kitchen Kit --}}
+                        <div class="relief-panel" id="items-kitchen" style="display:none;">
+                            <div class="rp-header">
+                                <span class="rp-icon-badge" style="background:#FFF7ED;font-size:18px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;">🍳</span>
+                                <div class="rp-header-text">
+                                    <span class="rp-title">Kitchen Kit</span>
+                                    <span class="rp-hint">Check items included and enter quantity per household</span>
+                                </div>
+                                <button type="button" class="rp-select-all-btn" onclick="selectAllItems('items-kitchen')">Select All</button>
+                            </div>
+                            <div class="rp-table">
+                                <div class="rp-table-head">
+                                    <span class="rp-th">Item</span>
+                                    <span class="rp-th qty-head">Qty / Amount</span>
+                                </div>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[spoon][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Spoon</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[spoon][qty]" class="rp-qty-input" min="1" step="1" placeholder="5" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[fork][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Fork</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[fork][qty]" class="rp-qty-input" min="1" step="1" placeholder="5" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[drinking_glass][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Drinking Glass</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[drinking_glass][qty]" class="rp-qty-input" min="1" step="1" placeholder="5" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[plate][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Plate</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[plate][qty]" class="rp-qty-input" min="1" step="1" placeholder="5" onclick="event.stopPropagation()"><span class="rp-qty-unit">pcs</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[frying_pan][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Frying Pan</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[frying_pan][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pc</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[cooking_pan][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Cooking Pan</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[cooking_pan][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pc</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[ladle][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Ladle</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[ladle][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pc</span></div>
+                                </label>
+                                <label class="rp-item">
+                                    <div class="rp-item-left"><input type="checkbox" name="items[kitchen_plastic_box][included]" value="1" class="rp-cb-native" onchange="onItemChange()"><span class="rp-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><span class="rp-name">Plastic Box Container (packaging)</span></div>
+                                    <div class="rp-qty-wrap"><input type="number" name="items[kitchen_plastic_box][qty]" class="rp-qty-input" min="1" step="1" placeholder="1" onclick="event.stopPropagation()"><span class="rp-qty-unit">pc</span></div>
+                                </label>
                             </div>
                         </div>
 
@@ -1734,6 +1911,9 @@
         'rcp-firstaid': { panelId: 'items-firstaid', type: 'First Aid Kit' },
         'rcp-food':     { panelId: 'items-food',     type: 'Food Pack' },
         'rcp-hygiene':  { panelId: 'items-hygiene',  type: 'Hygiene Kit' },
+        'rcp-clothing': { panelId: 'items-clothing', type: 'Family Clothing Kit' },
+        'rcp-sleeping': { panelId: 'items-sleeping', type: 'Sleeping Kit' },
+        'rcp-kitchen':  { panelId: 'items-kitchen',  type: 'Kitchen Kit' },
     };
 
     const activeCats = new Set();

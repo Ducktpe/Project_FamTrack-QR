@@ -46,6 +46,8 @@
         .nav-login { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; background: var(--blue); color: var(--white); font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; text-decoration: none; border-radius: 4px; transition: background 0.15s, transform 0.15s; }
         .nav-login:hover { background: var(--blue-dark); transform: translateY(-1px); }
         .nav-login svg { width: 14px; height: 14px; }
+        .nav-about { display: inline-flex; align-items: center; gap: 7px; padding: 10px 18px; background: transparent; color: var(--blue); font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; text-decoration: none; border-radius: 4px; border: 1px solid var(--gray-200); transition: background 0.15s, border-color 0.15s; }
+        .nav-about:hover { background: var(--blue-pale); border-color: var(--blue); }
 
         /* ─── HERO ─── */
         @keyframes heroGradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
@@ -433,6 +435,7 @@
             nav { height: 58px; padding: 0 16px; }
             .nav-brand { gap: 10px; } .nav-brand img { height: 34px; width: 34px; } .nav-divider { display: none; } .nav-text-title { font-size: 13px; }
             .nav-login span { display: none; } .nav-login { padding: 9px 12px; gap: 0; border-radius: 50%; width: 38px; height: 38px; justify-content: center; }
+            .nav-about span { display: none; } .nav-about { padding: 9px 10px; border-radius: 50%; width: 38px; height: 38px; justify-content: center; }
             .hero-inner { padding: 48px 16px 40px; }
             .btn-primary, .btn-ghost, .btn-events { width: 100%; justify-content: center; }
             .hero-cta-row { flex-direction: column; gap: 10px; }
@@ -471,12 +474,22 @@
                 <div class="nav-text-title">MDRRMO — Naic, Cavite</div>
             </div>
         </div>
-        <a href="{{ route('login') }}" class="nav-login">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/>
-            </svg>
-            <span>Login to System</span>
-        </a>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <a href="{{ route('about') }}" class="nav-about">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="8" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="12" y1="12" x2="12" y2="16"/>
+                </svg>
+                <span>About Us</span>
+            </a>
+            <a href="{{ route('login') }}" class="nav-login">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                </svg>
+                <span>Login to System</span>
+            </a>
+        </div>
     </nav>
 
     <!-- HERO -->
@@ -546,6 +559,14 @@
                             <circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/>
                         </svg>
                         Learn More
+                    </a>
+                    <a href="{{ route('about') }}" class="btn-ghost">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="8" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="12" y1="12" x2="12" y2="16"/>
+                        </svg>
+                        About Us
                     </a>
                 </div>
 
@@ -889,7 +910,7 @@
                     <a href="https://www.facebook.com/naicmdrrmo" target="_blank" rel="noopener" title="Facebook">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
                     </a>
-                    <a href="mailto:mdrrmo.naic@gmail.com" title="Email">
+                    <a href="/cdn-cgi/l/email-protection#9bf6ffe9e9f6f4b5f5faf2f8dbfcf6faf2f7b5f8f4f6" title="Email">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
                     </a>
                 </div>
@@ -902,7 +923,7 @@
                 </div>
                 <div class="footer-contact-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
-                    <a href="mailto:mdrrmo.naic@gmail.com"><span>mdrrmo.naic@gmail.com</span></a>
+                    <a href="/cdn-cgi/l/email-protection#036e6771716e6c2d6d626a6043646e626a6f2d606c6e"><span><span class="__cf_email__" data-cfemail="1d70796f6f707233737c747e5d7a707c7471337e7270">[email&#160;protected]</span></span></a>
                 </div>
                 <div class="footer-contact-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -917,6 +938,7 @@
                 <div class="footer-col-title">Quick Links</div>
                 <ul class="footer-links">
                     <li><a href="{{ route('login') }}">Login to System</a></li>
+                    <li><a href="{{ route('about') }}">About Us</a></li>
                     <li><a href="#features">System Features</a></li>
                     <li><a href="#how">How It Works</a></li>
                     <li><a href="#roles">User Roles</a></li>
@@ -934,7 +956,7 @@
         </div>
     </footer>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // ─── Clock ───
         function pad(n){ return String(n).padStart(2,'0'); }
         function updateClock() {
@@ -1018,11 +1040,7 @@
         }, { threshold: 0.08 });
 
         animClasses.forEach(sel => {
-            document.querySelectorAll(sel).forEach(el => {
-                const rect = el.getBoundingClientRect();
-                if (rect.top < window.innerHeight) { el.classList.add('visible'); }
-                else { observer.observe(el); }
-            });
+            document.querySelectorAll(sel).forEach(el => observer.observe(el));
         });
     </script>
 </body>
