@@ -37,6 +37,35 @@ class DashboardController extends Controller
             ->take(8)
             ->get();
 
+        // ── Students per Barangay ──────────────────────────────────────
+        $studentsByBarangay = \DB::table('family_member_details')
+            ->join('family_members', 'family_member_details.family_member_id', '=', 'family_members.id')
+            ->join('households', 'family_members.household_id', '=', 'households.id')
+            ->where('family_member_details.employment_status', 'Student')
+            ->groupBy('households.barangay')
+            ->orderByDesc('student_count')
+            ->selectRaw('households.barangay, COUNT(*) as student_count')
+            ->pluck('student_count', 'barangay');
+
+        // ── Students by School Level (stored in job_title when Student) ──
+        $studentsByLevel = \DB::table('family_member_details')
+            ->join('family_members', 'family_member_details.family_member_id', '=', 'family_members.id')
+            ->join('households', 'family_members.household_id', '=', 'households.id')
+            ->where('family_member_details.employment_status', 'Student')
+            ->whereNotNull('family_member_details.job_title')
+            ->groupBy('family_member_details.job_title')
+            ->orderByDesc('level_count')
+            ->selectRaw('family_member_details.job_title as level, COUNT(*) as level_count')
+            ->pluck('level_count', 'level');
+
+        // ── Employment Status Breakdown (all members) ─────────────────
+        $employmentCounts = \DB::table('family_member_details')
+            ->whereNotNull('employment_status')
+            ->groupBy('employment_status')
+            ->orderByDesc('total')
+            ->selectRaw('employment_status, COUNT(*) as total')
+            ->pluck('total', 'employment_status');
+
         return view('admin.dashboard', compact(
             'totalResidents',
             'totalHouseholds',
@@ -44,7 +73,10 @@ class DashboardController extends Controller
             'totalSeniors',
             'totalPwd',
             'householdsPerBarangay',
-            'recentEvents'
+            'recentEvents',
+            'studentsByBarangay',
+            'studentsByLevel',
+            'employmentCounts'
         ));
     }
 }

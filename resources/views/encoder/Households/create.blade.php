@@ -116,12 +116,14 @@
             --gray-50:#F7F8FA;--gray-100:#F0F2F5;--gray-200:#DEE2E8;
             --gray-400:#9AA3B0;--gray-600:#5A6372;--gray-800:#2C3340;
             --red:#C0392B;--green:#16A34A;--sidebar-w:260px;
+            --topbar-h:36px;--header-h:76px;
         }
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-        html,body{height:100%;font-family:'Open Sans',sans-serif;background:var(--gray-100);color:var(--gray-800);font-size:14px;}
-        .shell{display:grid;grid-template-rows:36px 76px 1fr 48px;grid-template-columns:var(--sidebar-w) 1fr;grid-template-areas:"topbar topbar" "header header" "sidebar main" "footer footer";height:100vh;overflow:hidden;}
+        html{overflow-x:clip;}
+        body{font-family:'Open Sans',sans-serif;background:var(--gray-100);color:var(--gray-800);font-size:14px;}
+        .shell{display:grid;grid-template-rows:var(--topbar-h) var(--header-h) 1fr auto;grid-template-columns:var(--sidebar-w) minmax(0,1fr);grid-template-areas:"topbar topbar" "header header" "sidebar main" "footer footer";min-height:100vh;}
         /* TOP BAR */
-        .topbar{grid-area:topbar;background:var(--blue-dark);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;}
+        .topbar{grid-area:topbar;background:var(--blue-dark);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:320;position:sticky;top:0;}
         .topbar-left{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.3px;}
         .topbar-right{display:flex;align-items:center;gap:20px;}
         .clock-inline{font-size:12px;font-weight:600;color:var(--yellow);letter-spacing:1px;font-variant-numeric:tabular-nums;}
@@ -130,14 +132,14 @@
         .status-indicator::before{content:'';width:6px;height:6px;border-radius:50%;background:#4CAF50;box-shadow:0 0 5px #4CAF50;animation:blink 2s infinite;}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
         /* HEADER */
-        header{grid-area:header;background:var(--white);border-bottom:3px solid var(--yellow);box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;align-items:center;padding:0 28px;gap:14px;z-index:90;}
+        header{grid-area:header;background:var(--white);border-bottom:3px solid var(--yellow);box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;align-items:center;padding:0 28px;gap:14px;z-index:310;position:sticky;top:var(--topbar-h);height:var(--header-h);overflow:hidden;min-width:0;}
         .hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;margin-left:-4px;border-radius:4px;color:var(--blue-dark);flex-shrink:0;transition:background .15s;}
         .hamburger:hover{background:var(--blue-pale);}
         .hamburger svg{width:22px;height:22px;display:block;}
         .header-logos{display:flex;align-items:center;gap:12px;flex-shrink:0;}
         .header-logos img{height:54px;width:54px;object-fit:contain;}
         .logo-divider{width:1px;height:44px;background:var(--gray-200);}
-        .header-text{margin-left:4px;}
+        .header-text{margin-left:4px;min-width:0;overflow:hidden;}
         .header-org{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gray-400);margin-bottom:2px;}
         .header-title{font-family:'PT Serif',serif;font-size:18px;font-weight:700;color:var(--blue-dark);line-height:1.2;}
         .header-sub{font-size:11px;color:var(--gray-600);margin-top:2px;}
@@ -148,14 +150,44 @@
         .lang-btn{font-family:'Open Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;padding:5px 14px;border-radius:16px;border:none;cursor:pointer;transition:all .2s ease;color:var(--gray-400);background:transparent;}
         .lang-btn.active{background:var(--blue);color:var(--white);box-shadow:0 2px 6px rgba(27,63,122,.25);}
         .lang-btn:not(.active):hover{color:var(--blue);background:var(--blue-pale);}
-        .header-user-badge{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#FFF7ED;border:1px solid #D97706;border-radius:4px;}
-        .user-avatar{width:32px;height:32px;border-radius:50%;background:#D97706;display:flex;align-items:center;justify-content:center;color:#FFF;font-weight:700;font-size:13px;flex-shrink:0;}
-        .user-name{font-size:13px;font-weight:600;color:var(--blue-dark);line-height:1.2;}
-        .user-role{font-size:10px;color:#D97706;text-transform:uppercase;letter-spacing:.5px;}
+                /* ─── PROFILE BADGE ─── */
+        .header-user-badge {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px;
+            background: #FFF7ED;
+            border: 1px solid #D97706; border-radius: 4px;
+            flex-shrink: 1; min-width: 0; overflow: hidden;
+        }
+        .user-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #D97706;
+            display: flex; align-items: center; justify-content: center;
+            color: #FFFFFF; font-weight: 700; font-size: 13px; flex-shrink: 0;
+        }
+        .user-name {
+            font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .user-role {
+            font-size: 10px; color: #D97706; text-transform: uppercase; letter-spacing: 0.5px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
         /* SIDEBAR */
-        .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;pointer-events:none;}
-        .sidebar-overlay.active{display:block!important;pointer-events:auto;}
-        .sidebar{grid-area:sidebar;background:var(--white);border-right:1px solid var(--gray-200);display:flex;flex-direction:column;overflow-y:auto;position:relative;}
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 250;
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+        .sidebar-overlay.active {
+            display: block;
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
         .sidebar-close{display:none;position:absolute;top:12px;right:12px;background:var(--gray-100);border:1px solid var(--gray-200);border-radius:4px;width:32px;height:32px;align-items:center;justify-content:center;cursor:pointer;z-index:10;color:var(--gray-600);transition:background .15s;}
         .sidebar-close:hover{background:#FEF2F2;color:var(--red);}
         .sidebar-close svg{width:16px;height:16px;}
@@ -174,7 +206,7 @@
         .logout-btn{width:100%;font-family:'Open Sans',sans-serif;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;background:var(--blue);color:#FFF;border:none;padding:10px 16px;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;}
         .logout-btn:hover{background:var(--red);}
         /* MAIN */
-        .main-content{grid-area:main;background:var(--gray-50);overflow-y:auto;padding:28px 32px;}
+        .main-content{grid-area:main;background:var(--gray-50);padding:28px 32px;min-width:0;overflow-x:hidden;}
         .page-titlebar{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--gray-200);gap:12px;}
         .page-breadcrumb{font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
         .page-breadcrumb span{color:var(--blue-light);}
@@ -183,13 +215,13 @@
         .page-date{font-size:12px;color:var(--gray-600);text-align:right;flex-shrink:0;}
         .page-date strong{display:block;font-size:13px;font-weight:600;color:var(--gray-800);white-space:nowrap;}
         /* FORM CARDS */
-        .form-card{background:var(--white);border:1px solid var(--gray-200);margin-bottom:20px;}
+        .form-card{background:var(--white);border:1px solid var(--gray-200);margin-bottom:20px;min-width:0;overflow:hidden;}
         .form-card-header{padding:14px 20px;border-bottom:1px solid var(--gray-100);background:var(--gray-50);display:flex;align-items:center;gap:10px;}
         .form-card-dot{width:8px;height:8px;border-radius:50%;background:var(--yellow);border:2px solid var(--yellow-dark);flex-shrink:0;}
         .form-card-title{font-size:13px;font-weight:600;color:var(--blue-dark);flex:1;}
         .form-card-badge{background:var(--blue-pale);color:var(--blue);font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;}
         .form-card-body{padding:24px 28px;}
-        .form-row{display:grid;gap:16px;margin-bottom:20px;}
+        .form-row{display:grid;gap:16px;margin-bottom:20px;min-width:0;}
         .form-row.cols-2{grid-template-columns:1fr 1fr;}
         .form-row.cols-3{grid-template-columns:1fr 1fr 1fr;}
         .form-row.cols-1{grid-template-columns:1fr;}
@@ -256,7 +288,7 @@
         .nf-toggle.collapsed{transform:rotate(-90deg);}
         .nf-body{background:#fff;overflow:hidden;max-height:3000px;opacity:1;transition:max-height .35s ease,opacity .25s ease;}
         .nf-body.nf-collapsed{max-height:0;opacity:0;pointer-events:none;}
-        .nf-body-inner{padding:20px 22px;}
+        .nf-body-inner{padding:20px 22px;min-width:0;overflow-x:hidden;}
         .nf-meta{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:16px;margin-bottom:20px;padding:16px;background:var(--gray-50);border:1px solid var(--gray-100);border-radius:6px;}
         @media(max-width:700px){.nf-meta{grid-template-columns:1fr;}}
         .nf-members-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:10px;border-bottom:2px solid var(--blue-pale);}
@@ -279,7 +311,7 @@
         .id-input:focus{outline:none;border-color:var(--blue-light);}
         .btn-add-family{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;background:transparent;border:2px dashed #c3d8f5;border-radius:8px;color:var(--blue-light);font-family:'Open Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:4px;}
         .btn-add-family:hover{background:var(--blue-pale);border-color:var(--blue);color:var(--blue);}
-        @media(max-width:640px){.nf-pills{display:none;}.nf-label{font-size:12px;}}
+        @media(max-width:640px){.nf-pills{display:none;}.nf-label{font-size:12px;}.nf-body-inner{padding:14px 12px;}}
 
         .form-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:20px 28px;background:var(--gray-50);border-top:1px solid var(--gray-200);}
         .btn-primary{font-family:'Open Sans',sans-serif;font-size:13px;font-weight:600;background:var(--blue);color:#FFF;border:none;padding:10px 28px;border-radius:3px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s;}
@@ -299,11 +331,10 @@
         /* ── 900px: tablet — sidebar becomes drawer ── */
         @media (max-width: 900px) {
             .shell {
-                grid-template-rows: 36px auto 1fr 48px;
+                grid-template-rows: 36px auto auto auto;
                 grid-template-columns: 1fr;
                 grid-template-areas: "topbar" "header" "main" "footer";
-                height: 100vh;
-                overflow: hidden;
+                min-height: 100vh;
             }
             .sidebar {
                 grid-area: unset;
@@ -316,19 +347,17 @@
                 box-shadow: 4px 0 20px rgba(0,0,0,0.15);
             }
             .sidebar.open { transform: translateX(0); }
-            .sidebar-overlay { display: block; }
             .sidebar-close { display: flex; }
             .sidebar .nav-section-label { padding-top: 52px; }
 
-            .hamburger { display: flex; }
+            .hamburger { display: flex; z-index: 315; position: relative; }
 
-            header { padding: 0 16px; gap: 10px; }
+            header { padding: 0 16px; gap: 10px; z-index: 260; }
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
             .header-user-badge { padding: 6px 10px; gap: 8px; }
             .user-name { font-size: 12px; }
-            .user-role { display: none; }
 
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
@@ -340,12 +369,10 @@
             .form-row.cols-4 { grid-template-columns: 1fr 1fr; }
 
             /* Member table: allow horizontal scroll */
-            .member-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .member-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width:100%; }
 
             /* Nuclear family head panel */
-            #head_panel_1 > div[style*="grid-template-columns:repeat(4"] {
-                grid-template-columns: 1fr 1fr !important;
-            }
+            .head-panel-grid { grid-template-columns: 1fr 1fr !important; }
         }
 
         /* ── 640px: large phone ── */
@@ -364,8 +391,8 @@
             .user-avatar { width: 28px; height: 28px; font-size: 11px; }
             .user-name { font-size: 11px; }
 
-            .main-content { padding: 16px 12px; }
-            .form-card-body { padding: 16px; }
+            .main-content { padding: 14px 10px; }
+            .form-card-body { padding: 14px 12px; }
 
             .page-titlebar { flex-direction: column; align-items: flex-start; gap: 6px; }
             .page-h1 { font-size: 18px; }
@@ -379,11 +406,6 @@
             /* Nuclear family meta row */
             .nf-meta { grid-template-columns: 1fr !important; }
 
-            /* Head panel full width */
-            #head_panel_1 > div[style*="grid-template-columns"] {
-                grid-template-columns: 1fr 1fr !important;
-            }
-
             /* Nuclear family pills hidden */
             .nf-pills { display: none; }
             .nf-label { font-size: 12px; }
@@ -391,6 +413,18 @@
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
+
+            /* Fix: prevent check-group items from overflowing */
+            .check-group { gap: 6px 12px; padding: 8px 10px; }
+            .check-item .cl { font-size: 11px; }
+
+            /* Fix: form-actions on mobile */
+            .form-actions { padding: 14px 12px; flex-wrap: wrap; gap: 8px; }
+            .btn-primary, .btn-secondary { font-size: 12px; padding: 9px 16px; }
+
+            /* Fix: consent section stacking */
+            .consent-item { padding: 10px 12px; }
+            .consent-text { font-size: 12px; }
         }
 
         /* ── 480px: small phone ── */
@@ -401,15 +435,114 @@
             .nf-card-header { flex-wrap: wrap; gap: 8px; }
             .nf-header-actions { width: 100%; justify-content: flex-end; }
 
-            /* Head panel single column on small phones */
-            #head_panel_1 > div[style*="grid-template-columns"] {
-                grid-template-columns: 1fr !important;
-            }
-            #head_panel_1 .form-group[style*="grid-column:span 2"] {
-                grid-column: span 1 !important;
+            .lang-toggle { display: none; }
+
+            /* Fix: header-text should not overflow on small screens */
+            .header-text { overflow: hidden; min-width: 0; }
+            .header-title { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        }
+
+        /* ════════════════════════════════════════
+           MEMBER TABLE → CARD LAYOUT ON MOBILE
+           ════════════════════════════════════════ */
+        @media (max-width: 700px) {
+            /* Hide the table header row */
+            .member-table thead { display: none; }
+
+            /* Remove table layout, stack tbody rows */
+            .member-table,
+            .member-table tbody,
+            .member-table tr,
+            .member-table td {
+                display: block;
+                width: 100%;
             }
 
-            .lang-toggle { display: none; }
+            /* Each row becomes a card */
+            .member-table tbody tr {
+                background: var(--white);
+                border: 1px solid var(--gray-200);
+                border-radius: 6px;
+                margin-bottom: 10px;
+                padding: 10px 12px 8px;
+                position: relative;
+            }
+            .member-table tbody tr:nth-child(even) {
+                background: #fafbfd;
+            }
+            .member-table tbody tr:hover td {
+                background: transparent !important;
+            }
+
+            /* Row number cell → badge in top-left */
+            .member-table td:first-child {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 26px; height: 26px;
+                background: var(--blue);
+                color: #fff;
+                border-radius: 50%;
+                font-size: 11px;
+                font-weight: 700;
+                margin-bottom: 10px;
+                text-align: center;
+            }
+
+            /* All other cells: label-above-input stacking */
+            .member-table td:not(:first-child):not(:last-child) {
+                padding: 4px 0;
+                border: none;
+            }
+            .member-table td:not(:first-child):not(:last-child)::before {
+                content: attr(data-label);
+                display: block;
+                font-size: 9.5px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: .7px;
+                color: var(--gray-400);
+                margin-bottom: 3px;
+            }
+
+            /* Delete button cell → top-right corner */
+            .member-table td:last-child {
+                position: absolute;
+                top: 8px; right: 8px;
+                width: auto;
+                padding: 0;
+                border: none;
+                background: transparent !important;
+            }
+
+            /* Inputs & selects fill the card width */
+            .member-table .form-input,
+            .member-table .form-select {
+                width: 100% !important;
+                min-width: 0 !important;
+                font-size: 12px;
+                padding: 6px 10px;
+                box-sizing: border-box;
+            }
+
+            /* Head checkbox cell — inline with label */
+            .member-table td[data-label="Head"],
+            .member-table td[data-label="LGBTQIA+"] {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 6px 0;
+            }
+            .member-table td[data-label="Head"]::before,
+            .member-table td[data-label="LGBTQIA+"]::before {
+                margin-bottom: 0;
+            }
+
+            /* Wrap: no forced overflow-x */
+            .member-table-wrap {
+                overflow-x: visible !important;
+            }
+            .member-table { min-width: 0 !important; }
         }
 
         /* ── Consent section ── */
@@ -466,6 +599,164 @@
         .ra-section ul li { font-size: 13px; color: var(--gray-700); line-height: 1.7; margin-bottom: 4px; }
         .ra-notice { background: var(--blue-pale); border: 1px solid #C3D8F5; border-left: 4px solid var(--blue); border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: 12.5px; color: var(--blue-dark); line-height: 1.6; margin-top: 8px; }
         .ra-modal-footer { padding: 14px 22px; border-top: 1px solid var(--gray-200); background: var(--gray-50); display: flex; justify-content: flex-end; flex-shrink: 0; }
+    
+        /* ── Head panel grid ── */
+        .head-panel-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        @media (max-width: 900px) {
+            .head-panel-grid { grid-template-columns: 1fr 1fr; }
+            .head-panel-grid .form-group[style*="grid-column:span 2"],
+            .head-panel-grid .form-group[style*="grid-column: span 2"] { grid-column: span 2; }
+        }
+        @media (max-width: 480px) {
+            .head-panel-grid { grid-template-columns: 1fr; }
+            .head-panel-grid .form-group[style*="grid-column:span 2"],
+            .head-panel-grid .form-group[style*="grid-column: span 2"] { grid-column: span 1; }
+        }
+        /* ── NF meta grid ── */
+        @media (max-width: 480px) {
+            .nf-meta { grid-template-columns: 1fr !important; }
+            .form-row.cols-2 { grid-template-columns: 1fr; }
+        }
+
+
+        /* ════════════════════════════════════════
+           SIDEBAR — ALWAYS VISIBLE ON DESKTOP
+           ════════════════════════════════════════ */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--white);
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            /* sticky: stays fixed while page scrolls */
+            position: sticky;
+            top: calc(var(--topbar-h) + var(--header-h)); /* topbar + header */
+            height: calc(100vh - var(--topbar-h) - var(--header-h));
+            /* grid: don't let the row shrink to content */
+            align-self: stretch;
+        }
+        /* Mobile: sidebar becomes a slide-in drawer */
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                bottom: 0 !important;
+                height: 100vh !important;
+                width: var(--sidebar-w);
+                z-index: 300;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+                align-self: unset !important;
+            }
+            .sidebar.open { transform: translateX(0) !important; }
+            .sidebar-close { display: flex !important; }
+            .sidebar .nav-section-label { padding-top: 52px; }
+        }
+
+
+        /* ════════════════════════════════════════
+           TOPBAR RESPONSIVE
+           ════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .topbar {
+                padding: 0 12px !important;
+                flex-wrap: nowrap;
+            }
+            .topbar-left { display: none !important; }
+            .topbar-right { gap: 10px !important; margin-left: auto; }
+            .clock-date-inline { display: none !important; }
+            .clock-inline { font-size: 11px !important; letter-spacing: 0.5px; }
+        }
+        @media (max-width: 480px) {
+            .status-indicator { display: none !important; }
+        }
+
+        /* ════════════════════════════════════════
+           GLOBAL NO HORIZONTAL SCROLL
+           ════════════════════════════════════════ */
+        html { overflow-x: clip; }
+        .shell { max-width: 100vw; }
+        @media (max-width: 900px) {
+            .form-card, .nf-card, .nf-body, .nf-body-inner,
+            .form-card-body, .check-group, .form-actions,
+            .page-titlebar, .welcome-card, .access-notice,
+            .stats-grid, .quick-nav, .charts-row, .bottom-row {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .member-table-wrap {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+                max-width: 100% !important;
+            }
+            .member-table { min-width: 700px; }
+            .form-input, .form-select, .form-textarea, .form-control {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            #location-map { max-width: 100% !important; width: 100% !important; }
+            .coord-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 100% !important; }
+        }
+        @media (max-width: 640px) {
+            .coord-inputs { grid-template-columns: 1fr !important; }
+            .nf-pills { display: none !important; }
+            .nf-card-header { flex-wrap: wrap !important; gap: 6px !important; }
+            .head-panel-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* ════════════════════════════════════════
+           FOOTER RESPONSIVE
+           ════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            footer {
+                flex-direction: column !important;
+                height: auto !important;
+                min-height: 48px;
+                padding: 10px 16px !important;
+                gap: 4px !important;
+                align-items: flex-start !important;
+                flex-wrap: wrap !important;
+            }
+            .footer-left {
+                font-size: 11px !important;
+                white-space: normal !important;
+                line-height: 1.5 !important;
+                width: 100% !important;
+                overflow: visible !important;
+                text-overflow: unset !important;
+            }
+            .footer-center { display: none !important; }
+            .fb-link { font-size: 11px !important; }
+        }
+        @media (max-width: 480px) {
+            footer { padding: 8px 12px !important; }
+            .footer-left { font-size: 10px !important; }
+        }
+
+        /* ── Badge responsive ── */
+        @media (max-width: 900px) {
+            .header-user-badge { padding: 5px 10px; gap: 6px; }
+            .user-name { font-size: 12px; }
+            .user-role { font-size: 9px; letter-spacing: 0.3px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+        }
+        @media (max-width: 640px) {
+            .header-user-badge { padding: 4px 8px; }
+            .user-name { font-size: 11px; }
+            /* Fix 5: Prevent header flex overflow on small screens */
+            .header-user-badge { max-width: 130px; }
+        }
+
+        @media (max-width: 380px) {
+            .header-user-badge { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -484,35 +775,32 @@
 
 <!-- HEADER -->
 <header>
-    <button class="hamburger" onclick="openSidebar()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
-    <div class="header-logos">
-        <img src="/images/mdrrmo-logo.png" alt="MDRRMO" onerror="this.style.display='none'">
-        <div class="logo-divider"></div>
-        <img src="/images/naic-seal.png" alt="Naic" onerror="this.style.display='none'">
-    </div>
-    <div class="header-text">
-        <div class="header-org">Office of the Municipal DRRMO</div>
-        <div class="header-title">MDRRMO — Naic, Cavite</div>
-        <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
-    </div>
-    <div class="header-spacer"></div>
-    <div class="header-right">
-        <div class="lang-toggle" role="group">
-            <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
-            <button class="lang-btn" id="btn-tl" onclick="setLang('tl')">TL</button>
-            <button class="lang-btn" id="btn-mix" onclick="setLang('mix')">MIX</button>
+        <button class="hamburger" onclick="openSidebar()" aria-label="Open navigation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
+        <div class="header-logos">
+            <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO Logo" onerror="this.style.display='none'">
+            <div class="logo-divider"></div>
+            <img src="{{ asset('images/naic-seal.png') }}" alt="Bayan ng Naic Seal" onerror="this.style.display='none'">
         </div>
+        <div class="header-text">
+            <div class="header-org">Office of the Municipal DRRMO</div>
+            <div class="header-title">MDRRMO &mdash; Naic, Cavite</div>
+            <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
+        </div>
+        <div class="header-spacer"></div>
         <div class="header-user-badge">
-            <div class="user-avatar">E</div>
+            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">Encoder</div>
+                <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
                 <div class="user-role">Data Entry Access</div>
             </div>
         </div>
-    </div>
-</header>
+    </header>
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
@@ -1166,7 +1454,8 @@ const EN = {
     'sel-sex':['Male','Female'],
     'sel-civil':['Single','Married','Legally Separated','Widowed'],
     'sel-vuln':['None','Senior','PWD','Solo Parent','4Ps Member','Young (17yo below)','Old (60yo above)'],
-    'sel-employ':['Unemployed','Employed – specify job','Part-time','Full-time','Self-employed','Pension / Retired','Freelance','Other'],
+    'sel-employ':['Unemployed','Employed','Part-time','Full-time','Self-employed','Pension / Retired','Freelance','Student','Other'],
+    'sel-school-level':['Early Childhood','Elementary School','Junior High School','Senior High School','College / University','Postgraduate'],
     'sel-educ':['Elementary Undergraduate','Elementary Graduate','High School Undergraduate','High School Graduate','Vocational','College Undergraduate','College Graduate','Master','Doctorate','TESDA','Other'],
     'opt-select':'— Select —','opt-male':'Male','opt-female':'Female',
     'vuln-reg':'Registered','vuln-unreg':'Unregistered','vuln-id-ph':'ID Number','vuln-hh-id':'Household ID No.',
@@ -1297,7 +1586,8 @@ const TL = {
     'sel-sex':['Lalaki','Babae'],
     'sel-civil':['Walang Asawa','May Asawa','Legal na Hiwalay','Balo'],
     'sel-vuln':['Wala','Senior','PWD','Nag-iisang Magulang','Miyembro ng 4Ps','Bata (17 taong gulang pababa)','Matanda (60 taong gulang pataas)'],
-    'sel-employ':['Walang Trabaho','May Trabaho – tukuyin ang trabaho','Part-time','Full-time','Negosyante/Sariling Trabaho','Pensiyon/Retirado','Freelance','Iba pa'],
+    'sel-employ':['Walang Trabaho','May Trabaho – tukuyin ang trabaho','Part-time','Full-time','Negosyante/Sariling Trabaho','Pensiyon/Retirado','Freelance','Estudyante','Iba pa'],
+    'sel-school-level':['Maagang Pagkabata','Elementarya','Junior High School','Senior High School','Kolehiyo / Unibersidad','Postgraduate'],
     'sel-educ':['Elementarya Hindi Tapos','Elementarya Tapos','Sekundarya Hindi Tapos','Sekundarya Tapos','Bokasyonal','Kolehiyo Hindi Tapos','Kolehiyo Tapos','Master','Doktorado','TESDA','Iba pa'],
     'opt-select':'— Pumili —','opt-male':'Lalaki','opt-female':'Babae',
     'vuln-reg':'Rehistrado','vuln-unreg':'Hindi Rehistrado','vuln-id-ph':'ID Number','vuln-hh-id':'Household ID No.',
@@ -1665,7 +1955,7 @@ function headInfoPanelHTML(fi){
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             ${T('hd-panel-title')}
         </div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+        <div class="head-panel-grid">
             <input type="hidden" name="fam[${fi}][m][1][is_family_head]" value="1">
             <div class="form-group" style="grid-column:span 2;">
                 <label class="form-label" style="font-size:10px;">${T('hd-full-name')} <span class="req">*</span></label>
@@ -1905,8 +2195,8 @@ function familyMemberRowHTML(fi, mi){
     // fam[fi][m][mi][job_title]       → family_member_details.job_title
     return `
       <td style="font-weight:700;color:var(--blue);font-size:12px">${mi}</td>
-      <td><input type="text" class="form-input" name="fam[${fi}][m][${mi}][full_name]" placeholder="${namePh}" style="min-width:130px;font-size:11px;padding:5px 8px"></td>
-      <td><select class="form-select" name="fam[${fi}][m][${mi}][relationship]" style="min-width:110px;font-size:11px;padding:5px 6px">
+      <td data-label="Full Name"><input type="text" class="form-input" name="fam[${fi}][m][${mi}][full_name]" placeholder="${namePh}" style="min-width:130px;font-size:11px;padding:5px 8px"></td>
+      <td data-label="Relationship"><select class="form-select" name="fam[${fi}][m][${mi}][relationship]" style="min-width:110px;font-size:11px;padding:5px 6px">
           <option value="">${sp}</option>
           <option value="Head">Head</option>
           <option value="Spouse">Spouse</option>
@@ -1923,25 +2213,25 @@ function familyMemberRowHTML(fi, mi){
           <option value="In-law">In-law</option>
           <option value="Other">Other</option>
       </select></td>
-      <td style="text-align:center">
+      <td data-label="Head" style="text-align:center">
         <input type="checkbox" name="fam[${fi}][m][${mi}][is_family_head]" value="1"
           style="accent-color:#7C3AED;width:16px;height:16px;margin-top:5px"
           title="Check if this member is the head of this nuclear family">
       </td>
-      <td><input type="number" class="form-input" id="age_${uid}" name="fam[${fi}][m][${mi}][age_display]" min="0" max="120" style="width:52px;font-size:11px;padding:5px 6px;background:var(--gray-50);color:var(--gray-600);" title="Auto-calculated from Birthdate" readonly tabindex="-1"></td>
-      <td><input type="date" class="form-input" name="fam[${fi}][m][${mi}][birthday]" style="min-width:130px;font-size:11px;padding:5px 6px" oninput="calcAge(this,'age_${uid}')"></td>
-      <td><select class="form-select" name="fam[${fi}][m][${mi}][sex]" style="min-width:80px;font-size:11px;padding:5px 6px">
+      <td data-label="Age"><input type="number" class="form-input" id="age_${uid}" name="fam[${fi}][m][${mi}][age_display]" min="0" max="120" style="width:52px;font-size:11px;padding:5px 6px;background:var(--gray-50);color:var(--gray-600);" title="Auto-calculated from Birthdate" readonly tabindex="-1"></td>
+      <td data-label="Birthdate"><input type="date" class="form-input" name="fam[${fi}][m][${mi}][birthday]" style="min-width:130px;font-size:11px;padding:5px 6px" oninput="calcAge(this,'age_${uid}')"></td>
+      <td data-label="Sex"><select class="form-select" name="fam[${fi}][m][${mi}][sex]" style="min-width:80px;font-size:11px;padding:5px 6px">
           <option value="">${sp}</option><option value="Male">${sm}</option><option value="Female">${sf}</option>
       </select></td>
-      <td style="text-align:center"><input type="checkbox" name="fam[${fi}][m][${mi}][is_lgbtqia]" value="1" style="accent-color:var(--blue);width:16px;height:16px;margin-top:5px"></td>
-      <td><select class="form-select" name="fam[${fi}][m][${mi}][civil_status]" style="min-width:110px;font-size:11px;padding:5px 6px">
+      <td data-label="LGBTQIA+" style="text-align:center"><input type="checkbox" name="fam[${fi}][m][${mi}][is_lgbtqia]" value="1" style="accent-color:var(--blue);width:16px;height:16px;margin-top:5px"></td>
+      <td data-label="Civil Status"><select class="form-select" name="fam[${fi}][m][${mi}][civil_status]" style="min-width:110px;font-size:11px;padding:5px 6px">
           <option value="">${sp}</option>${civil}</select></td>
-      <td>
+      <td data-label="Vulnerable Sector">
         <select class="form-select" name="fam[${fi}][m][${mi}][vuln_sector]" style="min-width:135px;font-size:11px;padding:5px 6px" onchange="onVuln(this,'${uid}')">
             <option value="">${sp}</option>${vuln}</select>
         <div id="vd_${uid}" style="display:none;margin-top:5px;font-size:11px"></div>
       </td>
-      <td>
+      <td data-label="Employment Status">
         <select class="form-select" name="fam[${fi}][m][${mi}][employment_status]" style="min-width:135px;font-size:11px;padding:5px 6px" onchange="onEmp(this,'${uid}')">
             <option value="">${sp}</option>${emp}</select>
         <div id="ed_${uid}" style="display:none;margin-top:4px">
@@ -1949,7 +2239,7 @@ function familyMemberRowHTML(fi, mi){
             <input type="text" class="form-input emp-other-input" name="fam[${fi}][m][${mi}][employment_other]" placeholder="${otherPh}" style="font-size:11px;padding:4px 8px;display:none">
         </div>
       </td>
-      <td><select class="form-select" name="fam[${fi}][m][${mi}][educational_attainment]" style="min-width:145px;font-size:11px;padding:5px 6px">
+      <td data-label="Educational Attainment"><select class="form-select" name="fam[${fi}][m][${mi}][educational_attainment]" style="min-width:145px;font-size:11px;padding:5px 6px">
           <option value="">${sp}</option>${educ}</select></td>
       <td><button type="button" class="btn-remove" onclick="removeFamilyMemberRow(${fi},${mi})" title="Remove">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
@@ -2050,22 +2340,63 @@ function onEmp(sel,id){
     const div = document.getElementById(`ed_${id}`);
     const v = sel.value;
     // employment_status now stores the label text as value
-    const showJob   = ['Employed – specify job','Part-time','Full-time','Self-employed','Freelance',
-                       'May Trabaho – tukuyin ang trabaho','Negosyante/Sariling Trabaho'];
-    const showOther = (v === 'Other' || v === 'Iba pa');
+    const showJob     = ['Employed','Part-time','Full-time','Self-employed','Freelance',
+                         'May Trabaho – tukuyin ang trabaho','Negosyante/Sariling Trabaho'];
+    const showOther   = (v === 'Other' || v === 'Iba pa');
+    const showStudent = (v === 'Student' || v === 'Estudyante');
+
+    // Build school-level options from current language
+    function schoolLevelOpts(){
+        return T('sel-school-level').map(lbl => `<option value="${lbl}">${lbl}</option>`).join('');
+    }
 
     if(showOther){
         div.style.display='block';
-        const jobInput   = div.querySelector('.emp-job-input');
-        const otherInput = div.querySelector('.emp-other-input');
+        const jobInput    = div.querySelector('.emp-job-input');
+        const otherInput  = div.querySelector('.emp-other-input');
+        const studentWrap = div.querySelector('.emp-student-wrap');
+        if(jobInput)    jobInput.style.display    = 'none';
+        if(otherInput)  otherInput.style.display  = 'block';
+        if(studentWrap) studentWrap.style.display = 'none';
+    } else if(showStudent){
+        div.style.display='block';
+        const jobInput    = div.querySelector('.emp-job-input');
+        const otherInput  = div.querySelector('.emp-other-input');
+        let studentWrap   = div.querySelector('.emp-student-wrap');
         if(jobInput)   jobInput.style.display   = 'none';
-        if(otherInput) otherInput.style.display = 'block';
+        if(otherInput) otherInput.style.display = 'none';
+        // Build the school-level dropdown if not already present
+        if(!studentWrap){
+            studentWrap = document.createElement('div');
+            studentWrap.className = 'emp-student-wrap';
+            // Derive the field name from the select's name attribute
+            // sel.name = fam[fi][m][mi][employment_status] → job_title field holds school level
+            const baseName = sel.name.replace('[employment_status]','');
+            studentWrap.innerHTML = `
+                <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gray-600);margin-bottom:4px;display:block;">School Level</label>
+                <select class="form-select emp-school-sel" name="${baseName}[job_title]" style="font-size:11px;padding:5px 8px;">
+                    <option value="">— Select Level —</option>
+                    ${schoolLevelOpts()}
+                </select>`;
+            div.appendChild(studentWrap);
+        } else {
+            // Rebuild options in case language changed
+            const schoolSel = studentWrap.querySelector('.emp-school-sel');
+            if(schoolSel){
+                const saved = schoolSel.value;
+                schoolSel.innerHTML = `<option value="">— Select Level —</option>${schoolLevelOpts()}`;
+                schoolSel.value = saved;
+            }
+            studentWrap.style.display = 'block';
+        }
     } else if(showJob.includes(v)){
         div.style.display='block';
-        const jobInput   = div.querySelector('.emp-job-input');
-        const otherInput = div.querySelector('.emp-other-input');
-        if(jobInput)   jobInput.style.display   = 'block';
-        if(otherInput) otherInput.style.display = 'none';
+        const jobInput    = div.querySelector('.emp-job-input');
+        const otherInput  = div.querySelector('.emp-other-input');
+        const studentWrap = div.querySelector('.emp-student-wrap');
+        if(jobInput)    jobInput.style.display    = 'block';
+        if(otherInput)  otherInput.style.display  = 'none';
+        if(studentWrap) studentWrap.style.display = 'none';
     } else {
         div.style.display='none';
     }
@@ -2132,9 +2463,26 @@ updateClock(); setInterval(updateClock,1000);
 document.getElementById('footer-year').textContent=new Date().getFullYear();
 
 /* ─── Sidebar ─── */
-function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('sidebarOverlay').classList.add('active');document.body.style.overflow='hidden';}
-function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');document.body.style.overflow='';}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSidebar();});
+    function openSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.add('open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 900) closeSidebar();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeSidebar();
+    });
 
 /* ─── Submit ─── */
 function handleSubmit(e){

@@ -35,7 +35,14 @@ class AuditorHouseholdController extends Controller
 
     public function show(Household $household)
     {
-        $household->load(['encoder', 'approver', 'members', 'qrCode', 'distributionLogs']);
+        $household->load([
+            'encoder',
+            'approver',
+            'members.detail',       // detail needed for occupation/employment fields
+            'qrCode',
+            'distributionLogs',
+            'riskProfile',          // added: for Household Risk Profile section
+        ]);
 
         return view('auditor.households.show', compact('household'));
     }

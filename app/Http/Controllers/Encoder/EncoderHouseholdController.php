@@ -59,6 +59,101 @@ class EncoderHouseholdController extends Controller
     }
 
     /**
+     * Show the encoder dashboard with stats and charts.
+     */
+    public function dashboard()
+    {
+        $encoderId = auth()->id();
+
+        // ── Household counts ──────────────────────────────────────────────────
+        $totalHouseholds = Household::where('encoded_by', $encoderId)->count();
+        $approved        = Household::where('encoded_by', $encoderId)->whereNotNull('approved_by')->count();
+        $pending         = Household::where('encoded_by', $encoderId)->whereNull('approved_by')->count();
+        $approvedDash    = $approved;
+        $pendingDash     = $pending;
+        $approvalRate    = $totalHouseholds > 0 ? round(($approved / $totalHouseholds) * 100) : 0;
+        $pendingRate     = $totalHouseholds > 0 ? round(($pending  / $totalHouseholds) * 100) : 0;
+
+        // ── Members & students ────────────────────────────────────────────────
+        $totalMembers = DB::table('family_members')
+            ->join('households', 'family_members.household_id', '=', 'households.id')
+            ->where('households.encoded_by', $encoderId)
+            ->count();
+
+        $studentsByBarangay = DB::table('family_member_details')
+            ->join('family_members', 'family_member_details.family_member_id', '=', 'family_members.id')
+            ->join('households', 'family_members.household_id', '=', 'households.id')
+            ->where('households.encoded_by', $encoderId)
+            ->where('family_member_details.employment_status', 'Student')
+            ->groupBy('households.barangay')
+            ->orderByDesc('student_count')
+            ->selectRaw('households.barangay, COUNT(*) as student_count')
+            ->pluck('student_count', 'barangay');
+
+        $totalStudents = $studentsByBarangay->sum();
+
+        // ── Students by school level ──────────────────────────────────────────
+        $studentsByLevel = DB::table('family_member_details')
+            ->join('family_members', 'family_member_details.family_member_id', '=', 'family_members.id')
+            ->join('households', 'family_members.household_id', '=', 'households.id')
+            ->where('households.encoded_by', $encoderId)
+            ->where('family_member_details.employment_status', 'Student')
+            ->whereNotNull('family_member_details.job_title')
+            ->groupBy('family_member_details.job_title')
+            ->orderByDesc('level_count')
+            ->selectRaw('family_member_details.job_title as level, COUNT(*) as level_count')
+            ->pluck('level_count', 'level');
+
+        // ── Employment ────────────────────────────────────────────────────────
+        $employmentCounts = DB::table('family_member_details')
+            ->join('family_members', 'family_member_details.family_member_id', '=', 'family_members.id')
+            ->join('households', 'family_members.household_id', '=', 'households.id')
+            ->where('households.encoded_by', $encoderId)
+            ->whereNotNull('family_member_details.employment_status')
+            ->groupBy('family_member_details.employment_status')
+            ->orderByDesc('total')
+            ->selectRaw('family_member_details.employment_status, COUNT(*) as total')
+            ->pluck('total', 'employment_status');
+
+        // ── Barangay counts ───────────────────────────────────────────────────
+        $barangayCounts = Household::where('encoded_by', $encoderId)
+            ->groupBy('barangay')
+            ->selectRaw('barangay, COUNT(*) as total')
+            ->pluck('total', 'barangay');
+
+        // ── Housing types ─────────────────────────────────────────────────────
+        $housingTypes = Household::where('encoded_by', $encoderId)
+            ->whereNotNull('housing_type')
+            ->groupBy('housing_type')
+            ->selectRaw('housing_type, COUNT(*) as total')
+            ->pluck('total', 'housing_type');
+
+        // ── Recent households ─────────────────────────────────────────────────
+        $recentHouseholds = Household::where('encoded_by', $encoderId)
+            ->with(['primaryFamily.headMember'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // ── Encoder leaderboard (current encoder only) ────────────────────────
+        $encoderStats = collect();
+
+        return view('encoder.dashboard', compact(
+            'totalHouseholds',
+            'approved', 'approvedDash',
+            'pending',  'pendingDash',
+            'approvalRate', 'pendingRate',
+            'totalMembers',
+            'studentsByBarangay', 'totalStudents', 'studentsByLevel',
+            'employmentCounts',
+            'barangayCounts',
+            'housingTypes',
+            'recentHouseholds',
+            'encoderStats',
+        ));
+    }
+
+    /**
      * Show the form for creating a new household.
      */
     public function create()

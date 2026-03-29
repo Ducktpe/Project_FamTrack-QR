@@ -369,7 +369,7 @@ class StaffScanController extends Controller
         $dateTo   = $request->input('date_to');
 
         $logs = DistributionLog::where('distributed_by', $staffId)
-            ->with(['household', 'event', 'releasePhoto'])
+            ->with(['household', 'event', 'releasePhoto', 'familyMember'])
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('serial_code', 'like', "%{$search}%")

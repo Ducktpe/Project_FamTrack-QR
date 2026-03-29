@@ -14,9 +14,9 @@
             --gray-400:#9AA3B0;--gray-600:#5A6372;--gray-800:#2C3340;--sidebar-w:260px;
         }
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-        html,body{height:100%;font-family:'Open Sans',sans-serif;background:var(--gray-100);color:var(--gray-800);font-size:14px;}
-        .shell{display:grid;grid-template-rows:36px 76px 1fr 48px;grid-template-columns:var(--sidebar-w) 1fr;grid-template-areas:"topbar topbar" "header header" "sidebar main" "footer footer";height:100vh;overflow:hidden;}
-        .topbar{grid-area:topbar;background:var(--blue-dark);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;}
+        html,body{font-family:'Open Sans',sans-serif;background:var(--gray-100);color:var(--gray-800);font-size:14px;overflow-x:clip;}
+        .shell{display:grid;grid-template-rows:36px 76px auto auto;grid-template-columns:var(--sidebar-w) 1fr;grid-template-areas:"topbar topbar" "header header" "sidebar main" "footer footer";min-height:100vh;}
+        .topbar{grid-area:topbar;background:var(--blue-dark);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;position:sticky;top:0;}
         .topbar-left{font-size:11px;color:rgba(255,255,255,0.5);}
         .topbar-right{display:flex;align-items:center;gap:20px;}
         .clock-inline{font-size:12px;font-weight:600;color:var(--yellow);letter-spacing:1px;font-variant-numeric:tabular-nums;}
@@ -24,7 +24,7 @@
         .status-indicator{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,0.45);}
         .status-indicator::before{content:'';width:6px;height:6px;border-radius:50%;background:#4CAF50;box-shadow:0 0 5px #4CAF50;animation:blink 2s infinite;}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
-        header{grid-area:header;background:var(--white);border-bottom:3px solid var(--yellow);box-shadow:0 2px 6px rgba(0,0,0,0.08);display:flex;align-items:center;padding:0 28px;gap:14px;z-index:90;}
+        header{grid-area:header;background:var(--white);border-bottom:3px solid var(--yellow);box-shadow:0 2px 6px rgba(0,0,0,0.08);display:flex;align-items:center;position:sticky;top:36px;padding:0 28px;gap:14px;z-index:100;}
         .hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;margin-left:-4px;border-radius:4px;color:var(--blue-dark);flex-shrink:0;transition:background 0.15s;}
         .hamburger:hover{background:var(--blue-pale);}
         .hamburger svg{width:22px;height:22px;display:block;}
@@ -36,13 +36,45 @@
         .header-title{font-family:'PT Serif',serif;font-size:18px;font-weight:700;color:var(--blue-dark);}
         .header-sub{font-size:11px;color:var(--gray-600);margin-top:2px;}
         .header-spacer{flex:1;}
-        .header-user-badge{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--orange-pale);border:1px solid var(--orange);border-radius:4px;flex-shrink:0;}
-        .user-avatar{width:32px;height:32px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;color:var(--white);font-weight:700;font-size:13px;flex-shrink:0;}
-        .user-name{font-size:13px;font-weight:600;color:var(--gray-800);line-height:1.2;}
-        .user-role{font-size:10px;color:var(--orange);text-transform:uppercase;letter-spacing:0.5px;}
-        .sidebar-overlay{display:none !important;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;pointer-events:none;}
-        .sidebar-overlay.active{display:block !important;pointer-events:auto;}
-        .sidebar{grid-area:sidebar;background:var(--white);border-right:1px solid var(--gray-200);display:flex;flex-direction:column;overflow-y:auto;position:relative;}
+                /* ─── PROFILE BADGE ─── */
+        .header-user-badge {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px;
+            background: #FFF7ED;
+            border: 1px solid #D97706; border-radius: 4px;
+            flex-shrink: 1; min-width: 0; overflow: hidden;
+        }
+        .user-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #D97706;
+            display: flex; align-items: center; justify-content: center;
+            color: #FFFFFF; font-weight: 700; font-size: 13px; flex-shrink: 0;
+        }
+        .user-name {
+            font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .user-role {
+            font-size: 10px; color: #D97706; text-transform: uppercase; letter-spacing: 0.5px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .sidebar-overlay {
+            display: block;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s, visibility 0.25s;
+            pointer-events: none;
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        
         .sidebar-close{display:none;position:absolute;top:12px;right:12px;background:var(--gray-100);border:1px solid var(--gray-200);border-radius:4px;width:32px;height:32px;align-items:center;justify-content:center;cursor:pointer;z-index:10;color:var(--gray-600);transition:background 0.15s;}
         .sidebar-close:hover{background:var(--red-pale);color:var(--red);}
         .sidebar-close svg{width:16px;height:16px;}
@@ -56,7 +88,7 @@
         .sidebar-bottom{margin-top:auto;padding:16px 20px;border-top:1px solid var(--gray-200);}
         .logout-btn{width:100%;font-family:'Open Sans',sans-serif;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;background:var(--blue);color:var(--white);border:none;padding:10px 16px;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.15s;}
         .logout-btn:hover{background:var(--red);}
-        .main-content{grid-area:main;background:var(--gray-50);overflow-y:auto;padding:28px 32px;}
+        .main-content{grid-area:main;background:var(--gray-50);padding:28px 32px;}
         .page-titlebar{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--gray-200);gap:12px;flex-wrap:wrap;}
         .page-breadcrumb{font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
         .page-breadcrumb a{color:var(--blue-light);text-decoration:none;}
@@ -123,7 +155,7 @@
         .btn-submit{font-family:'Open Sans',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--white);background:var(--blue);border:none;border-radius:3px;padding:10px 28px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:background 0.15s;}
         .btn-submit:hover{background:var(--blue-dark);}
         .btn-submit svg{width:14px;height:14px;}
-        footer{grid-area:footer;background:var(--blue-dark);border-top:3px solid var(--yellow);display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:8px;z-index:100;}
+        footer{grid-area:footer;background:var(--blue-dark);border-top:3px solid var(--yellow);display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:8px;position:relative;z-index:400;}
         .footer-left{font-size:11px;color:rgba(255,255,255,0.4);}
         .footer-left strong{color:rgba(255,255,255,0.7);}
         .footer-center{font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;}
@@ -132,10 +164,10 @@
         .fb-link svg{width:13px;height:13px;}
         ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--gray-100);}::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:4px;}
         @media(max-width:900px){
-            .shell{grid-template-rows:36px auto 1fr 48px;grid-template-columns:1fr;grid-template-areas:"topbar" "header" "main" "footer";}
+            .shell{grid-template-rows:36px auto auto auto;grid-template-columns:1fr;grid-template-areas:"topbar" "header" "main" "footer";min-height:100vh;}
             .sidebar{grid-area:unset;position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);z-index:300;transform:translateX(-100%);transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);box-shadow:4px 0 20px rgba(0,0,0,0.15);}
             .sidebar.open{transform:translateX(0);}
-            .sidebar-overlay{display:block;}
+            /* sidebar-overlay shown only via .active class */
             .sidebar-close{display:flex;}
             .sidebar .nav-section-label{padding-top:52px;}
             .hamburger{display:flex;}
@@ -143,7 +175,7 @@
             .header-logos img{height:44px;width:44px;}
             .header-title{font-size:15px;}
             .header-sub{display:none;}
-            .main-content{padding:20px 16px;}
+            .main-content{padding:20px 16px;overflow-x:clip;}
             .form-grid{grid-template-columns:repeat(2,1fr);}
             .form-group.span-3{grid-column:span 2;}
             .checkbox-grid{grid-template-columns:repeat(2,1fr);}
@@ -156,15 +188,157 @@
             .header-logos img:last-child{display:none;}
             .header-org{display:none;}
             .header-title{font-size:13px;}
-            .main-content{padding:16px 12px;}
+            .main-content{padding:16px 12px;overflow-x:clip;}
             .form-grid,.member-edit-fields{grid-template-columns:1fr 1fr;}
             .form-grid-2{grid-template-columns:1fr;}
-            .form-group.span-2,.form-group.span-3{grid-column:span 2;}
+            .form-group.span-2,.form-group.span-3{grid-column:span 1;}
             .checkbox-grid{grid-template-columns:1fr 1fr;}
             .form-actions{flex-direction:column-reverse;gap:8px;}
             .btn-submit,.btn-cancel{width:100%;justify-content:center;}
             footer{padding:0 12px;}
             .footer-center{display:none;}
+        }
+    
+        /* ── 480px: single column for all grids ── */
+        @media (max-width: 480px) {
+            .form-grid,
+            .form-grid-2,
+            .member-edit-fields { grid-template-columns: 1fr !important; }
+            .form-group.span-2,
+            .form-group.span-3 { grid-column: span 1 !important; }
+            .checkbox-grid { grid-template-columns: 1fr 1fr; }
+            .main-content { padding: 12px 10px; }
+            .page-titlebar { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .title-actions { width: 100%; }
+            .title-actions .btn { flex: 1; justify-content: center; }
+            .nf-edit-card-header { flex-wrap: wrap; gap: 8px; }
+        }
+
+
+        /* ════════════════════════════════════════
+           SIDEBAR — ALWAYS VISIBLE ON DESKTOP
+           ════════════════════════════════════════ */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--white);
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            /* Stick below topbar+header (36px + 76px = 112px) */
+            position: sticky;
+            top: 112px;
+            height: calc(100vh - 112px); /* minus topbar, header, footer */
+            align-self: start;
+            z-index: 10;
+        }
+        /* Mobile: sidebar becomes a slide-in drawer */
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                bottom: 0 !important;
+                height: 100vh !important;
+                width: var(--sidebar-w);
+                z-index: 300;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            }
+            .sidebar.open { transform: translateX(0) !important; }
+            .sidebar-close { display: flex !important; }
+            .sidebar .nav-section-label { padding-top: 52px; }
+        }
+
+        /* ════════════════════════════════════════
+           TOPBAR RESPONSIVE
+           ════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .topbar {
+                padding: 0 12px !important;
+                flex-wrap: nowrap;
+            }
+            .topbar-left { display: none !important; }
+            .topbar-right { gap: 10px !important; margin-left: auto; }
+            .clock-date-inline { display: none !important; }
+            .clock-inline { font-size: 11px !important; letter-spacing: 0.5px; }
+        }
+        @media (max-width: 480px) {
+            .status-indicator { display: none !important; }
+        }
+
+        /* ════════════════════════════════════════
+           GLOBAL NO HORIZONTAL SCROLL
+           ════════════════════════════════════════ */
+        html, body { overflow-x: clip; max-width: 100vw; }
+        @media (max-width: 900px) {
+            .form-card, .nf-card, .nf-body, .nf-body-inner,
+            .form-card-body, .check-group, .form-actions,
+            .page-titlebar, .welcome-card, .access-notice,
+            .stats-grid, .quick-nav, .charts-row, .bottom-row {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .member-table-wrap {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+                max-width: 100% !important;
+            }
+            .member-table { min-width: 700px; }
+            .form-input, .form-select, .form-textarea, .form-control {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            #location-map { max-width: 100% !important; width: 100% !important; }
+            .coord-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 100% !important; }
+        }
+        @media (max-width: 640px) {
+            .coord-inputs { grid-template-columns: 1fr !important; }
+            .nf-pills { display: none !important; }
+            .nf-card-header { flex-wrap: wrap !important; gap: 6px !important; }
+            .head-panel-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* ════════════════════════════════════════
+           FOOTER RESPONSIVE
+           ════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            footer {
+                flex-direction: column !important;
+                height: auto !important;
+                min-height: 48px;
+                padding: 10px 16px !important;
+                gap: 4px !important;
+                align-items: flex-start !important;
+                flex-wrap: wrap !important;
+            }
+            .footer-left {
+                font-size: 11px !important;
+                white-space: normal !important;
+                line-height: 1.5 !important;
+                width: 100% !important;
+                overflow: visible !important;
+                text-overflow: unset !important;
+            }
+            .footer-center { display: none !important; }
+            .fb-link { font-size: 11px !important; }
+        }
+        @media (max-width: 480px) {
+            footer { padding: 8px 12px !important; }
+            .footer-left { font-size: 10px !important; }
+        }
+
+        /* ── Badge responsive ── */
+        @media (max-width: 900px) {
+            .header-user-badge { padding: 5px 10px; gap: 6px; }
+            .user-name { font-size: 12px; }
+            .user-role { font-size: 9px; letter-spacing: 0.3px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+        }
+        @media (max-width: 640px) {
+            .header-user-badge { padding: 4px 8px; }
+            .user-name { font-size: 11px; }
         }
     </style>
 </head>
@@ -185,22 +359,24 @@
     <header>
         <button class="hamburger" onclick="openSidebar()" aria-label="Open navigation">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
         </button>
         <div class="header-logos">
-            <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO Logo">
+            <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO Logo" onerror="this.style.display='none'">
             <div class="logo-divider"></div>
-            <img src="{{ asset('images/naic-seal.png') }}" alt="Naic Seal">
+            <img src="{{ asset('images/naic-seal.png') }}" alt="Bayan ng Naic Seal" onerror="this.style.display='none'">
         </div>
         <div class="header-text">
             <div class="header-org">Office of the Municipal DRRMO</div>
-            <div class="header-title">MDRRMO — Naic, Cavite</div>
+            <div class="header-title">MDRRMO &mdash; Naic, Cavite</div>
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
         <div class="header-user-badge">
-            <div class="user-avatar">E</div>
+            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
                 <div class="user-role">Data Entry Access</div>
@@ -668,22 +844,40 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                        @php
+                                            $empOpts = ['Unemployed','Employed – specify job','Part-time','Full-time','Self-employed','Pension / Retired','Freelance','Student','Other'];
+                                            $schoolLevels = ['Early Childhood','Elementary School','Junior High School','Senior High School','College / University','Postgraduate'];
+                                            $currentEmp = $det?->employment_status ?? '';
+                                            $isStudent  = in_array($currentEmp, ['Student','Estudyante']);
+                                            $isOther    = in_array($currentEmp, ['Other','Iba pa']);
+                                            $isJobBased = in_array($currentEmp, ['Employed – specify job','Part-time','Full-time','Self-employed','Freelance',
+                                                                                  'Employed','May Trabaho – tukuyin ang trabaho','Negosyante/Sariling Trabaho']);
+                                        @endphp
                                         <div class="form-group">
                                             <label>Employment Status</label>
                                             <select name="members[{{ $mid }}][employment_status]" class="form-control emp-status-sel"
                                                 onchange="onEditEmp(this)">
                                                 <option value="">— Select —</option>
-                                                @foreach(['Unemployed','Employed','Part-time','Full-time','Self-employed','Pension/Retired','Freelance','Other'] as $emp)
-                                                    <option value="{{ $emp }}" @selected($det && $det->employment_status === $emp)>{{ $emp }}</option>
+                                                @foreach($empOpts as $emp)
+                                                    <option value="{{ $emp }}" @selected($currentEmp === $emp)>{{ $emp }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="form-group emp-job-group" style="{{ ($det && $det->employment_status && $det->employment_status !== 'Unemployed' && $det->employment_status !== 'Pension/Retired' && $det->employment_status !== 'Other') ? '' : 'display:none' }}">
+                                        <div class="form-group emp-job-group" style="{{ $isJobBased ? '' : 'display:none' }}">
                                             <label>Job Title</label>
                                             <input type="text" name="members[{{ $mid }}][job_title]" class="form-control"
-                                                value="{{ $det?->job_title ?? '' }}" placeholder="If employed">
+                                                value="{{ $isJobBased ? ($det?->job_title ?? '') : '' }}" placeholder="Specify job title...">
                                         </div>
-                                        <div class="form-group emp-other-group" style="{{ ($det && $det->employment_status === 'Other') ? '' : 'display:none' }}">
+                                        <div class="form-group emp-student-group" style="{{ $isStudent ? '' : 'display:none' }}">
+                                            <label>School Level</label>
+                                            <select name="members[{{ $mid }}][job_title]" class="form-control emp-school-sel">
+                                                <option value="">— Select Level —</option>
+                                                @foreach($schoolLevels as $sl)
+                                                    <option value="{{ $sl }}" @selected($isStudent && ($det?->job_title ?? '') === $sl)>{{ $sl }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group emp-other-group" style="{{ $isOther ? '' : 'display:none' }}">
                                             <label>Please Specify</label>
                                             <input type="text" name="members[{{ $mid }}][employment_other]" class="form-control"
                                                 value="{{ $det?->employment_other ?? '' }}" placeholder="Specify employment type...">
@@ -854,9 +1048,26 @@
     document.getElementById('footer-year').textContent=new Date().getFullYear();
 
     const sidebar=document.getElementById('sidebar'), overlay=document.getElementById('sidebarOverlay');
-    function openSidebar(){sidebar.classList.add('open');overlay.classList.add('active');document.body.style.overflow='hidden';}
-    function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('active');document.body.style.overflow='';}
-    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSidebar();});
+        function openSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.add('open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 900) closeSidebar();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeSidebar();
+    });
 
     function toggleMemberFields(id){
         const fields=document.getElementById('member_fields_'+id);
@@ -865,21 +1076,59 @@
         tog.textContent=collapsed?'▼ Edit':'▲ Close';
     }
 
-    /* ─── Employment Status: show/hide job title or "other" field ─── */
-    const EMPLOYED_OPTS = ['Employed','Part-time','Full-time','Self-employed','Freelance'];
+    /* ─── Employment Status: show/hide job title, school level, or "other" field ─── */
+    const EMPLOYED_OPTS = ['Employed – specify job','Employed','Part-time','Full-time','Self-employed','Freelance',
+                           'May Trabaho – tukuyin ang trabaho','Negosyante/Sariling Trabaho'];
+    const SCHOOL_LEVELS = ['Early Childhood','Elementary School','Junior High School','Senior High School','College / University','Postgraduate'];
+
     function onEditEmp(sel){
-        const row = sel.closest('.form-group').parentElement;
-        const jobGroup   = row.querySelector('.emp-job-group');
-        const otherGroup = row.querySelector('.emp-other-group');
+        // Walk up to the member-edit-fields container, then find THIS member's groups
+        // using nextElementSibling to avoid matching other members' elements
+        const empFormGroup = sel.closest('.form-group');
+        const container    = empFormGroup.parentElement; // member-edit-fields grid
+
+        // Find groups that are immediately after the emp select's form-group
+        // by locating them relative to empFormGroup using nextElementSibling chain
+        let jobGroup = null, studentGrp = null, otherGroup = null;
+        let sibling = empFormGroup.nextElementSibling;
+        while(sibling){
+            if(sibling.classList.contains('emp-job-group'))     jobGroup   = sibling;
+            if(sibling.classList.contains('emp-student-group')) studentGrp = sibling;
+            if(sibling.classList.contains('emp-other-group'))   otherGroup = sibling;
+            // Stop once we've passed all three sub-groups (next non-emp-group sibling)
+            if(!sibling.classList.contains('emp-job-group') &&
+               !sibling.classList.contains('emp-student-group') &&
+               !sibling.classList.contains('emp-other-group')) break;
+            sibling = sibling.nextElementSibling;
+        }
+
         const v = sel.value;
-        if(v === 'Other'){
-            if(jobGroup)   jobGroup.style.display   = 'none';
+
+        // Hide all sub-groups first
+        if(jobGroup)   jobGroup.style.display   = 'none';
+        if(otherGroup) otherGroup.style.display  = 'none';
+        if(studentGrp) studentGrp.style.display  = 'none';
+
+        if(v === 'Other' || v === 'Iba pa'){
             if(otherGroup) otherGroup.style.display = '';
+        } else if(v === 'Student' || v === 'Estudyante'){
+            if(studentGrp){
+                studentGrp.style.display = '';
+                const schoolSel = studentGrp.querySelector('.emp-school-sel');
+                if(schoolSel && schoolSel.options.length <= 1){
+                    SCHOOL_LEVELS.forEach(sl => {
+                        const opt = document.createElement('option');
+                        opt.value = sl; opt.textContent = sl;
+                        schoolSel.appendChild(opt);
+                    });
+                }
+            }
         } else if(EMPLOYED_OPTS.includes(v)){
-            if(jobGroup)   jobGroup.style.display   = '';
-            if(otherGroup) otherGroup.style.display = 'none';
-        } else {
-        /* ─── Valid ID type toggle ─── */
+            if(jobGroup) jobGroup.style.display = '';
+        }
+    }
+
+    /* ─── Valid ID type toggle ─── */
     function onEditValidIdType(sel){
         const wrap  = document.getElementById('edit-valid-id-num-wrap');
         const input = document.getElementById('edit-inp-valid-id-num');

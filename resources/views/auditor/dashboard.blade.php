@@ -47,6 +47,7 @@
             background: var(--gray-100);
             color: var(--gray-800);
             font-size: 14px;
+            overflow-x: hidden;
         }
 
         .shell {
@@ -193,6 +194,16 @@
             font-size: 10px; color: #0284C7;
             text-transform: uppercase; letter-spacing: 0.5px;
         }
+
+        /* ─── READ-ONLY BADGE ─── */
+        .readonly-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px; background: #FFFBEB;
+            border: 1px solid #FDE68A; border-radius: 3px;
+            font-size: 11px; font-weight: 700; color: #92400E;
+            text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;
+        }
+        .readonly-badge svg { width: 12px; height: 12px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay {
@@ -405,7 +416,9 @@
             display: flex;
             align-items: flex-start;
             gap: 12px;
+            overflow: hidden;
         }
+        .access-notice-text { overflow-wrap: break-word; word-break: break-word; min-width: 0; }
         .access-notice svg { width: 18px; height: 18px; color: var(--purple); flex-shrink: 0; margin-top: 1px; }
         .access-notice-text { font-size: 12px; color: var(--gray-600); line-height: 1.6; }
         .access-notice-text strong { color: var(--blue-dark); }
@@ -416,7 +429,9 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 14px;
             margin-bottom: 24px;
+            min-width: 0;
         }
+        .qnav-card { min-width: 0; overflow: hidden; }
         .qnav-card {
             background: var(--white);
             border: 1px solid var(--gray-200);
@@ -459,6 +474,8 @@
         .content-area {
             background: var(--white);
             border: 1px solid var(--gray-200);
+            overflow: hidden;
+            min-width: 0;
         }
         .content-area-header {
             padding: 14px 20px;
@@ -477,11 +494,14 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 0;
             border-bottom: 1px solid var(--gray-100);
+            min-width: 0;
         }
         .stat-card {
             padding: 20px 22px;
             border-right: 1px solid var(--gray-100);
             position: relative;
+            min-width: 0;
+            overflow: hidden;
         }
         .stat-card:last-child { border-right: none; }
         .stat-card-accent {
@@ -648,6 +668,125 @@
         }
         .view-all-link:hover { background: var(--blue-pale); color: var(--blue); }
 
+        /* ─── FLAGS BAR ─── */
+        .flags-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border-top: 1px solid var(--gray-100);
+        }
+        .flag-cell {
+            padding: 13px 20px;
+            border-right: 1px solid var(--gray-100);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .flag-cell:last-child { border-right: none; }
+        .flag-icon {
+            width: 28px; height: 28px;
+            border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .flag-icon svg { width: 13px; height: 13px; }
+        .flag-icon.c4ps    { background: var(--sky-pale);    color: var(--sky-dark); }
+        .flag-icon.cpwd    { background: var(--purple-pale); color: var(--purple); }
+        .flag-icon.csenior { background: var(--orange-pale); color: var(--orange); }
+        .flag-icon.csolo   { background: var(--green-pale);  color: var(--green); }
+        .flag-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-400); }
+        .flag-count { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1; }
+
+        /* ─── DISTRIBUTION EVENTS PANEL ─── */
+        .event-item {
+            padding: 11px 12px;
+            border-bottom: 1px solid var(--gray-100);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .event-item:last-child { border-bottom: none; }
+        .event-item-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .event-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--blue-dark);
+            line-height: 1.3;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .event-status {
+            display: inline-flex; align-items: center; gap: 3px;
+            padding: 2px 7px; border-radius: 3px;
+            font-size: 9px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.4px;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .event-status.upcoming  { background: var(--orange-pale); color: var(--orange); border: 1px solid var(--orange-border); }
+        .event-status.ongoing   { background: var(--sky-pale);    color: var(--sky-dark); border: 1px solid var(--sky-border); }
+        .event-status.completed { background: var(--green-pale);  color: var(--green);  border: 1px solid var(--green-border); }
+        .event-status.cancelled { background: var(--red-pale);    color: var(--red);    border: 1px solid var(--red-border); }
+        .event-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .event-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--gray-400);
+        }
+        .event-meta-item svg { width: 10px; height: 10px; flex-shrink: 0; }
+        .event-relief-tags {
+            display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px;
+        }
+        .event-tag {
+            background: var(--gray-100);
+            color: var(--gray-600);
+            border-radius: 2px;
+            font-size: 9px; font-weight: 600;
+            padding: 2px 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* ─── ENCODER ACTIVITY ─── */
+        .encoder-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .encoder-row:last-child { border-bottom: none; }
+        .encoder-avatar {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: var(--blue);
+            color: var(--white);
+            font-size: 11px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .encoder-name { font-size: 12px; font-weight: 600; color: var(--gray-800); flex: 1; }
+        .encoder-bar-wrap { display: flex; align-items: center; gap: 8px; }
+        .encoder-bar-bg {
+            width: 80px; height: 5px;
+            background: var(--gray-100);
+            border-radius: 3px; overflow: hidden;
+        }
+        .encoder-bar-fill { height: 100%; background: var(--blue); border-radius: 3px; }
+        .encoder-count { font-size: 12px; font-weight: 700; color: var(--blue-dark); min-width: 24px; text-align: right; }
+
         /* ─── FOOTER ─── */
         footer {
             grid-area: footer;
@@ -679,18 +818,26 @@
            RESPONSIVE
            ════════════════════════════════════════ */
 
-        /* Tablet — sidebar collapses to drawer */
+        /* ── Tablet ≤900px — sidebar drawer, content scrolls ── */
         @media (max-width: 900px) {
             .shell {
-                grid-template-rows: 36px auto 1fr 48px;
+                grid-template-rows: 36px auto auto 48px;
                 grid-template-columns: 1fr;
                 grid-template-areas:
                     "topbar"
                     "header"
                     "main"
                     "footer";
-                height: 100vh;
-                overflow: hidden;
+                height: auto;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+            .main-content {
+                overflow-y: visible;
+                overflow-x: hidden;
+                padding: 20px 16px;
+                width: 100%;
+                max-width: 100%;
             }
             .sidebar {
                 grid-area: unset;
@@ -716,29 +863,37 @@
             .user-role { display: none; }
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
-            .main-content { padding: 20px 16px; }
 
             /* Quick nav: 2 columns */
             .quick-nav { grid-template-columns: repeat(2, 1fr); }
 
-            /* Stat cards: 2 columns */
+            /* Stat grid: 2 × 2 */
             .stat-grid { grid-template-columns: repeat(2, 1fr); }
-            .stat-card { border-right: none; border-bottom: 1px solid var(--gray-100); }
-            .stat-card:last-child { border-bottom: none; }
+            .stat-card { border-right: 1px solid var(--gray-100); border-bottom: 1px solid var(--gray-100); }
+            .stat-card:nth-child(2n) { border-right: none; }
+            .stat-card:nth-last-child(-n+2) { border-bottom: none; }
 
-            /* Content body: stack vertically */
+            /* Flags bar: 2 × 2 */
+            .flags-bar { grid-template-columns: repeat(2, 1fr); }
+            .flag-cell { border-right: 1px solid var(--gray-100); border-bottom: 1px solid var(--gray-100); }
+            .flag-cell:nth-child(2n) { border-right: none; }
+            .flag-cell:nth-last-child(-n+2) { border-bottom: none; }
+
+            /* Two-column body → single column */
             .content-body { grid-template-columns: 1fr; }
-            .content-panel + .content-panel {
-                border-left: none;
-                border-top: 1px solid var(--gray-100);
-            }
+            .content-panel + .content-panel { border-left: none; border-top: 1px solid var(--gray-100); }
 
-            /* Activity table: hide Description column */
+            /* Student charts: stack */
+            .student-charts-row { grid-template-columns: 1fr; }
+            .chart-card { border-right: none; border-bottom: 1px solid var(--gray-100); }
+            .chart-card:last-child { border-bottom: none; }
+
+            /* Activity table */
             .activity-table .col-desc { display: none; }
             .desc-cell { display: none; }
         }
 
-        /* Large mobile */
+        /* ── Large mobile ≤640px ── */
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
@@ -756,36 +911,52 @@
             .page-titlebar { flex-direction: column; align-items: flex-start; }
             .page-h1 { font-size: 18px; }
             .page-date { text-align: left; }
-            .welcome-card { padding: 16px 18px; gap: 14px; }
-            .welcome-card img { width: 38px; height: 38px; }
-            .welcome-heading { font-size: 16px; }
+            .welcome-card { padding: 16px 18px; gap: 12px; }
+            .welcome-card img { width: 36px; height: 36px; }
+            .welcome-heading { font-size: 15px; }
             .welcome-desc { display: none; }
-            .access-notice { padding: 12px 14px; }
+
+            /* Access notice: tighter, no overflow */
+            .access-notice { padding: 10px 12px; gap: 8px; }
+            .access-notice svg { display: none; }
             .access-notice-text { font-size: 11px; }
 
-            /* Quick nav: 2 columns, compact */
+            /* Quick nav: 2 col */
             .quick-nav { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .qnav-card { padding: 14px; gap: 8px; }
+            .qnav-card { padding: 14px 12px; gap: 8px; }
             .qnav-title { font-size: 12px; }
             .qnav-desc { display: none; }
             .qnav-readonly { display: none; }
 
-            /* Stat cards: 2 columns, compact */
+            /* Stat cards: 2 col */
             .stat-grid { grid-template-columns: 1fr 1fr; }
-            .stat-number { font-size: 26px; }
+            .stat-number { font-size: 24px; }
             .stat-label { font-size: 9px; }
-            .stat-card { padding: 14px 14px 12px; }
+            .stat-card { padding: 12px 12px 10px; }
+            .stat-pill { font-size: 9px; padding: 1px 6px; }
 
-            /* Content area header: hide subtitle */
+            /* Flags bar: 2 col */
+            .flags-bar { grid-template-columns: repeat(2, 1fr); }
+            .flag-cell { padding: 10px 12px; }
+            .flag-count { font-size: 15px; }
+            .flag-label { font-size: 9px; }
+
+            /* Student charts */
+            .student-charts-row { grid-template-columns: 1fr; }
+            .chart-card { padding: 14px 14px; }
+            .bar-row { grid-template-columns: 90px 1fr 28px; }
+
             .ca-subtitle { display: none; }
 
-            /* Activity table: show only User + Action + Time */
+            /* Activity table */
             .activity-table .col-desc,
             .activity-table .col-user { display: none; }
-            .desc-cell, .user-cell { display: none; }
-            .activity-table th, .activity-table td { padding: 8px 8px; }
+            .desc-cell { display: none; }
+            .user-cell { display: table-cell; }
+            .user-cell div { font-size: 11px; }
+            .user-cell span { font-size: 8px; padding: 1px 5px; }
+            .activity-table th, .activity-table td { padding: 8px; }
 
-            /* Quick links: tighten */
             .quick-link-item { padding: 9px 8px; font-size: 12px; }
             .quick-link-icon { width: 26px; height: 26px; }
 
@@ -794,27 +965,95 @@
             .footer-left { font-size: 10px; }
         }
 
-        /* Small mobile */
-        @media (max-width: 420px) {
-            .quick-nav { grid-template-columns: 1fr 1fr; gap: 8px; }
+        /* ── Small mobile ≤480px ── */
+        @media (max-width: 480px) {
+            .main-content { padding: 14px 10px; }
+
+            /* Quick nav: 2 col tighter */
+            .quick-nav { gap: 8px; }
             .qnav-card { padding: 12px 10px; }
+            .qnav-icon { width: 28px; height: 28px; }
+            .qnav-icon svg { width: 14px; height: 14px; }
 
-            /* Stat cards: full width stack */
+            /* Stat pills wrap smaller */
+            .stat-sub { gap: 4px; }
+
+            /* Flags 2-col tighter */
+            .flag-cell { padding: 10px; }
+            .flag-icon { width: 24px; height: 24px; }
+
+            .bar-row { grid-template-columns: 80px 1fr 26px; }
+            .content-panel { padding: 14px 12px; }
+        }
+
+        /* ── Small mobile ≤420px ── */
+        @media (max-width: 420px) {
+            /* Quick nav: still 2 col but very compact */
+            .quick-nav { grid-template-columns: 1fr 1fr; gap: 6px; }
+            .qnav-card { padding: 10px 8px; gap: 6px; }
+            .qnav-title { font-size: 11px; }
+
+            /* Stat cards: full-width stack */
             .stat-grid { grid-template-columns: 1fr; }
-            .stat-card { padding: 14px 16px; }
-            .stat-number { font-size: 28px; }
+            .stat-card { border-right: none; border-bottom: 1px solid var(--gray-100); padding: 12px 14px; }
+            .stat-card:last-child { border-bottom: none; }
+            .stat-number { font-size: 26px; }
 
-            /* Activity table: show only severity + action + time */
+            /* Flags: full-width stack */
+            .flags-bar { grid-template-columns: 1fr; }
+            .flag-cell { border-right: none; border-bottom: 1px solid var(--gray-100); }
+            .flag-cell:last-child { border-bottom: none; }
+
+            /* Activity */
             .activity-table .col-user { display: none; }
-            .user-cell { display: none; }
+            .user-cell { display: table-cell; }
+            .user-cell div { font-size: 10px; }
+            .user-cell span { font-size: 7px; padding: 1px 4px; }
 
-            .content-panel { padding: 16px 14px; }
+            .bar-row { grid-template-columns: 70px 1fr 24px; }
+            .content-panel { padding: 12px 10px; }
         }
 
+        /* ── Tiny ≤360px ── */
         @media (max-width: 360px) {
+            .main-content { padding: 10px 8px; }
             .quick-nav { grid-template-columns: 1fr; }
-            .main-content { padding: 12px 10px; }
+            .bar-row { grid-template-columns: 58px 1fr 22px; }
+            .header-title { font-size: 12px; }
+            .readonly-badge { display: none; }
         }
+
+        /* ── Student charts row ── */
+        .student-charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0;
+            border-top: 1px solid var(--gray-100);
+        }
+        .chart-card {
+            padding: 16px 20px;
+            border-right: 1px solid var(--gray-100);
+        }
+        .chart-card:last-child { border-right: none; }
+        .chart-card-header {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 14px;
+        }
+        .ca-sub { font-size: 10px; color: var(--gray-400); }
+        .bar-chart { display: flex; flex-direction: column; gap: 7px; }
+        .bar-row {
+            display: grid;
+            grid-template-columns: 110px 1fr 36px;
+            align-items: center;
+            gap: 8px;
+        }
+        .bar-label {
+            font-size: 10px; color: var(--gray-600);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .bar-track { height: 7px; background: var(--gray-100); border-radius: 4px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 4px; transition: width .3s; }
+        .bar-pct { font-size: 10px; font-weight: 700; color: var(--blue-dark); text-align: right; }
     </style>
 </head>
 <body>
@@ -854,6 +1093,12 @@
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
+        <span class="readonly-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+            Read-Only Access
+        </span>
         <div class="header-user-badge">
             <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
@@ -886,6 +1131,16 @@
 
         <hr class="sidebar-sep">
         <div class="nav-section-label">View-Only Access</div>
+
+        <a href="{{ route('auditor.family-profiles') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+            Family Profiles
+            <span class="nav-badge-view">View</span>
+        </a>
 
         <a href="{{ route('auditor.distribution.logs') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1088,12 +1343,51 @@
                 </div>
 
             </div>
+            {{-- ── SECTOR FLAGS BAR ── --}}
+            <div class="flags-bar">
+                <div class="flag-cell">
+                    <div class="flag-icon c4ps">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                    </div>
+                    <div>
+                        <div class="flag-label">4Ps Beneficiary</div>
+                        <div class="flag-count">{{ $flagCounts['4ps'] }}</div>
+                    </div>
+                </div>
+                <div class="flag-cell">
+                    <div class="flag-icon cpwd">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2"/><path d="M12 7v7l3 3"/><path d="M7 16a5 5 0 1010 0"/></svg>
+                    </div>
+                    <div>
+                        <div class="flag-label">PWD Households</div>
+                        <div class="flag-count">{{ $flagCounts['pwd'] }}</div>
+                    </div>
+                </div>
+                <div class="flag-cell">
+                    <div class="flag-icon csenior">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2"/><path d="M12 7v4H8"/><path d="M12 11l-2 6"/><path d="M10 17l-2 4M14 17l2 4"/></svg>
+                    </div>
+                    <div>
+                        <div class="flag-label">Senior Citizen</div>
+                        <div class="flag-count">{{ $flagCounts['senior'] }}</div>
+                    </div>
+                </div>
+                <div class="flag-cell">
+                    <div class="flag-icon csolo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                    </div>
+                    <div>
+                        <div class="flag-label">Solo Parent</div>
+                        <div class="flag-count">{{ $flagCounts['solo_parent'] }}</div>
+                    </div>
+                </div>
+            </div>
             {{-- ── END STAT CARDS ── --}}
 
             {{-- ── TWO-COLUMN BODY ── --}}
             <div class="content-body">
 
-                {{-- LEFT: Recent Activity --}}
+                {{-- LEFT: Recent Activity + Encoder Activity --}}
                 <div class="content-panel">
                     <div class="panel-title">Recent Activity</div>
 
@@ -1114,11 +1408,32 @@
                             </thead>
                             <tbody>
                                 @foreach($recentLogs as $log)
+                                @if(optional($log->user)->role === 'super_admin') @continue @endif
                                 <tr>
                                     <td style="width:20px; padding-left:10px;">
                                         <span class="severity-dot {{ $log->severity }}"></span>
                                     </td>
-                                    <td class="user-cell">{{ $log->user_name ?? '—' }}</td>
+                                    <td class="user-cell">
+                                        <div style="font-size:12px; font-weight:600; color:var(--gray-800);">{{ $log->user_name ?? '—' }}</div>
+                                        @if($log->user)
+                                            @php
+                                                $roleColors = [
+                                                    'admin'   => ['bg'=>'#EFF6FF','color'=>'#1D4ED8','border'=>'#BFDBFE'],
+                                                    'encoder' => ['bg'=>'#F0FDF4','color'=>'#15803D','border'=>'#BBF7D0'],
+                                                    'auditor' => ['bg'=>'#F5F3FF','color'=>'#6D28D9','border'=>'#DDD6FE'],
+                                                    'staff'   => ['bg'=>'#FFF7ED','color'=>'#C2410C','border'=>'#FED7AA'],
+                                                ];
+                                                $rc = $roleColors[$log->user->role] ?? ['bg'=>'#F3F4F6','color'=>'#374151','border'=>'#D1D5DB'];
+                                            @endphp
+                                            <span style="display:inline-block; margin-top:2px; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:1px 6px; border-radius:3px; background:{{ $rc['bg'] }}; color:{{ $rc['color'] }}; border:1px solid {{ $rc['border'] }};">
+                                                {{ ucfirst($log->user->role) }}
+                                            </span>
+                                        @elseif($log->user_name === 'System')
+                                            <span style="display:inline-block; margin-top:2px; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:1px 6px; border-radius:3px; background:#F3F4F6; color:#6B7280; border:1px solid #D1D5DB;">
+                                                System
+                                            </span>
+                                        @endif
+                                    </td>
                                     <td>
                                         <span class="action-badge cat-{{ $log->category }}">
                                             {{ str_replace('_', ' ', $log->action) }}
@@ -1138,18 +1453,71 @@
                             View all audit logs →
                         </a>
                     @endif
+
+                    {{-- Encoder Activity --}}
+                    <div class="panel-title" style="margin-top: 20px;">Encoder Activity</div>
+                    @forelse($encoderActivity as $enc)
+                        @php $pct = $totalHouseholds > 0 ? ($enc->total / $totalHouseholds) * 100 : 0; @endphp
+                        <div class="encoder-row">
+                            <div class="encoder-avatar">{{ strtoupper(substr($enc->encoder->name ?? '?', 0, 1)) }}</div>
+                            <div class="encoder-name">{{ $enc->encoder->name ?? 'Unknown' }}</div>
+                            <div class="encoder-bar-wrap">
+                                <div class="encoder-bar-bg">
+                                    <div class="encoder-bar-fill" style="width: {{ round($pct) }}%"></div>
+                                </div>
+                                <span class="encoder-count">{{ $enc->total }}</span>
+                            </div>
+                        </div>
+                    @empty
+                        <div style="font-size:12px; color:var(--gray-400); font-style:italic;">No encoder data available.</div>
+                    @endforelse
                 </div>
 
-                {{-- RIGHT: Quick Links + Status --}}
+                {{-- RIGHT: Distribution Events + Quick Links --}}
                 <div class="content-panel">
-                    <div class="panel-title">Quick Access</div>
+                    <div class="panel-title">Distribution Events</div>
+
+                    @forelse($upcomingEventsList as $event)
+                        <div class="event-item">
+                            <div class="event-item-top">
+                                <div class="event-name" title="{{ $event->event_name }}">{{ $event->event_name }}</div>
+                                <span class="event-status {{ $event->status }}">{{ ucfirst($event->status) }}</span>
+                            </div>
+                            <div class="event-meta">
+                                <span class="event-meta-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    {{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }}
+                                </span>
+                                <span class="event-meta-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                    @php
+                                        $targets = is_string($event->target_barangay) ? json_decode($event->target_barangay, true) : $event->target_barangay;
+                                        echo is_array($targets) ? implode(', ', $targets) : ($targets ?? 'All Barangays');
+                                    @endphp
+                                </span>
+                            </div>
+                            <div class="event-relief-tags">
+                                @foreach(explode(',', $event->relief_type) as $rt)
+                                    <span class="event-tag">{{ trim($rt) }}</span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @empty
+                        <div style="padding: 24px; text-align:center; color:var(--gray-400); font-size:12px; font-style:italic;">
+                            No upcoming distribution events.
+                        </div>
+                    @endforelse
+
+                    <a href="{{ route('auditor.distribution.logs') }}" class="view-all-link">
+                        View all distribution logs →
+                    </a>
+
+                    <hr class="ql-divider" style="margin-top: 16px;">
+                    <div class="panel-title" style="margin-top: 14px;">Quick Access</div>
 
                     <a href="{{ route('auditor.households.index') }}?filter=pending" class="quick-link-item">
                         <div class="quick-link-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                                <path d="M9 22V12h6v10"/>
-                            </svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
                         </div>
                         Pending Households
                         <span style="margin-left:auto; background:var(--orange-pale); color:var(--orange); border:1px solid var(--orange-border); border-radius:10px; font-size:10px; font-weight:700; padding:2px 8px;">
@@ -1159,9 +1527,7 @@
 
                     <a href="{{ route('auditor.households.index') }}?filter=approved" class="quick-link-item">
                         <div class="quick-link-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="20 6 9 17 4 12"/>
-                            </svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
                         </div>
                         Approved Households
                         <span style="margin-left:auto; background:var(--green-pale); color:var(--green); border:1px solid var(--green-border); border-radius:10px; font-size:10px; font-weight:700; padding:2px 8px;">
@@ -1169,29 +1535,9 @@
                         </span>
                     </a>
 
-                    <a href="{{ route('auditor.distribution.logs') }}" class="quick-link-item">
-                        <div class="quick-link-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
-                                <rect x="9" y="3" width="6" height="4" rx="1"/>
-                                <line x1="9" y1="12" x2="15" y2="12"/>
-                            </svg>
-                        </div>
-                        Distribution Logs
-                        <svg class="quick-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9 18 15 12 9 6"/>
-                        </svg>
-                    </a>
-
-                    <hr class="ql-divider">
-
                     <a href="{{ route('auditor.audit.trail') }}?severity=high" class="quick-link-item">
                         <div class="quick-link-icon" style="background:var(--red-pale);">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--red)">
-                                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                                <line x1="12" y1="9" x2="12" y2="13"/>
-                                <line x1="12" y1="17" x2="12.01" y2="17"/>
-                            </svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--red)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                         </div>
                         <span style="color:var(--red)">High-Severity Logs</span>
                         <span style="margin-left:auto; background:var(--red-pale); color:var(--red); border:1px solid var(--red-border); border-radius:10px; font-size:10px; font-weight:700; padding:2px 8px;">
@@ -1199,22 +1545,161 @@
                         </span>
                     </a>
 
-                    <a href="{{ route('auditor.audit.trail') }}" class="quick-link-item">
-                        <div class="quick-link-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
-                            </svg>
-                        </div>
-                        All Audit Logs
-                        <svg class="quick-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9 18 15 12 9 6"/>
-                        </svg>
-                    </a>
-
                 </div>
 
             </div>
+
+            {{-- ── STUDENT CHARTS ROW ── --}}
+            <div class="student-charts-row">
+
+                {{-- Students per Barangay --}}
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div class="ca-dot" style="background:#F5C518;"></div>
+                        <div class="ca-title">Students per Barangay</div>
+                        <span class="ca-sub" style="margin-left:auto;">
+                            Total:&nbsp;<strong style="color:var(--blue-dark);">{{ $totalStudents }}</strong>
+                        </span>
+                    </div>
+                    <div>
+                        @if($studentsByBarangay->count() > 0)
+                            @php $maxStudents = $studentsByBarangay->max(); @endphp
+                            <div class="bar-chart">
+                                @foreach($studentsByBarangay as $brgy => $count)
+                                    @php $pct = $maxStudents > 0 ? round(($count / $maxStudents) * 100) : 0; @endphp
+                                    <div class="bar-row">
+                                        <div class="bar-label" title="{{ $brgy }}">{{ $brgy }}</div>
+                                        <div class="bar-track">
+                                            <div class="bar-fill" style="width:{{ $pct }}%; background:var(--yellow-dark);"></div>
+                                        </div>
+                                        <div class="bar-pct">{{ $count }}</div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--gray-100); display:flex; gap:8px; flex-wrap:wrap;">
+                                <span style="display:inline-flex; align-items:center; gap:5px; background:var(--blue-pale); color:var(--blue-dark); font-size:10px; font-weight:700; padding:3px 10px; border-radius:10px;">
+                                    {{ $studentsByBarangay->count() }} Barangay{{ $studentsByBarangay->count() !== 1 ? 's' : '' }}
+                                </span>
+                                <span style="display:inline-flex; align-items:center; gap:5px; background:#FEFCE8; color:#92400E; font-size:10px; font-weight:700; padding:3px 10px; border-radius:10px;">
+                                    {{ $totalStudents }} Total Student{{ $totalStudents !== 1 ? 's' : '' }}
+                                </span>
+                            </div>
+                        @else
+                            <div style="text-align:center; padding:28px; color:var(--gray-400); font-size:12px;">No student records yet</div>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Students by School Level --}}
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div class="ca-dot" style="background:#7C3AED;"></div>
+                        <div class="ca-title">Students by School Level</div>
+                        <span class="ca-sub" style="margin-left:auto;">
+                            Total:&nbsp;<strong style="color:var(--blue-dark);">{{ $totalStudents }}</strong>
+                        </span>
+                    </div>
+                    <div>
+                        @if($studentsByLevel->count() > 0)
+                            @php
+                                $maxLevel = $studentsByLevel->max();
+                                $levelColors = [
+                                    'Early Childhood'      => '#F5C518',
+                                    'Elementary School'    => '#16A34A',
+                                    'Junior High School'   => '#2459A8',
+                                    'Senior High School'   => '#D97706',
+                                    'College / University' => '#7C3AED',
+                                    'Postgraduate'         => '#DB2777',
+                                ];
+                            @endphp
+                            <div class="bar-chart">
+                                @foreach($studentsByLevel as $level => $count)
+                                    @php
+                                        $pct   = $maxLevel > 0 ? round(($count / $maxLevel) * 100) : 0;
+                                        $color = $levelColors[$level] ?? '#1B3F7A';
+                                    @endphp
+                                    <div class="bar-row">
+                                        <div class="bar-label" title="{{ $level }}">{{ $level }}</div>
+                                        <div class="bar-track">
+                                            <div class="bar-fill" style="width:{{ $pct }}%; background:{{ $color }};"></div>
+                                        </div>
+                                        <div class="bar-pct">{{ $count }}</div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--gray-100); display:flex; gap:8px; flex-wrap:wrap;">
+                                <span style="display:inline-flex; align-items:center; gap:5px; background:var(--blue-pale); color:var(--blue-dark); font-size:10px; font-weight:700; padding:3px 10px; border-radius:10px;">
+                                    {{ $studentsByLevel->count() }} Level{{ $studentsByLevel->count() !== 1 ? 's' : '' }}
+                                </span>
+                                <span style="display:inline-flex; align-items:center; gap:5px; background:#F3E8FF; color:#6B21A8; font-size:10px; font-weight:700; padding:3px 10px; border-radius:10px;">
+                                    {{ $totalStudents }} Total Student{{ $totalStudents !== 1 ? 's' : '' }}
+                                </span>
+                            </div>
+                        @else
+                            <div style="text-align:center; padding:28px; color:var(--gray-400); font-size:12px;">No student level data yet</div>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Employment Status Donut --}}
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div class="ca-dot" style="background:var(--blue-light);"></div>
+                        <div class="ca-title">Employment Status</div>
+                        <span class="ca-sub" style="margin-left:auto;">All members</span>
+                    </div>
+                    <div>
+                        @if($employmentCounts->count() > 0)
+                            @php
+                                $empColors = ['#1B3F7A','#16A34A','#D97706','#7C3AED','#DB2777','#0891B2','#059669','#F5C518'];
+                                $totalEmp  = $employmentCounts->sum();
+                                $r = 15.9; $circ = 2 * M_PI * $r;
+                                $offset = $circ / 4; $idx = 0;
+                            @endphp
+                            <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                                <div style="position:relative; width:110px; height:110px; flex-shrink:0;">
+                                    <svg viewBox="0 0 36 36" width="110" height="110">
+                                        <circle cx="18" cy="18" r="{{ $r }}" fill="none" stroke="#F0F2F5" stroke-width="3.5"/>
+                                        @foreach($employmentCounts as $status => $cnt)
+                                            @php
+                                                $slice = $totalEmp > 0 ? ($cnt / $totalEmp) * $circ : 0;
+                                                $color = $empColors[$idx % count($empColors)];
+                                                $gap   = $slice > 1.5 ? 0.4 : 0;
+                                            @endphp
+                                            <circle cx="18" cy="18" r="{{ $r }}" fill="none"
+                                                    stroke="{{ $color }}" stroke-width="3.5"
+                                                    stroke-dasharray="{{ round($slice-$gap,3) }} {{ round($circ-$slice+$gap,3) }}"
+                                                    stroke-dashoffset="{{ round($offset,3) }}"
+                                                    stroke-linecap="round"/>
+                                            @php $offset -= $slice; $idx++; @endphp
+                                        @endforeach
+                                    </svg>
+                                    <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                                        <span style="font-family:'PT Serif',serif; font-size:18px; font-weight:700; color:var(--blue-dark); line-height:1;">{{ $totalEmp }}</span>
+                                        <span style="font-size:8px; color:var(--gray-400); text-transform:uppercase; letter-spacing:1px; margin-top:2px;">Members</span>
+                                    </div>
+                                </div>
+                                @php $idx = 0; @endphp
+                                <div style="flex:1; min-width:100px; display:flex; flex-direction:column; gap:5px;">
+                                    @foreach($employmentCounts as $status => $cnt)
+                                        @php $pct = $totalEmp > 0 ? round(($cnt/$totalEmp)*100) : 0; $color = $empColors[$idx % count($empColors)]; $idx++; @endphp
+                                        <div style="display:flex; align-items:center; gap:6px; font-size:10px;">
+                                            <div style="width:8px; height:8px; border-radius:50%; background:{{ $color }}; flex-shrink:0;"></div>
+                                            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;" title="{{ $status }}">{{ $status }}</span>
+                                            <span style="font-weight:700; color:var(--blue-dark); white-space:nowrap;">{{ $cnt }} <span style="font-weight:400; color:var(--gray-400);">({{ $pct }}%)</span></span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                            <div style="text-align:center; padding:28px; color:var(--gray-400); font-size:12px;">No employment data yet</div>
+                        @endif
+                    </div>
+                </div>
+
+            </div>
+            {{-- ── END STUDENT CHARTS ROW ── --}}
+
             {{-- ── END TWO-COLUMN BODY ── --}}
 
         </div>

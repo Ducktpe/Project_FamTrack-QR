@@ -69,6 +69,17 @@
         .status-indicator::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #4CAF50; box-shadow: 0 0 5px #4CAF50; animation: blink 2s infinite; }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
+        /* ─── READ-ONLY BADGE ─── */
+                .readonly-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px; background: #FFFBEB;
+            border: 1px solid #FDE68A; border-radius: 3px;
+            font-size: 11px; font-weight: 700; color: #92400E;
+            text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;
+        }
+        .readonly-badge svg { width: 12px; height: 12px; }
+
+
         header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; }
         .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
         .hamburger:hover { background: var(--blue-pale); }
@@ -172,7 +183,8 @@
         .sector-flag svg { width: 13px; height: 13px; }
         .sector-none { font-size: 12px; color: var(--gray-400); font-style: italic; }
 
-        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        /* ─── TABLE (desktop) ─── */
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
         .members-table { width: 100%; border-collapse: collapse; min-width: 560px; }
         .members-table thead th { padding: 10px 14px; background: var(--blue); color: var(--white); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; white-space: nowrap; }
         .members-table tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; }
@@ -183,6 +195,48 @@
         .members-table tbody tr:nth-child(even):hover td { background: var(--blue-pale); }
         .member-name { font-weight: 600; color: var(--blue-dark); }
         .no-members { padding: 32px; text-align: center; color: var(--gray-400); font-style: italic; font-size: 13px; }
+
+        /* ─── TABLE → CARD layout on small screens ─── */
+        @media (max-width: 600px) {
+            .table-wrapper { overflow-x: visible; }
+            .members-table { min-width: 0; }
+            .members-table thead { display: none; } /* hide column headers */
+            .members-table tbody { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
+            .members-table tbody tr {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                border: 1px solid var(--gray-200);
+                border-bottom: 1px solid var(--gray-200) !important;
+                border-radius: 4px;
+                padding: 12px;
+                background: var(--white);
+                box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+                position: relative;
+            }
+            .members-table tbody tr:nth-child(even) td { background: transparent; }
+            .members-table tbody tr:hover { background: var(--blue-pale); }
+            /* Each cell gets a label via data-label */
+            .members-table tbody td {
+                padding: 0;
+                font-size: 12px;
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+            }
+            .members-table tbody td::before {
+                content: attr(data-label);
+                font-size: 9px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                color: var(--gray-400);
+            }
+            /* Full-width cells */
+            .members-table tbody td:first-child { grid-column: 1 / -1; }
+            .members-table tbody td:last-child  { grid-column: 1 / -1; }
+            .member-name { font-size: 13px; }
+        }
 
         .readonly-notice { padding: 20px; background: #FFFBEB; border: 1px dashed #FDE68A; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
         .readonly-notice-icon { width: 40px; height: 40px; border-radius: 50%; background: #FEF3C7; display: flex; align-items: center; justify-content: center; }
@@ -213,10 +267,74 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
-        @media (max-width: 1100px) { .detail-layout { grid-template-columns: 1fr; } .detail-side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } }
+        /* ─── HOUSING / UTILITIES ─── */
+        .info-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        .info-item.accent-green { border-left-color: var(--green); }
+        .info-item.accent-orange { border-left-color: var(--orange); }
+        .info-item.accent-purple { border-left-color: var(--purple); }
+        .info-value.pill {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: var(--blue-pale); color: var(--blue);
+            border: 1px solid #C3D8F5; border-radius: 10px;
+            font-size: 11px; font-weight: 700; padding: 3px 10px;
+            text-transform: uppercase; letter-spacing: 0.4px;
+        }
+        .info-value.pill.green { background: var(--green-pale); color: var(--green-dark); border-color: #BBF7D0; }
+        .info-value.pill.orange { background: var(--orange-pale); color: var(--orange); border-color: #FDE68A; }
+        .info-value.pill.purple { background: var(--purple-pale); color: var(--purple); border-color: var(--purple-border); }
+
+        /* ─── COORDINATES ─── */
+        .coords-block { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--gray-50); border: 1px solid var(--gray-100); border-left: 3px solid var(--blue-light); }
+        .coords-icon { width: 36px; height: 36px; border-radius: 4px; background: var(--blue-pale); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .coords-icon svg { width: 18px; height: 18px; color: var(--blue); }
+        .coords-values { display: flex; gap: 20px; flex-wrap: wrap; }
+        .coords-pair { display: flex; flex-direction: column; gap: 2px; }
+        .coords-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); }
+        .coords-val { font-family: monospace; font-size: 13px; font-weight: 700; color: var(--blue); }
+        .coords-dms { font-size: 11px; color: var(--gray-600); margin-top: 1px; }
+
+        /* ─── RISK PROFILE ─── */
+        .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .risk-item { padding: 12px 14px; background: var(--gray-50); border: 1px solid var(--gray-100); border-left: 3px solid var(--blue-light); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .risk-item-label { font-size: 11px; font-weight: 600; color: var(--gray-600); }
+        .risk-pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
+        .risk-pill.yes { background: var(--green-pale); color: var(--green-dark); border: 1px solid #BBF7D0; }
+        .risk-pill.no  { background: var(--gray-100); color: var(--gray-400); border: 1px solid var(--gray-200); }
+        .risk-pill svg { width: 9px; height: 9px; }
+        .risk-stat { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+        .risk-stat-num { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1; }
+        .risk-stat-sub { font-size: 9px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; }
+        .ews-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .ews-tag { background: var(--sky-pale); color: var(--sky-dark); border: 1px solid var(--sky-border); border-radius: 3px; font-size: 10px; font-weight: 700; padding: 3px 9px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .remarks-block { padding: 10px 14px; background: var(--gray-50); border: 1px solid var(--gray-100); border-left: 3px solid var(--orange); font-size: 12px; color: var(--gray-800); line-height: 1.6; }
+        .literacy-bar-wrap { display: flex; align-items: center; gap: 8px; flex: 1; }
+        .literacy-bar-bg { flex: 1; height: 6px; background: var(--gray-200); border-radius: 3px; overflow: hidden; }
+        .literacy-bar-fill { height: 100%; background: var(--blue); border-radius: 3px; transition: width 0.4s; }
+        .literacy-pct { font-size: 12px; font-weight: 700; color: var(--blue); min-width: 36px; text-align: right; }
+
+        /* ─── RESPONSIVE BREAKPOINTS ─── */
+
+        /* Tablet landscape: collapse sidebar into drawer, stack detail columns */
+        @media (max-width: 1100px) {
+            .detail-layout { grid-template-columns: 1fr; }
+            .detail-side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        }
+
+        /* Tablet portrait: off-canvas sidebar */
         @media (max-width: 900px) {
-            .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
-            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
+            .shell {
+                grid-template-rows: 36px auto 1fr 48px;
+                grid-template-columns: 1fr;
+                grid-template-areas: "topbar" "header" "main" "footer";
+                height: 100vh; overflow: hidden;
+            }
+            .sidebar {
+                grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0;
+                width: var(--sidebar-w); z-index: 300;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            }
             .sidebar.open { transform: translateX(0); }
             .sidebar-overlay { display: block; }
             .sidebar-close { display: flex; }
@@ -234,7 +352,20 @@
             .main-content { padding: 20px 16px; }
             .detail-side { grid-template-columns: 1fr; }
         }
-        @media (max-width: 720px) { .info-grid { grid-template-columns: 1fr; } }
+
+        /* Small tablet / large phone */
+        @media (max-width: 720px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .info-grid-3 { grid-template-columns: 1fr 1fr; }
+            .risk-grid { grid-template-columns: 1fr; }
+            /* Hero: stack avatar row and right-side badges */
+            .household-hero { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .hero-right { flex-direction: row; align-items: center; gap: 12px; width: 100%; }
+            .hero-info { width: 100%; }
+            .hero-name { white-space: normal; font-size: 18px; }
+        }
+
+        /* Phone landscape / large phone portrait */
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
@@ -253,13 +384,25 @@
             .page-h1 { font-size: 18px; }
             .titlebar-actions { width: 100%; }
             .back-btn { flex: 1; justify-content: center; }
-            .household-hero { padding: 16px; gap: 14px; }
-            .hero-name { font-size: 18px; }
-            .hero-right { align-items: flex-start; }
+            .household-hero { padding: 16px; gap: 12px; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
             .readonly-badge { display: none; }
+            /* Side panel: actions and record info go full width */
+            .detail-side { grid-template-columns: 1fr; }
+            /* Literacy bar: stack label above bar */
+            .info-item[style*="display:flex"] { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+            .literacy-bar-wrap { width: 100%; }
+        }
+
+        /* Small phones */
+        @media (max-width: 400px) {
+            .info-grid-3 { grid-template-columns: 1fr; }
+            .hero-right { flex-direction: column; align-items: flex-start; }
+            .record-info-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+            .record-info-value { text-align: left; }
+            .coords-values { flex-direction: column; gap: 8px; }
         }
     </style>
 </head>
@@ -303,9 +446,9 @@
             Read-Only Access
         </span>
         <div class="header-user-badge">
-            <div class="user-avatar">A</div>
+            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">Auditor</div>
+                <div class="user-name">{{ auth()->user()->name }}</div>
                 <div class="user-role">View-Only Access</div>
             </div>
         </div>
@@ -358,8 +501,61 @@
         </div>
 
         @php
-            $scanCount  = $household->distributionLogs->count();
-            $headMember = $household->members->firstWhere('is_family_head', 1);
+            $scanCount    = $household->distributionLogs->count();
+            $headMember   = $household->members->firstWhere('is_family_head', 1);
+            $riskProfile  = $household->riskProfile;
+
+            // Label maps
+            $housingTypeLabels = [
+                'single_detached' => 'Single Detached', 'duplex' => 'Duplex',
+                'townhouse' => 'Townhouse', 'apartment' => 'Apartment / Condo',
+                'bungalow' => 'Bungalow', 'villa' => 'Villa',
+                'makeshift' => 'Makeshift / Informal', 'mixed' => 'Mixed Use',
+            ];
+            $materialLabels = [
+                'concrete' => 'Concrete / Masonry', 'wood' => 'Wood',
+                'mixed' => 'Mixed (Concrete + Wood)', 'bamboo' => 'Bamboo / Nipa',
+                'light' => 'Light Materials', 'salvaged' => 'Salvaged / Scrap',
+            ];
+            $ownershipLabels = [
+                'owned' => 'Owned', 'rented' => 'Rented',
+                'shared' => 'Shared / Rent-Free', 'mortgaged' => 'Mortgaged',
+                'informal' => 'Informal Settler',
+            ];
+            $electricityLabels = [
+                'electric_company' => 'Electric Company (Meralco/CLPC)',
+                'solar' => 'Solar Panel', 'generator' => 'Generator',
+                'none' => 'No Electricity', 'shared' => 'Shared Connection',
+            ];
+            $waterLabels = [
+                'maynilad' => 'Maynilad / Waterworks', 'water_project' => 'Barangay Water Project',
+                'shallow_well' => 'Shallow Well', 'deep_well' => 'Deep Well',
+                'spring' => 'Spring / River', 'bottled' => 'Bottled Water',
+                'rain' => 'Rain Collection', 'none' => 'No Water Source',
+            ];
+            $toiletLabels = [
+                'safely_managed' => 'Safely Managed (Flush / Septic)',
+                'pit_latrine' => 'Pit Latrine', 'open_defecation' => 'Open Defecation',
+                'shared' => 'Shared Facility', 'none' => 'None',
+            ];
+            $wasteLabels = [
+                'garbage' => 'Garbage Collection', 'composting' => 'Composting',
+                'burning' => 'Burning', 'sanitary_landfill' => 'Sanitary Landfill',
+                'open_dump' => 'Open Dumping', 'none' => 'No Disposal System',
+            ];
+            $ewsSourceLabels = ['tv' => 'TV', 'radio' => 'Radio', 'brgy' => 'Barangay Announcement', 'other' => 'Other'];
+
+            $housingTypeLabel   = $housingTypeLabels[$household->housing_type]     ?? ucfirst(str_replace('_', ' ', $household->housing_type ?? ''));
+            $materialLabel      = $materialLabels[$household->housing_material]    ?? ucfirst(str_replace('_', ' ', $household->housing_material ?? ''));
+            $ownershipLabel     = $ownershipLabels[$household->ownership_type]     ?? ucfirst(str_replace('_', ' ', $household->ownership_type ?? ''));
+            $electricityLabel   = $electricityLabels[$household->electricity_source] ?? ucfirst(str_replace('_', ' ', $household->electricity_source ?? ''));
+            $waterLabel         = $waterLabels[$household->water_source]           ?? ucfirst(str_replace('_', ' ', $household->water_source ?? ''));
+            $toiletLabel        = $toiletLabels[$household->toilet_access]         ?? ucfirst(str_replace('_', ' ', $household->toilet_access ?? ''));
+            $wasteLabel         = $wasteLabels[$household->waste_disposal]         ?? ucfirst(str_replace('_', ' ', $household->waste_disposal ?? ''));
+
+            $ewsSources = $riskProfile && $riskProfile->ews_sources
+                ? array_map('trim', explode(',', $riskProfile->ews_sources))
+                : [];
         @endphp
 
         <div class="household-hero">
@@ -431,18 +627,61 @@
                             <div class="info-item"><div class="info-label">Age</div><div class="info-value">{{ $headMember?->age !== null ? $headMember->age . ' years old' : '—' }}</div></div>
                             <div class="info-item"><div class="info-label">Civil Status</div><div class="info-value">{{ $headMember?->civil_status ?? '—' }}</div></div>
                             <div class="info-item"><div class="info-label">Contact Number</div><div class="info-value">@if($household->contact_number){{ $household->contact_number }}@else<em>N/A</em>@endif</div></div>
+                            <div class="info-item"><div class="info-label">Email Address</div><div class="info-value">@if($household->email){{ $household->email }}@else<em>—</em>@endif</div></div>
                             <div class="info-item"><div class="info-label">Valid ID</div><div class="info-value">@if($household->valid_id_type){{ $household->valid_id_type }}@else<em>—</em>@endif</div></div>
                             <div class="info-item"><div class="info-label">ID Number</div><div class="info-value">@if($household->valid_id_num)<span class="mono">{{ $household->valid_id_num }}</span>@else<em>—</em>@endif</div></div>
+                            <div class="info-item"><div class="info-label">Educational Attainment</div><div class="info-value">{{ $headMember?->educational_attainment ?? '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">Occupation</div><div class="info-value">{{ $headMember?->occupation ?? $headMember?->detail?->job_title ?? '—' }}</div></div>
                             <div class="info-item"><div class="info-label">Total Household Members</div><div class="info-value">{{ $household->total_members }} person(s)</div></div>
                         </div>
                     </div>
                 </div>
                 <div class="section-card">
-                    <div class="section-header"><div class="ca-dot"></div><div class="section-title">Address</div></div>
-                    <div class="section-body">
+                    <div class="section-header"><div class="ca-dot"></div><div class="section-title">Address &amp; Location</div></div>
+                    <div class="section-body" style="display:flex;flex-direction:column;gap:12px;">
                         <div class="address-block">
-                            <div class="address-line1">@if($household->house_number){{ $household->house_number }}, @endif{{ $household->street_purok }}</div>
-                            <div class="address-line2">{{ $household->barangay }}, {{ $household->municipality }}, {{ $household->province }}</div>
+                            <div class="address-line1">
+                                @if($household->street_purok){{ $household->street_purok }}@else<em style="color:var(--gray-400);font-style:italic;">No street/purok recorded</em>@endif
+                            </div>
+                            <div class="address-line2">
+                                @if($household->barangay_area)Area {{ $household->barangay_area }} — @endif
+                                Brgy. {{ $household->barangay }}, {{ $household->municipality }}, {{ $household->province }}
+                            </div>
+                            @if($household->location)
+                                <div style="font-size:11px;color:var(--gray-400);margin-top:4px;">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px;"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                    {{ $household->location }}
+                                </div>
+                            @endif
+                        </div>
+
+                        @if($household->latitude && $household->longitude)
+                            <div class="coords-block">
+                                <div class="coords-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/>
+                                        <line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/>
+                                        <line x1="18" y1="12" x2="22" y2="12"/>
+                                    </svg>
+                                </div>
+                                <div class="coords-values">
+                                    <div class="coords-pair">
+                                        <div class="coords-label">Latitude</div>
+                                        <div class="coords-val">{{ $household->latitude }}</div>
+                                    </div>
+                                    <div class="coords-pair">
+                                        <div class="coords-label">Longitude</div>
+                                        <div class="coords-val">{{ $household->longitude }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="info-grid">
+                            <div class="info-item"><div class="info-label">Municipality</div><div class="info-value">{{ $household->municipality }}</div></div>
+                            <div class="info-item"><div class="info-label">Province</div><div class="info-value">{{ $household->province }}</div></div>
+                            <div class="info-item"><div class="info-label">Barangay</div><div class="info-value">{{ $household->barangay }}</div></div>
+                            <div class="info-item"><div class="info-label">Barangay Area</div><div class="info-value">@if($household->barangay_area){{ $household->barangay_area }}@else<em>Not specified</em>@endif</div></div>
                         </div>
                     </div>
                 </div>
@@ -462,6 +701,160 @@
                         @endif
                     </div>
                 </div>
+                {{-- ── Section 1B: Housing Unit ── --}}
+                <div class="section-card">
+                    <div class="section-header"><div class="ca-dot"></div><div class="section-title">Housing Unit</div></div>
+                    <div class="section-body">
+                        <div class="info-grid-3">
+                            <div class="info-item">
+                                <div class="info-label">Year Built</div>
+                                <div class="info-value">@if($household->year_built){{ $household->year_built }}@else<em>Not recorded</em>@endif</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Housing Type</div>
+                                <div class="info-value">@if($household->housing_type)<span class="pill">{{ $housingTypeLabel }}</span>@else<em>—</em>@endif</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Construction Material</div>
+                                <div class="info-value">@if($household->housing_material)<span class="pill">{{ $materialLabel }}</span>@else<em>—</em>@endif</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Ownership Type</div>
+                                <div class="info-value">@if($household->ownership_type)<span class="pill orange">{{ $ownershipLabel }}</span>@else<em>—</em>@endif</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Electricity Source</div>
+                                <div class="info-value">@if($household->electricity_source)<span class="pill green">{{ $electricityLabel }}</span>@else<em>—</em>@endif</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ── Section 1C: Utilities & Sanitation ── --}}
+                <div class="section-card">
+                    <div class="section-header"><div class="ca-dot"></div><div class="section-title">Utilities &amp; Sanitation</div></div>
+                    <div class="section-body">
+                        <div class="info-grid-3">
+                            <div class="info-item accent-green">
+                                <div class="info-label">Water Source</div>
+                                <div class="info-value">@if($household->water_source)<span class="pill green">{{ $waterLabel }}</span>@else<em>—</em>@endif</div>
+                            </div>
+                            <div class="info-item accent-purple">
+                                <div class="info-label">Toilet / Sanitation Access</div>
+                                <div class="info-value">@if($household->toilet_access)<span class="pill purple">{{ $toiletLabel }}</span>@else<em>—</em>@endif</div>
+                            </div>
+                            <div class="info-item accent-orange">
+                                <div class="info-label">Waste Disposal</div>
+                                <div class="info-value">@if($household->waste_disposal)<span class="pill orange">{{ $wasteLabel }}</span>@else<em>—</em>@endif</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ── Risk Profile ── --}}
+                @if($riskProfile)
+                <div class="section-card">
+                    <div class="section-header"><div class="ca-dot"></div><div class="section-title">Household Risk Profile</div></div>
+                    <div class="section-body" style="display:flex;flex-direction:column;gap:14px;">
+
+                        <div class="risk-grid">
+                            <div class="risk-item">
+                                <span class="risk-item-label">Early Warning System Access</span>
+                                <span class="risk-pill {{ $riskProfile->early_warning ? 'yes' : 'no' }}">
+                                    @if($riskProfile->early_warning)
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Yes
+                                    @else
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> No
+                                    @endif
+                                </span>
+                            </div>
+                            <div class="risk-item">
+                                <span class="risk-item-label">Hazard Awareness</span>
+                                <span class="risk-pill {{ $riskProfile->hazard_awareness ? 'yes' : 'no' }}">
+                                    @if($riskProfile->hazard_awareness)
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Yes
+                                    @else
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> No
+                                    @endif
+                                </span>
+                            </div>
+                            <div class="risk-item">
+                                <span class="risk-item-label">Financial Assistance Received</span>
+                                <span class="risk-pill {{ $riskProfile->financial_assistance ? 'yes' : 'no' }}">
+                                    @if($riskProfile->financial_assistance)
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Yes
+                                    @else
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> No
+                                    @endif
+                                </span>
+                            </div>
+                            <div class="risk-item">
+                                <span class="risk-item-label">Access to Disaster Info</span>
+                                <span class="risk-pill {{ $riskProfile->access_info ? 'yes' : 'no' }}">
+                                    @if($riskProfile->access_info)
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Yes
+                                    @else
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> No
+                                    @endif
+                                </span>
+                            </div>
+                            <div class="risk-item">
+                                <span class="risk-item-label">Willing to Relocate</span>
+                                <span class="risk-pill {{ $riskProfile->relocate_willingness ? 'yes' : 'no' }}">
+                                    @if($riskProfile->relocate_willingness)
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Yes
+                                    @else
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> No
+                                    @endif
+                                </span>
+                            </div>
+                            @if($riskProfile->income_average !== null)
+                                <div class="risk-item">
+                                    <span class="risk-item-label">Average Monthly Income</span>
+                                    <div class="risk-stat">
+                                        <span class="risk-stat-num">₱{{ number_format($riskProfile->income_average, 0) }}</span>
+                                        <span class="risk-stat-sub">per month</span>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        @if($riskProfile->literacy_rate !== null)
+                            <div class="info-item" style="display:flex;align-items:center;gap:12px;padding:12px 14px;">
+                                <div style="min-width:120px;">
+                                    <div class="info-label">Literacy Rate</div>
+                                </div>
+                                <div class="literacy-bar-wrap">
+                                    <div class="literacy-bar-bg">
+                                        <div class="literacy-bar-fill" style="width:{{ $riskProfile->literacy_rate }}%"></div>
+                                    </div>
+                                    <span class="literacy-pct">{{ $riskProfile->literacy_rate }}%</span>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if(!empty($ewsSources))
+                            <div>
+                                <div class="info-label" style="margin-bottom:8px;">Early Warning Sources</div>
+                                <div class="ews-tags">
+                                    @foreach($ewsSources as $src)
+                                        <span class="ews-tag">{{ $ewsSourceLabels[$src] ?? ucfirst($src) }}</span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        @if($riskProfile->remarks)
+                            <div>
+                                <div class="info-label" style="margin-bottom:6px;">Remarks</div>
+                                <div class="remarks-block">{{ $riskProfile->remarks }}</div>
+                            </div>
+                        @endif
+
+                    </div>
+                </div>
+                @endif
+
                 <div class="section-card">
                     <div class="section-header"><div class="ca-dot"></div><div class="section-title">Family Members ({{ $household->members->count() }})</div></div>
                     @if($household->members->count() > 0)
@@ -471,11 +864,11 @@
                                 <tbody>
                                     @foreach($household->members as $member)
                                         <tr>
-                                            <td><span class="member-name">{{ $member->full_name }}</span></td>
-                                            <td>{{ $member->relationship }}</td>
-                                            <td>{{ $member->sex }}, {{ $member->age }} y/o</td>
-                                            <td>{{ $member->birthday ? $member->birthday->format('M d, Y') : 'N/A' }}</td>
-                                            <td>
+                                            <td data-label="Full Name"><span class="member-name">{{ $member->full_name }}</span></td>
+                                            <td data-label="Relationship">{{ $member->relationship }}</td>
+                                            <td data-label="Sex / Age">{{ $member->sex }}, {{ $member->age }} y/o</td>
+                                            <td data-label="Birthday">{{ $member->birthday ? $member->birthday->format('M d, Y') : 'N/A' }}</td>
+                                            <td data-label="Occupation">
                                                 @php
                                                     $emp   = $member->detail?->employment_status;
                                                     $job   = $member->detail?->job_title;
@@ -484,7 +877,7 @@
                                                 @endphp
                                                 {{ $label ?? '—' }}
                                             </td>
-                                            <td>
+                                            <td data-label="Flags">
                                                 <div style="display:flex;gap:4px;flex-wrap:wrap;">
                                                     @if($member->is_pwd)
                                                         <span class="badge badge-blue">PWD</span>

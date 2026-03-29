@@ -130,18 +130,26 @@
         .ds-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-400); margin-bottom: 4px; }
         .ds-value { font-size: 24px; font-weight: 700; color: var(--blue-dark); line-height: 1; font-variant-numeric: tabular-nums; }
 
-        .charts-row { display: grid; grid-template-columns: 1fr 340px; gap: 14px; margin-bottom: 16px; }
-        .chart-card { background: var(--white); border: 1px solid var(--gray-200); }
+        .charts-row { display: grid; grid-template-columns: 1fr minmax(0, 340px); gap: 14px; margin-bottom: 16px; }
+        .chart-card { background: var(--white); border: 1px solid var(--gray-200); min-width: 0; }
         .chart-card-header { padding: 14px 20px; border-bottom: 1px solid var(--gray-100); background: var(--gray-50); display: flex; align-items: center; gap: 10px; }
         .ca-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); border: 2px solid var(--yellow-dark); flex-shrink: 0; }
         .ca-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
         .ca-view-all { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--blue-light); text-decoration: none; letter-spacing: 0.3px; }
         .ca-view-all:hover { color: var(--blue); }
-        .chart-body { padding: 20px; height: 240px; position: relative; }
-        .chart-body-doughnut { display: flex; flex-direction: column; align-items: center; gap: 16px; height: auto; padding: 20px; }
-        .chart-canvas-wrap { position: relative; width: 180px; height: 180px; flex-shrink: 0; }
+        .chart-body { padding: 20px; height: 240px; position: relative; overflow: hidden; }
+        .chart-body canvas { display: block; }
+        .chart-body-doughnut {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 16px; height: auto !important; min-height: 0; padding: 20px;
+            overflow: visible !important;
+        }
+        .chart-canvas-wrap {
+            position: relative; width: 180px; height: 180px;
+            max-width: min(180px, 100%); flex-shrink: 0; align-self: center;
+        }
         .chart-canvas-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
-        .doughnut-legend { width: 100%; display: flex; flex-direction: column; gap: 7px; }
+        .doughnut-legend { width: 100%; min-width: 0; display: flex; flex-direction: column; gap: 7px; }
         .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--gray-600); }
         .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
         .legend-val { margin-left: auto; font-weight: 700; color: var(--gray-800); font-variant-numeric: tabular-nums; }
@@ -161,6 +169,11 @@
         .status-done      { background: var(--blue-pale); color: var(--blue); border: 1px solid #C7D9F5; }
         .status-upcoming  { background: var(--yellow-pale); color: var(--yellow-dark); border: 1px solid #FDE68A; }
         .status-cancelled { background: var(--red-pale); color: var(--red); border: 1px solid #FECACA; }
+
+        /* ── Grid layouts that need their own responsive class ── */
+        .dash-stats-row--3col { grid-template-columns: repeat(3, 1fr); }
+        .pop-charts-row { display: grid; grid-template-columns: minmax(0, 340px) 1fr; gap: 14px; }
+        .bcl-row--water { grid-template-columns: 140px 1fr 32px; }
 
         /* ═══════════════════════════════════════════
            DISTRIBUTION MAP SECTION
@@ -248,8 +261,8 @@
         .prog-label-row strong { color: var(--gray-800); }
         .prog-track { background: var(--gray-100); border-radius: 10px; height: 8px; overflow: hidden; }
         .prog-fill  { height: 100%; border-radius: 10px; }
-        .approval-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 4px 0; }
-        .ring-svg-wrap { position: relative; width: 130px; height: 130px; flex-shrink: 0; }
+        .approval-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 4px 0; width: 100%; }
+        .ring-svg-wrap { position: relative; width: 130px; height: 130px; flex-shrink: 0; align-self: center; }
         .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .ring-center-val { font-family: 'PT Serif', serif; font-size: 24px; font-weight: 700; color: var(--blue-dark); line-height: 1; }
         .ring-center-lbl { font-size: 9px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
@@ -272,9 +285,14 @@
            RESPONSIVE
            ════════════════════════════════════════ */
 
+        /* ── Large tablet / narrow desktop (≤ 1100px) ── */
+        @media (max-width: 1100px) {
+            .dash-stats-row { grid-template-columns: repeat(3, 1fr); }
+        }
+
         /* ── Tablet (≤ 900px) ── */
         @media (max-width: 900px) {
-            /* Shell: sidebar becomes off-canvas drawer */
+            /* Shell: sidebar off-canvas */
             .shell {
                 grid-template-rows: 36px auto 1fr 48px;
                 grid-template-columns: 1fr;
@@ -307,26 +325,35 @@
             .topbar-left { display: none; }
             .main-content { padding: 20px 16px; }
 
-            /* Quick nav: 2 columns */
+            /* Grids */
             .quick-nav { grid-template-columns: repeat(2, 1fr); }
-
-            /* Stat cards: 3 columns */
             .dash-stats-row { grid-template-columns: repeat(3, 1fr); }
-
-            /* Mid-row: 2 columns */
+            .dash-stats-row--3col { grid-template-columns: repeat(3, 1fr); }
             .mid-row { grid-template-columns: 1fr 1fr; }
             .bcl-row { grid-template-columns: 90px 1fr 32px; }
-
-            /* Charts row: stack */
+            .bcl-row--water { grid-template-columns: 90px 1fr 32px; }
             .charts-row { grid-template-columns: 1fr; }
-
-            /* Population charts: stack */
             .pop-charts-row { grid-template-columns: 1fr !important; }
+            .analytics-grid { grid-template-columns: 1fr; }
 
-            /* Map: shorter */
+            /* Charts */
+            .chart-body { height: 220px; }
+            .analytics-chart-body { height: 220px; }
+
+            /* Doughnuts: full-width card → row layout (chart left, legend right) */
+            .chart-body-doughnut {
+                flex-direction: row; align-items: center;
+                padding: 20px 24px; gap: 24px;
+            }
+            .chart-canvas-wrap { width: 160px; height: 160px; flex-shrink: 0; }
+            .doughnut-legend { flex: 1; min-width: 0; }
+            .analytics-doughnut-body {
+                flex-direction: row; align-items: center;
+                padding: 20px 24px; gap: 24px;
+            }
+
+            /* Map */
             #dashDistMap { height: 320px; }
-
-            /* Distribution table: scrollable */
             .dist-table-wrap { overflow-x: auto; }
         }
 
@@ -351,33 +378,44 @@
             .page-h1 { font-size: 18px; }
             .page-date { text-align: left; }
 
-            .welcome-card { padding: 16px 18px; gap: 14px; }
+            .welcome-card { padding: 16px 18px; gap: 14px; flex-wrap: wrap; }
             .welcome-card img { width: 38px; height: 38px; }
             .welcome-heading { font-size: 16px; }
             .welcome-desc { display: none; }
 
-            /* Quick nav: 2 columns compact */
+            /* Grids */
             .quick-nav { grid-template-columns: 1fr 1fr; gap: 10px; }
             .qnav-card { padding: 14px; gap: 8px; }
             .qnav-title { font-size: 12px; }
             .qnav-desc { display: none; }
-
-            /* Stat cards: 2 columns */
             .dash-stats-row { grid-template-columns: repeat(2, 1fr); }
+            .dash-stats-row--3col { grid-template-columns: repeat(2, 1fr); }
+            .mid-row { grid-template-columns: 1fr; }
+            .bcl-row { grid-template-columns: 80px 1fr 30px; }
+            .bcl-row--water { grid-template-columns: 80px 1fr 30px; }
+
+            /* Stat card sizing */
             .dash-stat-card { padding: 12px 14px; gap: 10px; }
             .ds-icon { width: 36px; height: 36px; }
             .ds-icon svg { width: 16px; height: 16px; }
             .ds-value { font-size: 20px; }
             .ds-label { font-size: 9px; }
 
-            /* Mid-row: stack */
-            .mid-row { grid-template-columns: 1fr; }
-            .bcl-row { grid-template-columns: 80px 1fr 30px; }
-
-            /* Chart bodies: shorter on mobile */
+            /* Bar charts */
             .chart-body { height: 200px; padding: 14px; }
-            .chart-canvas-wrap { width: 150px; height: 150px; }
-            .chart-body-doughnut canvas { max-width: 150px; height: 150px !important; }
+            .analytics-chart-body { height: 200px; padding: 12px 14px; }
+
+            /* Doughnuts: back to column at small width */
+            .chart-body-doughnut {
+                flex-direction: column; align-items: center;
+                padding: 20px 16px; gap: 14px;
+            }
+            .chart-canvas-wrap { width: 160px; height: 160px; align-self: center; }
+            .doughnut-legend { width: 100%; }
+            .analytics-doughnut-body {
+                flex-direction: column; align-items: center;
+                padding: 20px 16px; gap: 14px;
+            }
 
             /* Map */
             #dashDistMap { height: 260px; }
@@ -387,7 +425,7 @@
             .dm-filter-btn .dm-fc { display: none; }
             .dm-stat-val { font-size: 16px; }
 
-            /* Distribution table: hide less important columns */
+            /* Table */
             .dash-table .col-barangay,
             .dash-table .col-distributed { display: none; }
 
@@ -396,29 +434,85 @@
             .footer-left { font-size: 10px; }
         }
 
+        /* ── Mobile (≤ 480px) — covers 442px viewport ── */
+        @media (max-width: 480px) {
+            .main-content { padding: 14px 10px; }
+
+            /* Analytics grid must be single column — kill any 2-col remnant */
+            .analytics-grid { grid-template-columns: 1fr !important; }
+
+            /* Doughnuts: ensure column, tighter canvas */
+            .chart-body-doughnut {
+                flex-direction: column; align-items: center;
+                padding: 16px 12px; gap: 12px;
+            }
+            .chart-canvas-wrap { width: 150px; height: 150px; }
+            .analytics-doughnut-body {
+                flex-direction: column; align-items: center;
+                padding: 16px 12px; gap: 12px;
+            }
+
+            /* Ring */
+            .ring-svg-wrap { width: 110px; height: 110px; }
+            .ring-center-val { font-size: 20px; }
+
+            /* Bar charts shorter */
+            .chart-body { height: 180px; padding: 12px; }
+            .analytics-chart-body { height: 180px; padding: 12px; }
+
+            /* Map */
+            #dashDistMap { height: 240px; }
+        }
+
         /* ── Small mobile (≤ 420px) ── */
         @media (max-width: 420px) {
-            .main-content { padding: 12px 10px; }
             .quick-nav { grid-template-columns: 1fr 1fr; gap: 8px; }
             .qnav-card { padding: 12px 10px; gap: 6px; }
-
-            /* Stat cards: 1 column */
-            .dash-stats-row { grid-template-columns: 1fr 1fr; }
-            .dash-stat-card { padding: 10px 12px; }
-
-            /* Also hide Status column from table on tiny screens */
             .dash-table .col-status { display: none; }
-
-            #dashDistMap { height: 220px; }
             .dist-map-footer { flex-wrap: wrap; }
             .dm-stat { min-width: 50%; border-bottom: 1px solid var(--gray-100); }
+            .welcome-card { padding: 12px 14px; gap: 10px; }
         }
 
         /* ── Very small (≤ 360px) ── */
         @media (max-width: 360px) {
             .quick-nav { grid-template-columns: 1fr; }
             .dash-stats-row { grid-template-columns: 1fr; }
+            .dash-stats-row--3col { grid-template-columns: 1fr; }
+            .header-admin-badge { display: none; }
+            .chart-canvas-wrap { width: 130px; height: 130px; }
         }
+
+        /* ── Analytics section label ── */
+        .analytics-section-label {
+            display: flex; align-items: center; gap: 10px; margin: 8px 0 14px;
+        }
+        .asl-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--yellow); border: 2px solid var(--yellow-dark); flex-shrink: 0;
+        }
+        .analytics-section-label span {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--gray-400); white-space: nowrap;
+        }
+        .asl-line { flex: 1; height: 1px; background: var(--gray-200); }
+
+        /* ── Analytics grid ── */
+        .analytics-grid {
+            display: grid; grid-template-columns: 1fr minmax(0, 340px); gap: 14px; margin-bottom: 16px;
+        }
+        .analytics-chart-body   { height: 260px; padding: 16px 20px; overflow: hidden; }
+        .analytics-doughnut-body { height: auto; padding: 16px 20px; }
+
+        /* ── Header badge pills ── */
+        .ca-badge {
+            font-size: 10px; font-weight: 700; padding: 2px 10px;
+            border-radius: 10px; white-space: nowrap;
+        }
+        .ca-badge--purple { background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; }
+        .ca-badge--cyan   { background: #ECFEFF; color: #0E7490; border: 1px solid #A5F3FC; }
+        .ca-badge--amber  { background: var(--yellow-pale); color: var(--yellow-dark); border: 1px solid #FDE68A; }
+
     </style>
 </head>
 <body>
@@ -720,7 +814,7 @@
         @endphp
 
         {{-- ── POPULATION SUMMARY CARDS ── --}}
-        <div class="dash-stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px;">
+        <div class="dash-stats-row dash-stats-row--3col" style="margin-bottom:16px;">
             {{-- Total Households --}}
             <div class="dash-stat-card" style="border-left:4px solid #1B3F7A;">
                 <div class="ds-icon" style="background:#EAF0FA;">
@@ -877,7 +971,7 @@
         </div>
 
         {{-- ── BOTTOM ROW: Housing + Water + Monthly Trend ── --}}
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;" class="mid-row">
+        <div class="mid-row" style="margin-bottom:16px;">
 
             {{-- Housing Type --}}
             <div class="chart-card">
@@ -914,7 +1008,7 @@
                     <div class="bar-chart-list">
                         @foreach($waterBreakdown as $ws => $wc)
                         @php $wpct = round(($wc / $maxWater) * 100); @endphp
-                        <div class="bcl-row" style="grid-template-columns:140px 1fr 32px;">
+                        <div class="bcl-row bcl-row--water">
                             <div class="bcl-label" style="font-size:10px;" title="{{ $ws }}">{{ Str::limit($ws, 28) }}</div>
                             <div class="bcl-track"><div class="bcl-fill" style="width:{{ $wpct }}%;background:#2459A8;"></div></div>
                             <div class="bcl-val">{{ $wc }}</div>
@@ -967,7 +1061,7 @@
         </div>
 
         {{-- ── POPULATION CHARTS ── --}}
-        <div class="pop-charts-row" style="display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:14px;margin-bottom:16px;">
+        <div class="pop-charts-row" style="margin-bottom:16px;">
             {{-- Gender Doughnut --}}
             <div class="chart-card">
                 <div class="chart-card-header">
@@ -992,6 +1086,57 @@
                 <div class="chart-body">
                     <canvas id="ageGroupChart"></canvas>
                 </div>
+            </div>
+        </div>
+
+        {{-- ── STUDENT & EMPLOYMENT ANALYTICS ── --}}
+        <div class="analytics-section-label">
+            <div class="asl-dot"></div>
+            <span>Student &amp; Employment Analytics</span>
+            <div class="asl-line"></div>
+        </div>
+
+        <div class="analytics-grid">
+
+            {{-- Students per Barangay --}}
+            <div class="chart-card analytics-card--wide">
+                <div class="chart-card-header">
+                    <div class="ca-dot" style="background:#7C3AED;border-color:#6D28D9;"></div>
+                    <div class="ca-title">Students per Barangay</div>
+                    <span class="ca-badge ca-badge--purple">{{ number_format($studentsByBarangay->sum()) }} total</span>
+                </div>
+                <div class="chart-body analytics-chart-body">
+                    <canvas id="studentsByBarangayChart"></canvas>
+                </div>
+            </div>
+
+            {{-- Students by School Level --}}
+            <div class="chart-card analytics-card--narrow">
+                <div class="chart-card-header">
+                    <div class="ca-dot" style="background:#0891B2;border-color:#0E7490;"></div>
+                    <div class="ca-title">Students by School Level</div>
+                    <span class="ca-badge ca-badge--cyan">{{ $studentsByLevel->count() }} levels</span>
+                </div>
+                <div class="chart-body chart-body-doughnut analytics-doughnut-body">
+                    <div class="chart-canvas-wrap">
+                        <canvas id="studentsByLevelChart"></canvas>
+                    </div>
+                    <div class="doughnut-legend" id="studentLevelLegend"></div>
+                </div>
+            </div>
+
+        </div>
+
+        {{-- Employment Status Full Chart --}}
+        <div class="chart-card" style="margin-bottom:16px;">
+            <div class="chart-card-header">
+                <div class="ca-dot" style="background:#D97706;border-color:#B45309;"></div>
+                <div class="ca-title">Employment Status Breakdown</div>
+                <span style="margin-left:auto;font-size:10px;color:var(--gray-400);">All registered family members</span>
+                <span class="ca-badge ca-badge--amber" style="margin-left:8px;">{{ number_format($employmentCounts->sum()) }} records</span>
+            </div>
+            <div class="chart-body" style="height:220px;padding:20px 24px 16px;">
+                <canvas id="employmentStatusChart"></canvas>
             </div>
         </div>
 
@@ -1322,12 +1467,167 @@
         }
     });
 
-    /* ── Force Chart.js to resize on window resize ── */
-    window.addEventListener('resize', () => {
-        Chart.instances && Object.values(Chart.instances).forEach(chart => {
-            chart.resize();
+    /* ── Force Chart.js to resize when its container changes size ── */
+    (function () {
+        const canvasIds = [
+            'householdsBarChart', 'categoriesDoughnut', 'monthlyTrendChart',
+            'genderDoughnut', 'ageGroupChart', 'studentsByBarangayChart',
+            'studentsByLevelChart', 'employmentStatusChart'
+        ];
+        if (typeof ResizeObserver !== 'undefined') {
+            const ro = new ResizeObserver(() => {
+                Chart.instances && Object.values(Chart.instances).forEach(c => {
+                    try { c.resize(); } catch(e) {}
+                });
+            });
+            canvasIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && el.parentElement) ro.observe(el.parentElement);
+            });
+        } else {
+            window.addEventListener('resize', () => {
+                Chart.instances && Object.values(Chart.instances).forEach(c => {
+                    try { c.resize(); } catch(e) {}
+                });
+            });
+        }
+    })();
+
+    /* ── Students per Barangay Chart ── */
+    (function () {
+        const brgyLabels = @json($studentsByBarangay->keys());
+        const brgyData   = @json($studentsByBarangay->values());
+        const total      = brgyData.reduce((a, b) => a + b, 0);
+
+        const palette = [
+            '#7C3AED','#6D28D9','#5B21B6','#4C1D95',
+            '#8B5CF6','#A78BFA','#C4B5FD','#DDD6FE',
+            '#312E81','#3730A3','#4338CA','#4F46E5',
+        ];
+
+        new Chart(document.getElementById('studentsByBarangayChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: brgyLabels,
+                datasets: [{
+                    label: 'Students',
+                    data: brgyData,
+                    backgroundColor: brgyLabels.map((_, i) => palette[i % palette.length] + '33'),
+                    borderColor:     brgyLabels.map((_, i) => palette[i % palette.length]),
+                    borderWidth: 2,
+                    borderRadius: 5,
+                    hoverBackgroundColor: brgyLabels.map((_, i) => palette[i % palette.length] + '66'),
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#122D5A', titleColor: '#F5C518', bodyColor: '#fff', padding: 10, cornerRadius: 4,
+                        callbacks: {
+                            label: ctx => {
+                                const pct = total > 0 ? Math.round((ctx.parsed.y / total) * 100) : 0;
+                                return ` ${ctx.parsed.y.toLocaleString()} student${ctx.parsed.y !== 1 ? 's' : ''} (${pct}%)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: { size: 9, family: 'Open Sans' }, color: '#9AA3B0', maxRotation: 35, minRotation: 0 } },
+                    y: { beginAtZero: true, grid: { color: '#F0F2F5' }, ticks: { font: { size: 10, family: 'Open Sans' }, color: '#9AA3B0', precision: 0 } }
+                }
+            }
         });
-    });
+    })();
+
+    /* ── Students by School Level Doughnut ── */
+    (function () {
+        const levelLabels = @json($studentsByLevel->keys());
+        const levelData   = @json($studentsByLevel->values());
+        const levelColors = ['#0891B2','#0E7490','#155E75','#164E63','#06B6D4','#22D3EE','#67E8F9','#A5F3FC'];
+        const total = levelData.reduce((a, b) => a + b, 0);
+
+        new Chart(document.getElementById('studentsByLevelChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: levelLabels,
+                datasets: [{
+                    data: levelData,
+                    backgroundColor: levelColors.map((c, i) => levelColors[i % levelColors.length] + '44'),
+                    borderColor:     levelColors.map((_, i) => levelColors[i % levelColors.length]),
+                    borderWidth: 2,
+                    hoverOffset: 6,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, cutout: '62%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#122D5A', titleColor: '#F5C518', bodyColor: '#fff', padding: 10, cornerRadius: 4,
+                        callbacks: { label: ctx => { const pct = total > 0 ? Math.round((ctx.parsed / total) * 100) : 0; return ` ${ctx.parsed.toLocaleString()} (${pct}%)`; } }
+                    }
+                }
+            }
+        });
+
+        const levelLegendEl = document.getElementById('studentLevelLegend');
+        levelLabels.forEach((label, i) => {
+            const c   = levelColors[i % levelColors.length];
+            const pct = total > 0 ? Math.round((levelData[i] / total) * 100) : 0;
+            levelLegendEl.innerHTML += `<div class="legend-item"><span class="legend-dot" style="background:${c};"></span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${label}</span><span class="legend-val">${levelData[i].toLocaleString()} <span style="font-weight:400;color:var(--gray-400);font-size:10px;">(${pct}%)</span></span></div>`;
+        });
+    })();
+
+    /* ── Employment Status Chart ── */
+    (function () {
+        const empLabels = @json($employmentCounts->keys());
+        const empData   = @json($employmentCounts->values());
+        const total     = empData.reduce((a, b) => a + b, 0);
+
+        const empPalette = [
+            '#D97706','#B45309','#92400E','#78350F',
+            '#F59E0B','#FBBF24','#FCD34D','#FDE68A',
+            '#1B3F7A','#2459A8','#16A34A','#0891B2',
+        ];
+
+        new Chart(document.getElementById('employmentStatusChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: empLabels,
+                datasets: [{
+                    label: 'Members',
+                    data: empData,
+                    backgroundColor: empLabels.map((_, i) => empPalette[i % empPalette.length] + '33'),
+                    borderColor:     empLabels.map((_, i) => empPalette[i % empPalette.length]),
+                    borderWidth: 2,
+                    borderRadius: 5,
+                    hoverBackgroundColor: empLabels.map((_, i) => empPalette[i % empPalette.length] + '66'),
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#122D5A', titleColor: '#F5C518', bodyColor: '#fff', padding: 10, cornerRadius: 4,
+                        callbacks: {
+                            label: ctx => {
+                                const pct = total > 0 ? Math.round((ctx.parsed.y / total) * 100) : 0;
+                                return ` ${ctx.parsed.y.toLocaleString()} member${ctx.parsed.y !== 1 ? 's' : ''} (${pct}%)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: { size: 10, family: 'Open Sans' }, color: '#9AA3B0', maxRotation: 30, minRotation: 0 } },
+                    y: { beginAtZero: true, grid: { color: '#F0F2F5' }, ticks: { font: { size: 10, family: 'Open Sans' }, color: '#9AA3B0', precision: 0 } }
+                }
+            }
+        });
+    })();
 
     /* ══════════════════════════════════════════
        DISTRIBUTION MAP

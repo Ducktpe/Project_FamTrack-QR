@@ -28,6 +28,8 @@
             --gray-800:    #2C3340;
             --red:         #C0392B;
             --red-pale:    #FEF2F2;
+            --cyan:         #0891B2;
+            --cyan-pale:   #ECFEFF;
             --sidebar-w:   256px;
         }
 
@@ -129,13 +131,14 @@
         .page-date strong { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
 
         /* ─── SUMMARY STATS ─── */
-        .stats-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px; }
+        .stats-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; margin-bottom: 20px; }
         .stat-card { background: var(--white); border: 1px solid var(--gray-200); border-top: 3px solid var(--blue); padding: 14px 16px; border-radius: 2px; }
         .stat-card.yellow  { border-top-color: var(--yellow); }
         .stat-card.green   { border-top-color: var(--green); }
         .stat-card.red     { border-top-color: var(--red); }
         .stat-card.orange  { border-top-color: var(--orange); }
         .stat-card.purple  { border-top-color: var(--purple); }
+        .stat-card.cyan    { border-top-color: var(--cyan); }
         .stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 6px; }
         .stat-value { font-size: 24px; font-weight: 700; color: var(--blue-dark); line-height: 1; }
         .stat-card.yellow .stat-value  { color: var(--yellow-dark); }
@@ -143,6 +146,8 @@
         .stat-card.red    .stat-value  { color: var(--red); }
         .stat-card.orange .stat-value  { color: var(--orange); }
         .stat-card.purple .stat-value  { color: var(--purple); }
+        .stat-card.cyan   .stat-value  { color: var(--cyan); }
+        .stat-card.active-filter { box-shadow: 0 0 0 2px var(--blue); cursor: pointer; }
         .stat-meta { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
 
         /* ─── FILTERS BAR ─── */
@@ -190,9 +195,9 @@
         .clear-all:hover { text-decoration: underline; }
 
         /* ─── TABLE ─── */
-        .table-wrap { background: var(--white); border: 1px solid var(--gray-200); border-top: none; overflow-x: auto; margin-bottom: 0; }
-        table { width: 100%; border-collapse: collapse; }
-        thead th { padding: 10px 14px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); background: var(--gray-50); border-bottom: 2px solid var(--gray-200); white-space: nowrap; }
+        .table-wrap { background: var(--white); border: 1px solid var(--gray-200); border-top: none; overflow-x: hidden; margin-bottom: 0; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        thead th { padding: 10px 14px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); background: var(--gray-50); border-bottom: 2px solid var(--gray-200); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .th-sortable { cursor: pointer; user-select: none; }
         .th-sortable:hover { color: var(--blue); }
         .th-sortable.sorted { color: var(--blue); }
@@ -201,12 +206,55 @@
         tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; cursor: pointer; }
         tbody tr:last-child { border-bottom: none; }
         tbody tr:hover { background: var(--blue-pale); }
-        tbody td { padding: 9px 14px; font-size: 12.5px; color: var(--gray-800); vertical-align: middle; }
-        .td-name { font-weight: 600; color: var(--blue-dark); font-size: 13px; }
-        .td-sub  { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+        tbody td { padding: 9px 14px; font-size: 12.5px; color: var(--gray-800); vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        tbody td.td-tags { white-space: normal; }
+        .td-name { font-weight: 600; color: var(--blue-dark); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .td-sub  { font-size: 11px; color: var(--gray-400); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .td-num  { font-variant-numeric: tabular-nums; color: var(--gray-400); font-size: 12px; }
         .td-muted { color: var(--gray-400); font-style: italic; font-size: 11px; }
         .td-serial { font-family: 'Courier New', monospace; font-size: 11px; color: var(--blue); background: var(--blue-pale); padding: 2px 6px; border-radius: 3px; white-space: nowrap; }
+
+        /* ─── MOBILE CARD LIST ─── */
+        .resident-cards { display: none; }
+        .resident-card { background: var(--white); border-bottom: 2px solid var(--gray-200); padding: 14px 16px; }
+        .resident-card:last-child { border-bottom: none; }
+        .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+        .card-name-block { flex: 1; min-width: 0; }
+        .card-name { font-size: 14px; font-weight: 700; color: var(--blue-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+        .card-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin-top: 10px; }
+        .card-meta-item { min-width: 0; }
+        .card-meta-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-400); margin-bottom: 2px; }
+        .card-meta-value { font-size: 12px; color: var(--gray-800); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; gap: 8px; }
+        .card-serial { font-family: 'Courier New', monospace; font-size: 11px; color: var(--blue); background: var(--blue-pale); padding: 3px 8px; border-radius: 3px; }
+        .card-detail-btn { display: flex; align-items: center; gap: 5px; padding: 6px 12px; background: var(--blue-pale); border: 1px solid #C7D9F5; border-radius: 4px; font-size: 11px; font-weight: 700; color: var(--blue); cursor: pointer; font-family: 'Open Sans', sans-serif; transition: background 0.15s; white-space: nowrap; }
+        .card-detail-btn:hover { background: var(--blue); color: var(--white); }
+        .card-detail-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+        /* ─── DETAIL DRAWER (BOTTOM SHEET) ─── */
+        .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 500; opacity: 0; transition: opacity 0.25s; }
+        .drawer-overlay.active { display: block; opacity: 1; }
+        .drawer { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); border-radius: 16px 16px 0 0; z-index: 501; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); max-height: 85vh; overflow-y: auto; }
+        .drawer.open { transform: translateY(0); }
+        .drawer-handle { width: 40px; height: 4px; background: var(--gray-200); border-radius: 2px; margin: 12px auto 0; }
+        .drawer-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 14px 20px 12px; border-bottom: 1px solid var(--gray-100); gap: 12px; }
+        .drawer-title { font-size: 15px; font-weight: 700; color: var(--blue-dark); line-height: 1.3; flex: 1; }
+        .drawer-close { width: 30px; height: 30px; border-radius: 50%; background: var(--gray-100); border: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--gray-600); flex-shrink: 0; transition: background 0.15s; }
+        .drawer-close:hover { background: var(--red-pale); color: var(--red); }
+        .drawer-close svg { width: 14px; height: 14px; }
+        .drawer-body { padding: 16px 20px 32px; }
+        .drawer-section { margin-bottom: 18px; }
+        .drawer-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--gray-100); }
+        .drawer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .drawer-field { }
+        .drawer-field-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-400); margin-bottom: 3px; }
+        .drawer-field-value { font-size: 13px; color: var(--gray-800); }
+        .drawer-field-value.muted { color: var(--gray-400); font-style: italic; font-size: 12px; }
+        .drawer-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+        .drawer-view-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 12px; background: var(--blue); color: var(--white); border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Open Sans', sans-serif; margin-top: 20px; transition: background 0.15s; text-decoration: none; }
+        .drawer-view-btn:hover { background: var(--blue-dark); }
 
         /* Badges */
         .badge { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
@@ -219,7 +267,7 @@
         .badge-4ps     { background: var(--green-pale); color: var(--green-dark); border: 1px solid #BBF7D0; }
         .badge-solo    { background: var(--purple-pale); color: var(--purple); border: 1px solid #DDD6FE; }
         .badge-lgbtqia { background: #FDF4FF; color: #7E22CE; border: 1px solid #E9D5FF; }
-        .badge-student { background: var(--gray-100); color: var(--gray-600); border: 1px solid var(--gray-200); }
+        .badge-student { background: var(--cyan-pale); color: var(--cyan); border: 1px solid #A5F3FC; }
 
         /* ─── EMPTY STATE ─── */
         .empty-state { padding: 56px 24px; text-align: center; }
@@ -268,18 +316,14 @@
             .filter-group .filter-select { flex: 1; }
             .search-combo { width: 100%; }
             .search-combo .search-input { flex: 1; width: auto; min-width: 0; }
-            /* Card-style rows on tablet */
-            .table-wrap table thead { display: none; }
-            .table-wrap table tbody tr { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; padding: 10px 14px; border-bottom: 2px solid var(--gray-200); }
-            .table-wrap table tbody td { padding: 3px 0; border: none; font-size: 12px; }
-            .table-wrap table tbody td:before { content: attr(data-label); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-400); display: block; margin-bottom: 1px; }
-            .table-wrap table tbody td:first-child { grid-column: 1 / -1; }
-            .td-name { font-size: 14px; }
+            /* Switch to card view — hide desktop table, show card list */
+            .table-wrap table { display: none; }
+            .resident-cards { display: block; }
             header { padding: 0 16px; gap: 10px; }
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
-            .stats-row { grid-template-columns: repeat(3, 1fr); }
+            .stats-row { grid-template-columns: repeat(4, 1fr); }
             .main-content { padding: 20px 16px; }
         }
         @media (max-width: 640px) {
@@ -290,9 +334,8 @@
             .main-content { padding: 16px 12px; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
-            /* Single-column card rows on phones */
-            .table-wrap table tbody tr { grid-template-columns: 1fr; }
-            .table-wrap table tbody td:first-child { grid-column: 1; }
+            .card-meta { grid-template-columns: 1fr 1fr; }
+            .drawer-grid { grid-template-columns: 1fr 1fr; }
             .pagination { flex-direction: column; align-items: flex-start; gap: 8px; }
             .header-admin-badge { display: none; }
         }
@@ -335,7 +378,7 @@
             <div class="admin-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
                 <div class="admin-name">{{ auth()->user()->name }}</div>
-                <div class="admin-role">{{ ucfirst(auth()->user()->role ?? 'Staff') }}</div>
+                <div class="admin-role">Full Access</div>
             </div>
         </div>
     </header>
@@ -472,6 +515,13 @@
                 <div class="stat-value">{{ number_format($totalSoloParents ?? 0) }}</div>
                 <div class="stat-meta">registered solo parents</div>
             </div>
+            <a href="{{ route('admin.residents.index', array_merge(request()->query(), ['tag' => 'student'])) }}"
+               class="stat-card cyan {{ request('tag') === 'student' ? 'active-filter' : '' }}"
+               style="text-decoration:none;display:block;">
+                <div class="stat-label">Students</div>
+                <div class="stat-value">{{ number_format($totalStudents ?? 0) }}</div>
+                <div class="stat-meta">enrolled / in school</div>
+            </a>
         </div>
 
         {{-- FILTERS --}}
@@ -505,6 +555,7 @@
                             <option value="civil_status" {{ request('scope') === 'civil_status' ? 'selected' : '' }}>Civil Status</option>
                             <option value="employment"   {{ request('scope') === 'employment'   ? 'selected' : '' }}>Employment</option>
                             <option value="relationship" {{ request('scope') === 'relationship' ? 'selected' : '' }}>Relationship</option>
+                            <option value="student"     {{ request('scope') === 'student'     ? 'selected' : '' }}>Student</option>
                         </select>
                         <input type="text" name="search" class="search-input" id="searchInput"
                             placeholder="Search residents..."
@@ -672,13 +723,13 @@
                                 <span class="td-muted">Pending</span>
                             @endif
                         </td>
-                        <td data-label="Tags">
+                        <td class="td-tags" data-label="Tags">
                             <div style="display:flex;gap:3px;flex-wrap:wrap;">
                                 @if($person['is_4ps'])    <span class="badge badge-4ps">4Ps</span> @endif
                                 @if($person['is_pwd'])    <span class="badge badge-pwd">PWD</span> @endif
                                 @if($person['is_senior']) <span class="badge badge-senior">Senior</span> @endif
                                 @if($person['is_solo'] ?? false) <span class="badge badge-solo">Solo Parent</span> @endif
-                                @if($person['is_student'] ?? false) <span class="badge badge-student">Student</span> @endif
+                                @if($person['is_student'] ?? false) <span class="badge badge-student hl-student">Student</span> @endif
                                 @if($person['is_lgbtqia'] ?? false) <span class="badge badge-lgbtqia">LGBTQIA+</span> @endif
                                 @if(!$person['is_4ps'] && !$person['is_pwd'] && !$person['is_senior']
                                     && !($person['is_solo'] ?? false) && !($person['is_student'] ?? false)
@@ -706,6 +757,155 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        {{-- MOBILE CARD LIST (shown on ≤900px instead of the table) --}}
+        <div class="resident-cards table-wrap" style="border-top:none;">
+            @forelse($residents as $i => $person)
+            <div class="resident-card">
+                <div class="card-top">
+                    <div class="card-name-block">
+                        <div class="card-name hl-name">{{ $person['name'] }}</div>
+                        <div class="card-sub hl-barangay">{{ $person['barangay'] ?? '—' }}</div>
+                        @if(!empty($person['occupation']))
+                            <div class="card-sub hl-employment">{{ $person['occupation'] }}</div>
+                        @endif
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
+                        @if($person['sex'] === 'Male')
+                            <span class="badge badge-male">M</span>
+                        @elseif($person['sex'] === 'Female')
+                            <span class="badge badge-female">F</span>
+                        @endif
+                        @if($person['type'] === 'head')
+                            <span class="badge badge-head">Head</span>
+                        @else
+                            <span class="badge badge-member">Member</span>
+                        @endif
+                    </div>
+                </div>
+                <div class="card-badges">
+                    @if($person['is_4ps'])    <span class="badge badge-4ps">4Ps</span> @endif
+                    @if($person['is_pwd'])    <span class="badge badge-pwd">PWD</span> @endif
+                    @if($person['is_senior']) <span class="badge badge-senior">Senior</span> @endif
+                    @if($person['is_solo'] ?? false) <span class="badge badge-solo">Solo Parent</span> @endif
+                    @if($person['is_student'] ?? false) <span class="badge badge-student">Student</span> @endif
+                    @if($person['is_lgbtqia'] ?? false) <span class="badge badge-lgbtqia">LGBTQIA+</span> @endif
+                </div>
+                <div class="card-meta">
+                    <div class="card-meta-item">
+                        <div class="card-meta-label">Age</div>
+                        <div class="card-meta-value hl-age">{{ $person['age'] ?? '—' }}</div>
+                    </div>
+                    <div class="card-meta-item">
+                        <div class="card-meta-label">Relationship</div>
+                        <div class="card-meta-value hl-relationship">{{ $person['relationship'] ?? ($person['type'] === 'head' ? 'Head' : '—') }}</div>
+                    </div>
+                    @if($person['type'] !== 'head')
+                    <div class="card-meta-item" style="grid-column:1/-1;">
+                        <div class="card-meta-label">Household Head</div>
+                        <div class="card-meta-value hl-name">{{ $person['household_head'] ?? '—' }}</div>
+                    </div>
+                    @endif
+                </div>
+                <div class="card-footer">
+                    @if(!empty($person['serial_code']))
+                        <span class="card-serial hl-serial">{{ $person['serial_code'] }}</span>
+                    @else
+                        <span class="td-muted">No Serial</span>
+                    @endif
+                    <button class="card-detail-btn" onclick="event.stopPropagation(); openDrawer({{ $i }})" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        View Details
+                    </button>
+                </div>
+            </div>
+            @empty
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
+                    </svg>
+                </div>
+                <div class="empty-title">No residents found</div>
+                <div class="empty-sub">Try adjusting your search or filter criteria.</div>
+            </div>
+            @endforelse
+        </div>
+
+        {{-- DETAIL DRAWER --}}
+        <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+        <div class="drawer" id="detailDrawer">
+            <div class="drawer-handle"></div>
+            <div class="drawer-header">
+                <div class="drawer-title" id="drawerName">—</div>
+                <button class="drawer-close" onclick="closeDrawer()" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="drawer-body">
+                <div class="drawer-section">
+                    <div class="drawer-section-title">Personal Info</div>
+                    <div class="drawer-grid">
+                        <div class="drawer-field">
+                            <div class="drawer-field-label">Type</div>
+                            <div class="drawer-field-value" id="drawerType">—</div>
+                        </div>
+                        <div class="drawer-field">
+                            <div class="drawer-field-label">Sex</div>
+                            <div class="drawer-field-value" id="drawerSex">—</div>
+                        </div>
+                        <div class="drawer-field">
+                            <div class="drawer-field-label">Age</div>
+                            <div class="drawer-field-value" id="drawerAge">—</div>
+                        </div>
+                        <div class="drawer-field">
+                            <div class="drawer-field-label">Relationship</div>
+                            <div class="drawer-field-value" id="drawerRelationship">—</div>
+                        </div>
+                        <div class="drawer-field" id="drawerOccupationField">
+                            <div class="drawer-field-label">Occupation</div>
+                            <div class="drawer-field-value" id="drawerOccupation">—</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="drawer-section">
+                    <div class="drawer-section-title">Household Info</div>
+                    <div class="drawer-grid">
+                        <div class="drawer-field">
+                            <div class="drawer-field-label">Barangay</div>
+                            <div class="drawer-field-value" id="drawerBarangay">—</div>
+                        </div>
+                        <div class="drawer-field">
+                            <div class="drawer-field-label">Serial Code</div>
+                            <div class="drawer-field-value" id="drawerSerial">—</div>
+                        </div>
+                        <div class="drawer-field" id="drawerHeadField">
+                            <div class="drawer-field-label">Household Head</div>
+                            <div class="drawer-field-value" id="drawerHead">—</div>
+                        </div>
+                        <div class="drawer-field" id="drawerContactField">
+                            <div class="drawer-field-label">Contact</div>
+                            <div class="drawer-field-value" id="drawerContact">—</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="drawer-section" id="drawerTagsSection">
+                    <div class="drawer-section-title">Tags</div>
+                    <div class="drawer-tags" id="drawerTags"></div>
+                </div>
+                <a class="drawer-view-btn" id="drawerViewBtn" href="#">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    View Full Household
+                </a>
+            </div>
         </div>
 
         {{-- PAGINATION --}}
@@ -749,6 +949,91 @@
 </div>
 
 <script>
+    /* ─── Resident data for mobile drawer ─── */
+    const residentData = @json($residentsJson);
+
+    const householdRoute = '{{ rtrim(route("admin.households.show", ["household" => "__ID__"]), "") }}';
+
+    function openDrawer(index) {
+        const p = residentData[index];
+        if (!p) return;
+
+        document.getElementById('drawerName').textContent = p.name;
+
+        const typeEl = document.getElementById('drawerType');
+        typeEl.innerHTML = p.type === 'head'
+            ? '<span class="badge badge-head">Head</span>'
+            : '<span class="badge badge-member">Member</span>';
+
+        const sexEl = document.getElementById('drawerSex');
+        sexEl.innerHTML = p.sex === 'Male'
+            ? '<span class="badge badge-male">Male</span>'
+            : p.sex === 'Female'
+                ? '<span class="badge badge-female">Female</span>'
+                : '<span class="td-muted">—</span>';
+
+        document.getElementById('drawerAge').textContent = p.age;
+        document.getElementById('drawerRelationship').textContent = p.relationship;
+        document.getElementById('drawerBarangay').textContent = p.barangay;
+
+        const serialEl = document.getElementById('drawerSerial');
+        serialEl.innerHTML = p.serial_code
+            ? `<span class="td-serial">${p.serial_code}</span>`
+            : '<span class="td-muted">Pending</span>';
+
+        const occEl = document.getElementById('drawerOccupation');
+        const occField = document.getElementById('drawerOccupationField');
+        if (p.occupation) { occEl.textContent = p.occupation; occField.style.display = ''; }
+        else { occField.style.display = 'none'; }
+
+        const headField = document.getElementById('drawerHeadField');
+        const headEl = document.getElementById('drawerHead');
+        if (p.type !== 'head' && p.household_head) {
+            headEl.textContent = p.household_head; headField.style.display = '';
+        } else { headField.style.display = 'none'; }
+
+        const contactField = document.getElementById('drawerContactField');
+        const contactEl = document.getElementById('drawerContact');
+        if (p.type === 'head' && p.contact_number) {
+            contactEl.textContent = p.contact_number; contactField.style.display = '';
+        } else { contactField.style.display = 'none'; }
+
+        const tagMap = [
+            ['is_4ps',    'badge badge-4ps',     '4Ps'],
+            ['is_pwd',    'badge badge-pwd',     'PWD'],
+            ['is_senior', 'badge badge-senior',  'Senior Citizen'],
+            ['is_solo',   'badge badge-solo',    'Solo Parent'],
+            ['is_student','badge badge-student', 'Student'],
+            ['is_lgbtqia','badge badge-lgbtqia', 'LGBTQIA+'],
+        ];
+        const tagsEl = document.getElementById('drawerTags');
+        tagsEl.innerHTML = '';
+        let hasTags = false;
+        tagMap.forEach(([key, cls, label]) => {
+            if (p[key]) { tagsEl.innerHTML += `<span class="${cls}">${label}</span>`; hasTags = true; }
+        });
+        document.getElementById('drawerTagsSection').style.display = hasTags ? '' : 'none';
+
+        document.getElementById('drawerViewBtn').href = householdRoute.replace('__ID__', p.household_id);
+
+        const overlay = document.getElementById('drawerOverlay');
+        const drawer  = document.getElementById('detailDrawer');
+        overlay.style.display = 'block';
+        requestAnimationFrame(() => { overlay.classList.add('active'); drawer.classList.add('open'); });
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+        const overlay = document.getElementById('drawerOverlay');
+        const drawer  = document.getElementById('detailDrawer');
+        overlay.classList.remove('active');
+        drawer.classList.remove('open');
+        setTimeout(() => { overlay.style.display = 'none'; }, 300);
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
     /* ─── Clock ─── */
     function pad(n){ return String(n).padStart(2,'0'); }
     function updateClock() {
@@ -802,6 +1087,7 @@
             civil_status: 'e.g. Single, Married, Widowed...',
             employment:   'e.g. Employed, Unemployed...',
             relationship: 'e.g. Head, Spouse, Son...',
+            student:      'Search student by name...',
         };
         input.placeholder = placeholders[val] || 'Search residents...';
     }
@@ -834,6 +1120,7 @@
         civil_status: [],     // no dedicated cell — skip highlight
         employment:   ['hl-employment'],
         relationship: ['hl-relationship'],
+        student:      ['hl-student'],
     };
 
     function escapeRe(s){ return s.replace(/[.*+?^${}()|[\]\]/g,'\$&'); }
@@ -843,7 +1130,7 @@
         if (!term) return;
         const re = new RegExp('(' + escapeRe(term) + ')', 'gi');
         let classes = SCOPE_CLASS[scope];
-        if (classes === null) classes = ['hl-name','hl-barangay','hl-serial','hl-age','hl-employment','hl-relationship'];
+        if (classes === null) classes = ['hl-name','hl-barangay','hl-serial','hl-age','hl-employment','hl-relationship','hl-student'];
         classes.forEach(cls => {
             document.querySelectorAll('.' + cls).forEach(el => {
                 el.innerHTML = el.textContent.replace(re, '<mark class="hl">$1</mark>');
