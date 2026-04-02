@@ -109,6 +109,16 @@
         .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); line-height: 1.2; }
         .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: 0.5px; }
 
+        /* ─── READ-ONLY BADGE ─── */
+        .readonly-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px; background: #FFFBEB;
+            border: 1px solid #FDE68A; border-radius: 3px;
+            font-size: 11px; font-weight: 700; color: #92400E;
+            text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;
+        }
+        .readonly-badge svg { width: 12px; height: 12px; }
+
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
         .sidebar-overlay.active { display: block !important; pointer-events: auto; }
@@ -332,10 +342,16 @@
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
+        <span class="readonly-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+            Read-Only Access
+        </span>
         <div class="header-user-badge">
-            <div class="user-avatar">A</div>
+            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">Auditor</div>
+                <div class="user-name">{{ auth()->user()->name }}</div>
                 <div class="user-role">View-Only Access</div>
             </div>
         </div>
@@ -365,6 +381,16 @@
         <hr class="sidebar-sep">
         <div class="nav-section-label">View-Only Access</div>
 
+        <a href="{{ route('auditor.family-profiles') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+            Family Profiles
+            <span class="nav-badge-view">View</span>
+        </a>
+        
         <!-- Active: Distribution Logs -->
         <a href="{{ route('auditor.distribution.logs') }}" class="nav-item active" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

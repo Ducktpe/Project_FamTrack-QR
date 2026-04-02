@@ -300,8 +300,8 @@
         .filter-actions { display: flex; align-items: flex-end; gap: 8px; justify-content: flex-end; }
 
         /* ─── TABLE ─── */
-        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 760px; }
+        .table-wrapper { overflow-x: hidden; }
+        table { width: 100%; border-collapse: collapse; }
         thead th {
             padding: 11px 14px; background: var(--blue); color: var(--white);
             font-size: 11px; font-weight: 700; text-transform: uppercase;
@@ -323,6 +323,41 @@
         .goods-none { font-size: 11px; color: var(--gray-400); font-style: italic; }
         .timestamp { font-size: 12px; color: var(--gray-800); }
         .timestamp small { display: block; font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+
+        /* ─── MOBILE CARD ROW (hidden by default, shown on small screens) ─── */
+        .mobile-card-list { display: none; }
+        .mobile-card {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--gray-100);
+            background: var(--white);
+        }
+        .mobile-card:last-child { border-bottom: none; }
+        .mobile-card:nth-child(even) { background: var(--gray-50); }
+        .mobile-card-top {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; gap: 10px; margin-bottom: 8px;
+        }
+        .mobile-card-name { font-size: 13px; font-weight: 700; color: var(--blue-dark); }
+        .mobile-card-barangay { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+        .mobile-card-meta {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px;
+            margin-bottom: 10px;
+        }
+        .mobile-card-meta-item { display: flex; flex-direction: column; gap: 2px; }
+        .mobile-card-meta-label {
+            font-size: 9px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.8px; color: var(--gray-400);
+        }
+        .mobile-card-meta-value { font-size: 12px; color: var(--gray-800); }
+        .mobile-card-footer {
+            display: flex; align-items: center;
+            justify-content: space-between; gap: 8px;
+        }
+        .mobile-card-time { font-size: 11px; color: var(--gray-400); }
+        .mobile-card-num {
+            font-size: 10px; font-weight: 700; color: var(--gray-400);
+            background: var(--gray-100); border-radius: 10px; padding: 2px 8px;
+        }
 
         .badge {
             display: inline-flex; align-items: center; gap: 4px;
@@ -613,11 +648,23 @@
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
+            /* Switch table → cards on mobile */
+            .table-wrapper table { display: none; }
+            .mobile-card-list { display: block; }
+            /* Search bar stacks */
+            .search-bar-wrap { flex-direction: column; align-items: stretch; }
+            .search-combo { min-width: 0; }
+            .btn-filter-toggle { width: 100%; justify-content: center; }
+            /* Modal full-screen on mobile */
+            .modal { max-width: 100%; margin: 0; border-radius: 0; max-height: 100vh; }
+            .modal-backdrop { padding: 0; align-items: flex-end; }
+            .modal-row { grid-template-columns: 110px 1fr; }
         }
 
         @media (max-width: 380px) {
             .main-content { padding: 12px 10px; }
             .stats-row { grid-template-columns: 1fr; }
+            .mobile-card-meta { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -929,6 +976,7 @@
                         <tr>
                             <th>#</th>
                             <th>Household</th>
+                            <th>Scanned As</th>
                             <th>Serial Code</th>
                             <th>Distribution Event</th>
                             <th>Distributed At</th>
@@ -975,12 +1023,25 @@
                                     </small>
                                 </td>
                                 <td>
+                                    @if($log->familyMember)
+                                        <span style="display:inline-block;margin-bottom:3px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:1px 7px;border-radius:3px;background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0;">
+                                            Family Head
+                                        </span>
+                                        <div style="font-size:12px;font-weight:600;color:var(--blue-dark);">{{ $log->familyMember->full_name }}</div>
+                                        <div style="font-size:10px;color:var(--gray-400);">{{ $log->familyMember->sex }}@if($log->familyMember->age), {{ $log->familyMember->age }} yrs @endif</div>
+                                    @else
+                                        <span style="display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:1px 7px;border-radius:3px;background:var(--blue-pale);color:var(--blue);border:1px solid #C7D9F5;">
+                                            Household QR
+                                        </span>
+                                    @endif
+                                </td>
+                                <td>
                                     <span class="serial-code hl-serial">{{ $log->serial_code }}</span>
                                 </td>
                                 <td>
                                     <div class="event-name">
                                         <span class="hl-event">{{ $log->event->event_name ?? '—' }}</span>
-                                        @if($log->event && $log->event->event_date ?? null)
+                                        @if($log->event && ($log->event->event_date ?? null))
                                             <small>{{ \Carbon\Carbon::parse($log->event->event_date)->format('M d, Y') }}</small>
                                         @endif
                                     </div>
@@ -1006,7 +1067,11 @@
                                             goods:       {{ json_encode($goodsDetailStr) }},
                                             remarks:     {{ json_encode($remarksStr) }},
                                             distributedAt: {{ json_encode($log->distributed_at->format('M d, Y h:i A')) }},
-                                            photoUrl: {{ json_encode($log->releasePhoto ? asset('storage/' . $log->releasePhoto->photo_path) : null) }}
+                                            photoUrl: {{ json_encode($log->releasePhoto ? asset('storage/' . $log->releasePhoto->photo_path) : null) }},
+                                            familyHeadName: {{ json_encode($log->familyMember->full_name ?? null) }},
+                                            familyHeadSex:  {{ json_encode($log->familyMember->sex ?? null) }},
+                                            familyHeadAge:  {{ json_encode($log->familyMember->age ?? null) }},
+                                            scanMode: {{ json_encode($log->familyMember ? 'family_head' : 'household') }}
                                         })"
                                     >
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -1050,6 +1115,111 @@
                         @endforelse
                     </tbody>
                 </table>
+
+            {{-- Mobile card list (shown on ≤640px instead of the table) --}}
+            <div class="mobile-card-list">
+                @forelse($logs as $log)
+                    @php
+                        $toStr = fn($v) => is_null($v) ? '' : (is_array($v) ? implode(', ', array_map(fn($i) => is_array($i) ? json_encode($i) : (string)$i, $v)) : (string)$v);
+                        $reliefTypeStr  = $toStr($log->event->relief_type  ?? null);
+                        $goodsDetailStr = $toStr($log->goods_detail        ?? null);
+                        $remarksStr     = $toStr($log->remarks             ?? null);
+                        $barangayStr    = $toStr($log->household->barangay ?? null);
+                        $rawItems = $log->event->relief_items ?? null;
+                        if (is_array($rawItems)) {
+                            $formattedItems = array_map(function($item) {
+                                if (is_array($item)) {
+                                    $name = $item['name'] ?? 'Item';
+                                    $qty  = $item['qty']  ?? '';
+                                    $unit = $item['unit'] ?? '';
+                                    return trim("{$name}" . ($qty ? " — {$qty} {$unit}" : ''));
+                                }
+                                return (string) $item;
+                            }, $rawItems);
+                            $reliefItemsStr = implode('||', $formattedItems);
+                        } else {
+                            $reliefItemsStr = $toStr($rawItems);
+                        }
+                    @endphp
+                    <div class="mobile-card">
+                        <div class="mobile-card-top">
+                            <div>
+                                <div class="mobile-card-name">{{ $log->household->household_head_name ?? '—' }}</div>
+                                <div class="mobile-card-barangay">{{ $barangayStr }}@if($log->household) &mdash; {{ $log->household->total_members }} member(s)@endif</div>
+                            </div>
+                            <span class="mobile-card-num">#{{ $logs->firstItem() + $loop->index }}</span>
+                        </div>
+                        {{-- Scanned As badge --}}
+                        <div style="margin-bottom:8px;">
+                            @if($log->familyMember)
+                                <span style="display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:1px 7px;border-radius:3px;background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0;">Family Head QR</span>
+                                <span style="margin-left:6px;font-size:12px;font-weight:600;color:var(--blue-dark);">{{ $log->familyMember->full_name }}</span>
+                                <span style="margin-left:4px;font-size:10px;color:var(--gray-400);">{{ $log->familyMember->sex }}@if($log->familyMember->age), {{ $log->familyMember->age }} yrs @endif</span>
+                            @else
+                                <span style="display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:1px 7px;border-radius:3px;background:var(--blue-pale);color:var(--blue);border:1px solid #C7D9F5;">Household QR</span>
+                            @endif
+                        </div>
+                        <div class="mobile-card-meta">
+                            <div class="mobile-card-meta-item">
+                                <span class="mobile-card-meta-label">Serial Code</span>
+                                <span class="mobile-card-meta-value serial-code">{{ $log->serial_code }}</span>
+                            </div>
+                            <div class="mobile-card-meta-item">
+                                <span class="mobile-card-meta-label">Date</span>
+                                <span class="mobile-card-meta-value">{{ $log->distributed_at->format('M d, Y') }}<br><small style="color:var(--gray-400);">{{ $log->distributed_at->format('h:i A') }}</small></span>
+                            </div>
+                            <div class="mobile-card-meta-item" style="grid-column: 1 / -1;">
+                                <span class="mobile-card-meta-label">Event</span>
+                                <span class="mobile-card-meta-value">{{ $log->event->event_name ?? '—' }}@if($log->event && $log->event->event_date) <small style="color:var(--gray-400);"> · {{ \Carbon\Carbon::parse($log->event->event_date)->format('M d, Y') }}</small>@endif</span>
+                            </div>
+                        </div>
+                        <div class="mobile-card-footer">
+                            <span class="mobile-card-time">{{ $log->distributed_at->diffForHumans() }}</span>
+                            <button
+                                class="btn-details"
+                                onclick="openDetails({
+                                    household:   {{ json_encode($log->household->household_head_name ?? '—') }},
+                                    barangay:    {{ json_encode($barangayStr) }},
+                                    members:     {{ json_encode($log->household->total_members ?? '—') }},
+                                    serial:      {{ json_encode($log->serial_code) }},
+                                    event:       {{ json_encode($log->event->event_name ?? '—') }},
+                                    eventDate:   {{ json_encode($log->event && $log->event->event_date ? \Carbon\Carbon::parse($log->event->event_date)->format('M d, Y') : '—') }},
+                                    reliefType:  {{ json_encode($reliefTypeStr) }},
+                                    reliefItems: {{ json_encode($reliefItemsStr) }},
+                                    goods:       {{ json_encode($goodsDetailStr) }},
+                                    remarks:     {{ json_encode($remarksStr) }},
+                                    distributedAt: {{ json_encode($log->distributed_at->format('M d, Y h:i A')) }},
+                                    photoUrl: {{ json_encode($log->releasePhoto ? asset('storage/' . $log->releasePhoto->photo_path) : null) }},
+                                    familyHeadName: {{ json_encode($log->familyMember->full_name ?? null) }},
+                                    familyHeadSex:  {{ json_encode($log->familyMember->sex ?? null) }},
+                                    familyHeadAge:  {{ json_encode($log->familyMember->age ?? null) }},
+                                    scanMode: {{ json_encode($log->familyMember ? 'family_head' : 'household') }}
+                                })"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                Details
+                            </button>
+                        </div>
+                    </div>
+                @empty
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                                <rect x="9" y="3" width="6" height="4" rx="1"/>
+                            </svg>
+                        </div>
+                        <div class="empty-title">No scan records found</div>
+                        <div class="empty-sub">
+                            @if(request('search') || $hasFilters)
+                                No records match your current search or filters.
+                            @else
+                                You haven't confirmed any distributions yet.
+                            @endif
+                        </div>
+                    </div>
+                @endforelse
+            </div>
             </div>
 
             <div class="pagination-row">
@@ -1215,6 +1385,21 @@
         }
 
         let html = '';
+        // QR / Scan mode badge
+        if (d.scanMode === 'family_head') {
+            html += `<div style="margin-bottom:12px;padding:8px 12px;background:#F0FDF4;border:1px solid #BBF7D0;border-left:3px solid #16A34A;border-radius:4px;display:flex;align-items:center;gap:10px;">
+                <span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:1px 7px;border-radius:3px;background:#16A34A;color:#fff;">Family Head QR</span>
+                <div>
+                    <div style="font-size:12px;font-weight:700;color:#15803D;">${d.familyHeadName || '—'}</div>
+                    ${d.familyHeadSex || d.familyHeadAge ? `<div style="font-size:10px;color:#15803D;opacity:0.75;">${[d.familyHeadSex, d.familyHeadAge ? d.familyHeadAge + ' yrs old' : null].filter(Boolean).join(', ')}</div>` : ''}
+                </div>
+            </div>`;
+        } else {
+            html += `<div style="margin-bottom:12px;padding:6px 12px;background:var(--blue-pale);border:1px solid #C7D9F5;border-left:3px solid var(--blue);border-radius:4px;">
+                <span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:1px 7px;border-radius:3px;background:var(--blue);color:#fff;">Household QR</span>
+                <span style="margin-left:8px;font-size:11px;color:var(--blue-dark);">Scanned via household card</span>
+            </div>`;
+        }
         html += row('Household',     `<strong>${d.household}</strong>`);
         html += row('Barangay',      d.barangay);
         html += row('Members',       d.members ? `${d.members} member(s)` : null);

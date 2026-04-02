@@ -277,8 +277,7 @@
             .filter-bar { flex-wrap: wrap; }
             .filter-search { min-width: 100%; }
             footer { padding: 0 12px; }
-            .footer-center { display: none; }
-            .readonly-badge { display: none; }
+            .footer-center { display: none; }    
         }
         .nav-badge-view { margin-left: auto; background: var(--gray-400); color: var(--white); font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px; }
         .role-notice { margin: 12px 14px; background: var(--purple-pale); border: 1px solid var(--purple-border); border-left: 3px solid var(--purple); padding: 10px 12px; border-radius: 2px; }
@@ -326,9 +325,9 @@
             Read-Only Access
         </span>
         <div class="header-user-badge">
-            <div class="user-avatar">A</div>
+            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">Auditor</div>
+                <div class="user-name">{{ auth()->user()->name }}</div>
                 <div class="user-role">View-Only Access</div>
             </div>
         </div>
@@ -355,6 +354,16 @@
 
         <hr class="sidebar-sep">
         <div class="nav-section-label">View-Only Access</div>
+
+        <a href="{{ route('auditor.family-profiles') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+            Family Profiles
+            <span class="nav-badge-view">View</span>
+        </a>
 
         <a href="{{ route('auditor.distribution.logs') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

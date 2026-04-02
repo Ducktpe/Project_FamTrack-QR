@@ -30,19 +30,18 @@
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { height: 100%; font-family: 'Open Sans', sans-serif; background: var(--gray-100); color: var(--gray-800); font-size: 14px; }
+        html, body { font-family: 'Open Sans', sans-serif; background: var(--gray-100); color: var(--gray-800); font-size: 14px; overflow-x: clip; }
 
         .shell {
             display: grid;
-            grid-template-rows: 36px 76px 1fr 48px;
+            grid-template-rows: 36px 76px auto auto;
             grid-template-columns: var(--sidebar-w) 1fr;
             grid-template-areas: "topbar topbar" "header header" "sidebar main" "footer footer";
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
         }
 
         /* ─── TOPBAR ─── */
-        .topbar { grid-area: topbar; background: var(--blue-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; }
+        .topbar { grid-area: topbar; background: var(--blue-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; position: sticky; top: 0; }
         .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.3px; }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
         .clock-inline { font-size: 12px; font-weight: 600; color: var(--yellow); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
@@ -52,7 +51,7 @@
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         /* ─── HEADER ─── */
-        header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; }
+        header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; position: sticky; top: 36px; }
         .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
         .hamburger:hover { background: var(--blue-pale); }
         .hamburger svg { width: 22px; height: 22px; display: block; }
@@ -65,18 +64,49 @@
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
 
-        /* ─── PROFILE BADGE — ORANGE ─── */
-        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--orange-pale); border: 1px solid var(--orange); border-radius: 4px; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--orange); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--gray-800); line-height: 1.2; }
-        .user-role { font-size: 10px; color: var(--orange); text-transform: uppercase; letter-spacing: 0.5px; }
+                /* ─── PROFILE BADGE ─── */
+        .header-user-badge {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px;
+            background: #FFF7ED;
+            border: 1px solid #D97706; border-radius: 4px;
+            flex-shrink: 1; min-width: 0; overflow: hidden;
+        }
+        .user-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #D97706;
+            display: flex; align-items: center; justify-content: center;
+            color: #FFFFFF; font-weight: 700; font-size: 13px; flex-shrink: 0;
+        }
+        .user-name {
+            font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .user-role {
+            font-size: 10px; color: #D97706; text-transform: uppercase; letter-spacing: 0.5px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
 
         /* ─── SIDEBAR OVERLAY ─── */
-        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
-        .sidebar-overlay.active { display: block !important; pointer-events: auto; }
+        .sidebar-overlay {
+            display: block;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s, visibility 0.25s;
+            pointer-events: none;
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
 
         /* ─── SIDEBAR ─── */
-        .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
+        
         .sidebar-close { display: none; position: absolute; top: 12px; right: 12px; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 4px; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s; }
         .sidebar-close:hover { background: var(--red-pale); color: var(--red); }
         .sidebar-close svg { width: 16px; height: 16px; }
@@ -92,7 +122,7 @@
         .logout-btn:hover { background: var(--red); }
 
         /* ─── MAIN ─── */
-        .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 28px 32px; }
+        .main-content { grid-area: main; background: var(--gray-50); padding: 28px 32px; overflow-x: hidden; }
 
         .page-titlebar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); gap: 12px; flex-wrap: wrap; }
         .page-breadcrumb { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
@@ -155,7 +185,7 @@
 
         /* ─── MEMBERS TABLE ─── */
         .table-scroll { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        table { width: 100%; border-collapse: collapse; }
         thead tr { background: var(--gray-50); border-bottom: 2px solid var(--gray-200); }
         thead th { padding: 10px 14px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); text-align: left; white-space: nowrap; }
         tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; }
@@ -171,7 +201,7 @@
         .meta-row strong { color: var(--gray-600); }
 
         /* ─── FOOTER ─── */
-        footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; z-index: 100; }
+        footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; position: relative; z-index: 400; }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
         .footer-left strong { color: rgba(255,255,255,0.7); }
         .footer-center { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 1px; text-transform: uppercase; }
@@ -183,20 +213,43 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
-        /* ─── RESPONSIVE ─── */
+        /* ─── SIDEBAR — DESKTOP ─── */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--white);
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: sticky;
+            top: 112px;
+            height: calc(100vh - 112px);
+            align-self: start;
+            z-index: 10;
+        }
+
+                /* ─── RESPONSIVE ─── */
         @media (max-width: 900px) {
-            .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; }
-            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
-            .sidebar.open { transform: translateX(0); }
-            .sidebar-overlay { display: block; }
-            .sidebar-close { display: flex; }
+            .shell { grid-template-rows: 36px auto auto auto; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; min-height: 100vh; }
+            .sidebar {
+                position: fixed !important;
+                top: 0 !important; left: 0 !important; bottom: 0 !important;
+                height: 100vh !important;
+                width: var(--sidebar-w);
+                z-index: 300 !important;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            }
+            .sidebar.open { transform: translateX(0) !important; }
+            .sidebar-close { display: flex !important; }
             .sidebar .nav-section-label { padding-top: 52px; }
             .hamburger { display: flex; }
             header { padding: 0 16px; gap: 10px; }
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
-            .main-content { padding: 20px 16px; }
+            .main-content { padding: 20px 16px; overflow-x: hidden; }
             .field-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 640px) {
@@ -211,6 +264,114 @@
             .field-grid-2 { grid-template-columns: 1fr; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
+        }
+    
+        /* ── Mobile table: allow horizontal scroll within wrapper only ── */
+        .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+        @media (max-width: 640px) {
+            .field-grid { grid-template-columns: 1fr 1fr; }
+            .field-grid-2 { grid-template-columns: 1fr; }
+            .page-titlebar { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .title-actions { width: 100%; }
+            .title-actions .btn { flex: 1; justify-content: center; }
+            .main-content { padding: 16px 12px; }
+        }
+        @media (max-width: 420px) {
+            .field-grid { grid-template-columns: 1fr; }
+            .main-content { padding: 12px 10px; }
+        }
+
+
+
+
+        /* ════════════════════════════════════════
+           TOPBAR RESPONSIVE
+           ════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .topbar {
+                padding: 0 12px !important;
+                flex-wrap: nowrap;
+            }
+            .topbar-left { display: none !important; }
+            .topbar-right { gap: 10px !important; margin-left: auto; }
+            .clock-date-inline { display: none !important; }
+            .clock-inline { font-size: 11px !important; letter-spacing: 0.5px; }
+        }
+        @media (max-width: 480px) {
+            .status-indicator { display: none !important; }
+        }
+
+        /* ════════════════════════════════════════
+           GLOBAL NO HORIZONTAL SCROLL
+           ════════════════════════════════════════ */
+        html, body { overflow-x: clip; max-width: 100vw; }
+        @media (max-width: 900px) {
+            .form-card, .nf-card, .nf-body, .nf-body-inner,
+            .form-card-body, .check-group, .form-actions,
+            .page-titlebar, .welcome-card, .access-notice,
+            .stats-grid, .quick-nav, .charts-row, .bottom-row {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .member-table-wrap {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+                max-width: 100% !important;
+            }
+            .member-table { min-width: 700px; }
+            .form-input, .form-select, .form-textarea, .form-control {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            #location-map { max-width: 100% !important; width: 100% !important; }
+            .coord-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 100% !important; }
+        }
+        @media (max-width: 640px) {
+            .coord-inputs { grid-template-columns: 1fr !important; }
+            .nf-pills { display: none !important; }
+            .nf-card-header { flex-wrap: wrap !important; gap: 6px !important; }
+            .head-panel-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* ════════════════════════════════════════
+           FOOTER RESPONSIVE
+           ════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            footer {
+                flex-direction: column !important;
+                height: auto !important;
+                min-height: 48px;
+                padding: 10px 16px !important;
+                gap: 4px !important;
+                align-items: flex-start !important;
+                flex-wrap: wrap !important;
+            }
+            .footer-left {
+                font-size: 11px !important;
+                white-space: normal !important;
+                line-height: 1.5 !important;
+                width: 100% !important;
+                overflow: visible !important;
+                text-overflow: unset !important;
+            }
+            .footer-center { display: none !important; }
+            .fb-link { font-size: 11px !important; }
+        }
+        @media (max-width: 480px) {
+            footer { padding: 8px 12px !important; }
+            .footer-left { font-size: 10px !important; }
+        }
+
+        /* ── Badge responsive ── */
+        @media (max-width: 900px) {
+            .header-user-badge { padding: 5px 10px; gap: 6px; }
+            .user-name { font-size: 12px; }
+            .user-role { font-size: 9px; letter-spacing: 0.3px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+        }
+        @media (max-width: 640px) {
+            .header-user-badge { padding: 4px 8px; }
+            .user-name { font-size: 11px; }
         }
     </style>
 </head>
@@ -231,7 +392,7 @@
 
     <!-- HEADER -->
     <header>
-        <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation">
+        <button class="hamburger" onclick="openSidebar()" aria-label="Open navigation">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <line x1="3" y1="6" x2="21" y2="6"/>
                 <line x1="3" y1="12" x2="21" y2="12"/>
@@ -239,18 +400,18 @@
             </svg>
         </button>
         <div class="header-logos">
-            <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO Logo">
+            <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO Logo" onerror="this.style.display='none'">
             <div class="logo-divider"></div>
-            <img src="{{ asset('images/naic-seal.png') }}" alt="Bayan ng Naic Seal">
+            <img src="{{ asset('images/naic-seal.png') }}" alt="Bayan ng Naic Seal" onerror="this.style.display='none'">
         </div>
         <div class="header-text">
             <div class="header-org">Office of the Municipal DRRMO</div>
-            <div class="header-title">MDRRMO — Naic, Cavite</div>
+            <div class="header-title">MDRRMO &mdash; Naic, Cavite</div>
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
         <div class="header-user-badge">
-            <div class="user-avatar">E</div>
+            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
                 <div class="user-role">Data Entry Access</div>
@@ -597,17 +758,33 @@
                                     <td style="font-size:12px;">{{ $member->civil_status ?? '—' }}</td>
                                     <td style="font-size:11px;color:var(--gray-600);">{{ $member->educational_attainment ?? '—' }}</td>
                                     <td style="font-size:11px;color:var(--gray-600);">
-                                        {{ $member->detail?->employment_status ?? '—' }}
-                                        @if($member->detail?->job_title)
-                                            <small style="display:block;color:var(--gray-400);font-size:10px;">{{ $member->detail->job_title }}</small>
+                                        @php
+                                            $empStatus = $member->detail?->employment_status ?? '';
+                                            $jobTitle  = $member->detail?->job_title ?? '';
+                                            $isStudentEmp = in_array($empStatus, ['Student','Estudyante']);
+                                            $schoolLevels = ['Early Childhood','Elementary School','Junior High School','Senior High School','College / University','Postgraduate'];
+                                            $isSchoolLevel = in_array($jobTitle, $schoolLevels);
+                                        @endphp
+                                        {{ $empStatus ?: '—' }}
+                                        @if($isStudentEmp && $jobTitle)
+                                            <small style="display:block;color:var(--blue-light);font-size:10px;font-weight:600;">
+                                                📚 {{ $jobTitle }}
+                                            </small>
+                                        @elseif(!$isStudentEmp && $jobTitle)
+                                            <small style="display:block;color:var(--gray-400);font-size:10px;">{{ $jobTitle }}</small>
+                                        @endif
+                                        @if($member->detail?->employment_other)
+                                            <small style="display:block;color:var(--gray-400);font-size:10px;font-style:italic;">{{ $member->detail->employment_other }}</small>
                                         @endif
                                     </td>
                                     <td style="font-size:11px;">{{ $member->detail?->vulnerable_sector ?? '—' }}</td>
                                     <td style="white-space:nowrap;">
                                         @if($member->is_pwd)     <span class="badge badge-pwd">PWD</span> @endif
-                                        @if($member->is_student) <span class="badge" style="background:#EFF6FF;color:#1D4ED8;font-size:9px;">Student</span> @endif
+                                        @if($isStudentEmp || $member->is_student)
+                                            <span class="badge" style="background:#EFF6FF;color:#1D4ED8;font-size:9px;">Student</span>
+                                        @endif
                                         @if($member->detail?->is_lgbtqia) <span class="badge" style="background:#FDF4FF;color:#7E22CE;font-size:9px;">LGBTQIA+</span> @endif
-                                        @if(!$member->is_pwd && !$member->is_student && !$member->detail?->is_lgbtqia)
+                                        @if(!$member->is_pwd && !$isStudentEmp && !$member->is_student && !$member->detail?->is_lgbtqia)
                                             <span style="font-size:11px;color:var(--gray-400);">—</span>
                                         @endif
                                     </td>
@@ -722,18 +899,26 @@
     setInterval(updateClock, 1000);
     document.getElementById('footer-year').textContent = new Date().getFullYear();
 
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    document.getElementById('hamburgerBtn').addEventListener('click', () => {
+        function openSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
         sidebar.classList.add('open');
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
-    });
+    }
     function closeSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
         document.body.style.overflow = '';
     }
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 900) closeSidebar();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeSidebar();
+    });
 </script>
 </body>
 </html>

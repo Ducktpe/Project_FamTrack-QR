@@ -1,4 +1,4 @@
-    {{-- resources/views/admin/distribution/event-households.blade.php --}}
+{{-- resources/views/admin/distribution/event-households.blade.php --}}
     {{-- This page is loaded via fetch() into the modal. Only the .modal-body div is extracted. --}}
     <div class="modal-body" id="modalBody">
 

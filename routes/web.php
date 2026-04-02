@@ -177,7 +177,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 // ── ENCODER Routes ───────────────────────────────────────────
 Route::middleware(['auth', 'role:encoder'])->prefix('encoder')->name('encoder.')->group(function () {
-    Route::get('/dashboard', function () { return view('encoder.dashboard'); })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\Encoder\EncoderHouseholdController::class, 'dashboard'])->name('dashboard');
     Route::resource('households', \App\Http\Controllers\Encoder\EncoderHouseholdController::class);
 });
 

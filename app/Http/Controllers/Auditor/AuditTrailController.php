@@ -4,22 +4,30 @@ namespace App\Http\Controllers\Auditor;
 
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AuditTrailController extends Controller
 {
     public function index(Request $request)
     {
-        $query = AuditLog::latest('created_at');
+        // Get all super_admin user IDs — confirmed column: users.role (enum)
+        $superAdminIds = User::where('role', 'super_admin')->pluck('id');
+
+        $query = AuditLog::with('user')->latest('created_at')
+            ->where(function ($q) use ($superAdminIds) {
+                $q->whereNotIn('user_id', $superAdminIds)
+                  ->orWhereNull('user_id'); // keep System/null-user entries
+            });
 
         if ($request->filled('search')) {
             $s = $request->search;
             $query->where(function ($q) use ($s) {
-                $q->where('user_name',     'like', "%{$s}%")
-                  ->orWhere('action',      'like', "%{$s}%")
-                  ->orWhere('description', 'like', "%{$s}%")
+                $q->where('user_name',      'like', "%{$s}%")
+                  ->orWhere('action',       'like', "%{$s}%")
+                  ->orWhere('description',  'like', "%{$s}%")
                   ->orWhere('affected_name','like', "%{$s}%")
-                  ->orWhere('model',       'like', "%{$s}%");
+                  ->orWhere('model',        'like', "%{$s}%");
             });
         }
 
@@ -41,12 +49,17 @@ class AuditTrailController extends Controller
 
         $logs = $query->paginate(50)->withQueryString();
 
-        // Summary counts (always unfiltered)
-        $totalLogs         = AuditLog::count();
-        $authCount         = AuditLog::where('category', 'auth')->count();
-        $householdCount    = AuditLog::where('category', 'household')->count();
-        $distributionCount = AuditLog::where('category', 'distribution')->count();
-        $highSeverityCount = AuditLog::where('severity', 'high')->count();
+        // Summary counts — super_admin excluded, null user_id (System) kept
+        $base = AuditLog::where(function ($q) use ($superAdminIds) {
+            $q->whereNotIn('user_id', $superAdminIds)
+              ->orWhereNull('user_id');
+        });
+
+        $totalLogs         = (clone $base)->count();
+        $authCount         = (clone $base)->where('category', 'auth')->count();
+        $householdCount    = (clone $base)->where('category', 'household')->count();
+        $distributionCount = (clone $base)->where('category', 'distribution')->count();
+        $highSeverityCount = (clone $base)->where('severity', 'high')->count();
 
         return view('auditor.audit-trail', compact(
             'logs',

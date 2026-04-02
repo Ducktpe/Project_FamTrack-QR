@@ -27,25 +27,24 @@
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
-            height: 100%;
             font-family: 'Open Sans', sans-serif;
             background: var(--gray-100);
             color: var(--gray-800);
             font-size: 14px;
+            overflow-x: clip;
         }
 
         /* ─── Layout ─── */
         .shell {
             display: grid;
-            grid-template-rows: 36px 76px 1fr 48px;
+            grid-template-rows: 36px 76px auto auto;
             grid-template-columns: var(--sidebar-w) 1fr;
             grid-template-areas:
                 "topbar  topbar"
                 "header  header"
                 "sidebar main"
                 "footer  footer";
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
         }
 
         /* ─── TOP UTILITY BAR ─── */
@@ -56,6 +55,8 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 24px;
+            position: sticky;
+            top: 0;
             z-index: 100;
         }
         .topbar-left {
@@ -106,6 +107,8 @@
             align-items: center;
             padding: 0 28px;
             gap: 14px;
+            position: sticky;
+            top: 36px;
             z-index: 90;
         }
 
@@ -154,50 +157,45 @@
 
         .header-spacer { flex: 1; }
 
+                /* ─── PROFILE BADGE ─── */
         .header-user-badge {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 14px;
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px;
             background: #FFF7ED;
-            border: 1px solid #D97706;
-            border-radius: 4px;
-            flex-shrink: 0;
+            border: 1px solid #D97706; border-radius: 4px;
+            flex-shrink: 1; min-width: 0; overflow: hidden;
         }
-        .user-avatar { width: 32px; 
-        height: 32px; 
-        border-radius: 50%; 
-        background: #D97706; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        color: #FFFFFF; 
-        font-weight: 700; 
-        font-size: 13px; 
-        flex-shrink: 0; }
+        .user-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #D97706;
+            display: flex; align-items: center; justify-content: center;
+            color: #FFFFFF; font-weight: 700; font-size: 13px; flex-shrink: 0;
+        }
         .user-name {
-            font-size: 13px; font-weight: 600;
-            color: var(--blue-dark); line-height: 1.2;
+            font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .user-role {
-            font-size: 10px; color: #D97706;
-            text-transform: uppercase; letter-spacing: 0.5px;
+            font-size: 10px; color: #D97706; text-transform: uppercase; letter-spacing: 0.5px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay {
-            display: none !important; /* Force hide until activated */
-            position: fixed; 
+            display: block;
+            position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.45); 
+            background: rgba(0,0,0,0.45);
             z-index: 200;
-            opacity: 0; 
-            transition: opacity 0.25s;
-            pointer-events: none; /* Don't block clicks when hidden */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s, visibility 0.25s;
+            pointer-events: none;
         }
         .sidebar-overlay.active {
-            display: block !important;
-            pointer-events: auto; /* Allow clicks when active */
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
         }
 
         /* ─── SIDEBAR ─── */
@@ -208,7 +206,11 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            position: relative;
+            position: sticky;
+            top: 112px;
+            height: calc(100vh - 112px);
+            align-self: start;
+            z-index: 10;
         }
 
         /* Close button — only shown on mobile */
@@ -224,6 +226,7 @@
             cursor: pointer; z-index: 10;
             color: var(--gray-600);
             transition: background 0.15s;
+            flex-shrink: 0;
         }
         .sidebar-close:hover { background: #FEF2F2; color: var(--red); }
         .sidebar-close svg { width: 16px; height: 16px; }
@@ -334,7 +337,6 @@
         .main-content {
             grid-area: main;
             background: var(--gray-50);
-            overflow-y: auto;
             padding: 28px 32px;
         }
 
@@ -473,7 +475,8 @@
             justify-content: space-between;
             padding: 0 24px;
             gap: 8px;
-            z-index: 100;
+            position: relative;
+            z-index: 400;
         }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
         .footer-left strong { color: rgba(255,255,255,0.7); }
@@ -496,31 +499,32 @@
            ════════════════════════════════════════ */
         @media (max-width: 900px) {
             .shell {
-                grid-template-rows: 36px auto 1fr 48px;
+                grid-template-rows: 36px auto auto auto;
                 grid-template-columns: 1fr;
                 grid-template-areas:
                     "topbar"
                     "header"
                     "main"
                     "footer";
-                height: 100vh;
-                overflow: hidden;
+                min-height: 100vh;
             }
 
             .sidebar {
                 grid-area: unset;
                 position: fixed;
                 top: 0; left: 0; bottom: 0;
+                height: 100vh;
                 width: var(--sidebar-w);
                 z-index: 300;
                 transform: translateX(-100%);
                 transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
                 box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+                overflow-y: auto;
             }
             .sidebar.open { transform: translateX(0); }
-            .sidebar-overlay { display: block; }
+            /* sidebar-overlay shown only via .active class */
             .sidebar-close { display: flex; }
-            .sidebar .nav-section-label { padding-top: 52px; }
+            .sidebar .nav-section-label { padding-top: 56px; }
 
             .hamburger { display: flex; }
 
@@ -530,7 +534,6 @@
             .header-sub { display: none; }
             .header-user-badge { padding: 6px 10px; gap: 8px; }
             .user-name { font-size: 12px; }
-            .user-role { display: none; }
 
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
@@ -724,6 +727,163 @@
             .stat-value   { font-size: 24px; }
             .bar-row      { grid-template-columns: 80px 1fr 36px; }
         }
+
+        /* ════════════════════════════════════════
+           TOPBAR RESPONSIVE
+           ════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .topbar { padding: 0 12px !important; flex-wrap: nowrap; }
+            .topbar-left { display: none !important; }
+            .topbar-right { gap: 10px !important; margin-left: auto; }
+            .clock-date-inline { display: none !important; }
+            .clock-inline { font-size: 11px !important; }
+        }
+        @media (max-width: 480px) {
+            .status-indicator { display: none !important; }
+        }
+
+        /* ════════════════════════════════════════
+           HEADER BADGE — shrink gracefully
+           ════════════════════════════════════════ */
+        @media (max-width: 900px) {
+            .header-user-badge { padding: 5px 10px !important; gap: 6px !important; }
+            .user-name { font-size: 12px !important; }
+            .user-role { font-size: 9px !important; letter-spacing: 0.3px !important; }
+            .user-avatar { width: 28px !important; height: 28px !important; font-size: 11px !important; }
+        }
+        @media (max-width: 640px) {
+            .header-user-badge { padding: 4px 8px !important; }
+            .user-name { font-size: 11px !important; }
+        }
+
+        /* ════════════════════════════════════════
+           GLOBAL NO HORIZONTAL SCROLL
+           ════════════════════════════════════════ */
+        html, body { overflow-x: clip; max-width: 100vw; }
+        /* ════════════════════════════════════════
+           FOOTER RESPONSIVE
+           ════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            footer {
+                flex-direction: column !important; height: auto !important;
+                min-height: 48px; padding: 10px 16px !important;
+                gap: 4px !important; align-items: flex-start !important;
+                flex-wrap: wrap !important;
+            }
+            .footer-left {
+                font-size: 11px !important; white-space: normal !important;
+                line-height: 1.5 !important; width: 100% !important;
+                overflow: visible !important; text-overflow: unset !important;
+            }
+            .footer-center { display: none !important; }
+            .fb-link { font-size: 11px !important; }
+        }
+        @media (max-width: 480px) {
+            footer { padding: 8px 12px !important; }
+            .footer-left { font-size: 10px !important; }
+        }
+
+        /* ── Badge responsive — handled above ── */
+
+        /* ─── ENCODER PRODUCTIVITY CHART ─── */
+        .encoder-chart-section {
+            margin-bottom: 24px;
+        }
+        .encoder-chart-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+        }
+        .encoder-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            padding: 20px 22px;
+        }
+        .encoder-bar-row {
+            display: grid;
+            grid-template-columns: 180px 1fr 60px;
+            align-items: center;
+            gap: 14px;
+        }
+        .encoder-bar-label {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .encoder-bar-name {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--blue-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .encoder-bar-role {
+            font-size: 10px;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+        .encoder-bar-track {
+            background: var(--gray-100);
+            border-radius: 4px;
+            height: 14px;
+            overflow: hidden;
+            position: relative;
+        }
+        .encoder-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .encoder-bar-count {
+            font-family: 'PT Serif', serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--blue-dark);
+            text-align: right;
+            white-space: nowrap;
+        }
+        .encoder-bar-count span {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--gray-400);
+            display: block;
+            text-align: right;
+        }
+        .encoder-chart-footer {
+            padding: 10px 22px 14px;
+            border-top: 1px solid var(--gray-100);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .encoder-chart-footer-text {
+            font-size: 11px;
+            color: var(--gray-400);
+        }
+        .encoder-total-pill {
+            margin-left: auto;
+            background: var(--blue-pale);
+            color: var(--blue);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 10px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 640px) {
+            .encoder-bar-row {
+                grid-template-columns: 120px 1fr 48px;
+                gap: 10px;
+            }
+            .encoder-bar-name { font-size: 11px; }
+            .encoder-bar-count { font-size: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -751,20 +911,19 @@
                 <line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
         </button>
-
         <div class="header-logos">
-            <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO Logo">
+            <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO Logo" onerror="this.style.display='none'">
             <div class="logo-divider"></div>
-            <img src="{{ asset('images/naic-seal.png') }}" alt="Bayan ng Naic Seal">
+            <img src="{{ asset('images/naic-seal.png') }}" alt="Bayan ng Naic Seal" onerror="this.style.display='none'">
         </div>
         <div class="header-text">
             <div class="header-org">Office of the Municipal DRRMO</div>
-            <div class="header-title">MDRRMO — Naic, Cavite</div>
+            <div class="header-title">MDRRMO &mdash; Naic, Cavite</div>
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
         <div class="header-user-badge">
-            <div class="user-avatar">E</div>
+            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
                 <div class="user-role">Data Entry Access</div>
@@ -929,6 +1088,68 @@
             </div>
         </div>
 
+        {{-- ── ENCODER PRODUCTIVITY CHART ── --}}
+        @php
+            // Encoders and how many households they encoded
+            $encoderStats = App\Models\User::where('role', 'encoder')
+                ->withCount(['encodedHouseholds as household_count'])
+                ->orderByDesc('household_count')
+                ->get();
+
+            $maxEncoderCount = $encoderStats->max('household_count') ?: 1;
+
+            // Color palette for encoder bars
+            $encoderColors = ['#1B3F7A','#2459A8','#7C3AED','#DB2777','#D97706','#16A34A'];
+        @endphp
+
+        <div class="encoder-chart-section">
+            <div class="encoder-chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot"></div>
+                    <div class="ca-title">Households Encoded per Encoder</div>
+                    <span class="ca-sub">All encoders · Productivity overview</span>
+                </div>
+
+                @if($encoderStats->count() > 0 && $encoderStats->sum('household_count') > 0)
+                <div class="encoder-bars">
+                    @foreach($encoderStats as $i => $enc)
+                    @php
+                        $barPct  = $maxEncoderCount > 0 ? round(($enc->household_count / $maxEncoderCount) * 100) : 0;
+                        $color   = $encoderColors[$i % count($encoderColors)];
+                    @endphp
+                    <div class="encoder-bar-row">
+                        <div class="encoder-bar-label">
+                            <div class="encoder-bar-name" title="{{ $enc->name }}">{{ $enc->name }}</div>
+                            <div class="encoder-bar-role">Encoder</div>
+                        </div>
+                        <div class="encoder-bar-track">
+                            <div class="encoder-bar-fill" style="width:{{ $barPct }}%; background: {{ $color }};"></div>
+                        </div>
+                        <div class="encoder-bar-count">
+                            {{ $enc->household_count }}
+                            <span>household{{ $enc->household_count !== 1 ? 's' : '' }}</span>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                <div class="encoder-chart-footer">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <span class="encoder-chart-footer-text">Showing all {{ $encoderStats->count() }} encoder{{ $encoderStats->count() !== 1 ? 's' : '' }} in the system</span>
+                    <span class="encoder-total-pill">Total: {{ $encoderStats->sum('household_count') }} Households</span>
+                </div>
+                @else
+                <div style="text-align:center;padding:40px;color:var(--gray-400);font-size:12px;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;margin:0 auto 10px;opacity:0.4;">
+                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                    </svg>
+                    No encoder activity yet
+                </div>
+                @endif
+            </div>
+        </div>
+
         {{-- ── CHARTS ROW ── --}}
         <div class="charts-row">
 
@@ -1017,6 +1238,235 @@
             </div>
         </div>
 
+                {{-- ── STUDENT CHARTS ROW ── --}}
+        <div class="charts-row" style="margin-top: 0;">
+        
+            {{-- ── LEFT: Students per Barangay (Bar Chart) ── --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot" style="background:#F5C518;"></div>
+                    <div class="ca-title">Students per Barangay</div>
+                    <span class="ca-sub" style="margin-left:auto;">
+                        Total:&nbsp;<strong style="color:var(--blue-dark);">{{ $totalStudents }}</strong>
+                    </span>
+                </div>
+                <div class="chart-body">
+                    @if($studentsByBarangay->count() > 0)
+                        @php $maxStudents = $studentsByBarangay->max(); @endphp
+                        <div class="bar-chart">
+                            @foreach($studentsByBarangay as $brgy => $count)
+                                @php $pct = $maxStudents > 0 ? round(($count / $maxStudents) * 100) : 0; @endphp
+                                <div class="bar-row">
+                                    <div class="bar-label" title="{{ $brgy }}">{{ $brgy }}</div>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:{{ $pct }}%; background: var(--yellow-dark);"></div>
+                                    </div>
+                                    <div class="bar-pct">{{ $count }}</div>
+                                </div>
+                            @endforeach
+                        </div>
+        
+                        {{-- Summary pill row --}}
+                        <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--gray-100);
+                                    display:flex; gap:8px; flex-wrap:wrap;">
+                            <span style="display:inline-flex; align-items:center; gap:5px; background:var(--blue-pale);
+                                        color:var(--blue-dark); font-size:10px; font-weight:700;
+                                        padding:3px 10px; border-radius:10px;">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+                                    <path d="M12 14l6.16-3.422A12.083 12.083 0 0121 21H3a12.083 12.083 0 012.84-10.422L12 14z"/>
+                                </svg>
+                                {{ $studentsByBarangay->count() }} Barangay{{ $studentsByBarangay->count() !== 1 ? 's' : '' }}
+                            </span>
+                            <span style="display:inline-flex; align-items:center; gap:5px; background:#FEFCE8;
+                                        color:#92400E; font-size:10px; font-weight:700;
+                                        padding:3px 10px; border-radius:10px;">
+                                {{ $totalStudents }} Total Student{{ $totalStudents !== 1 ? 's' : '' }}
+                            </span>
+                        </div>
+                    @else
+                        <div style="text-align:center; padding:32px; color:var(--gray-400); font-size:12px;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" style="display:block; margin:0 auto 10px; opacity:0.4;">
+                                <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+                                <path d="M12 14l6.16-3.422A12.083 12.083 0 0121 21H3a12.083 12.083 0 012.84-10.422L12 14z"/>
+                            </svg>
+                            No student records yet
+                        </div>
+                    @endif
+                </div>
+            </div>
+        
+            {{-- ── MIDDLE: Students by School Level (Bar Chart) ── --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot" style="background:#7C3AED;"></div>
+                    <div class="ca-title">Students by School Level</div>
+                    <span class="ca-sub" style="margin-left:auto;">
+                        Total:&nbsp;<strong style="color:var(--blue-dark);">{{ $totalStudents }}</strong>
+                    </span>
+                </div>
+                <div class="chart-body">
+                    @if($studentsByLevel->count() > 0)
+                        @php
+                            $maxLevel = $studentsByLevel->max();
+                            $levelColors = [
+                                'Early Childhood'      => '#F5C518',
+                                'Elementary School'    => '#16A34A',
+                                'Junior High School'   => '#2459A8',
+                                'Senior High School'   => '#D97706',
+                                'College / University' => '#7C3AED',
+                                'Postgraduate'         => '#DB2777',
+                            ];
+                        @endphp
+                        <div class="bar-chart">
+                            @foreach($studentsByLevel as $level => $count)
+                                @php
+                                    $pct   = $maxLevel > 0 ? round(($count / $maxLevel) * 100) : 0;
+                                    $color = $levelColors[$level] ?? '#1B3F7A';
+                                @endphp
+                                <div class="bar-row">
+                                    <div class="bar-label" title="{{ $level }}">{{ $level }}</div>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:{{ $pct }}%; background:{{ $color }};"></div>
+                                    </div>
+                                    <div class="bar-pct">{{ $count }}</div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--gray-100);
+                                    display:flex; gap:8px; flex-wrap:wrap;">
+                            <span style="display:inline-flex; align-items:center; gap:5px; background:var(--blue-pale);
+                                        color:var(--blue-dark); font-size:10px; font-weight:700;
+                                        padding:3px 10px; border-radius:10px;">
+                                {{ $studentsByLevel->count() }} Level{{ $studentsByLevel->count() !== 1 ? 's' : '' }}
+                            </span>
+                            <span style="display:inline-flex; align-items:center; gap:5px; background:#F3E8FF;
+                                        color:#6B21A8; font-size:10px; font-weight:700;
+                                        padding:3px 10px; border-radius:10px;">
+                                {{ $totalStudents }} Total Student{{ $totalStudents !== 1 ? 's' : '' }}
+                            </span>
+                        </div>
+                    @else
+                        <div style="text-align:center; padding:32px; color:var(--gray-400); font-size:12px;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" style="display:block; margin:0 auto 10px; opacity:0.4;">
+                                <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+                                <path d="M12 14l6.16-3.422A12.083 12.083 0 0121 21H3a12.083 12.083 0 012.84-10.422L12 14z"/>
+                            </svg>
+                            No student level data yet
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- ── RIGHT: Employment Status Breakdown (Donut + Legend) ── --}}
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="ca-dot" style="background:var(--blue-light);"></div>
+                    <div class="ca-title">Employment Status</div>
+                    <span class="ca-sub">All family members</span>
+                </div>
+                <div class="chart-body" style="padding: 14px 18px;">
+                    @if($employmentCounts->count() > 0)
+                        @php
+                            /* Colour palette — cycles if more statuses exist */
+                            $empColors = [
+                                '#1B3F7A', /* blue       – Unemployed      */
+                                '#16A34A', /* green      – Employed        */
+                                '#D97706', /* amber      – Part-time       */
+                                '#7C3AED', /* violet     – Full-time       */
+                                '#DB2777', /* pink       – Self-employed   */
+                                '#0891B2', /* cyan       – Freelance       */
+                                '#059669', /* emerald    – Pension/Retired */
+                                '#F5C518', /* yellow     – Other           */
+                            ];
+                            $totalEmp  = $employmentCounts->sum();
+                            $r         = 15.9;
+                            $circ      = 2 * M_PI * $r;
+                            $offset    = $circ / 4;   /* start at 12 o'clock */
+                            $idx       = 0;
+                        @endphp
+        
+                        <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+        
+                            {{-- SVG Donut --}}
+                            <div style="position:relative; width:130px; height:130px; flex-shrink:0;">
+                                <svg viewBox="0 0 36 36" width="130" height="130">
+                                    {{-- Track --}}
+                                    <circle cx="18" cy="18" r="{{ $r }}" fill="none"
+                                            stroke="#F0F2F5" stroke-width="3.5"/>
+                                    @foreach($employmentCounts as $status => $cnt)
+                                        @php
+                                            $slice  = $totalEmp > 0 ? ($cnt / $totalEmp) * $circ : 0;
+                                            $color  = $empColors[$idx % count($empColors)];
+                                            $gap    = $slice > 1.5 ? 0.4 : 0;
+                                        @endphp
+                                        <circle cx="18" cy="18" r="{{ $r }}" fill="none"
+                                                stroke="{{ $color }}" stroke-width="3.5"
+                                                stroke-dasharray="{{ round($slice - $gap, 3) }} {{ round($circ - $slice + $gap, 3) }}"
+                                                stroke-dashoffset="{{ round($offset, 3) }}"
+                                                stroke-linecap="round"/>
+                                        @php
+                                            $offset -= $slice;
+                                            $idx++;
+                                        @endphp
+                                    @endforeach
+                                </svg>
+                                {{-- Center label --}}
+                                <div style="position:absolute; inset:0; display:flex; flex-direction:column;
+                                            align-items:center; justify-content:center; text-align:center;">
+                                    <span style="font-family:'PT Serif',serif; font-size:20px; font-weight:700;
+                                                color:var(--blue-dark); line-height:1;">{{ $totalEmp }}</span>
+                                    <span style="font-size:8px; color:var(--gray-400); text-transform:uppercase;
+                                                letter-spacing:1px; margin-top:2px;">Members</span>
+                                </div>
+                            </div>
+        
+                            {{-- Legend --}}
+                            @php $idx = 0; @endphp
+                            <div class="donut-legend" style="flex:1; min-width:120px;">
+                                @foreach($employmentCounts as $status => $cnt)
+                                    @php
+                                        $pct   = $totalEmp > 0 ? round(($cnt / $totalEmp) * 100) : 0;
+                                        $color = $empColors[$idx % count($empColors)];
+                                        $idx++;
+                                    @endphp
+                                    <div class="legend-item">
+                                        <div class="legend-dot" style="background:{{ $color }};"></div>
+                                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:120px;"
+                                            title="{{ $status }}">{{ $status }}</span>
+                                        <span class="legend-val" style="margin-left:auto; white-space:nowrap;">
+                                            {{ $cnt }}
+                                            <span style="font-weight:400; color:var(--gray-400); font-size:10px;">({{ $pct }}%)</span>
+                                        </span>
+                                    </div>
+                                @endforeach
+                                {{-- Total row --}}
+                                <div class="legend-item" style="border-top:1px solid var(--gray-100);
+                                                                margin-top:4px; padding-top:6px;">
+                                    <div class="legend-dot" style="background:var(--gray-200);"></div>
+                                    <span style="color:var(--gray-800); font-weight:700;">Total</span>
+                                    <span class="legend-val">{{ $totalEmp }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div style="text-align:center; padding:32px; color:var(--gray-400); font-size:12px;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" style="display:block; margin:0 auto 10px; opacity:0.4;">
+                                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                                <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+                            </svg>
+                            No employment data yet
+                        </div>
+                    @endif
+                </div>
+            </div>
+        
+        </div>
+        {{-- ── END STUDENT CHARTS ROW ── --}}
+        
         {{-- ── BOTTOM ROW ── --}}
         <div class="bottom-row">
 
@@ -1167,6 +1617,14 @@
         overlay.classList.remove('active');
         document.body.style.overflow = '';
     }
+
+    // Close sidebar when window is resized to desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 900) {
+            closeSidebar();
+        }
+    });
+
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeSidebar();
     });

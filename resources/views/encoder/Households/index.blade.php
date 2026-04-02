@@ -31,24 +31,23 @@
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
-            height: 100%;
             font-family: 'Open Sans', sans-serif;
             background: var(--gray-100);
             color: var(--gray-800);
             font-size: 14px;
+            overflow-x: clip;
         }
 
         .shell {
             display: grid;
-            grid-template-rows: 36px 76px 1fr 48px;
+            grid-template-rows: 36px 76px auto auto;
             grid-template-columns: var(--sidebar-w) 1fr;
             grid-template-areas:
                 "topbar  topbar"
                 "header  header"
                 "sidebar main"
                 "footer  footer";
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
         }
 
         /* ─── TOP UTILITY BAR ─── */
@@ -57,6 +56,7 @@
             background: var(--blue-dark);
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 24px; z-index: 100;
+            position: sticky; top: 0;
         }
         .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
@@ -84,7 +84,8 @@
             border-bottom: 3px solid var(--yellow);
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             display: flex; align-items: center;
-            padding: 0 28px; gap: 14px; z-index: 90;
+            padding: 0 28px; gap: 14px;
+            position: sticky; top: 36px; z-index: 90;
         }
 
         .hamburger {
@@ -118,49 +119,49 @@
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
 
-        /* ─── PROFILE BADGE — ORANGE ─── */
+                /* ─── PROFILE BADGE ─── */
         .header-user-badge {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 14px;
-            background: var(--orange-pale);
-            border: 1px solid var(--orange); border-radius: 4px;
-            flex-shrink: 0;
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px;
+            background: #FFF7ED;
+            border: 1px solid #D97706; border-radius: 4px;
+            flex-shrink: 1; min-width: 0; overflow: hidden;
         }
         .user-avatar {
             width: 32px; height: 32px; border-radius: 50%;
-            background: var(--orange);
+            background: #D97706;
             display: flex; align-items: center; justify-content: center;
-            color: var(--white); font-weight: 700; font-size: 13px;
-            flex-shrink: 0;
+            color: #FFFFFF; font-weight: 700; font-size: 13px; flex-shrink: 0;
         }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--gray-800); line-height: 1.2; }
-        .user-role { font-size: 10px; color: var(--orange); text-transform: uppercase; letter-spacing: 0.5px; }
+        .user-name {
+            font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .user-role {
+            font-size: 10px; color: #D97706; text-transform: uppercase; letter-spacing: 0.5px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay {
-            display: none !important;
+            display: block;
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.45);
             z-index: 200;
             opacity: 0;
-            transition: opacity 0.25s;
+            visibility: hidden;
+            transition: opacity 0.25s, visibility 0.25s;
             pointer-events: none;
         }
         .sidebar-overlay.active {
-            display: block !important;
+            opacity: 1;
+            visibility: visible;
             pointer-events: auto;
         }
 
         /* ─── SIDEBAR ─── */
-        .sidebar {
-            grid-area: sidebar;
-            background: var(--white);
-            border-right: 1px solid var(--gray-200);
-            display: flex; flex-direction: column;
-            overflow-y: auto;
-            position: relative;
-        }
+        
 
         .sidebar-close {
             display: none;
@@ -255,8 +256,8 @@
         .main-content {
             grid-area: main;
             background: var(--gray-50);
-            overflow-y: auto;
             padding: 28px 32px;
+            overflow-x: clip;
         }
 
         .page-titlebar {
@@ -337,9 +338,9 @@
         .ca-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); border: 2px solid var(--yellow-dark); }
         .table-section-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
 
-        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
 
-        table { width: 100%; border-collapse: collapse; min-width: 720px; }
+        table { width: 100%; border-collapse: collapse; }
         thead th {
             padding: 11px 14px;
             background: var(--blue); color: var(--white);
@@ -659,7 +660,7 @@
             border-top: 3px solid var(--yellow);
             display: flex; align-items: center;
             justify-content: space-between;
-            padding: 0 24px; gap: 8px; z-index: 100;
+            padding: 0 24px; gap: 8px; position: relative; z-index: 400;
         }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
         .footer-left strong { color: rgba(255,255,255,0.7); }
@@ -679,26 +680,12 @@
 
         @media (max-width: 900px) {
             .shell {
-                grid-template-rows: 36px auto 1fr 48px;
+                grid-template-rows: 36px auto auto auto;
                 grid-template-columns: 1fr;
                 grid-template-areas: "topbar" "header" "main" "footer";
-                height: 100vh;
-                overflow: hidden;
+                min-height: 100vh;
             }
-            .sidebar {
-                grid-area: unset;
-                position: fixed;
-                top: 0; left: 0; bottom: 0;
-                width: var(--sidebar-w);
-                z-index: 300;
-                transform: translateX(-100%);
-                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
-            }
-            .sidebar.open { transform: translateX(0); }
-            .sidebar-overlay { display: block; }
-            .sidebar-close { display: flex; }
-            .sidebar .nav-section-label { padding-top: 52px; }
+            /* sidebar-overlay shown only via .active class */
             .hamburger { display: flex; }
             header { padding: 0 16px; gap: 10px; }
             .header-logos img { height: 44px; width: 44px; }
@@ -706,10 +693,9 @@
             .header-sub { display: none; }
             .header-user-badge { padding: 6px 10px; gap: 8px; }
             .user-name { font-size: 12px; }
-            .user-role { display: none; }
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
-            .main-content { padding: 20px 16px; }
+            .main-content { padding: 20px 16px; overflow-x: hidden; }
             .stats-row { grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
             .stat-card { padding: 14px 16px; gap: 12px; }
             .stat-number { font-size: 26px; }
@@ -742,10 +728,212 @@
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
+            /* ── Mobile: hide table, show cards ── */
+            .table-wrapper { display: none !important; }
+            .hh-cards { display: flex !important; }
         }
 
         @media (max-width: 380px) {
             .main-content { padding: 12px 10px; }
+        }
+    
+        /* ── Household mobile cards (hidden on desktop) ── */
+        .hh-cards {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .hh-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .hh-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .hh-card-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--blue-dark);
+            line-height: 1.3;
+        }
+        .hh-card-meta {
+            font-size: 11px;
+            color: var(--gray-400);
+            margin-top: 2px;
+        }
+        .hh-card-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--gray-600);
+        }
+        .hh-card-row svg {
+            width: 12px; height: 12px;
+            flex-shrink: 0;
+            color: var(--gray-400);
+        }
+        .hh-card-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            color: var(--gray-400);
+            margin-right: 4px;
+        }
+        .hh-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+            padding-top: 10px;
+            border-top: 1px solid var(--gray-100);
+        }
+        .hh-card-actions .btn-view,
+        .hh-card-actions .btn-edit {
+            flex: 1;
+            justify-content: center;
+        }
+        .hh-card-empty {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--gray-400);
+            font-size: 13px;
+        }
+
+
+        /* ════════════════════════════════════════
+           SIDEBAR — ALWAYS VISIBLE ON DESKTOP
+           ════════════════════════════════════════ */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--white);
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            /* Stick below topbar+header (36px + 76px = 112px) */
+            position: sticky;
+            top: 112px;
+            height: calc(100vh - 112px);
+            align-self: start;
+            z-index: 10;
+        }
+        /* Mobile: sidebar becomes a slide-in drawer */
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                bottom: 0 !important;
+                height: 100vh !important;
+                width: var(--sidebar-w);
+                z-index: 300;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            }
+            .sidebar.open { transform: translateX(0) !important; }
+            .sidebar-close { display: flex !important; }
+            .sidebar .nav-section-label { padding-top: 52px; }
+        }
+        
+
+        /* ════════════════════════════════════════
+           TOPBAR RESPONSIVE
+           ════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .topbar {
+                padding: 0 12px !important;
+                flex-wrap: nowrap;
+            }
+            .topbar-left { display: none !important; }
+            .topbar-right { gap: 10px !important; margin-left: auto; }
+            .clock-date-inline { display: none !important; }
+            .clock-inline { font-size: 11px !important; letter-spacing: 0.5px; }
+        }
+        @media (max-width: 480px) {
+            .status-indicator { display: none !important; }
+        }
+
+        /* ════════════════════════════════════════
+           GLOBAL NO HORIZONTAL SCROLL
+           ════════════════════════════════════════ */
+        html, body { overflow-x: clip; max-width: 100vw; }
+        @media (max-width: 900px) {
+            .form-card, .nf-card, .nf-body, .nf-body-inner,
+            .form-card-body, .check-group, .form-actions,
+            .page-titlebar, .welcome-card, .access-notice,
+            .stats-grid, .quick-nav, .charts-row, .bottom-row {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .member-table-wrap {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+                max-width: 100% !important;
+            }
+            .member-table { min-width: 700px; }
+            .form-input, .form-select, .form-textarea, .form-control {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            #location-map { max-width: 100% !important; width: 100% !important; }
+            .coord-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 100% !important; }
+        }
+        @media (max-width: 640px) {
+            .coord-inputs { grid-template-columns: 1fr !important; }
+            .nf-pills { display: none !important; }
+            .nf-card-header { flex-wrap: wrap !important; gap: 6px !important; }
+            .head-panel-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* ════════════════════════════════════════
+           FOOTER RESPONSIVE
+           ════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            footer {
+                flex-direction: column !important;
+                height: auto !important;
+                min-height: 48px;
+                padding: 10px 16px !important;
+                gap: 4px !important;
+                align-items: flex-start !important;
+                flex-wrap: wrap !important;
+            }
+            .footer-left {
+                font-size: 11px !important;
+                white-space: normal !important;
+                line-height: 1.5 !important;
+                width: 100% !important;
+                overflow: visible !important;
+                text-overflow: unset !important;
+            }
+            .footer-center { display: none !important; }
+            .fb-link { font-size: 11px !important; }
+        }
+        @media (max-width: 480px) {
+            footer { padding: 8px 12px !important; }
+            .footer-left { font-size: 10px !important; }
+        }
+
+        /* ── Badge responsive ── */
+        @media (max-width: 900px) {
+            .header-user-badge { padding: 5px 10px; gap: 6px; }
+            .user-name { font-size: 12px; }
+            .user-role { font-size: 9px; letter-spacing: 0.3px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+        }
+        @media (max-width: 640px) {
+            .header-user-badge { padding: 4px 8px; }
+            .user-name { font-size: 11px; }
         }
     </style>
 </head>
@@ -772,18 +960,18 @@
             </svg>
         </button>
         <div class="header-logos">
-            <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO Logo">
+            <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO Logo" onerror="this.style.display='none'">
             <div class="logo-divider"></div>
-            <img src="{{ asset('images/naic-seal.png') }}" alt="Bayan ng Naic Seal">
+            <img src="{{ asset('images/naic-seal.png') }}" alt="Bayan ng Naic Seal" onerror="this.style.display='none'">
         </div>
         <div class="header-text">
             <div class="header-org">Office of the Municipal DRRMO</div>
-            <div class="header-title">MDRRMO — Naic, Cavite</div>
+            <div class="header-title">MDRRMO &mdash; Naic, Cavite</div>
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
         <div class="header-user-badge">
-            <div class="user-avatar">E</div>
+            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
                 <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
                 <div class="user-role">Data Entry Access</div>
@@ -1162,6 +1350,60 @@
                 </table>
             </div>
 
+            {{-- Mobile card list (shown on small screens instead of table) --}}
+            <div class="hh-cards">
+                @forelse($households as $household)
+                    @php $headMember = $household->primaryFamily?->headMember; @endphp
+                    <div class="hh-card">
+                        <div class="hh-card-top">
+                            <div>
+                                <div class="hh-card-name">{{ $household->household_head_name }}</div>
+                                <div class="hh-card-meta">
+                                    @if($headMember) {{ $headMember->sex }}, {{ $headMember->age }} yrs old &nbsp;·&nbsp; @endif
+                                    {{ $household->total_members }} member(s)
+                                </div>
+                            </div>
+                            @if($household->isApproved())
+                                <span class="badge badge-approved">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Approved
+                                </span>
+                            @else
+                                <span class="badge badge-pending">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    Pending
+                                </span>
+                            @endif
+                        </div>
+                        <div class="hh-card-row">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            {{ $household->street_purok }}, {{ $household->barangay }}, {{ $household->municipality }}
+                        </div>
+                        <div class="hh-card-row">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            {{ $household->created_at->format('M d, Y') }}
+                            @if($household->serial_code)
+                                &nbsp;·&nbsp; <span style="font-family:monospace;font-weight:700;color:var(--blue);font-size:12px;">{{ $household->serial_code }}</span>
+                            @endif
+                        </div>
+                        <div class="hh-card-actions">
+                            <a href="{{ route('encoder.households.show', $household) }}" class="btn-view">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                View
+                            </a>
+                            @if(!$household->isApproved())
+                                <a href="{{ route('encoder.households.edit', $household) }}" class="btn-edit">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    Edit
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <div class="hh-card-empty">No households registered yet.</div>
+                @endforelse
+            </div>
+
             <div class="pagination-row" id="paginationRow">
                 {{ $households->links() }}
             </div>
@@ -1268,11 +1510,26 @@
     setInterval(updateClock, 1000);
     document.getElementById('footer-year').textContent = new Date().getFullYear();
 
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
-    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeSidebar(); });
+        function openSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.add('open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 900) closeSidebar();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeSidebar();
+    });
 
     function toggleFilter() {
         const panel = document.getElementById('filterPanel');

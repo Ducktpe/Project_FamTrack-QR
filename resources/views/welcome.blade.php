@@ -560,14 +560,6 @@
                         </svg>
                         Learn More
                     </a>
-                    <a href="{{ route('about') }}" class="btn-ghost">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <line x1="12" y1="8" x2="12" y2="8" stroke-width="3" stroke-linecap="round"/>
-                            <line x1="12" y1="12" x2="12" y2="16"/>
-                        </svg>
-                        About Us
-                    </a>
                 </div>
 
                 <div class="hero-stats">
