@@ -39,6 +39,18 @@
 .log-sum-icon svg { width: 16px; height: 16px; }
 .log-sum-label { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); }
 .log-sum-val   { font-size: 20px; font-weight: 800; color: var(--gray-800); line-height: 1; margin-top: 1px; font-variant-numeric: tabular-nums; }
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+    .log-summary { grid-template-columns: repeat(2, 1fr); }
+    .log-sum-item { border-right: none !important; border-bottom: 1px solid var(--gray-200); padding: 12px 14px; }
+    .log-sum-item:nth-child(odd) { border-right: 1px solid var(--gray-200) !important; }
+    .log-sum-item:nth-last-child(-n+2) { border-bottom: none; }
+}
+@media (max-width: 640px) {
+    .log-sum-val { font-size: 16px; }
+    .log-sum-icon { width: 28px; height: 28px; }
+}
 </style>
 @endpush
 
@@ -139,14 +151,14 @@
             <tbody>
                 @forelse($logs as $log)
                 <tr>
-                    <td>
+                    <td data-label="Timestamp">
                         <div class="log-ts">
                             <span class="log-ts-date">{{ $log->created_at->format('M d, Y') }}</span>
                             <span class="log-ts-time">{{ $log->created_at->format('H:i:s') }}</span>
                         </div>
                     </td>
 
-                    <td>
+                    <td data-label="User">
                         <div class="log-user">
                             <div class="log-avatar {{ ($log->user_name ?? 'System') === 'System' ? 'system' : '' }}">
                                 {{ strtoupper(substr($log->user_name ?? 'S', 0, 1)) }}
@@ -160,7 +172,7 @@
                         </div>
                     </td>
 
-                    <td>
+                    <td data-label="Action">
                         @php
                             $cls = match(true) {
                                 str_starts_with($log->action, 'created'),
@@ -177,11 +189,11 @@
                         <span class="trail-type {{ $cls }}">{{ $log->action }}</span>
                     </td>
 
-                    <td style="font-size:12.5px; color:var(--gray-600); max-width:340px;">
+                    <td data-label="Description" style="font-size:12.5px; color:var(--gray-600);">
                         {{ $log->description }}
                     </td>
 
-                    <td>
+                    <td data-label="IP Address">
                         <span class="ip-code">{{ $log->ip_address ?? '—' }}</span>
                     </td>
                 </tr>

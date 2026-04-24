@@ -77,10 +77,10 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; flex-shrink: 0; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
+        .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; flex-shrink: 0; }
+        .admin-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .admin-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
+        .admin-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
@@ -116,6 +116,7 @@
         .back-btn:hover { background: var(--blue-pale); }
         .back-btn svg { width: 14px; height: 14px; }
         .page-date { font-size: 12px; color: var(--gray-600); text-align: right; flex-shrink: 0; }
+        .page-date span { display: block; font-size: 12px; }
         .page-date span { display: block; }
         .page-date strong { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
 
@@ -337,6 +338,57 @@
 
         #distMapMini { height: 240px; width: 100%; cursor: pointer; }
 
+        /* ── Crosshair overlay ── */
+        .map-ch-wrap { position: relative; overflow: hidden; }
+
+        /* hide the browser/Leaflet hand cursor */
+        .map-ch-wrap,
+        .map-ch-wrap .leaflet-container,
+        .map-ch-wrap .leaflet-grab,
+        .map-ch-wrap .leaflet-dragging .leaflet-grab { cursor: none !important; }
+
+        .map-crosshair {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+        }
+        .map-crosshair.visible { opacity: 1; }
+        .map-crosshair svg {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            display: block; overflow: visible;
+        }
+
+        /* coord readout — fixed bottom-center of map */
+        .map-crosshair-coords {
+            position: absolute;
+            bottom: 28px; left: 50%; transform: translateX(-50%);
+            pointer-events: none;
+            background: rgba(18,45,90,0.9);
+            border: 1px solid rgba(245,197,24,0.45);
+            border-radius: 3px;
+            color: #F5C518;
+            font-size: 10px; font-weight: 600;
+            padding: 4px 12px;
+            letter-spacing: 0.6px;
+            white-space: nowrap;
+            font-family: 'Open Sans', sans-serif;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* radar wave ring animation */
+        @keyframes radarPulse {
+            0%   { r: 0;  opacity: 0.75; stroke-width: 2; }
+            100% { r: 80; opacity: 0;    stroke-width: 0.4; }
+        }
+        .radar-ring { animation: radarPulse 2.2s cubic-bezier(0.15,0.5,0.3,1) infinite; }
+        .radar-ring:nth-child(2) { animation-delay: 0.73s; }
+        .radar-ring:nth-child(3) { animation-delay: 1.46s; }
+
         .map-click-hint {
             position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
             background: rgba(18,45,90,0.82); color: #fff;
@@ -371,8 +423,8 @@
         @keyframes modalFadeIn { from{opacity:0} to{opacity:1} }
 
         .map-modal {
-            width: 94vw; max-width: 1100px;
-            height: 88vh; max-height: 800px;
+            width: 96vw; max-width: 860px;
+            height: 90vh; max-height: 820px;
             background: var(--white);
             border-radius: 10px;
             overflow: hidden;
@@ -412,7 +464,7 @@
 
         .map-modal-body { flex: 1; display: flex; overflow: hidden; }
         .map-modal-sidebar {
-            width: 220px; flex-shrink: 0;
+            width: 160px; flex-shrink: 0;
             background: var(--white); border-right: 1px solid var(--gray-200);
             display: flex; flex-direction: column; overflow: hidden;
         }
@@ -809,9 +861,9 @@
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
-            .header-user-badge { padding: 6px 10px; gap: 8px; }
-            .user-name { font-size: 12px; }
-            .user-role { display: none; }
+            .header-admin-badge { padding: 6px 10px; gap: 8px; }
+            .admin-name { font-size: 12px; }
+            .admin-role { display: none; }
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
             .main-content { padding: 20px 16px; }
@@ -828,9 +880,9 @@
             .header-logos img:last-child { display: none; }
             .header-org { display: none; }
             .header-title { font-size: 13px; line-height: 1.3; }
-            .header-user-badge { padding: 5px 8px; }
-            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
-            .user-name { font-size: 11px; }
+            .header-admin-badge { padding: 5px 8px; }
+            .admin-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .admin-name { font-size: 11px; }
             .main-content { padding: 16px 12px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; }
             .page-h1 { font-size: 18px; }
@@ -845,6 +897,21 @@
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
             .rp-qty-wrap { width: 110px; }
+        }
+        @media (max-width: 600px) {
+            .map-modal { width: 100vw; height: 100vh; max-height: none; border-radius: 0; }
+            .map-modal-sidebar { width: 130px; }
+            .map-modal-header { padding: 10px 14px; }
+            .map-modal-title { font-size: 13px; }
+            .map-modal-subtitle { display: none; }
+            .map-modal-btn { padding: 6px 10px; font-size: 10px; }
+        }
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .main-content { padding: 10px 8px; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
         }
     </style>
 </head>
@@ -881,11 +948,11 @@
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
-        <div class="header-user-badge">
-            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+        <div class="header-admin-badge">
+            <div class="admin-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">{{ auth()->user()->name }}</div>
-                <div class="user-role">Full Access</div>
+                <div class="admin-name">{{ auth()->user()->name }}</div>
+                <div class="admin-role">Full Access</div>
             </div>
         </div>
     </header>
@@ -1653,12 +1720,22 @@
                                             </div>
                                         </div>
                                         <div class="map-strip-actions">
-                                            <button type="button" class="map-strip-btn pin" id="pinStripBtn" onclick="togglePinMode()">📍 Pin</button>
                                             <button type="button" class="map-strip-btn" onclick="clearPin()">✕ Clear</button>
                                             <button type="button" class="map-strip-btn expand" onclick="openMapModal()">⤢ Expand</button>
                                         </div>
                                     </div>
-                                    <div id="distMapMini" title="Click to expand to fullscreen"></div>
+                                    <div class="map-ch-wrap" id="miniMapWrap">
+                                        <div id="distMapMini" title="Click to expand to fullscreen"></div>
+<div class="map-crosshair" id="crosshairMini">
+                                        <svg id="crosshairMiniSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+                                        <svg id="crosshairMiniRadar" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;">
+                                            <circle class="radar-ring" cx="0" cy="0" r="0" fill="none" stroke="#F5C518" stroke-width="1.8" opacity="0"/>
+                                            <circle class="radar-ring" cx="0" cy="0" r="0" fill="none" stroke="#F5C518" stroke-width="1.8" opacity="0"/>
+                                            <circle class="radar-ring" cx="0" cy="0" r="0" fill="none" stroke="#F5C518" stroke-width="1.8" opacity="0"/>
+                                        </svg>
+                                        <div class="map-crosshair-coords" id="crosshairMiniCoords" style="display:none;"></div>
+                                    </div>
+                                    </div>
                                     <div class="map-click-hint" id="mapClickHint">Click map to expand fullscreen</div>
                                     <div class="map-pin-note" id="pinNote">📍 Enable "Pin" mode then click the map to set your distribution point.</div>
                                 </div>
@@ -1765,13 +1842,10 @@
                     </div>
                     <div>
                         <div class="map-modal-title">Distribution Point Map — Naic, Cavite</div>
-                        <div class="map-modal-subtitle" id="modalSubtitle">Select a barangay from the list to navigate · Click the map to pin distribution point</div>
+                        <div class="map-modal-subtitle" id="modalSubtitle">Select a barangay from the list to navigate · Click anywhere on the map to pin</div>
                     </div>
                 </div>
                 <div class="map-modal-actions">
-                    <button type="button" class="map-modal-btn pin-btn" id="modalPinBtn" onclick="togglePinMode()">
-                        📍 Pin Location
-                    </button>
                     <button type="button" class="map-modal-btn" onclick="clearPin()">✕ Clear Pin</button>
                     <button type="button" class="map-modal-btn close-btn" onclick="closeMapModal()">✕ Close</button>
                 </div>
@@ -1782,9 +1856,20 @@
                     <div class="map-modal-brgy-list" id="modalBrgyList"></div>
                 </div>
                 <div class="map-modal-map-wrap">
-                    <div id="distMapFull"></div>
+                    <div class="map-ch-wrap" id="fullMapWrap" style="flex:1;display:flex;flex-direction:column;">
+                        <div id="distMapFull" style="flex:1;"></div>
+<div class="map-crosshair" id="crosshairFull">
+                        <svg id="crosshairFullSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+                        <svg id="crosshairFullRadar" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;">
+                            <circle class="radar-ring" cx="0" cy="0" r="0" fill="none" stroke="#F5C518" stroke-width="1.8" opacity="0"/>
+                            <circle class="radar-ring" cx="0" cy="0" r="0" fill="none" stroke="#F5C518" stroke-width="1.8" opacity="0"/>
+                            <circle class="radar-ring" cx="0" cy="0" r="0" fill="none" stroke="#F5C518" stroke-width="1.8" opacity="0"/>
+                        </svg>
+                        <div class="map-crosshair-coords" id="crosshairFullCoords" style="display:none;"></div>
+                                    </div>
+                    </div>
                     <div class="map-modal-pin-bar" id="modalPinBar">
-                        📍 Click <strong>"Pin Location"</strong> then click anywhere on the map to mark the distribution point. You can drag the pin to adjust.
+                        📍 Click anywhere on the map to mark the distribution point. You can drag the pin to adjust.
                     </div>
                 </div>
             </div>
@@ -2250,6 +2335,9 @@
         setTimeout(() => miniMap && miniMap.invalidateSize(true), 50);
         setTimeout(() => miniMap && miniMap.invalidateSize(true), 300);
         setTimeout(() => miniMap && miniMap.invalidateSize(true), 700);
+
+        // ── Crosshair: mini map ──
+        attachCrosshair('crosshairMini', 'miniMapWrap', miniMap);
     }
 
     /* ── Init Full Map ── */
@@ -2259,8 +2347,11 @@
             .setView(_mapCenter, 14);
         addTiles(fullMap);
 
+        // ── Crosshair: full map ──
+        attachCrosshair('crosshairFull', 'fullMapWrap', fullMap);
+
         fullMap.on('click', function (e) {
-            if (pinMode) dropPin(e.latlng.lat, e.latlng.lng);
+            dropPin(e.latlng.lat, e.latlng.lng);
         });
     }
 
@@ -2294,20 +2385,20 @@
         const activeEl = document.querySelector(`.map-modal-brgy-item[data-name="${CSS.escape(name)}"]`);
         if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-        document.getElementById('modalSubtitle').textContent = `Viewing: ${name} · Click "Pin Location" to mark distribution point`;
+        document.getElementById('modalSubtitle').textContent = `Viewing: ${name} · Click anywhere on the map to pin`;
     }
 
     /* ── Build modal sidebar list ── */
     function buildModalSidebar() {
         const list = document.getElementById('modalBrgyList');
         list.innerHTML = '';
-        const isAll = selectedBarangays.has('All Barangays');
-        const names = isAll ? allBarangayNames : [...selectedBarangays];
+        // Always show all barangays for navigation — selection state shown via highlight
+        const names = allBarangayNames;
         document.getElementById('modalBrgyCount').textContent = names.length;
 
         names.forEach(name => {
             const div = document.createElement('div');
-            div.className = 'map-modal-brgy-item';
+            div.className = 'map-modal-brgy-item' + (selectedBarangays.has(name) || selectedBarangays.has('All Barangays') ? ' active' : '');
             div.dataset.name = name;
             div.innerHTML = `<div class="map-modal-brgy-dot"></div>${name}`;
             div.addEventListener('click', () => flyToBrgy(name));
@@ -2345,6 +2436,8 @@
             const names = selectedBarangays.has('All Barangays') ? allBarangayNames : [...selectedBarangays];
             if (names.length > 0) {
                 setTimeout(() => flyToBrgy(names[0]), 200);
+            } else {
+                setTimeout(() => fullMap.setView(NAIC_CENTER, 13), 200);
             }
         }, 80);
     }
@@ -2728,6 +2821,115 @@
 
         pinBtn.disabled = !(hasLat && hasLng);
     }
+
+
+    /* ══════════════════════════════════════════════
+       LOCATION CROSSHAIR — MDRRMO Naic theme
+       Survey-style reticle · Radar pulse · Fixed coord bar
+    ══════════════════════════════════════════════ */
+    function attachCrosshair(chId, wrapId, leafletMap) {
+        const ch         = document.getElementById(chId);
+        const svg        = document.getElementById(chId + 'Svg');
+        const radarSvg   = document.getElementById(chId + 'Radar');
+        const radarRings = radarSvg ? radarSvg.querySelectorAll('.radar-ring') : [];
+        const coords     = document.getElementById(chId + 'Coords');
+        const wrap       = document.getElementById(wrapId);
+        if (!ch || !svg || !wrap) return;
+
+        const BLUE   = '#1B3F7A';
+        const YELLOW = '#F5C518';
+
+        function el(tag, attrs, style) {
+            const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+            for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+            if (style) e.style.cssText = style;
+            return e;
+        }
+
+        // track previous position for velocity-based line stretch
+        let prevMx = null, prevMy = null, velX = 0, velY = 0;
+
+        function drawCrosshair(mx, my, W, H) {
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
+            svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+            // compute velocity (smoothed)
+            if (prevMx !== null) {
+                velX = velX * 0.5 + (mx - prevMx) * 0.5;
+                velY = velY * 0.5 + (my - prevMy) * 0.5;
+            }
+            prevMx = mx; prevMy = my;
+
+            const speed   = Math.sqrt(velX*velX + velY*velY);
+            const STRETCH = Math.min(speed * 2.2, 40); // max stretch 40px
+
+
+
+            // ── bracket helper ──
+            function drawBrackets(s, t, sw, opacity) {
+                [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([dx,dy]) => {
+                    const cx = mx + dx*s, cy = my + dy*s;
+                    svg.appendChild(el('line', { x1:cx, y1:cy, x2:cx-dx*t, y2:cy,    stroke:BLUE, 'stroke-width':sw, 'stroke-linecap':'square', opacity }));
+                    svg.appendChild(el('line', { x1:cx, y1:cy, x2:cx,      y2:cy-dy*t, stroke:BLUE, 'stroke-width':sw, 'stroke-linecap':'square', opacity }));
+                });
+            }
+
+            // outer brackets
+            const outerS = 32 + STRETCH * 0.3;
+            drawBrackets(outerS, 14, 2.5, 0.8);
+
+            // inner brackets — tighter, inside the outer set
+            const innerS = Math.max(14, outerS - 16);
+            drawBrackets(innerS, 8, 1.5, 0.5);
+
+            // ── full-span coordinate lines — full edge to edge ──
+            svg.appendChild(el('line', { x1:0,  y1:my, x2:W,  y2:my, stroke:BLUE, 'stroke-width':0.7, opacity:0.22 }));
+            svg.appendChild(el('line', { x1:mx, y1:0,  x2:mx, y2:H,  stroke:BLUE, 'stroke-width':0.7, opacity:0.22 }));
+
+
+
+
+        }
+
+        // Fixed coord bar at the very bottom of the map
+        if (coords) {
+            coords.style.position   = 'absolute';
+            coords.style.bottom     = '28px';  // above the Leaflet attribution bar
+            coords.style.left       = '50%';
+            coords.style.transform  = 'translateX(-50%)';
+            coords.style.top        = '';
+        }
+
+        let rafId = null;
+        wrap.addEventListener('mousemove', function(e) {
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                const rect = wrap.getBoundingClientRect();
+                const mx   = e.clientX - rect.left;
+                const my   = e.clientY - rect.top;
+                drawCrosshair(mx, my, rect.width, rect.height);
+                ch.classList.add('visible');
+
+                // move radar rings to cursor position without restarting animation
+                radarRings.forEach(r => { r.setAttribute('cx', mx); r.setAttribute('cy', my); });
+
+                if (leafletMap && coords) {
+                    try {
+                        const ll = leafletMap.containerPointToLatLng([mx, my]);
+                        coords.textContent = ll.lat.toFixed(6) + '°N   ' + ll.lng.toFixed(6) + '°E';
+                        coords.style.display = 'block';
+                    } catch(_) {}
+                }
+            });
+        });
+
+        wrap.addEventListener('mouseleave', function() {
+            if (rafId) cancelAnimationFrame(rafId);
+            ch.classList.remove('visible');
+            if (coords) coords.style.display = 'none';
+        });
+    }
+
 
     function pinFromDms() {
         const lat = dmsToDecimal(

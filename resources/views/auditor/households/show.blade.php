@@ -70,7 +70,7 @@
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         /* ─── READ-ONLY BADGE ─── */
-                .readonly-badge {
+        .readonly-badge {
             display: inline-flex; align-items: center; gap: 6px;
             padding: 5px 12px; background: #FFFBEB;
             border: 1px solid #FDE68A; border-radius: 3px;
@@ -94,11 +94,8 @@
         .header-spacer { flex: 1; }
         .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--sky-pale); border: 1px solid var(--sky-border); border-radius: 4px; flex-shrink: 0; }
         .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--sky); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); line-height: 1.2; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); }
         .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .readonly-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 3px; font-size: 11px; font-weight: 700; color: #92400E; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; }
-        .readonly-badge svg { width: 12px; height: 12px; }
 
         .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
         .sidebar-overlay.active { display: block !important; pointer-events: auto; }
@@ -320,10 +317,10 @@
             .detail-side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         }
 
-        /* Tablet portrait: off-canvas sidebar */
+        /* ≤900px — sidebar off-canvas, header compresses, role hides */
         @media (max-width: 900px) {
             .shell {
-                grid-template-rows: 36px auto 1fr 48px;
+                grid-template-rows: 36px 76px 1fr 48px;
                 grid-template-columns: 1fr;
                 grid-template-areas: "topbar" "header" "main" "footer";
                 height: 100vh; overflow: hidden;
@@ -358,14 +355,13 @@
             .info-grid { grid-template-columns: 1fr; }
             .info-grid-3 { grid-template-columns: 1fr 1fr; }
             .risk-grid { grid-template-columns: 1fr; }
-            /* Hero: stack avatar row and right-side badges */
             .household-hero { flex-direction: column; align-items: flex-start; gap: 12px; }
             .hero-right { flex-direction: row; align-items: center; gap: 12px; width: 100%; }
             .hero-info { width: 100%; }
             .hero-name { white-space: normal; font-size: 18px; }
         }
 
-        /* Phone landscape / large phone portrait */
+        /* ≤640px — header simplifies, readonly-badge shrinks */
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
@@ -379,6 +375,7 @@
             .header-user-badge { padding: 5px 8px; }
             .user-avatar { width: 28px; height: 28px; font-size: 11px; }
             .user-name { font-size: 11px; }
+            .readonly-badge { padding: 5px 9px; font-size: 10px; }
             .main-content { padding: 16px 12px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; gap: 10px; }
             .page-h1 { font-size: 18px; }
@@ -388,12 +385,25 @@
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
-            .readonly-badge { display: none; }
-            /* Side panel: actions and record info go full width */
             .detail-side { grid-template-columns: 1fr; }
-            /* Literacy bar: stack label above bar */
             .info-item[style*="display:flex"] { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
             .literacy-bar-wrap { width: 100%; }
+        }
+
+        /* ≤480px — tightest shell, readonly-badge icon-only */
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .topbar { height: 28px; padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
+            .header-user-badge { padding: 5px 8px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .readonly-badge { padding: 5px 7px; gap: 0; }
+            .readonly-badge-text { display: none; }
+            .main-content { padding: 10px 8px; }
+            .page-h1 { font-size: 16px; }
+            footer { height: 40px; padding: 0 10px; }
+            .footer-left { font-size: 9px; }
         }
 
         /* Small phones */
@@ -443,7 +453,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
             </svg>
-            Read-Only Access
+            <span class="readonly-badge-text">Read-Only Access</span>
         </span>
         <div class="header-user-badge">
             <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
@@ -916,7 +926,7 @@
                     <div class="section-header"><div class="ca-dot"></div><div class="section-title">Record Information</div></div>
                     <div class="record-info-stack">
                         <div class="record-info-row"><span class="record-info-label">Encoded By</span><span class="record-info-value">{{ $household->encoder->name }}</span></div>
-                        <div class="record-info-row"><span class="record-info-label">Approved By</span><span class="record-info-value">{{ $household->approver->name ?? '&mdash;' }}</span></div>
+                        <div class="record-info-row"><span class="record-info-label">Approved By</span><span class="record-info-value">{{ $household->approver->name ?? '—' }}</span></div>
                         <div class="record-info-row"><span class="record-info-label">Registered</span><span class="record-info-value">{{ $household->created_at->format('M d, Y g:i A') }}</span></div>
                         <div class="record-info-row"><span class="record-info-label">Last Updated</span><span class="record-info-value">{{ $household->updated_at->format('M d, Y g:i A') }}</span></div>
                         <div class="record-info-row">

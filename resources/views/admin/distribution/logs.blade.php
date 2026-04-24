@@ -84,8 +84,8 @@
         .admin-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* --- SIDEBAR OVERLAY --- */
-        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
-        .sidebar-overlay.active { display: block !important; pointer-events: auto; }
+        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 250; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
+        .sidebar-overlay.active { display: block !important; pointer-events: auto; opacity: 1; }
 
         /* --- SIDEBAR --- */
         .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
@@ -104,7 +104,7 @@
         .logout-btn:hover { background: var(--red); }
 
         /* --- MAIN --- */
-        .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 28px 32px; }
+        .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 24px 28px; }
 
         /* --- PAGE TITLEBAR --- */
         .page-titlebar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); gap: 12px; flex-wrap: wrap; }
@@ -115,6 +115,7 @@
         .page-h1 { font-family: 'PT Serif', serif; font-size: 22px; font-weight: 700; color: var(--blue-dark); }
         .page-sub { font-size: 12px; color: var(--gray-600); margin-top: 3px; }
         .page-date { font-size: 12px; color: var(--gray-600); text-align: right; flex-shrink: 0; }
+        .page-date span { display: block; font-size: 12px; }
         .page-date strong { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
 
         /* --- SUMMARY CARDS --- */
@@ -195,6 +196,27 @@
         tbody tr:last-child { border-bottom: none; }
         tbody tr:hover { background: var(--blue-pale); }
         tbody td { padding: 12px 16px; font-size: 13px; color: var(--gray-800); vertical-align: middle; }
+
+        /* --- EVENT CARDS (mobile) --- */
+        .event-cards { display: none; flex-direction: column; gap: 10px; padding: 12px; background: var(--gray-100); }
+        .event-card { background: var(--white); border: 1px solid var(--gray-200); border-left: 4px solid var(--blue); border-radius: 6px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); transition: box-shadow 0.15s; }
+        .event-card:hover { box-shadow: 0 3px 10px rgba(27,63,122,0.1); }
+        .event-card.status-ongoing   { border-left-color: var(--green); }
+        .event-card.status-upcoming  { border-left-color: var(--blue-light); }
+        .event-card.status-completed { border-left-color: var(--gray-400); }
+        .event-card.status-cancelled { border-left-color: var(--red); }
+        .event-card-head { padding: 11px 14px 9px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+        .event-card-name { font-size: 13px; font-weight: 700; color: var(--blue-dark); line-height: 1.3; flex: 1; min-width: 0; }
+        .event-card-desc { font-size: 11px; color: var(--gray-400); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .event-card-badges { display: flex; gap: 4px; flex-wrap: wrap; flex-shrink: 0; }
+        .event-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+        .event-card-field { padding: 8px 14px; border-bottom: 1px solid var(--gray-100); border-right: 1px solid var(--gray-100); }
+        .event-card-field:nth-child(even) { border-right: none; }
+        .event-card-field:nth-last-child(-n+2) { border-bottom: none; }
+        .event-card-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--gray-400); margin-bottom: 3px; }
+        .event-card-value { font-size: 12px; color: var(--gray-800); line-height: 1.4; }
+        .event-card-value.bold { font-weight: 700; color: var(--blue-dark); font-size: 14px; }
+        .event-card-foot { padding: 10px 12px; background: var(--gray-50); border-top: 1px solid var(--gray-100); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
         /* -- Cancellation reason inline -- */
         .cancel-reason-inline { display: flex; align-items: flex-start; gap: 5px; margin-top: 5px; padding: 5px 8px; background: var(--red-pale); border: 1px solid #FECACA; border-radius: 3px; }
@@ -363,6 +385,9 @@
             .main-content { padding: 20px 16px; }
             .summary-row { grid-template-columns: repeat(2, 1fr); }
             .filters { grid-template-columns: 1fr 1fr; }
+            /* Switch to card view on tablet/mobile */
+            .table-scroll { display: none; }
+            .event-cards { display: flex; }
         }
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
@@ -383,6 +408,13 @@
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
+        }
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .main-content { padding: 10px 8px; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
         }
     </style>
 </head>
@@ -844,6 +876,97 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+
+                {{-- ── CARD VIEW (mobile/tablet) ── --}}
+                <div class="event-cards">
+                    @foreach($events as $i => $event)
+                    @php
+                        $s = strtolower($event->status);
+                        $brgys = is_array($event->target_barangay)
+                            ? array_values(array_filter($event->target_barangay))
+                            : (($event->target_barangay && $event->target_barangay !== '[]') ? [$event->target_barangay] : []);
+                        $visible = array_slice($brgys, 0, 2);
+                        $hidden  = array_slice($brgys, 2);
+                    @endphp
+                    <div class="event-card status-{{ $s }}" id="event-card-{{ $event->id }}">
+                        <div class="event-card-head">
+                            <div style="flex:1;min-width:0;">
+                                <div class="event-card-name hl-event">{{ $event->event_name }}</div>
+                                @if($event->description)
+                                    <div class="event-card-desc">{{ Str::limit($event->description, 60) }}</div>
+                                @endif
+                            </div>
+                            <div class="event-card-badges">
+                                <span class="badge badge-{{ $s }} hl-status">{{ ucfirst($s) }}</span>
+                            </div>
+                        </div>
+                        <div class="event-card-body">
+                            <div class="event-card-field">
+                                <div class="event-card-label">Date</div>
+                                <div class="event-card-value">{{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }}
+                                    @if($s === 'cancelled' && $event->cancelled_at)
+                                        <div style="font-size:10px;color:var(--red);margin-top:1px;">Cancelled {{ \Carbon\Carbon::parse($event->cancelled_at)->setTimezone('Asia/Manila')->format('M d, Y') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="event-card-field">
+                                <div class="event-card-label">Scan Mode</div>
+                                <div class="event-card-value">
+                                    @if(($event->scan_mode ?? 'household') === 'family_head')
+                                        <span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:#F5F3FF;color:#6D28D9;border:1px solid #DDD6FE;">👤 Family Head</span>
+                                    @else
+                                        <span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:#EAF0FA;color:#1B3F7A;border:1px solid #C7D9F5;">🏠 Household</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="event-card-field">
+                                <div class="event-card-label">Distributed</div>
+                                <div class="event-card-value bold">{{ $event->total_distributed ?? 0 }}</div>
+                            </div>
+                            <div class="event-card-field">
+                                <div class="event-card-label">Households</div>
+                                <div class="event-card-value bold" style="color:var(--gray-600);">{{ $event->unique_households ?? 0 }}</div>
+                            </div>
+                            <div class="event-card-field" style="grid-column:1/-1;border-right:none;">
+                                <div class="event-card-label">Barangay</div>
+                                <div class="event-card-value" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:2px;">
+                                    @forelse($visible as $b)
+                                        <span class="brgy-pill">{{ $b }}</span>
+                                    @empty
+                                        <span style="color:var(--gray-400);font-size:12px;">—</span>
+                                    @endforelse
+                                    @if(count($hidden) > 0)
+                                        <span class="brgy-pill brgy-pill-more" data-tip="{{ implode(', ', $hidden) }}" onmouseenter="showBrgyTip(this)" onmouseleave="hideBrgyTip()">+{{ count($hidden) }} more</span>
+                                    @endif
+                                </div>
+                            </div>
+                            @if(!empty($event->relief_type))
+                            <div class="event-card-field" style="grid-column:1/-1;border-right:none;border-bottom:none;">
+                                <div class="event-card-label">Relief Type</div>
+                                <div class="event-card-value hl-relief" style="font-size:11px;color:var(--gray-600);">{{ is_array($event->relief_type) ? implode(', ', $event->relief_type) : $event->relief_type }}</div>
+                            </div>
+                            @endif
+                        </div>
+                        <div class="event-card-foot">
+                            <button class="btn-view" style="flex:1;justify-content:center;" onclick="openModal({{ $event->id }})">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>View
+                            </button>
+                            <button class="btn-export" style="flex:1;justify-content:center;"
+                                data-event-id="{{ $event->id }}"
+                                data-event-name="{{ e($event->event_name) }}"
+                                data-barangays="{{ json_encode($event->logs->pluck('household.barangay')->filter()->unique()->sort()->values(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
+                                onclick="openExportModal(this)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export
+                            </button>
+                            @if(!in_array($s, ['cancelled','completed']))
+                                <button type="button" class="btn-cancel" style="flex:1;justify-content:center;" onclick="openCancelModal({{ $event->id }}, '{{ addslashes($event->event_name) }}')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Cancel
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
 
                 @foreach($events as $event)

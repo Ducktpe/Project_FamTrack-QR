@@ -23,6 +23,7 @@
             --gray-600:   #5A6372;
             --gray-800:   #2C3340;
             --red:        #C0392B;
+            --red-pale:   #FEF2F2;
             --orange:     #EA580C;
             --orange-pale:#FFF7ED;
             --sidebar-w:  260px;
@@ -98,18 +99,11 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 14px; background: var(--green-pale);
-            border: 1px solid #BBF7D0; border-radius: 4px; flex-shrink: 0;
-        }
-        .user-avatar {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: var(--green); display: flex; align-items: center; justify-content: center;
-            color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0;
-        }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--green-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; }
+        /* ─── NAMECARD BADGE — green for Distribution Staff role ─── */
+        .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--green-pale); border: 1px solid #BBF7D0; border-radius: 4px; flex-shrink: 0; }
+        .admin-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .admin-name { font-size: 13px; font-weight: 600; color: var(--green-dark); line-height: 1.2; }
+        .admin-role { font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay {
@@ -138,7 +132,7 @@
             align-items: center; justify-content: center;
             cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s;
         }
-        .sidebar-close:hover { background: #FEF2F2; color: var(--red); }
+        .sidebar-close:hover { background: var(--red-pale); color: var(--red); }
         .sidebar-close svg { width: 16px; height: 16px; }
 
         .nav-section-label { padding: 18px 20px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray-400); }
@@ -194,8 +188,7 @@
             background: var(--white);
             border: 1px solid var(--gray-200);
             border-top: 4px solid var(--green);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             overflow: hidden;
         }
 
@@ -268,10 +261,10 @@
             font-family: 'Open Sans', sans-serif;
             font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
             text-decoration: none; padding: 12px 24px; border-radius: 4px;
-            transition: background 0.15s, transform 0.1s; white-space: nowrap;
+            transition: background 0.15s; white-space: nowrap;
             -webkit-tap-highlight-color: transparent;
         }
-        .event-scan-btn:hover { background: var(--green-dark); transform: translateY(-1px); }
+        .event-scan-btn:hover { background: var(--green-dark); }
         .event-scan-btn svg { width: 16px; height: 16px; }
 
         /* ─── NO EVENT STATE ─── */
@@ -281,8 +274,7 @@
             border-top: 4px solid var(--gray-400);
             padding: 52px 40px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            text-align: center; margin-bottom: 20px;
         }
         .no-event-icon {
             width: 72px; height: 72px;
@@ -294,48 +286,79 @@
         .no-event-title { font-family: 'PT Serif', serif; font-size: 20px; font-weight: 700; color: var(--gray-600); margin-bottom: 8px; }
         .no-event-desc { font-size: 13px; color: var(--gray-400); line-height: 1.6; max-width: 440px; }
 
-        /* ─── RECENT SCANS TABLE ─── */
-        .section-title {
-            font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-            color: var(--gray-600); margin-bottom: 14px;
-            display: flex; align-items: center; gap: 10px;
+        /* ─── TABLE CARD ─── */
+        .table-card { background: var(--white); border: 1px solid var(--gray-200); margin-bottom: 20px; }
+        .table-card-header {
+            padding: 13px 20px; border-bottom: 1px solid var(--gray-100);
+            background: var(--gray-50); display: flex; align-items: center; gap: 10px;
         }
-        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
-
-        .scans-table-wrap {
-            background: var(--white); border: 1px solid var(--gray-200);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04); margin-bottom: 24px;
-            overflow-x: auto;
-        }
+        .ca-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); border: 2px solid var(--yellow-dark); flex-shrink: 0; }
+        .table-section-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
+        .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
         thead th {
-            padding: 11px 16px; text-align: left;
-            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-            color: var(--gray-400); background: var(--gray-50);
-            border-bottom: 1px solid var(--gray-200); white-space: nowrap;
+            padding: 11px 16px; background: var(--blue); color: var(--white);
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; text-align: left; white-space: nowrap;
         }
         tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; }
         tbody tr:last-child { border-bottom: none; }
-        tbody tr:hover { background: var(--gray-50); }
-        tbody td { padding: 11px 16px; font-size: 12.5px; color: var(--gray-800); vertical-align: middle; }
-        .td-num { font-variant-numeric: tabular-nums; }
+        tbody tr:hover { background: var(--blue-pale); }
+        tbody tr:nth-child(even) td { background: var(--gray-50); }
+        tbody tr:nth-child(even):hover td { background: var(--blue-pale); }
+        tbody td { padding: 12px 16px; font-size: 13px; color: var(--gray-800); vertical-align: middle; }
+        .td-num { font-size: 12px; color: var(--gray-400); font-variant-numeric: tabular-nums; }
         .td-household { font-weight: 600; color: var(--blue-dark); }
-        .td-time { color: var(--gray-600); font-variant-numeric: tabular-nums; }
+        .td-time { color: var(--gray-600); font-variant-numeric: tabular-nums; font-size: 12px; }
         .badge-released {
-            display: inline-block; padding: 2px 10px; border-radius: 10px;
-            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 10px; border-radius: 10px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
             background: var(--green-pale); color: var(--green-dark); border: 1px solid #BBF7D0;
         }
-
         .empty-table-row td {
             text-align: center; padding: 40px 16px;
             color: var(--gray-400); font-size: 12px; font-style: italic;
         }
 
+        /* ─── MOBILE CARD LIST (hidden by default, shown ≤640px) ─── */
+        .mobile-card-list { display: none; }
+        .mobile-card {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--gray-100);
+            background: var(--white);
+        }
+        .mobile-card:last-child { border-bottom: none; }
+        .mobile-card:nth-child(even) { background: var(--gray-50); }
+        .mobile-card-top {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; gap: 10px; margin-bottom: 8px;
+        }
+        .mobile-card-name { font-size: 13px; font-weight: 700; color: var(--blue-dark); }
+        .mobile-card-barangay { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+        .mobile-card-meta {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px;
+            margin-bottom: 10px;
+        }
+        .mobile-card-meta-item { display: flex; flex-direction: column; gap: 2px; }
+        .mobile-card-meta-label {
+            font-size: 9px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.8px; color: var(--gray-400);
+        }
+        .mobile-card-meta-value { font-size: 12px; color: var(--gray-800); }
+        .mobile-card-footer {
+            display: flex; align-items: center;
+            justify-content: space-between; gap: 8px;
+        }
+        .mobile-card-num {
+            font-size: 10px; font-weight: 700; color: var(--gray-400);
+            background: var(--gray-100); border-radius: 10px; padding: 2px 8px;
+        }
+
         /* ─── INFO NOTICE ─── */
         .info-notice {
             background: var(--white); border: 1px solid var(--gray-200); border-left: 4px solid var(--blue);
-            padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 12px;
+            padding: 14px 20px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 12px;
         }
         .info-notice svg { width: 18px; height: 18px; color: var(--blue); flex-shrink: 0; margin-top: 1px; }
         .info-notice-text { font-size: 12px; color: var(--gray-600); line-height: 1.6; }
@@ -382,9 +405,9 @@
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
-            .header-user-badge { padding: 6px 10px; gap: 8px; }
-            .user-name { font-size: 12px; }
-            .user-role { display: none; }
+            .header-admin-badge { padding: 6px 10px; gap: 8px; }
+            .admin-name { font-size: 12px; }
+            .admin-role { display: none; }
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
             .main-content { padding: 20px 16px; }
@@ -404,9 +427,9 @@
             .header-logos img:last-child { display: none; }
             .header-org { display: none; }
             .header-title { font-size: 13px; line-height: 1.3; }
-            .header-user-badge { padding: 5px 8px; }
-            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
-            .user-name { font-size: 11px; }
+            .header-admin-badge { padding: 5px 8px; }
+            .admin-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .admin-name { font-size: 11px; }
             .main-content { padding: 16px 12px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; }
             .page-h1 { font-size: 18px; }
@@ -419,9 +442,20 @@
             .event-stat:first-child { padding-left: 12px; }
             .event-card-footer { padding: 14px 20px; }
             .event-scan-btn { width: 100%; justify-content: center; min-height: 52px; font-size: 14px; }
+            /* Switch table → cards on mobile */
+            .table-wrapper table { display: none; }
+            .mobile-card-list { display: block; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
+        }
+
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .main-content { padding: 10px 8px; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
         }
 
         @media (max-width: 380px) {
@@ -465,11 +499,11 @@
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
-        <div class="header-user-badge">
-            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+        <div class="header-admin-badge">
+            <div class="admin-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">{{ auth()->user()->name }}</div>
-                <div class="user-role">Distribution Staff</div>
+                <div class="admin-name">{{ auth()->user()->name }}</div>
+                <div class="admin-role">Distribution Staff</div>
             </div>
         </div>
     </header>
@@ -668,37 +702,75 @@
         </div>
 
         {{-- Recent scans table for this event --}}
-        <div class="section-title">My Recent Scans — {{ $event->event_name }}</div>
-        <div class="scans-table-wrap">
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Barangay</th>
-                        <th>Household Head</th>
-                        <th>Members</th>
-                        <th>Released At</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($event->recent_scans as $i => $log)
-                    <tr>
-                        <td class="td-num">{{ $i + 1 }}</td>
-                        <td class="td-household">{{ $log->household->barangay ?? '—' }}</td>
-                        <td>{{ $log->household->household_head_name ?? '—' }}</td>
-                        <td class="td-num">{{ $log->household->total_members ?? '—' }}</td>
-                        <td class="td-time">{{ $log->distributed_at ? $log->distributed_at->format('h:i:s A') : $log->created_at->format('h:i:s A') }}</td>
-                        <td><span class="badge-released">Released</span></td>
-                    </tr>
-                    @empty
-                    <tr class="empty-table-row">
-                        <td colspan="6">No scans recorded yet for this event. Open the scanner to begin.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+        <div class="table-card">
+            <div class="table-card-header">
+                <div class="ca-dot"></div>
+                <div class="table-section-title">My Recent Scans — {{ $event->event_name }}</div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Barangay</th>
+                            <th>Household Head</th>
+                            <th>Members</th>
+                            <th>Released At</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($event->recent_scans as $i => $log)
+                        <tr>
+                            <td class="td-num">{{ $i + 1 }}</td>
+                            <td class="td-household">{{ $log->household->barangay ?? '—' }}</td>
+                            <td>{{ $log->household->household_head_name ?? '—' }}</td>
+                            <td class="td-num">{{ $log->household->total_members ?? '—' }}</td>
+                            <td class="td-time">{{ $log->distributed_at ? $log->distributed_at->format('h:i:s A') : $log->created_at->format('h:i:s A') }}</td>
+                            <td><span class="badge-released">Released</span></td>
+                        </tr>
+                        @empty
+                        <tr class="empty-table-row">
+                            <td colspan="6">No scans recorded yet for this event. Open the scanner to begin.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>{{-- /.table-wrapper --}}
+
+            {{-- Mobile card list (shown ≤640px instead of table) --}}
+            <div class="mobile-card-list">
+                @forelse($event->recent_scans as $i => $log)
+                <div class="mobile-card">
+                    <div class="mobile-card-top">
+                        <div>
+                            <div class="mobile-card-name">{{ $log->household->household_head_name ?? '—' }}</div>
+                            <div class="mobile-card-barangay">{{ $log->household->barangay ?? '—' }}</div>
+                        </div>
+                        <span class="mobile-card-num">#{{ $i + 1 }}</span>
+                    </div>
+                    <div class="mobile-card-meta">
+                        <div class="mobile-card-meta-item">
+                            <span class="mobile-card-meta-label">Members</span>
+                            <span class="mobile-card-meta-value">{{ $log->household->total_members ?? '—' }}</span>
+                        </div>
+                        <div class="mobile-card-meta-item">
+                            <span class="mobile-card-meta-label">Released At</span>
+                            <span class="mobile-card-meta-value">{{ $log->distributed_at ? $log->distributed_at->format('h:i:s A') : $log->created_at->format('h:i:s A') }}</span>
+                        </div>
+                    </div>
+                    <div class="mobile-card-footer">
+                        <span class="badge-released">Released</span>
+                    </div>
+                </div>
+                @empty
+                <div style="padding:32px 16px;text-align:center;font-size:12px;color:var(--gray-400);font-style:italic;">
+                    No scans recorded yet for this event. Open the scanner to begin.
+                </div>
+                @endforelse
+            </div>{{-- /.mobile-card-list --}}
+
+        </div>{{-- /.table-card --}}
 
         @endforeach
 

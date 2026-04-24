@@ -26,6 +26,7 @@
 .email-preview .ep-value {
     font-family: 'Courier New', monospace; font-size: 14px;
     font-weight: 700; color: var(--blue-dark);
+    word-break: break-all;
 }
 .email-preview .ep-note {
     font-size: 11px; color: var(--blue-light); margin-top: 4px;
@@ -51,6 +52,28 @@
     text-align:center; padding:24px 0;
     color:var(--gray-400); font-size:13px; font-style:italic;
 }
+
+/* ── Create page two-col layout ── */
+.create-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 18px;
+    align-items: start;
+}
+.role-preview-panel {
+    position: sticky;
+    top: calc(var(--topbar-h) + var(--header-h) + 16px);
+}
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+    .create-layout { grid-template-columns: 1fr; }
+    .role-preview-panel { position: static; }
+}
+@media (max-width: 640px) {
+    .step-item { font-size: 12px; }
+    .email-preview .ep-value { font-size: 12px; }
+}
 </style>
 @endpush
 
@@ -74,7 +97,7 @@
     </div>
 </div>
 
-<div style="display:grid; grid-template-columns:1fr 340px; gap:18px; align-items:start;">
+<div class="create-layout">
 
     {{-- ══ FORM PANEL ══ --}}
     <div class="panel">
@@ -156,7 +179,7 @@
     </div>
 
     {{-- ══ ROLE PREVIEW PANEL ══ --}}
-    <div class="panel" style="position:sticky; top:calc(var(--topbar-h) + var(--header-h) + 16px);">
+    <div class="panel role-preview-panel">
         <div class="panel-header">
             <div class="panel-title">
                 <span class="panel-dot orange"></span>

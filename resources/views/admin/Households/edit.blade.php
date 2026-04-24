@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>MDRRMO Naic — Edit Household</title>
+    <title>MDRRMO Naic — Admin Edit Household</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=PT+Serif:wght@700&display=swap" rel="stylesheet">
     <style>
@@ -11,7 +11,7 @@
             --green-dark:#15803D;--orange:#D97706;--orange-pale:#FFFBEB;
             --red:#C0392B;--red-pale:#FEF2F2;--white:#FFFFFF;
             --gray-50:#F7F8FA;--gray-100:#F0F2F5;--gray-200:#DEE2E8;
-            --gray-400:#9AA3B0;--gray-600:#5A6372;--gray-800:#2C3340;--sidebar-w:260px;
+            --gray-400:#9AA3B0;--gray-600:#5A6372;--gray-800:#2C3340;--sidebar-w:256px;
         }
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
         html,body{font-family:'Open Sans',sans-serif;background:var(--gray-100);color:var(--gray-800);font-size:14px;overflow-x:clip;}
@@ -36,48 +36,13 @@
         .header-title{font-family:'PT Serif',serif;font-size:18px;font-weight:700;color:var(--blue-dark);}
         .header-sub{font-size:11px;color:var(--gray-600);margin-top:2px;}
         .header-spacer{flex:1;}
-                /* ─── PROFILE BADGE ─── */
-        .header-user-badge {
-            display: flex; align-items: center; gap: 8px;
-            padding: 6px 12px;
-            background: #FFF7ED;
-            border: 1px solid #D97706; border-radius: 4px;
-            flex-shrink: 1; min-width: 0; overflow: hidden;
-        }
-        .header-user-badge > div:not(.user-avatar) {
-            min-width: 0; overflow: hidden;
-        }
-        .user-avatar {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: #D97706;
-            display: flex; align-items: center; justify-content: center;
-            color: #FFFFFF; font-weight: 700; font-size: 13px; flex-shrink: 0;
-        }
-        .user-name {
-            font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .user-role {
-            font-size: 10px; color: #D97706; text-transform: uppercase; letter-spacing: 0.5px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .sidebar-overlay {
-            display: block;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.45);
-            z-index: 200;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.25s, visibility 0.25s;
-            pointer-events: none;
-        }
-        .sidebar-overlay.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-        
+        .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; flex-shrink: 0; }
+        .admin-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .admin-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
+        .admin-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
+        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 250; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
+        .sidebar-overlay.active { display: block !important; pointer-events: auto; opacity: 1; }
+        .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
         .sidebar-close{display:none;position:absolute;top:12px;right:12px;background:var(--gray-100);border:1px solid var(--gray-200);border-radius:4px;width:32px;height:32px;align-items:center;justify-content:center;cursor:pointer;z-index:10;color:var(--gray-600);transition:background 0.15s;}
         .sidebar-close:hover{background:var(--red-pale);color:var(--red);}
         .sidebar-close svg{width:16px;height:16px;}
@@ -91,7 +56,7 @@
         .sidebar-bottom{margin-top:auto;padding:16px 20px;border-top:1px solid var(--gray-200);}
         .logout-btn{width:100%;font-family:'Open Sans',sans-serif;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;background:var(--blue);color:var(--white);border:none;padding:10px 16px;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.15s;}
         .logout-btn:hover{background:var(--red);}
-        .main-content{grid-area:main;background:var(--gray-50);padding:28px 32px; overflow-y: auto;}
+        .main-content{grid-area:main;background:var(--gray-50);padding:24px 28px; overflow-y: auto;}
         .page-titlebar{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--gray-200);gap:12px;flex-wrap:wrap;}
         .page-breadcrumb{font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
         .page-breadcrumb a{color:var(--blue-light);text-decoration:none;}
@@ -166,91 +131,60 @@
         .fb-link:hover{color:var(--yellow);}
         .fb-link svg{width:13px;height:13px;}
         ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--gray-100);}::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:4px;}
-        /* ════════════════════════════════════════
-           SIDEBAR — DESKTOP
-           ════════════════════════════════════════ */
-        .sidebar {
-            grid-area: sidebar;
-            background: var(--white);
-            border-right: 1px solid var(--gray-200);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        /* ════════════════════════════════════════
-           RESPONSIVE
-           ════════════════════════════════════════ */
-        @media (max-width: 900px) {
+        @media(max-width:900px){
             .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
-            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; height: 100vh; width: var(--sidebar-w); z-index: 1200; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); overflow-y: auto; }
+            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 1200; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
             .sidebar.open { transform: translateX(0); }
             .sidebar-overlay { display: block !important; z-index: 1100; }
-            .sidebar-close { display: flex !important; }
-            .sidebar .nav-section-label { padding-top: 56px; }
+            .sidebar-close { display: flex; }
+            .sidebar .nav-section-label { padding-top: 52px; }
             .hamburger { display: flex; }
             header { padding: 0 16px; gap: 10px; }
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
-            .header-user-badge { padding: 6px 10px; gap: 8px; }
-            .user-name { font-size: 12px; }
-            .user-role { font-size: 9px; letter-spacing: 0.3px; }
-            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .header-admin-badge { padding: 6px 10px; gap: 8px; }
+            .admin-name { font-size: 12px; }
+            .admin-role { display: none; }
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
             .main-content { padding: 20px 16px; overflow-y: auto; }
-            .form-grid { grid-template-columns: repeat(2, 1fr); }
+            .form-grid { grid-template-columns: repeat(2,1fr); }
             .form-group.span-3 { grid-column: span 2; }
-            .checkbox-grid { grid-template-columns: repeat(2, 1fr); }
-            .member-edit-fields { grid-template-columns: repeat(2, 1fr); }
+            .checkbox-grid { grid-template-columns: repeat(2,1fr); }
+            .member-edit-fields { grid-template-columns: repeat(2,1fr); }
         }
-
-        @media (max-width: 640px) {
+        @media(max-width:640px){
             .topbar { justify-content: flex-end; }
-            .clock-date-inline { display: none; }
-            .status-indicator { display: none; }
+            .clock-date-inline, .status-indicator { display: none; }
             header { padding: 0 12px; gap: 8px; }
             .header-logos img { height: 36px; width: 36px; }
-            .logo-divider { display: none; }
-            .header-logos img:last-child { display: none; }
-            .header-org { display: none; }
+            .logo-divider, .header-logos img:last-child, .header-org { display: none; }
             .header-title { font-size: 13px; line-height: 1.3; }
-            .header-user-badge { padding: 5px 8px; }
-            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
-            .user-name { font-size: 11px; }
-            .main-content { padding: 14px 10px; overflow-y: auto; }
-            .page-titlebar { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .page-h1 { font-size: 18px; }
-            .back-btn { flex: 1; justify-content: center; }
+            .header-admin-badge { padding: 5px 8px; }
+            .admin-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .admin-name { font-size: 11px; }
+            .main-content { padding: 16px 12px; overflow-y: auto; }
             .form-grid, .member-edit-fields { grid-template-columns: 1fr 1fr; }
             .form-grid-2 { grid-template-columns: 1fr; }
             .form-group.span-2, .form-group.span-3 { grid-column: span 1; }
             .checkbox-grid { grid-template-columns: 1fr 1fr; }
-            .form-actions { flex-direction: column-reverse; gap: 8px; padding: 14px 12px; }
+            .form-actions { flex-direction: column-reverse; gap: 8px; }
             .btn-submit, .btn-cancel { width: 100%; justify-content: center; }
-            footer { flex-direction: column; height: auto; min-height: 48px; padding: 10px 12px; gap: 4px; align-items: flex-start; }
+            footer { padding: 0 12px; }
             .footer-center { display: none; }
-            .footer-left { font-size: 10px; white-space: normal; line-height: 1.5; width: 100%; }
+            .footer-left { font-size: 10px; }
         }
-
-        @media (max-width: 480px) {
+        @media(max-width:480px){
             .shell { grid-template-rows: 28px 52px 1fr 40px; }
-            .main-content { padding: 10px 8px; overflow-y: auto; }
-            .topbar { padding: 0 10px; }
-            header { padding: 0 8px; }
-            .header-title { font-size: 12px; }
-            .status-indicator { display: none !important; }
             .form-grid, .form-grid-2, .member-edit-fields { grid-template-columns: 1fr !important; }
             .form-group.span-2, .form-group.span-3 { grid-column: span 1 !important; }
             .checkbox-grid { grid-template-columns: 1fr 1fr; }
-            .nf-edit-card-header { flex-wrap: wrap; gap: 8px; }
-        }
-
-        @media (max-width: 380px) {
-            .header-user-badge { display: none; }
-            .main-content { padding: 12px 10px; overflow-y: auto; }
+            .main-content { padding: 10px 8px; overflow-y: auto; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
+            .page-titlebar { flex-direction: column; align-items: flex-start; gap: 8px; }
         }
     </style>
 </head>
@@ -287,11 +221,11 @@
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
-        <div class="header-user-badge">
-            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+        <div class="header-admin-badge">
+            <div class="admin-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
-                <div class="user-role">Data Entry Access</div>
+                <div class="admin-name">{{ auth()->user()->name ?? 'Encoder' }}</div>
+                <div class="admin-role">Full Access</div>
             </div>
         </div>
     </header>
@@ -302,30 +236,46 @@
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
         </button>
-        <div class="nav-section-label">Encoder Menu</div>
-        <a href="{{ route('encoder.dashboard') }}" class="nav-item" onclick="closeSidebar()">
+        <div class="nav-section-label">Admin Menu</div>
+        <a href="{{ route('admin.dashboard') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
                 <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
             </svg>
             Dashboard
         </a>
-        <a href="{{ route('encoder.households.index') }}" class="nav-item active" onclick="closeSidebar()">
+        <a href="{{ route('admin.households.index') }}" class="nav-item active" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/>
             </svg>
             List of Households
         </a>
-        <a href="{{ route('encoder.households.create') }}" class="nav-item" onclick="closeSidebar()">
+        <a href="{{ route('admin.events.quick-create') }}" class="nav-item" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
-            Register New Household
+            Distribution Events
+        </a>
+        <a href="{{ route('admin.distribution.logs') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                <rect x="9" y="3" width="6" height="4" rx="1"/>
+                <line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>
+            </svg>
+            Distribution Logs
+        </a>
+        <a href="{{ route('admin.traillog.trail') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Trail Logs
         </a>
         <hr class="sidebar-sep">
-        <div class="role-notice" style="margin:12px 14px;background:#FFFAE6;border:1px solid #F5C518;border-left:3px solid #D4A800;padding:10px 12px;border-radius:2px;">
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#92400E;margin-bottom:3px;">&#9432; Encoder Access</div>
-            <div style="font-size:11px;color:#78350F;line-height:1.5;">You can edit household profiles before Admin approval.</div>
+        <div class="role-notice" style="margin:12px 14px;background:#EAF0FA;border:1px solid #2459A8;border-left:3px solid #1B3F7A;padding:10px 12px;border-radius:2px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#1B3F7A;margin-bottom:3px;">&#9432; Admin Access</div>
+            <div style="font-size:11px;color:#122D5A;line-height:1.5;">You can edit household profiles at any time, including approved households.</div>
         </div>
         <div class="sidebar-bottom">
             <form method="POST" action="{{ route('logout') }}">
@@ -345,15 +295,15 @@
         <div class="page-titlebar">
             <div>
                 <div class="page-breadcrumb">
-                    <a href="{{ route('encoder.dashboard') }}">Home</a> /
-                    <a href="{{ route('encoder.households.index') }}">Households</a> /
-                    <a href="{{ route('encoder.households.show', $household) }}">{{ $household->household_head_name }}</a> /
+                    <a href="{{ route('admin.dashboard') }}">Home</a> /
+                    <a href="{{ route('admin.households.index') }}">Households</a> /
+                    <a href="{{ route('admin.households.show', $household) }}">{{ $household->household_head_name }}</a> /
                     <span>Edit</span>
                 </div>
                 <div class="page-h1">Edit Household</div>
-                <div class="page-sub">Update household and member information — changes saved until Admin approves</div>
+                <div class="page-sub">Update household and member information — admin can edit at any time regardless of approval status</div>
             </div>
-            <a href="{{ route('encoder.households.show', $household) }}" class="back-btn">
+            <a href="{{ route('admin.households.show', $household) }}" class="back-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
                 Back to Profile
             </a>
@@ -368,7 +318,7 @@
         </div>
         @endif
 
-        <form method="POST" action="{{ route('encoder.households.update', $household) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('admin.households.update', $household) }}" enctype="multipart/form-data">
             @csrf
             @method('PATCH')
 
@@ -900,7 +850,7 @@
 
             {{-- ── Form Actions ── --}}
             <div class="form-actions">
-                <a href="{{ route('encoder.households.show', $household) }}" class="btn-cancel">Cancel</a>
+                <a href="{{ route('admin.households.show', $household) }}" class="btn-cancel">Cancel</a>
                 <button type="submit" class="btn-submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
@@ -959,27 +909,11 @@
     updateClock(); setInterval(updateClock,1000);
     document.getElementById('footer-year').textContent=new Date().getFullYear();
 
-    const sidebar=document.getElementById('sidebar'), overlay=document.getElementById('sidebarOverlay');
-        function openSidebar() {
-        var sidebar = document.getElementById('sidebar');
-        var overlay = document.getElementById('sidebarOverlay');
-        sidebar.classList.add('open');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-    function closeSidebar() {
-        var sidebar = document.getElementById('sidebar');
-        var overlay = document.getElementById('sidebarOverlay');
-        sidebar.classList.remove('open');
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 900) closeSidebar();
-    });
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeSidebar();
-    });
+    const sidebarEl = document.getElementById('sidebar');
+    const overlayEl = document.getElementById('sidebarOverlay');
+    function openSidebar()  { sidebarEl.classList.add('open'); overlayEl.classList.add('active'); document.body.style.overflow = 'hidden'; }
+    function closeSidebar() { sidebarEl.classList.remove('open'); overlayEl.classList.remove('active'); document.body.style.overflow = ''; }
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeSidebar(); });
 
     function toggleMemberFields(id){
         const fields=document.getElementById('member_fields_'+id);

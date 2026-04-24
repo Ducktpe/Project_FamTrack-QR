@@ -56,7 +56,7 @@
         .header-logos img { height: 54px; width: 54px; object-fit: contain; }
         .logo-divider { width: 1px; height: 44px; background: var(--gray-200); }
         .header-text { margin-left: 4px; }
-        .header-org { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 2px; }
+        .header-org { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 2px; }
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
@@ -66,8 +66,8 @@
         .admin-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* SIDEBAR OVERLAY */
-        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; pointer-events: none; }
-        .sidebar-overlay.active { display: block !important; pointer-events: auto; }
+        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 250; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
+        .sidebar-overlay.active { display: block !important; pointer-events: auto; opacity: 1; }
 
         /* SIDEBAR */
         .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
@@ -86,7 +86,7 @@
         .logout-btn:hover { background: #C0392B; }
 
         /* MAIN */
-        .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 28px 32px; }
+        .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 24px 28px; }
 
         .page-titlebar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); gap: 12px; }
         .page-breadcrumb { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
@@ -169,6 +169,8 @@
         .btn-details { background: none; border: 1px solid var(--gray-200); border-radius: 3px; padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--blue); cursor: pointer; font-family: 'Open Sans', sans-serif; transition: background .15s; white-space: nowrap; }
         .btn-details:hover { background: var(--blue-pale); border-color: #C3D8F5; }
 
+        .t-card-footer { padding: 8px 14px; border-top: 1px solid var(--gray-100); background: var(--gray-50); display: flex; justify-content: space-between; align-items: center; }
+
         /* ══════════════════════════════════════
            MODAL
         ══════════════════════════════════════ */
@@ -176,7 +178,7 @@
             display: none;
             position: fixed; inset: 0;
             background: rgba(10,20,50,0.55);
-            z-index: 1000;
+            z-index: 1300;
             backdrop-filter: blur(3px);
             align-items: center;
             justify-content: center;
@@ -266,16 +268,49 @@
 
         /* The readable diff table */
         .diff-table-wrap { border: 1px solid var(--gray-200); border-radius: 2px; overflow: hidden; }
-        .diff-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
-        .diff-tbl tr { border-bottom: 1px solid var(--gray-100); }
-        .diff-tbl tr:last-child { border-bottom: none; }
-        .diff-tbl td { padding: 7px 10px; vertical-align: top; line-height: 1.45; }
-        .diff-tbl .cell-field { width: 36%; font-size: 11px; font-weight: 600; color: var(--gray-600); background: var(--gray-50); border-right: 1px solid var(--gray-200); white-space: nowrap; }
-        .diff-tbl .cell-val { background: var(--white); color: var(--gray-800); word-break: break-word; }
+        .diff-tbl { width: 100%; font-size: 12px; }
+        .diff-row { display: flex; border-bottom: 1px solid var(--gray-100); }
+        .diff-row:last-child { border-bottom: none; }
+        .diff-tbl .cell-field { width: 36%; flex-shrink: 0; font-size: 11px; font-weight: 600; color: var(--gray-600); background: var(--gray-50); border-right: 1px solid var(--gray-200); padding: 7px 10px; line-height: 1.45; white-space: nowrap; }
+        .diff-tbl .cell-val { flex: 1; min-width: 0; background: var(--white); color: var(--gray-800); word-break: break-word; padding: 7px 10px; line-height: 1.45; }
         .diff-tbl .cell-val.changed-old { background: #FFF5F5; color: #9B1C1C; }
         .diff-tbl .cell-val.changed-new { background: #F0FDF4; color: #14532D; }
         .diff-tbl .cell-val.same        { color: var(--gray-400); }
         .cell-null { color: var(--gray-400); font-style: italic; font-size: 11px; }
+
+        /* ── Mobile modal overrides ── */
+        @media (max-width: 720px) {
+            .modal {
+                max-width: 100%;
+                max-height: 92vh;
+                margin: 0;
+                border-radius: 10px 10px 0 0;
+                position: fixed;
+                bottom: 0; left: 0; right: 0;
+            }
+            .modal-backdrop {
+                align-items: flex-end;
+                padding: 0;
+            }
+            .modal-header { padding: 14px 16px 12px; gap: 10px; }
+            .modal-header-icon { width: 30px; height: 30px; }
+            .modal-title { font-size: 15px; }
+            .modal-meta { gap: 6px; font-size: 10px; }
+            .modal-body { padding: 14px 16px; }
+            .modal-footer { padding: 10px 16px; }
+
+            /* Stack diff rows: label on top, value below */
+            .diff-row { flex-direction: column; }
+            .diff-tbl .cell-field {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--gray-100);
+                white-space: normal;
+            }
+            .diff-tbl .cell-val { width: 100%; }
+            .diff-layout { grid-template-columns: 1fr; gap: 12px; }
+            .diff-section-head { font-size: 10px; }
+        }
 
         /* Modal footer */
         .modal-footer {
@@ -310,12 +345,56 @@
         .pg-btn.disabled { color: var(--gray-400); background: var(--gray-100); border-color: var(--gray-200); cursor: not-allowed; pointer-events: none; }
         .pg-dots { display: inline-flex; align-items: center; justify-content: center; height: 34px; min-width: 24px; font-size: 13px; color: var(--gray-400); letter-spacing: 1px; }
 
+        /* ─── HERO NAMECARD ─── */
+        .page-hero {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-top: 4px solid var(--blue);
+            padding: 20px 28px;
+            display: flex; align-items: center; gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .hero-avatar { width: 56px; height: 56px; border-radius: 4px; background: var(--blue-pale); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .hero-avatar svg { width: 26px; height: 26px; color: var(--blue); }
+        .hero-info { flex: 1; min-width: 0; }
+        .hero-name { font-family: 'PT Serif', serif; font-size: 20px; font-weight: 700; color: var(--blue-dark); }
+        .hero-meta { font-size: 12px; color: var(--gray-600); margin-top: 4px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .hero-meta-sep { color: var(--gray-200); }
+        .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+        .hero-badges { display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+        .badge svg { width: 10px; height: 10px; }
+        .badge-blue { background: var(--blue-pale); color: var(--blue); }
+        .badge-gray { background: var(--gray-100); color: var(--gray-600); }
+
+        /* ─── BACK BUTTON ─── */
+        .back-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--blue); text-decoration: none; padding: 8px 16px; border: 1px solid var(--gray-200); background: var(--white); border-radius: 4px; transition: background 0.15s; white-space: nowrap; }
+        .back-btn:hover { background: var(--blue-pale); }
+        .back-btn svg { width: 14px; height: 14px; }
+        .titlebar-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+
+        /* ─── MOBILE TRAIL LOG CARDS (replaces table on small screens) ─── */
+        .mobile-cards { display: none; flex-direction: column; gap: 10px; padding: 12px; }
+        .t-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 6px; overflow: hidden; }
+        .t-card-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--gray-50); border-bottom: 1px solid var(--gray-100); gap: 8px; flex-wrap: wrap; }
+        .t-card-action { font-size: 13px; font-weight: 700; color: var(--blue-dark); }
+        .t-card-badges { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+        .t-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+        .t-card-row { padding: 8px 14px; border-bottom: 1px solid var(--gray-100); }
+        .t-card-row:nth-child(odd) { border-right: 1px solid var(--gray-100); }
+        .t-card-row:last-child, .t-card-row:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+        .t-card-row.full { grid-column: 1 / -1; border-right: none; }
+        .t-card-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--gray-400); margin-bottom: 3px; }
+        .t-card-value { font-size: 12px; color: var(--gray-800); font-weight: 500; line-height: 1.4; }
+        .t-card-footer { padding: 8px 14px; border-top: 1px solid var(--gray-100); background: var(--gray-50); display: flex; justify-content: flex-end; }
+
         /* FOOTER */
         footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; z-index: 100; }
-        .footer-left { font-size: 11px; color: rgba(255,255,255,.45); }
-        .footer-left strong { color: rgba(255,255,255,.75); }
-        .footer-center { font-size: 10px; color: rgba(255,255,255,.25); letter-spacing: 1px; text-transform: uppercase; }
-        .fb-link { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,.45); text-decoration: none; transition: color .15s; }
+        .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
+        .footer-left strong { color: rgba(255,255,255,0.7); }
+        .footer-center { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 1px; text-transform: uppercase; }
+        .fb-link { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.15s; white-space: nowrap; }
         .fb-link:hover { color: var(--yellow); }
         .fb-link svg { width: 13px; height: 13px; }
 
@@ -323,23 +402,66 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
+        /* ════════════════════════════════════════
+           RESPONSIVE
+           ════════════════════════════════════════ */
         @media (max-width: 900px) {
             .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
-            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
+            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 1200; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
             .sidebar.open { transform: translateX(0); }
-            .sidebar-overlay { display: block; }
+            .sidebar-overlay { display: block !important; z-index: 1100; }
             .sidebar-close { display: flex; }
             .sidebar .nav-section-label { padding-top: 52px; }
             .hamburger { display: flex; }
+            header { padding: 0 16px; gap: 10px; }
+            .header-logos img { height: 44px; width: 44px; }
+            .header-title { font-size: 15px; }
+            .header-sub { display: none; }
+            .header-admin-badge { padding: 6px 10px; gap: 8px; }
+            .admin-name { font-size: 12px; }
+            .admin-role { display: none; }
+            .topbar { padding: 0 16px; }
+            .topbar-left { display: none; }
             .main-content { padding: 20px 16px; }
             .sev-bar { grid-template-columns: repeat(2, 1fr); }
         }
+        @media (max-width: 720px) {
+            /* Hide table, show mobile cards */
+            .table-scroll table { display: none; }
+            .mobile-cards { display: flex; }
+        }
         @media (max-width: 640px) {
+            .topbar { justify-content: flex-end; }
+            .clock-date-inline { display: none; }
+            .status-indicator { display: none; }
+            header { padding: 0 12px; gap: 8px; }
+            .header-logos img { height: 36px; width: 36px; }
+            .logo-divider { display: none; }
+            .header-logos img:last-child { display: none; }
+            .header-org { display: none; }
+            .header-title { font-size: 13px; line-height: 1.3; }
+            .header-admin-badge { padding: 5px 8px; }
+            .admin-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .admin-name { font-size: 11px; }
+            .main-content { padding: 16px 12px; }
+            .page-titlebar { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .page-h1 { font-size: 18px; }
+            .titlebar-actions { width: 100%; }
             .sev-bar { grid-template-columns: 1fr 1fr; }
             .filter-bar { flex-wrap: wrap; }
             .filter-search { min-width: 100%; }
             .diff-layout { grid-template-columns: 1fr; }
             .modal { max-height: 95vh; }
+            footer { padding: 0 12px; }
+            .footer-center { display: none; }
+            .footer-left { font-size: 10px; }
+        }
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .main-content { padding: 10px 8px; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
         }
     </style>
 </head>
@@ -469,6 +591,42 @@
                 <div class="page-breadcrumb">Admin / <span>Trail Logs</span></div>
                 <div class="page-h1">Trail Logs</div>
                 <div class="page-sub">Complete record of all user activity across all roles</div>
+            </div>
+            <div class="titlebar-actions">
+                <a href="{{ route('admin.dashboard') }}" class="back-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        {{-- Hero Namecard --}}
+        <div class="page-hero">
+            <div class="hero-avatar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+            </div>
+            <div class="hero-info">
+                <div class="hero-name">System Activity Trail</div>
+                <div class="hero-meta">
+                    <span>MDRRMO Naic, Cavite</span>
+                    <span class="hero-meta-sep">|</span>
+                    <span>{{ number_format($totalAll) }} total log entries</span>
+                    <span class="hero-meta-sep">|</span>
+                    <span>All roles &amp; categories</span>
+                </div>
+                <div class="hero-badges">
+                    <span class="badge badge-blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        Live Audit Log
+                    </span>
+                    <span class="sev-badge sev-high">🔴 {{ number_format($sevHigh) }} High</span>
+                    <span class="sev-badge sev-medium">🟡 {{ number_format($sevMedium) }} Medium</span>
+                    <span class="sev-badge sev-low">🟢 {{ number_format($sevLow) }} Low</span>
+                </div>
             </div>
         </div>
 
@@ -664,7 +822,7 @@
                                             data-severity="{{ $severity }}"
                                             data-date="{{ $log->created_at->format('M d, Y · h:i A') }}"
                                             data-old="{{ json_encode($ov, JSON_HEX_QUOT | JSON_HEX_APOS) }}"
-                                            data-new="{{ json_encode($nv, JSON_HEX_QUOT | JSON_HEX_APOS) }}"
+                                            data-nval="{{ json_encode($nv, JSON_HEX_QUOT | JSON_HEX_APOS) }}"
                                         >Details</button>
                                     @endif
                                 </td>
@@ -678,6 +836,116 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            {{-- Mobile card view (shown on screens ≤720px) --}}
+            <div class="mobile-cards">
+                @if($logs->isEmpty())
+                    <div style="padding:32px;text-align:center;color:var(--gray-400);font-style:italic;font-size:13px;">No trail log entries found.</div>
+                @endif
+                @foreach($logs as $log)
+                    @php
+                        $role      = $log->user->role ?? null;
+                        $category  = $log->category ?? 'general';
+                        $severity  = $log->severity ?? 'low';
+                        $modelName = $log->model ? class_basename($log->model) : null;
+                        $modelLabels = [
+                            'Household'         => 'Household',
+                            'FamilyMember'      => 'Family Member',
+                            'DistributionEvent' => 'Distribution Event',
+                            'DistributionLog'   => 'Distribution Log',
+                            'User'              => 'User Account',
+                            'AuditLog'          => 'Audit Log',
+                        ];
+                        $modelLabel = $modelLabels[$modelName] ?? $modelName;
+                        $isAuth    = str_contains(strtolower($log->action), 'login') || str_contains(strtolower($log->action), 'logout');
+                        $hasDetails = $log->old_values || $log->new_values;
+                        $ov = $log->old_values ?? [];
+                        if (is_string($ov)) $ov = json_decode($ov, true) ?? [];
+                        $nv = $log->new_values ?? [];
+                        if (is_string($nv)) $nv = json_decode($nv, true) ?? [];
+                    @endphp
+                    <div class="t-card">
+                        <div class="t-card-header">
+                            <div class="t-card-action">{{ ucwords(str_replace('_', ' ', $log->action)) }}</div>
+                            <div class="t-card-badges">
+                                @if($role)<span class="role-pill role-{{ $role }}">{{ ucfirst($role) }}</span>@endif
+                                <span class="sev-badge sev-{{ $severity }}">
+                                    {{ $severity === 'high' ? '🔴' : ($severity === 'medium' ? '🟡' : '🟢') }}
+                                    {{ ucfirst($severity) }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="t-card-body">
+                            <div class="t-card-row">
+                                <div class="t-card-label">User</div>
+                                <div class="t-card-value">
+                                    {{ $log->user_name ?? '—' }}
+                                    @if($log->user?->email)
+                                        <span style="display:block;font-size:10px;color:var(--gray-400);">{{ $log->user->email }}</span>
+                                    @elseif($log->user_id)
+                                        <span style="display:block;font-size:10px;color:var(--gray-400);">User #{{ $log->user_id }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="t-card-row">
+                                <div class="t-card-label">Timestamp</div>
+                                <div class="t-card-value">
+                                    {{ $log->created_at->format('M d, Y') }}
+                                    <span style="display:block;font-weight:600;">{{ $log->created_at->format('h:i:s A') }}</span>
+                                </div>
+                            </div>
+                            <div class="t-card-row">
+                                <div class="t-card-label">Category</div>
+                                <div class="t-card-value"><span class="cat cat-{{ $category }}">{{ ucwords(str_replace('_', ' ', $category)) }}</span></div>
+                            </div>
+                            <div class="t-card-row">
+                                <div class="t-card-label">IP Address</div>
+                                <div class="t-card-value" style="font-family:monospace;font-size:11px;">{{ $log->ip_address ?? '—' }}</div>
+                            </div>
+                            <div class="t-card-row full">
+                                <div class="t-card-label">Description</div>
+                                <div class="t-card-value">{{ $log->description ?? '—' }}</div>
+                            </div>
+                            <div class="t-card-row full">
+                                <div class="t-card-label">Affected Record</div>
+                                <div class="t-card-value">
+                                    @if($log->affected_name)
+                                        {{ $log->affected_name }}
+                                        @if($modelLabel && $log->record_id)
+                                            <span style="display:block;font-size:10px;color:var(--gray-400);">{{ $modelLabel }} #{{ $log->record_id }}</span>
+                                        @endif
+                                    @elseif($isAuth)
+                                        {{ $log->user_name ?? '—' }}
+                                        <span style="display:block;font-size:10px;color:var(--gray-400);">Own Account</span>
+                                    @elseif($modelLabel && $log->record_id)
+                                        {{ $modelLabel }} #{{ $log->record_id }}
+                                    @else
+                                        <span style="color:var(--gray-400);font-style:italic;">—</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="t-card-footer">
+                            @if($hasDetails)
+                                <button
+                                    class="btn-details"
+                                    onclick="openModal(this)"
+                                    data-id="{{ $log->id }}"
+                                    data-action="{{ ucwords(str_replace('_', ' ', $log->action)) }}"
+                                    data-user="{{ $log->user_name ?? '—' }}"
+                                    data-role="{{ ucfirst($role ?? '') }}"
+                                    data-severity="{{ $severity }}"
+                                    data-date="{{ $log->created_at->format('M d, Y · h:i A') }}"
+                                    data-old="{{ json_encode($ov, JSON_HEX_QUOT | JSON_HEX_APOS) }}"
+                                    data-nval="{{ json_encode($nv, JSON_HEX_QUOT | JSON_HEX_APOS) }}"
+                                >View Details</button>
+                            @else
+                                <span style="font-size:11px;color:var(--gray-400);font-style:italic;">No change details recorded</span>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
             </div>
 
             @if($logs->hasPages())
@@ -750,6 +1018,19 @@
     updateClock(); setInterval(updateClock, 1000);
     document.getElementById('footer-year').textContent = new Date().getFullYear();
 
+    // Toggle table vs card view based on screen width
+    function applyCardView() {
+        const isMobile = window.innerWidth <= 720;
+        document.querySelectorAll('.table-scroll table').forEach(el => {
+            el.style.display = isMobile ? 'none' : '';
+        });
+        document.querySelectorAll('.mobile-cards').forEach(el => {
+            el.style.display = isMobile ? 'flex' : 'none';
+        });
+    }
+    applyCardView();
+    window.addEventListener('resize', applyCardView);
+
     /* ── Sidebar ── */
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
@@ -762,11 +1043,92 @@
     ══════════════════════════════════════════ */
     const SKIP_KEYS = new Set(['remember_token','password','updated_at','created_at']);
 
-    function fmtVal(val) {
+    // Known boolean-like integer fields (0/1 → No/Yes)
+    const BOOL_KEYS = new Set([
+        'is_approved','is_active','is_primary','is_4ps_beneficiary','is_pwd','is_senior',
+        'is_solo_parent','is_family_head','is_lgbtqia','is_student','is_senior_citizen',
+        'early_warning','hazard_awareness','financial_assistance','access_info',
+        'relocate_willingness','vuln_registered'
+    ]);
+
+    function fmtDate(str) {
+        const m = String(str).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+        if (!m) return null;
+        const d = new Date(str);
+        if (isNaN(d)) return null;
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const mo = months[d.getMonth()];
+        const day = String(d.getDate()).padStart(2,'0');
+        const yr  = d.getFullYear();
+        let h = d.getHours(), min = String(d.getMinutes()).padStart(2,'0');
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${mo} ${day}, ${yr} · ${h}:${min} ${ampm}`;
+    }
+
+    function fmtReliefItems(obj) {
+        if (typeof obj !== 'object' || obj === null) return null;
+        return Object.values(obj).map(item => {
+            if (typeof item === 'object' && item !== null) {
+                const name = item.name || item.key || Object.keys(item)[0] || '?';
+                const qty  = item.qty  !== undefined ? item.qty  : '';
+                const unit = item.unit !== undefined ? item.unit : '';
+                return [qty, unit, name].filter(Boolean).join(' ');
+            }
+            return String(item);
+        }).join(', ');
+    }
+
+    function fmtVal(val, key) {
         if (val === null || val === undefined) return null;
-        if (typeof val === 'boolean') return val ? 'true' : 'false';
-        if (typeof val === 'object')  return JSON.stringify(val);
-        return String(val);
+
+        // Booleans
+        if (typeof val === 'boolean') return val ? 'Yes' : 'No';
+
+        // Boolean-like integer fields (0/1)
+        if (key && BOOL_KEYS.has(key) && (val === 0 || val === 1 || val === '0' || val === '1')) {
+            return val == 1 ? 'Yes' : 'No';
+        }
+
+        // Already-parsed objects/arrays
+        if (typeof val === 'object') {
+            if (Array.isArray(val)) return val.join(', ') || '—';
+            const firstChild = Object.values(val)[0];
+            if (firstChild && typeof firstChild === 'object' && ('name' in firstChild || 'qty' in firstChild)) {
+                return fmtReliefItems(val) || JSON.stringify(val);
+            }
+            return Object.entries(val).map(([k,v]) => `${k}: ${v}`).join(' · ');
+        }
+
+        const s = String(val);
+
+        // ISO datetime string
+        const asDate = fmtDate(s);
+        if (asDate) return asDate;
+
+        // JSON array string: ["All Barangays"]
+        if (s.startsWith('[')) {
+            try {
+                const arr = JSON.parse(s);
+                if (Array.isArray(arr)) return arr.join(', ') || '—';
+            } catch(e) {}
+        }
+
+        // JSON object string: {"cash_aid":{"name":"Cash Aid","qty":2133.98,"unit":"PHP"}}
+        if (s.startsWith('{')) {
+            try {
+                const obj = JSON.parse(s);
+                const firstChild = Object.values(obj)[0];
+                if (firstChild && typeof firstChild === 'object' && ('name' in firstChild || 'qty' in firstChild)) {
+                    return fmtReliefItems(obj) || s;
+                }
+                return Object.entries(obj).map(([k,v]) =>
+                    typeof v === 'object' ? `${k}: ${JSON.stringify(v)}` : `${k}: ${v}`
+                ).join(' · ');
+            } catch(e) {}
+        }
+
+        return s;
     }
 
     function truncate(str, max) {
@@ -783,14 +1145,15 @@
         keys.forEach(key => {
             const { display, cls } = valFn(key);
             const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-            rows += `<tr>
-                <td class="cell-field">${label}</td>
-                <td class="cell-val ${cls}">
-                    ${display === null ? '<span class="cell-null">—</span>' : escHtml(truncate(display, 160))}
-                </td>
-            </tr>`;
+            const valContent = display === null
+                ? '<span class="cell-null">—</span>'
+                : escHtml(truncate(String(display), 300));
+            rows += `<div class="diff-row">
+                <div class="cell-field">${label}</div>
+                <div class="cell-val ${cls}">${valContent}</div>
+            </div>`;
         });
-        return `<div class="diff-table-wrap"><table class="diff-tbl">${rows}</table></div>`;
+        return `<div class="diff-table-wrap"><div class="diff-tbl">${rows}</div></div>`;
     }
 
     function escHtml(str) {
@@ -808,7 +1171,7 @@
 
         let ov = {}, nv = {};
         try { ov = JSON.parse(btn.dataset.old  || '{}'); } catch(e) {}
-        try { nv = JSON.parse(btn.dataset.new || '{}'); } catch(e) {}
+        try { nv = JSON.parse(btn.dataset.nval || '{}'); } catch(e) {}
 
         // Filter skip keys
         const allKeys = [...new Set([...Object.keys(ov), ...Object.keys(nv)])]
@@ -848,15 +1211,15 @@
             </div>`;
 
             const oldTable = buildDiffTable(allKeys, key => {
-                const oval = fmtVal(ov[key] ?? null);
-                const nval = fmtVal(nv[key] ?? null);
+                const oval = fmtVal(ov[key] ?? null, key);
+                const nval = fmtVal(nv[key] ?? null, key);
                 const changed = JSON.stringify(ov[key] ?? null) !== JSON.stringify(nv[key] ?? null);
                 return { display: oval, cls: changed ? 'changed-old' : 'same' };
             });
 
             const newTable = buildDiffTable(allKeys, key => {
-                const oval = fmtVal(ov[key] ?? null);
-                const nval = fmtVal(nv[key] ?? null);
+                const oval = fmtVal(ov[key] ?? null, key);
+                const nval = fmtVal(nv[key] ?? null, key);
                 const changed = JSON.stringify(ov[key] ?? null) !== JSON.stringify(nv[key] ?? null);
                 return { display: nval, cls: changed ? 'changed-new' : 'same' };
             });
@@ -873,11 +1236,11 @@
             </div>`;
 
         } else if (hasOld) {
-            const tbl = buildDiffTable(allKeys, key => ({ display: fmtVal(ov[key] ?? null), cls: '' }));
+            const tbl = buildDiffTable(allKeys, key => ({ display: fmtVal(ov[key] ?? null, key), cls: '' }));
             bodyHtml += `<div class="diff-section-head" style="margin-bottom:8px;">Snapshot &nbsp;<span class="diff-tag old">Before Delete</span></div>${tbl}`;
 
         } else if (hasNew) {
-            const tbl = buildDiffTable(allKeys, key => ({ display: fmtVal(nv[key] ?? null), cls: 'changed-new' }));
+            const tbl = buildDiffTable(allKeys, key => ({ display: fmtVal(nv[key] ?? null, key), cls: 'changed-new' }));
             bodyHtml += `<div class="diff-section-head" style="margin-bottom:8px;">Snapshot &nbsp;<span class="diff-tag new">Created Record</span></div>${tbl}`;
         }
 

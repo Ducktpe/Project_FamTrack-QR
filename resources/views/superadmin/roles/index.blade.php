@@ -136,7 +136,19 @@
 
 /* ── Responsive ── */
 @media (max-width: 900px)  { .roles-grid { grid-template-columns: 1fr; } }
-@media (max-width: 640px)  { .roles-grid { grid-template-columns: 1fr; } }
+@media (max-width: 640px)  {
+    .roles-grid { grid-template-columns: 1fr; gap: 10px; }
+    .rc-header { padding: 12px 14px; flex-wrap: wrap; gap: 8px; }
+    .rc-header-left { gap: 8px; }
+    .rc-icon { width: 36px; height: 36px; border-radius: 8px; }
+    .rc-label { font-size: 14px; }
+    .rc-sub   { font-size: 10.5px; }
+    .rc-count-num { font-size: 18px; }
+    .rc-body  { padding: 12px 14px; }
+    .priv-item { font-size: 12px; padding: 6px 0; }
+    .rc-footer { padding: 10px 14px; flex-direction: column; align-items: flex-start; gap: 8px; }
+    .rc-footer .btn { width: 100%; justify-content: center; }
+}
 </style>
 @endpush
 

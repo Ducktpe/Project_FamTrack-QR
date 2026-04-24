@@ -61,8 +61,8 @@
         .header-spacer { flex: 1; }
         .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--sky-pale); border: 1px solid var(--sky-border); border-radius: 4px; flex-shrink: 0; }
         .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--sky); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: .5px; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); line-height: 1.2; white-space: nowrap; }
+        .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
 
         /* ─── READ-ONLY BADGE ─── */
         .readonly-badge {
@@ -326,9 +326,35 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
+        /* ── Mobile table card — shown only on small screens ── */
+        .audit-card {
+            display: none;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-100);
+            padding: 14px 16px;
+        }
+        .audit-card:last-child { border-bottom: none; }
+        .audit-card-top {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; gap: 10px;
+            margin-bottom: 8px;
+        }
+        .audit-card-user { font-size: 13px; font-weight: 600; color: var(--gray-800); }
+        .audit-card-time { font-size: 11px; color: var(--gray-400); white-space: nowrap; }
+        .audit-card-action { font-size: 12px; font-weight: 600; color: var(--gray-800); margin-bottom: 3px; }
+        .audit-card-desc { font-size: 11px; color: var(--gray-600); line-height: 1.5; }
+        .audit-card-meta {
+            display: flex; align-items: center; gap: 8px;
+            flex-wrap: wrap; margin-top: 8px;
+        }
+        .audit-card-affected { font-size: 11px; color: var(--gray-600); flex: 1; }
+        .audit-card-btn { margin-top: 6px; }
+
         @media (max-width: 1200px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
+
+        /* ≤900px — sidebar off-canvas */
         @media (max-width: 900px) {
-            .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
+            .shell { grid-template-rows: 36px 76px 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
             .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform .28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,.15); }
             .sidebar.open { transform: translateX(0); }
             .sidebar-overlay { display: block; }
@@ -346,7 +372,12 @@
             .topbar-left { display: none; }
             .main-content { padding: 20px 16px; }
             .stats-row { grid-template-columns: repeat(2, 1fr); }
+            /* Switch to card view — hide table rows, show cards */
+            .table-scroll { display: none; }
+            .audit-card { display: block; }
         }
+
+        /* ≤640px — header simplifies further */
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
@@ -360,6 +391,7 @@
             .header-user-badge { padding: 5px 8px; }
             .user-avatar { width: 28px; height: 28px; font-size: 11px; }
             .user-name { font-size: 11px; }
+            .readonly-badge { padding: 5px 9px; font-size: 10px; }
             .main-content { padding: 16px 12px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; }
             .page-h1 { font-size: 18px; }
@@ -370,15 +402,89 @@
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
-            /* Role badge compact on mobile */
-            .user-role-badge { font-size: 8px !important; padding: 1px 5px !important; }
         }
-        @media (max-width: 420px) {
+
+        /* ≤480px — tightest shell, mirrors dashboard */
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .topbar { height: 28px; padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
+            .header-user-badge { padding: 5px 8px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            /* readonly-badge: icon only */
+            .readonly-badge { padding: 5px 7px; gap: 0; }
+            .readonly-badge-text { display: none; }
+            .main-content { padding: 10px 8px; }
+            .page-h1 { font-size: 16px; }
+            .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+            footer { height: 40px; padding: 0 10px; }
+            .footer-left { font-size: 9px; }
+        }
+
+        /* ≤380px — single-column stats */
+        @media (max-width: 380px) {
             .stats-row { grid-template-columns: 1fr; }
-            .main-content { padding: 12px 10px; }
-            /* Role badge even more compact */
-            .user-role-badge { font-size: 7px !important; padding: 1px 4px !important; }
+            .main-content { padding: 10px 8px; }
         }
+
+        /* ── Details Modal (mobile only) ── */
+        .modal-backdrop {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5); z-index: 500;
+            align-items: flex-end; justify-content: center;
+        }
+        .modal-backdrop.active { display: flex; }
+        .modal-sheet {
+            background: var(--white); width: 100%; max-height: 82vh;
+            border-radius: 14px 14px 0 0; overflow: hidden;
+            display: flex; flex-direction: column;
+            animation: slideUp .22s cubic-bezier(0.4,0,0.2,1);
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-handle {
+            width: 36px; height: 4px; background: var(--gray-200);
+            border-radius: 2px; margin: 10px auto 0; flex-shrink: 0;
+        }
+        .modal-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 18px 10px; border-bottom: 1px solid var(--gray-100);
+            flex-shrink: 0;
+        }
+        .modal-title { font-size: 14px; font-weight: 700; color: var(--blue-dark); }
+        .modal-close {
+            background: var(--gray-100); border: none; border-radius: 50%;
+            width: 30px; height: 30px; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; color: var(--gray-600);
+            font-size: 18px; line-height: 1; flex-shrink: 0;
+        }
+        .modal-close:hover { background: var(--red-pale); color: var(--red); }
+        .modal-body { overflow-y: auto; padding: 14px 16px; flex: 1; }
+
+        /* ── Force all detail grids to single-column card layout inside modal ── */
+        .modal-body .details-inner { padding: 0; background: none; border: none; }
+        .modal-body .distrib-detail-grid,
+        .modal-body .details-grid,
+        .modal-body .hh-diff-wrap,
+        .modal-body .hh-grid,
+        .modal-body .qr-fields,
+        .modal-body .risk-grid { display: flex !important; flex-direction: column !important; gap: 10px !important; }
+        .modal-body .qr-detail-wrap { flex-direction: column; align-items: stretch; gap: 12px; }
+        .modal-body .qr-code-box { width: 100%; height: 72px; flex-direction: row; gap: 12px; border-radius: 8px; }
+        .modal-body .qr-code-box svg { width: 36px; height: 36px; }
+        .modal-body .hh-wrap { flex-direction: column; gap: 12px; }
+        .modal-body .hh-icon-box { width: 100%; height: 60px; flex-direction: row; gap: 12px; border-radius: 8px; }
+        .modal-body .hh-icon-box svg { width: 32px; height: 32px; }
+        .modal-body .hh-field.span2,
+        .modal-body .hh-field.span3,
+        .modal-body .qr-field.full-width { grid-column: unset !important; }
+        .modal-body .hh-field, .modal-body .qr-field, .modal-body .distrib-detail-block { width: 100%; }
+        .modal-body .hh-meta-bar, .modal-body .qr-meta-bar { flex-direction: column; gap: 8px; }
+        .modal-body .hh-diff-block { width: 100%; }
+        .modal-body .distrib-items-table { min-width: 0; width: 100%; font-size: 11px; }
+        .modal-body .distrib-items-table thead th,
+        .modal-body .distrib-items-table tbody td { padding: 6px 8px; }
+        .modal-body .details-json { font-size: 10px; max-height: 200px; word-break: break-all; white-space: pre-wrap; }
     </style>
 </head>
 <body>
@@ -417,7 +523,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
             </svg>
-            Read-Only Access
+            <span class="readonly-badge-text">Read-Only Access</span>
         </span>
         <div class="header-user-badge">
             <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
@@ -1251,6 +1357,49 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- ── Mobile card view (shown at ≤900px when .table-scroll is hidden) ── --}}
+            <div class="audit-cards-mobile">
+                @forelse($logs as $log)
+                    @php $actionType = getActionType($log->action); @endphp
+                    <div class="audit-card audit-row"
+                         data-search="{{ strtolower(($log->user_name ?? '') . ' ' . $log->action . ' ' . ($log->description ?? '') . ' ' . ($log->affected_name ?? '')) }}"
+                         data-type="{{ $actionType }}">
+                        <div class="audit-card-top">
+                            <div>
+                                <div class="audit-card-user">{{ $log->user_name ?? '—' }}</div>
+                                <div style="font-size:11px;color:var(--gray-400);margin-top:2px;">
+                                    {{ $log->created_at->format('M d, Y') }} &bull; {{ $log->created_at->format('h:i A') }}
+                                </div>
+                            </div>
+                            @php
+                                $typeLabels = ['auth'=>'Auth','household'=>'Household','distribution'=>'Distribution','qr'=>'QR / Scan','general'=>'General'];
+                                $typeClasses = ['auth'=>'act-auth','household'=>'act-household','distribution'=>'act-distribution','qr'=>'act-qr','general'=>'act-general'];
+                            @endphp
+                            <span class="act {{ $typeClasses[$actionType] ?? 'act-general' }}">
+                                {{ $typeLabels[$actionType] ?? 'General' }}
+                            </span>
+                        </div>
+                        <div class="audit-card-action">{{ $log->action }}</div>
+                        @if($log->description)
+                            <div class="audit-card-desc">{{ $log->description }}</div>
+                        @endif
+                        @if($log->affected_name)
+                            <div class="audit-card-meta">
+                                <span class="audit-card-affected">&#8618; {{ $log->affected_name }}</span>
+                            </div>
+                        @endif
+                        @if($log->old_values || $log->new_values)
+                        <div class="audit-card-btn">
+                            <button class="btn-details" onclick="openModal({{ $log->id }})">Details</button>
+                        </div>
+                        @endif
+                    </div>
+                @empty
+                    <div style="padding:36px;text-align:center;color:var(--gray-400);font-style:italic;">No audit log entries found.</div>
+                @endforelse
+            </div>
+
             @if($logs->hasPages())
                 <div class="pagination-wrap" id="paginationRow">
                     {{ $logs->appends(request()->query())->links() }}
@@ -1259,6 +1408,19 @@
         </div>
 
     </main>
+
+
+    <!-- DETAILS MODAL (mobile) -->
+    <div class="modal-backdrop" id="detailsModal" onclick="closeModal(event)">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">Activity Details</span>
+                <button class="modal-close" onclick="closeModalDirect()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
 
     <!-- FOOTER -->
     <footer>
@@ -1292,7 +1454,7 @@
     });
     function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSidebar(); closeModalDirect(); } });
 
     function filterTable() {
         const search = document.getElementById('searchInput').value.toLowerCase();
@@ -1318,6 +1480,27 @@
         const isOpen = row.style.display === 'table-row';
         row.style.display = isOpen ? 'none' : 'table-row';
         row.dataset.open = isOpen ? '' : '1';
+        const btn = document.querySelector('[onclick="toggleDetails(' + id + ')"]');
+        if (btn) btn.textContent = isOpen ? 'Details' : 'Hide';
+    }
+
+    function openModal(id) {
+        const source = document.getElementById('details-' + id);
+        if (!source) return;
+        const inner = source.querySelector('.details-inner');
+        if (!inner) return;
+        document.getElementById('modalBody').innerHTML = inner.innerHTML;
+        document.getElementById('detailsModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModalDirect() {
+        document.getElementById('detailsModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function closeModal(e) {
+        if (e.target === document.getElementById('detailsModal')) closeModalDirect();
     }
 
     // ── Rebuild pagination cleanly ──

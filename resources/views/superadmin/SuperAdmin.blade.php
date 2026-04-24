@@ -724,11 +724,18 @@
     ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--gray-300); }
 
-    /* ── Responsive ── */
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — unified mobile system
+       Breakpoints: 1100 → 900 → 640 → 420
+    ═══════════════════════════════════════════ */
+
+    /* ── 1100px: tablet landscape ── */
     @media (max-width: 1100px) {
-        .stat-row { grid-template-columns: repeat(2, 1fr); }
+        .stat-row  { grid-template-columns: repeat(2, 1fr); }
         .quick-grid { grid-template-columns: repeat(2, 1fr); }
     }
+
+    /* ── 900px: sidebar goes off-canvas ── */
     @media (max-width: 900px) {
         .shell {
             grid-template-rows: var(--topbar-h) var(--header-h) 1fr;
@@ -742,33 +749,158 @@
             z-index: 200; transform: translateX(-100%);
             transition: transform .25s cubic-bezier(.4,0,.2,1);
             box-shadow: 6px 0 24px rgba(0,0,0,.3);
+            width: var(--sidebar-w);
         }
         .sidebar.open { transform: translateX(0); }
         .sidebar-close { display: flex; }
         .hamburger { display: flex; }
         .main-inner { padding: 18px 16px; }
+
+        /* Tables: convert to card layout */
+        .table-wrap { overflow: visible; }
+        table { display: block; }
+        table thead { display: none; }
+        table tbody { display: flex; flex-direction: column; gap: 8px; padding: 10px; }
+        table tbody tr {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--white);
+            border: 1px solid var(--gray-200) !important;
+            border-radius: 8px;
+            padding: 10px 12px;
+            gap: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,.05);
+        }
+        table tbody tr:hover { background: var(--blue-pale); }
+        table tbody td {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 0 !important;
+            border: none !important;
+            font-size: 12px;
+            color: var(--gray-700);
+            vertical-align: top;
+        }
+        table tbody td::before {
+            content: attr(data-label);
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gray-400);
+            margin-bottom: 2px;
+        }
+        /* First cell spans full width and is the "title" of the card */
+        table tbody td:first-child {
+            grid-column: 1 / -1;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--blue-dark);
+            padding-bottom: 6px !important;
+            border-bottom: 1px solid var(--gray-100) !important;
+            margin-bottom: 2px;
+        }
+        /* Action cell always full-width at the bottom */
+        table tbody td:last-child { grid-column: 1 / -1; }
+        /* Empty state row stays simple */
+        table tbody tr:has(td[colspan]) {
+            display: block;
+            border: none !important;
+            box-shadow: none;
+            background: transparent;
+            padding: 0;
+        }
+
+        /* Filter bar: stack inputs */
+        .filter-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+        .filter-group { width: 100%; }
+        .filter-input, .filter-select { width: 100%; }
+        .filter-input.wide { width: 100%; }
+
+        /* Log summary strip: 2-col grid */
+        .log-summary { grid-template-columns: repeat(2, 1fr); }
+        .log-sum-item { border-right: none !important; border-bottom: 1px solid var(--gray-200); }
+        .log-sum-item:nth-child(odd) { border-right: 1px solid var(--gray-200) !important; }
+        .log-sum-item:nth-last-child(-n+2) { border-bottom: none; }
     }
+
+    /* ── 640px: phones ── */
     @media (max-width: 640px) {
+        /* Topbar */
         .topbar-left { display: none; }
-        .header-title { font-size: 16px; }
-        .header-logo-strip img { height: 40px; width: 40px; }
-        .header-logo-strip { padding: 0 14px; gap: 10px; }
-        .stat-row { grid-template-columns: 1fr 1fr; gap: 10px; }
-        .quick-grid { grid-template-columns: 1fr 1fr; }
+        .clock-date-inline { display: none; }
+
+        /* Header */
+        .header-title { font-size: 15px; }
+        .header-sub   { display: none; }
+        .header-logo-strip img { height: 38px; width: 38px; }
+        .header-logo-strip { padding: 0 10px; gap: 8px; }
+        .header-user-badge { padding: 0 10px; gap: 8px; }
+        .user-badge-name { font-size: 11.5px; }
+        .full-access-text { display: none; }
+
+        /* Main padding */
+        .main-inner { padding: 14px 12px; }
+
+        /* Page titlebar */
+        .page-titlebar { flex-direction: column; align-items: flex-start; gap: 8px; padding-bottom: 14px; margin-bottom: 16px; }
+        .page-date-badge { flex-direction: row; align-items: center; gap: 6px; }
+        .page-date-badge .day::after { content: ','; }
+        .page-h1 { font-size: 19px; }
+
+        /* Stat cards: 2-col */
+        .stat-row { grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+        .stat-card { padding: 12px 14px; gap: 10px; }
+        .ds-value  { font-size: 22px; }
+        .ds-icon   { width: 34px; height: 34px; }
+
+        /* Quick grid: 2-col */
+        .quick-grid { grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 12px; }
+        .quick-card { padding: 10px 12px; gap: 8px; flex-direction: column; align-items: flex-start; }
+        .quick-label { font-size: 11.5px; }
+        .quick-desc  { font-size: 10.5px; }
+
+        /* Forms */
         .form-grid { grid-template-columns: 1fr; }
         .form-group.full { grid-column: 1; }
-        .modal-body { padding: 18px 16px; }
-        footer { flex-direction: column; text-align: center; height: auto; padding: 12px 16px; }
-        .page-titlebar { flex-direction: column; align-items: flex-start; }
-        .page-date-badge { align-items: flex-start; }
-        .header-user-badge { padding: 0 12px; }
-        .user-badge-name { font-size: 12px; }
-        .full-access-text { display: none; }
-        .main-inner { padding: 16px 14px; }
+        .modal-body { padding: 16px 14px; }
+
+        /* Panels */
+        .panel-header { padding: 10px 14px; }
+        .panel-title  { font-size: 12px; }
+
+        /* Pagination */
+        .pagination-bar { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 14px; }
+        .pagination-info { font-size: 11px; }
+
+        /* Footer */
+        footer { flex-direction: column; text-align: center; height: auto; padding: 12px 14px; gap: 4px; }
+
+        /* Alerts */
+        .alert { font-size: 12px; padding: 10px 12px; }
+
+        /* Panel header action buttons wrap */
+        .panel-header { flex-wrap: wrap; }
+
+        /* Log summary: 2×2 grid */
+        .log-summary { grid-template-columns: repeat(2, 1fr); }
+        .log-sum-item { padding: 10px 12px; gap: 8px; }
+        .log-sum-val  { font-size: 16px; }
+
+        /* Table cards refinement on small screens */
+        table tbody tr { grid-template-columns: 1fr; }
+        table tbody td:first-child { grid-column: 1; }
+        table tbody td:last-child  { grid-column: 1; }
     }
+
+    /* ── 420px: very small phones ── */
     @media (max-width: 420px) {
-        .stat-row { grid-template-columns: 1fr; }
+        .stat-row   { grid-template-columns: 1fr 1fr; }
         .quick-grid { grid-template-columns: 1fr; }
+        .header-org { display: none; }
+        .topbar-right { gap: 8px; }
+        .main-inner { padding: 12px 10px; }
     }
     </style>
 
@@ -848,6 +980,16 @@
         <div class="nav-section-label super-section">
             Super Admin<span class="section-line"></span>
         </div>
+
+        <a class="nav-item super-only {{ request()->routeIs('superadmin.dashboard') ? 'active' : '' }}"
+           href="{{ route('superadmin.dashboard') }}">
+            <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+            </span>
+            Dashboard
+        </a>
 
         {{-- Active only on the index itself, not on create/show/etc --}}
         <a class="nav-item super-only {{ request()->routeIs('superadmin.accounts.index') || request()->routeIs('superadmin.accounts.show') || request()->routeIs('superadmin.accounts.archived') ? 'active' : '' }}"
