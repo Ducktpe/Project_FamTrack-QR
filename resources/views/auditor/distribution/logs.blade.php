@@ -62,16 +62,8 @@
         }
 
         /* ─── TOP UTILITY BAR ─── */
-        .topbar {
-            grid-area: topbar;
-            background: var(--blue-dark);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            z-index: 100;
-        }
-        .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.3px; }
+        .topbar { grid-area: topbar; background: var(--blue-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; }
+        .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
         .clock-inline { font-size: 12px; font-weight: 600; color: var(--yellow); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
         .clock-date-inline { font-size: 11px; color: rgba(255,255,255,0.45); }
@@ -80,34 +72,22 @@
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         /* ─── HEADER ─── */
-        header {
-            grid-area: header;
-            background: var(--white);
-            border-bottom: 3px solid var(--yellow);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            display: flex;
-            align-items: center;
-            padding: 0 28px;
-            gap: 14px;
-            z-index: 90;
-        }
-        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
-        .hamburger:hover { background: var(--blue-pale); }
+        header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; }
+        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 4px; color: var(--blue-dark); }
         .hamburger svg { width: 22px; height: 22px; display: block; }
         .header-logos { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
         .header-logos img { height: 54px; width: 54px; object-fit: contain; }
         .logo-divider { width: 1px; height: 44px; background: var(--gray-200); }
         .header-text { margin-left: 4px; }
         .header-org { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 2px; }
-        .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
+        .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-
         /* ── Sky blue auditor badge (matches audit trail) ── */
         .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--sky-pale); border: 1px solid var(--sky-border); border-radius: 4px; flex-shrink: 0; }
         .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--sky); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: 0.5px; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); line-height: 1.2; white-space: nowrap; }
+        .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
 
         /* ─── READ-ONLY BADGE ─── */
         .readonly-badge {
@@ -198,12 +178,32 @@
         .table-count { font-size: 11px; color: var(--gray-400); }
         .table-scroll { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 760px; }
-        thead tr { background: var(--gray-50); border-bottom: 2px solid var(--gray-200); }
-        thead th { padding: 11px 16px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); text-align: left; white-space: nowrap; }
+        thead th { padding: 10px 16px; background: var(--blue); color: var(--white); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; text-align: left; white-space: nowrap; }
         tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; }
         tbody tr:last-child { border-bottom: none; }
         tbody tr:hover { background: var(--blue-pale); }
         tbody td { padding: 12px 16px; font-size: 13px; color: var(--gray-800); vertical-align: middle; }
+        tbody tr:nth-child(even) td { background: var(--gray-50); }
+        tbody tr:nth-child(even):hover td { background: var(--blue-pale); }
+
+        /* ─── MOBILE EVENT CARDS — shown at ≤900px ─── */
+        .event-cards-mobile { display: none; }
+        .event-card {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-100);
+            padding: 14px 16px;
+        }
+        .event-card:last-child { border-bottom: none; }
+        .event-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+        .event-card-name { font-size: 13px; font-weight: 700; color: var(--blue-dark); line-height: 1.3; }
+        .event-card-desc { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+        .event-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+        .event-card-field { display: flex; flex-direction: column; gap: 3px; padding: 8px 0; border-bottom: 1px solid var(--gray-100); }
+        .event-card-field:nth-child(odd) { padding-right: 12px; border-right: 1px solid var(--gray-100); }
+        .event-card-field.full { grid-column: 1 / -1; border-right: none; padding-right: 0; }
+        .event-card-field-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); }
+        .event-card-field-val { font-size: 12px; color: var(--gray-800); font-weight: 500; line-height: 1.4; }
+        .event-card-footer { display: flex; align-items: center; justify-content: flex-end; padding-top: 10px; }
 
         /* Status badges */
         .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -263,9 +263,10 @@
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
         /* ─── RESPONSIVE ─── */
+        /* ≤900px — sidebar off-canvas, table → cards */
         @media (max-width: 900px) {
-            .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
-            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
+            .shell { grid-template-rows: 36px 76px 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
+            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform .28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,.15); }
             .sidebar.open { transform: translateX(0); }
             .sidebar-overlay { display: block; }
             .sidebar-close { display: flex; }
@@ -283,7 +284,12 @@
             .main-content { padding: 20px 16px; }
             .summary-row { grid-template-columns: repeat(2, 1fr); }
             .filters { grid-template-columns: 1fr 1fr; }
+            /* Switch to card view */
+            .table-scroll { display: none; }
+            .event-cards-mobile { display: block; }
         }
+
+        /* ≤640px — header simplifies further */
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline, .status-indicator { display: none; }
@@ -294,6 +300,7 @@
             .header-user-badge { padding: 5px 8px; }
             .user-avatar { width: 28px; height: 28px; font-size: 11px; }
             .user-name { font-size: 11px; }
+            .readonly-badge { padding: 5px 9px; font-size: 10px; }
             .main-content { padding: 16px 12px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; }
             .page-h1 { font-size: 18px; }
@@ -303,6 +310,32 @@
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
+            .event-card-body { grid-template-columns: 1fr; }
+            .event-card-field:nth-child(odd) { border-right: none; padding-right: 0; }
+        }
+
+        /* ≤480px — tightest shell */
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .topbar { height: 28px; padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
+            .header-user-badge { padding: 5px 8px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            /* readonly-badge: icon only */
+            .readonly-badge { padding: 5px 7px; gap: 0; }
+            .readonly-badge-text { display: none; }
+            .main-content { padding: 10px 8px; }
+            .page-h1 { font-size: 16px; }
+            .summary-row { gap: 8px; }
+            footer { height: 40px; padding: 0 10px; }
+            .footer-left { font-size: 9px; }
+        }
+
+        /* ≤380px — single-column summary */
+        @media (max-width: 380px) {
+            .summary-row { grid-template-columns: 1fr; }
+            .main-content { padding: 10px 8px; }
         }
     </style>
 </head>
@@ -346,7 +379,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
             </svg>
-            Read-Only Access
+            <span class="readonly-badge-text">Read-Only Access</span>
         </span>
         <div class="header-user-badge">
             <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
@@ -593,6 +626,48 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+
+                {{-- ── Mobile card view (shown at ≤900px) ── --}}
+                <div class="event-cards-mobile">
+                    @foreach($events as $i => $event)
+                        @php $s = strtolower($event->status); @endphp
+                        <div class="event-card">
+                            <div class="event-card-top">
+                                <div>
+                                    <div class="event-card-name">{{ $event->event_name }}</div>
+                                    @if($event->description)
+                                        <div class="event-card-desc">{{ Str::limit($event->description, 60) }}</div>
+                                    @endif
+                                </div>
+                                <span class="badge badge-{{ $s }}" style="flex-shrink:0;">{{ ucfirst($s) }}</span>
+                            </div>
+                            <div class="event-card-body">
+                                <div class="event-card-field">
+                                    <span class="event-card-field-label">Date</span>
+                                    <span class="event-card-field-val">{{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }}</span>
+                                </div>
+                                <div class="event-card-field">
+                                    <span class="event-card-field-label">Distributed</span>
+                                    <span class="event-card-field-val">{{ $event->total_distributed ?? 0 }} records</span>
+                                </div>
+                                <div class="event-card-field">
+                                    <span class="event-card-field-label">Relief Type</span>
+                                    <span class="event-card-field-val">{{ is_array($event->relief_type) ? implode(', ', $event->relief_type) : ($event->relief_type ?? '—') }}</span>
+                                </div>
+                                <div class="event-card-field">
+                                    <span class="event-card-field-label">Households</span>
+                                    <span class="event-card-field-val">{{ $event->unique_households ?? 0 }}</span>
+                                </div>
+                            </div>
+                            <div class="event-card-footer">
+                                <button class="btn-view" onclick="openModal({{ $event->id }},'{{ htmlspecialchars(addslashes($event->event_name), ENT_QUOTES) }}','{{ ucfirst($s) }}')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
 
                 {{-- Hidden inline panels — one per event, read by modal JS --}}

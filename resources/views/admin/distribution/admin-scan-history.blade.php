@@ -72,18 +72,18 @@
         .header-logos img { height: 54px; width: 54px; object-fit: contain; }
         .logo-divider { width: 1px; height: 44px; background: var(--gray-200); }
         .header-text { margin-left: 4px; }
-        .header-org { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 2px; }
-        .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
+        .header-org { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 2px; }
+        .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; }
+        .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; flex-shrink: 0; }
         .admin-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .admin-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
+        .admin-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
         .admin-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
-        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
-        .sidebar-overlay.active { display: block !important; pointer-events: auto; }
+        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 250; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
+        .sidebar-overlay.active { display: block !important; pointer-events: auto; opacity: 1; }
 
         /* ─── SIDEBAR ─── */
         .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
@@ -94,7 +94,7 @@
         .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 20px; font-size: 13.5px; font-weight: 500; color: var(--gray-600); text-decoration: none; border-left: 3px solid transparent; transition: background 0.12s, color 0.12s, border-color 0.12s; }
         .nav-item:hover { background: var(--gray-50); color: var(--blue); border-left-color: var(--blue-light); }
         .nav-item.active { background: var(--blue-pale); color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
-        .nav-icon { width: 17px; height: 17px; flex-shrink: 0; color: inherit; opacity: 0.8; }
+        .nav-icon { width: 17px; height: 17px; flex-shrink: 0; color: inherit; opacity: 0.7; }
         .nav-item.active .nav-icon, .nav-item:hover .nav-icon { opacity: 1; }
         .sidebar-sep { border: none; border-top: 1px solid var(--gray-100); margin: 8px 0; }
         .sidebar-bottom { margin-top: auto; padding: 16px 20px; border-top: 1px solid var(--gray-200); }
@@ -215,6 +215,7 @@
 
         /* ─── EMPTY STATE ─── */
         .empty-state { padding: 56px 24px; text-align: center; }
+        .mobile-cards { display: none; }
         .empty-icon { width: 56px; height: 56px; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
         .empty-icon svg { width: 24px; height: 24px; color: var(--gray-400); }
         .empty-title { font-size: 14px; font-weight: 600; color: var(--gray-600); margin-bottom: 6px; }
@@ -251,19 +252,20 @@
         .modal-photo-none { padding: 24px; background: var(--gray-50); border: 1px dashed var(--gray-200); border-radius: 4px; text-align: center; font-size: 12px; color: var(--gray-400); }
 
         /* ─── FOOTER ─── */
-        footer { grid-area: footer; background: var(--blue-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+        footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; z-index: 100; }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
-        .footer-left strong { color: rgba(255,255,255,0.6); }
-        .footer-center { font-size: 11px; color: rgba(255,255,255,0.3); }
-        .fb-link { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.15s; }
+        .footer-left strong { color: rgba(255,255,255,0.7); }
+        .footer-center { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 1px; text-transform: uppercase; }
+        .fb-link { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.15s; white-space: nowrap; }
         .fb-link:hover { color: var(--yellow); }
-        .fb-link svg { width: 14px; height: 14px; }
+        .fb-link svg { width: 13px; height: 13px; }
 
         /* ─── RESPONSIVE ─── */
         @media (max-width: 960px) {
-            .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
+            .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
+            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 1200; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
             .sidebar.open { transform: translateX(0); }
-            .sidebar-overlay { display: block; }
+            .sidebar-overlay { display: block !important; z-index: 1100; }
             .sidebar-close { display: flex; }
             .sidebar .nav-section-label { padding-top: 52px; }
             .hamburger { display: flex; }
@@ -273,18 +275,60 @@
             .header-sub { display: none; }
             .header-admin-badge { padding: 6px 10px; gap: 8px; }
             .admin-name { font-size: 12px; }
+            .admin-role { display: none; }
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
             .main-content { padding: 20px 16px; }
             .stats-row { grid-template-columns: 1fr 1fr; }
         }
+        @media (max-width: 720px) {
+            /* ── Hide table, show mobile cards ── */
+            .table-wrapper { display: none; }
+            .mobile-cards { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
+
+            /* Scan log mobile cards */
+            .sc-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 6px; border-left: 3px solid var(--blue); overflow: hidden; }
+            .sc-card-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 10px 14px; background: var(--gray-50); border-bottom: 1px solid var(--gray-100); gap: 8px; }
+            .sc-card-name { font-size: 13px; font-weight: 700; color: var(--blue-dark); line-height: 1.3; }
+            .sc-card-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; font-weight: 400; }
+            .sc-card-serial { font-family: 'Courier New', monospace; font-size: 10px; background: var(--blue-pale); color: var(--blue); padding: 2px 7px; border-radius: 3px; font-weight: 700; white-space: nowrap; flex-shrink: 0; align-self: flex-start; margin-top: 2px; }
+            .sc-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+            .sc-card-row { padding: 8px 14px; border-bottom: 1px solid var(--gray-100); }
+            .sc-card-row:nth-child(odd) { border-right: 1px solid var(--gray-100); }
+            .sc-card-row:last-child, .sc-card-row:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+            .sc-card-row.full { grid-column: 1 / -1; border-right: none; }
+            .sc-card-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--gray-400); margin-bottom: 3px; }
+            .sc-card-value { font-size: 12px; color: var(--gray-800); font-weight: 500; line-height: 1.4; }
+            .sc-card-footer { padding: 8px 14px; border-top: 1px solid var(--gray-100); background: var(--gray-50); display: flex; justify-content: flex-end; }
+        }
         @media (max-width: 640px) {
+            .topbar { justify-content: flex-end; }
+            .clock-date-inline { display: none; }
+            .status-indicator { display: none; }
+            header { padding: 0 12px; gap: 8px; }
+            .header-logos img { height: 36px; width: 36px; }
+            .logo-divider { display: none; }
+            .header-logos img:last-child { display: none; }
+            .header-org { display: none; }
+            .header-title { font-size: 13px; line-height: 1.3; }
+            .header-admin-badge { padding: 5px 8px; }
+            .admin-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .admin-name { font-size: 11px; }
+            .main-content { padding: 16px 12px; }
             .stats-row { gap: 10px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; gap: 10px; }
             .page-h1 { font-size: 18px; }
             .titlebar-actions { width: 100%; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
+            .footer-left { font-size: 10px; }
+        }
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .main-content { padding: 10px 8px; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
         }
     </style>
 </head>
@@ -734,6 +778,97 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            {{-- Mobile cards (shown on ≤720px instead of table) --}}
+            <div class="mobile-cards">
+                @forelse($logs as $log)
+                    @php
+                        $toStr = fn($v) => is_null($v) ? '' : (is_array($v) ? implode(', ', array_map(fn($i) => is_array($i) ? json_encode($i) : (string)$i, $v)) : (string)$v);
+                        $reliefTypeStr  = $toStr($log->event->relief_type  ?? null);
+                        $goodsDetailStr = $toStr($log->goods_detail        ?? null);
+                        $remarksStr     = $toStr($log->remarks             ?? null);
+                        $barangayStr    = $toStr($log->household->barangay ?? null);
+                        $rawItems = $log->event->relief_items ?? null;
+                        if (is_array($rawItems)) {
+                            $formattedItems = array_map(function($item) {
+                                if (is_array($item)) {
+                                    $name = $item['name'] ?? 'Item';
+                                    $qty  = $item['qty']  ?? '';
+                                    $unit = $item['unit'] ?? '';
+                                    return trim("{$name}" . ($qty ? " — {$qty} {$unit}" : ''));
+                                }
+                                return (string) $item;
+                            }, $rawItems);
+                            $reliefItemsStr = implode('||', $formattedItems);
+                        } else {
+                            $reliefItemsStr = $toStr($rawItems);
+                        }
+                    @endphp
+                    <div class="sc-card">
+                        <div class="sc-card-header">
+                            <div>
+                                <div class="sc-card-name hl-name">{{ $log->household->household_head_name ?? '—' }}</div>
+                                <div class="sc-card-sub">{{ $barangayStr }}@if($log->household) &mdash; {{ $log->household->total_members }} member(s)@endif</div>
+                            </div>
+                            <span class="sc-card-serial hl-serial">{{ $log->serial_code }}</span>
+                        </div>
+                        <div class="sc-card-body">
+                            <div class="sc-card-row">
+                                <div class="sc-card-label">Event</div>
+                                <div class="sc-card-value hl-event">{{ $log->event->event_name ?? '—' }}</div>
+                            </div>
+                            <div class="sc-card-row">
+                                <div class="sc-card-label">Date</div>
+                                <div class="sc-card-value">{{ $log->distributed_at->format('M d, Y') }}<br><span style="font-size:10px;color:var(--gray-400);">{{ $log->distributed_at->format('h:i A') }}</span></div>
+                            </div>
+                            <div class="sc-card-row full">
+                                <div class="sc-card-label">Staff Member</div>
+                                <div class="sc-card-value hl-staff">{{ $log->staff->name ?? '—' }}</div>
+                            </div>
+                        </div>
+                        <div class="sc-card-footer">
+                            <button
+                                class="btn-details"
+                                onclick="openDetails({
+                                    household:   {{ json_encode($log->household->household_head_name ?? '—') }},
+                                    barangay:    {{ json_encode($barangayStr) }},
+                                    members:     {{ json_encode($log->household->total_members ?? '—') }},
+                                    serial:      {{ json_encode($log->serial_code) }},
+                                    event:       {{ json_encode($log->event->event_name ?? '—') }},
+                                    eventDate:   {{ json_encode($log->event && $log->event->event_date ? \Carbon\Carbon::parse($log->event->event_date)->format('M d, Y') : '—') }},
+                                    staff:       {{ json_encode($log->staff->name ?? '—') }},
+                                    reliefType:  {{ json_encode($reliefTypeStr) }},
+                                    reliefItems: {{ json_encode($reliefItemsStr) }},
+                                    goods:       {{ json_encode($goodsDetailStr) }},
+                                    remarks:     {{ json_encode($remarksStr) }},
+                                    distributedAt: {{ json_encode($log->distributed_at->format('M d, Y h:i A')) }},
+                                    photoUrl: {{ json_encode($log->releasePhoto ? asset('storage/' . $log->releasePhoto->photo_path) : null) }}
+                                })"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                @empty
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                                <rect x="9" y="3" width="6" height="4" rx="1"/>
+                            </svg>
+                        </div>
+                        <div class="empty-title">No scan records found</div>
+                        <div class="empty-sub">
+                            @if(request('search') || $hasFilters)
+                                No records match your current search or filters.
+                            @else
+                                No distributions have been recorded yet.
+                            @endif
+                        </div>
+                    </div>
+                @endforelse
             </div>
 
             <div class="pagination-row">

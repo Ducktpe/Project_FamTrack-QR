@@ -42,6 +42,12 @@
 /* ── Archived date cell ── */
 .arch-date { font-size: 12px; color: var(--gray-500); line-height: 1.5; }
 .arch-date span { font-size: 11px; color: var(--gray-400); display: block; }
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+    .archive-notice { flex-direction: column; gap: 10px; padding: 12px 14px; font-size: 12px; }
+    .archive-notice-icon { width: 30px; height: 30px; }
+}
 </style>
 @endpush
 
@@ -148,11 +154,11 @@
             <tbody>
                 @forelse($archivedUsers as $u)
                 <tr class="archived-row">
-                    <td style="color:var(--gray-400); font-size:12px; font-weight:600;">
+                    <td data-label="#">
                         {{ $loop->iteration + ($archivedUsers->currentPage()-1) * $archivedUsers->perPage() }}
                     </td>
 
-                    <td>
+                    <td data-label="Account">
                         <div style="display:flex; align-items:center; gap:10px;">
                             <div style="width:30px;height:30px;border-radius:50%;background:var(--gray-200);color:var(--gray-500);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">
                                 {{ strtoupper(substr($u->email, 0, 2)) }}
@@ -166,24 +172,24 @@
                         </div>
                     </td>
 
-                    <td style="font-size:12px; color:var(--gray-400);">{{ $u->personal_email ?? '—' }}</td>
+                    <td data-label="Personal Gmail" style="font-size:12px; color:var(--gray-400);">{{ $u->personal_email ?? '—' }}</td>
 
-                    <td>
+                    <td data-label="Role">
                         <span class="badge badge-{{ $u->role }}" style="opacity:.75;">
                             <span class="badge-dot"></span>{{ ucfirst($u->role) }}
                         </span>
                     </td>
 
-                    <td style="font-size:12px; color:var(--gray-500);">{{ $u->creator?->name ?? '—' }}</td>
+                    <td data-label="Invited By" style="font-size:12px; color:var(--gray-500);">{{ $u->creator?->name ?? '—' }}</td>
 
-                    <td>
+                    <td data-label="Archived On">
                         <div class="arch-date">
                             {{ $u->deleted_at->format('M d, Y') }}
                             <span>{{ $u->deleted_at->diffForHumans() }}</span>
                         </div>
                     </td>
 
-                    <td>
+                    <td data-label="Actions">
                         <div class="action-btns" style="justify-content:center;">
                             {{-- Restore --}}
                             <form method="POST" action="{{ route('superadmin.accounts.restore', $u->id) }}" class="d-inline">

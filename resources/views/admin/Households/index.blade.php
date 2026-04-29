@@ -26,7 +26,7 @@
             --gray-400:   #9AA3B0;
             --gray-600:   #5A6372;
             --gray-800:   #2C3340;
-            --sidebar-w:  260px;
+            --sidebar-w:  256px;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -83,21 +83,21 @@
         .header-logos img { height: 54px; width: 54px; object-fit: contain; }
         .logo-divider { width: 1px; height: 44px; background: var(--gray-200); }
         .header-text { margin-left: 4px; }
-        .header-org { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 2px; }
+        .header-org { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 2px; }
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
-        .user-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
+        .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; flex-shrink: 0; }
+        .admin-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .admin-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
+        .admin-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
-        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
-        .sidebar-overlay.active { display: block !important; pointer-events: auto; }
+        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 250; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
+        .sidebar-overlay.active { display: block !important; pointer-events: auto; opacity: 1; }
 
         /* ─── SIDEBAR ─── */
-        .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; }
+        .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
         .sidebar-close { display: none; position: absolute; top: 12px; right: 12px; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 4px; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s; }
         .sidebar-close:hover { background: #FEF2F2; color: var(--red); }
         .sidebar-close svg { width: 16px; height: 16px; }
@@ -114,7 +114,7 @@
         .logout-btn:hover { background: var(--red); }
 
         /* ─── MAIN ─── */
-        .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 28px 32px; }
+        .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 24px 28px; }
 
         .page-titlebar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); gap: 12px; }
         .page-breadcrumb { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
@@ -125,7 +125,7 @@
         .back-btn:hover { background: var(--blue-pale); }
         .back-btn svg { width: 14px; height: 14px; }
         .page-date { font-size: 12px; color: var(--gray-600); text-align: right; flex-shrink: 0; }
-        .page-date span { display: block; }
+        .page-date span { display: block; font-size: 12px; }
         .page-date strong { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
 
         /* Alerts */
@@ -228,17 +228,30 @@
         .ca-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); border: 2px solid var(--yellow-dark); flex-shrink: 0; }
         .table-section-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
         .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
-        thead th { padding: 11px 14px; background: var(--blue); color: var(--white); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; white-space: nowrap; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        thead th { padding: 11px 8px; background: var(--blue); color: var(--white); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; white-space: nowrap; overflow: hidden; }
+        /* Column widths — fixed layout so no column can push others off screen */
+        col.col-head     { width: 17%; }
+        col.col-barangay { width: 12%; }
+        col.col-families { width: 8%;  }
+        col.col-members  { width: 9%;  }
+        col.col-encoder  { width: 10%; }
+        col.col-status   { width: 8%;  }
+        col.col-serial   { width: 10%; }
+        col.col-qr       { width: 9%;  }
+        col.col-scans    { width: 7%;  }
+        col.col-actions  { width: 10%; }
         tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; }
         tbody tr:hover { background: var(--gray-50); }
         tbody tr:last-child { border-bottom: none; }
-        tbody td { padding: 12px 14px; font-size: 13px; color: var(--gray-800); vertical-align: middle; }
+        tbody td { padding: 10px 8px; font-size: 12px; color: var(--gray-800); vertical-align: middle; overflow: hidden; }
         tbody tr:nth-child(even) td { background: var(--gray-50); }
         tbody tr:nth-child(even):hover td { background: var(--blue-pale); }
-        .td-name strong { display: block; font-size: 13px; color: var(--blue-dark); }
-        .td-name small { font-size: 11px; color: var(--gray-400); margin-top: 2px; display: block; }
-        .td-address small { font-size: 11px; color: var(--gray-400); display: block; margin-top: 1px; }
+        .td-name strong { display: block; font-size: 12px; color: var(--blue-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .td-name small { font-size: 10px; color: var(--gray-400); margin-top: 2px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .td-address { overflow: hidden; }
+        .td-address span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .td-address small { font-size: 10px; color: var(--gray-400); display: block; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         mark { background: #FEF08A; color: var(--gray-800); border-radius: 2px; padding: 0 1px; font-style: normal; }
 
@@ -251,14 +264,16 @@
         .serial-none { font-size: 11px; color: var(--gray-400); font-style: italic; }
 
         /* Action buttons */
-        .btn-view { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: var(--blue); color: var(--white); font-size: 11px; font-weight: 600; text-decoration: none; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s; white-space: nowrap; }
+        .btn-view { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; background: var(--blue); color: var(--white); font-size: 10px; font-weight: 600; text-decoration: none; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s; white-space: nowrap; }
         .btn-view:hover { background: var(--blue-dark); }
-        .btn-view svg { width: 12px; height: 12px; }
-        .btn-approve { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: var(--green); color: var(--white); font-size: 11px; font-weight: 600; border: none; border-radius: 3px; cursor: pointer; font-family: 'Open Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s; white-space: nowrap; }
+        .btn-view svg { width: 11px; height: 11px; }
+        .btn-edit { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; background: var(--white); color: var(--blue); font-size: 10px; font-weight: 600; text-decoration: none; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid var(--blue-light); transition: background 0.15s, color 0.15s; white-space: nowrap; }
+        .btn-edit:hover { background: var(--blue-pale); }
+        .btn-edit svg { width: 11px; height: 11px; }
+        .btn-approve { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; background: var(--green); color: var(--white); font-size: 10px; font-weight: 600; border: none; border-radius: 3px; cursor: pointer; font-family: 'Open Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s; white-space: nowrap; }
         .btn-approve:hover { background: var(--green-dark); }
-        .btn-approve svg { width: 12px; height: 12px; }
-        td:last-child { white-space: nowrap; }
-        .actions-cell { display: flex; align-items: center; gap: 6px; }
+        .btn-approve svg { width: 11px; height: 11px; }
+        .actions-cell { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
         .actions-cell form { margin: 0; padding: 0; }
 
         /* Empty state */
@@ -376,11 +391,29 @@
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
         /* ─── RESPONSIVE ─── */
+        /* ─── HOUSEHOLD CARDS (mobile) ─── */
+        .household-cards { display: none; flex-direction: column; gap: 10px; padding: 12px; background: var(--gray-100); }
+        .hh-card { background: var(--white); border: 1px solid var(--gray-200); border-left: 4px solid var(--blue); border-radius: 6px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); transition: box-shadow 0.15s; }
+        .hh-card.approved { border-left-color: var(--green); }
+        .hh-card.pending  { border-left-color: var(--orange); }
+        .hh-card:hover { box-shadow: 0 3px 10px rgba(27,63,122,0.1); }
+        .hh-card-head { padding: 11px 14px 9px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+        .hh-card-name { font-size: 13px; font-weight: 700; color: var(--blue-dark); line-height: 1.3; }
+        .hh-card-addr { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+        .hh-card-body { display: grid; grid-template-columns: 1fr 1fr; }
+        .hh-card-field { padding: 8px 14px; border-bottom: 1px solid var(--gray-100); border-right: 1px solid var(--gray-100); }
+        .hh-card-field:nth-child(even) { border-right: none; }
+        .hh-card-field.full { grid-column: 1 / -1; border-right: none; }
+        .hh-card-field:last-child, .hh-card-field:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+        .hh-card-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--gray-400); margin-bottom: 3px; }
+        .hh-card-value { font-size: 12px; color: var(--gray-800); line-height: 1.4; }
+        .hh-card-foot { padding: 10px 12px; background: var(--gray-50); border-top: 1px solid var(--gray-100); display: flex; gap: 6px; }
+
         @media (max-width: 900px) {
             .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
-            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
+            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 1200; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
             .sidebar.open { transform: translateX(0); }
-            .sidebar-overlay { display: block; }
+            .sidebar-overlay { display: block !important; z-index: 1100; }
             .sidebar-close { display: flex; }
             .sidebar .nav-section-label { padding-top: 52px; }
             .hamburger { display: flex; }
@@ -388,29 +421,32 @@
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
-            .header-user-badge { padding: 6px 10px; gap: 8px; }
-            .user-name { font-size: 12px; }
-            .user-role { display: none; }
+            .header-admin-badge { padding: 6px 10px; gap: 8px; }
+            .admin-name { font-size: 12px; }
+            .admin-role { display: none; }
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
             .main-content { padding: 20px 16px; }
             .stats-row { gap: 10px; }
             .stat-card { padding: 14px 16px; gap: 12px; }
             .stat-number { font-size: 26px; }
+            .table-wrap { display: none; }
+            .household-cards { display: flex; }
         }
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
-            .clock-date-inline { display: none; }
-            .status-indicator { display: none; }
+            .clock-date-inline, .status-indicator { display: none; }
             header { padding: 0 12px; gap: 8px; }
             .header-logos img { height: 36px; width: 36px; }
-            .logo-divider { display: none; }
-            .header-logos img:last-child { display: none; }
-            .header-org { display: none; }
-            .header-title { font-size: 13px; }
+            .logo-divider, .header-logos img:last-child, .header-org { display: none; }
+            .header-title { font-size: 13px; line-height: 1.3; }
+            .header-admin-badge { padding: 5px 8px; }
+            .admin-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .admin-name { font-size: 11px; }
             .main-content { padding: 16px 12px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; }
             .page-h1 { font-size: 18px; }
+            .page-date { text-align: left; }
             .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
             .stat-card { padding: 12px 14px; gap: 10px; }
             .stat-icon { width: 36px; height: 36px; }
@@ -421,6 +457,14 @@
             .search-results-label { display: none; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
+            .footer-left { font-size: 10px; }
+        }
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .main-content { padding: 10px 8px; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
         }
     </style>
 </head>
@@ -457,11 +501,11 @@
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
-        <div class="header-user-badge">
-            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+        <div class="header-admin-badge">
+            <div class="admin-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">{{ auth()->user()->name ?? 'Admin' }}</div>
-                <div class="user-role">Full Access</div>
+                <div class="admin-name">{{ auth()->user()->name ?? 'Admin' }}</div>
+                <div class="admin-role">Full Access</div>
             </div>
         </div>
     </header>
@@ -546,8 +590,8 @@
 
         <div class="page-titlebar">
             <div>
-                <div class="page-breadcrumb">Home / <span>Dashboard</span></div>
-                <div class="page-h1">Dashboard Overview</div>
+                <div class="page-breadcrumb">Home / <span>List of Households</span></div>
+                <div class="page-h1">List of Registered Households</div>
                 <div class="page-sub">Barangay Family Track QR Relief Distribution System — MDRRMO Naic, Cavite</div>
             </div>
             <div class="page-date">
@@ -665,6 +709,18 @@
 
             <div class="table-wrap">
                 <table>
+                    <colgroup>
+                        <col class="col-head">
+                        <col class="col-barangay">
+                        <col class="col-families">
+                        <col class="col-members">
+                        <col class="col-encoder">
+                        <col class="col-status">
+                        <col class="col-serial">
+                        <col class="col-qr">
+                        <col class="col-scans">
+                        <col class="col-actions">
+                    </colgroup>
                     <thead>
                         <tr>
                             <th>Household Head</th>
@@ -783,6 +839,13 @@
                                             </svg>
                                             View
                                         </a>
+                                        <a href="{{ route('admin.households.edit', $household) }}" class="btn-edit">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                            </svg>
+                                            Edit
+                                        </a>
                                         @if(!$household->isApproved())
                                             <button type="button" class="btn-approve"
                                                 data-approve-url="{{ route('admin.households.approve', $household) }}"
@@ -824,6 +887,125 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            {{-- ── CARD VIEW (mobile/tablet) ── --}}
+            <div class="household-cards">
+                @forelse($households as $household)
+                @php
+                    $scanCount    = $household->distributionLogs->count();
+                    $familyHead   = $household->members->firstWhere('is_family_head', 1);
+                    $nuclearCount = $household->nuclearFamilies->count();
+                    $isApproved   = $household->isApproved();
+                @endphp
+                <div class="hh-card {{ $isApproved ? 'approved' : 'pending' }}">
+                    <div class="hh-card-head">
+                        <div style="flex:1;min-width:0;">
+                            <div class="hh-card-name hl-name">{{ $household->household_head_name }}</div>
+                            <div class="hh-card-addr">{{ $household->street_purok }}, {{ $household->barangay }}</div>
+                        </div>
+                        <div>
+                            @if($isApproved)
+                                <span class="badge badge-approved hl-status">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Approved
+                                </span>
+                            @else
+                                <span class="badge badge-pending hl-status">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    Pending
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="hh-card-body">
+                        <div class="hh-card-field">
+                            <div class="hh-card-label">Barangay</div>
+                            <div class="hh-card-value hl-barangay">{{ $household->barangay }}</div>
+                        </div>
+                        <div class="hh-card-field">
+                            <div class="hh-card-label">Members</div>
+                            <div class="hh-card-value">{{ $household->total_members }} person(s)</div>
+                        </div>
+                        <div class="hh-card-field">
+                            <div class="hh-card-label">Nuclear Families</div>
+                            <div class="hh-card-value">
+                                @if($nuclearCount > 0)
+                                    <span style="font-weight:700;color:var(--blue);">{{ $nuclearCount }}</span>
+                                    <span style="font-size:11px;color:var(--gray-400);"> famil{{ $nuclearCount !== 1 ? 'ies' : 'y' }}</span>
+                                @else
+                                    <span style="color:var(--gray-400);font-style:italic;">—</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="hh-card-field">
+                            <div class="hh-card-label">QR Scans</div>
+                            <div class="hh-card-value">
+                                <span class="scan-count-badge {{ $scanCount > 0 ? 'has-scans' : 'no-scans' }}" style="font-size:11px;padding:2px 8px;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:10px;height:10px;"><polyline points="23 7 23 1 17 1"/><polyline points="1 17 1 23 7 23"/><polyline points="23 17 23 23 17 23"/><polyline points="1 7 1 1 7 1"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
+                                    {{ $scanCount }} scan{{ $scanCount !== 1 ? 's' : '' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="hh-card-field full">
+                            <div class="hh-card-label">Serial Code</div>
+                            <div class="hh-card-value">
+                                @if($household->serial_code)
+                                    <span class="serial-code hl-serial">{{ $household->serial_code }}</span>
+                                @else
+                                    <span class="serial-none">Not assigned</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="hh-card-field full" style="border-bottom:none;">
+                            <div class="hh-card-label">QR Codes</div>
+                            <div class="hh-card-value" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:2px;">
+                                @if($household->qrCode)
+                                    <span class="qr-type-badge qr-household">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+                                        Household QR
+                                    </span>
+                                @else
+                                    <span class="qr-type-badge qr-none">No Household QR</span>
+                                @endif
+                                @if($familyHead && $familyHead->qr_code_path)
+                                    <span class="qr-type-badge qr-head">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+                                        Head QR
+                                    </span>
+                                @else
+                                    <span class="qr-type-badge qr-none">No Head QR</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hh-card-foot">
+                        <a href="{{ route('admin.households.show', $household) }}" class="btn-view" style="flex:1;justify-content:center;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            View
+                        </a>
+                        <a href="{{ route('admin.households.edit', $household) }}" class="btn-edit" style="flex:1;justify-content:center;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            Edit
+                        </a>
+                        @if(!$isApproved)
+                            <button type="button" class="btn-approve" style="flex:1;justify-content:center;"
+                                data-approve-url="{{ route('admin.households.approve', $household) }}"
+                                data-household-id="{{ $household->id }}"
+                                onclick="approveHousehold(this)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                Approve
+                            </button>
+                        @endif
+                    </div>
+                </div>
+                @empty
+                    <div class="empty-state" style="background:var(--white);border:1px solid var(--gray-200);border-radius:6px;">
+                        <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg></div>
+                        <div class="empty-title">No households found</div>
+                        <div class="empty-sub">Try a different search term or filter.</div>
+                    </div>
+                @endforelse
             </div>
 
             <div class="pagination-row" id="paginationRow">
@@ -1030,8 +1212,8 @@
 
             const data = await res.json().catch(() => ({}));
 
-            // Swap the Approve button for an Approved badge
-            const actionsCell = btn.closest('.actions-cell');
+            // Works in both table row (.actions-cell > tr) and card (.hh-card-foot > .hh-card)
+            const actionsCell = btn.closest('.actions-cell, .hh-card-foot');
             btn.remove();
 
             const badge = document.createElement('span');
@@ -1039,24 +1221,27 @@
             badge.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Approved`;
             actionsCell.appendChild(badge);
 
-            // Update the status badge in the same row
-            const row = actionsCell.closest('tr');
-            const statusCell = row.querySelector('.badge-pending');
-            if (statusCell) {
-                statusCell.className = 'badge badge-approved';
-                statusCell.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Approved`;
+            // Update status badge — works in tr or hh-card
+            const container = btn.closest('tr, .hh-card') || actionsCell.closest('tr, .hh-card');
+            if (container) {
+                const statusBadge = container.querySelector('.badge-pending');
+                if (statusBadge) {
+                    statusBadge.className = 'badge badge-approved';
+                    statusBadge.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Approved`;
+                }
+                // Update card border color
+                const card = container.closest('.hh-card');
+                if (card) { card.classList.remove('pending'); card.classList.add('approved'); }
             }
 
-            // Update serial code cell if returned
             if (data.serial_code) {
-                const serialCell = row.querySelector('.serial-none');
-                if (serialCell) {
-                    serialCell.className = 'serial-code';
-                    serialCell.textContent = data.serial_code;
+                const serialEl = document.querySelector('.serial-none');
+                if (serialEl) {
+                    serialEl.className = 'serial-code';
+                    serialEl.textContent = data.serial_code;
                 }
             }
 
-            // Show a brief success flash
             showFlash('Household approved successfully.');
 
         } catch (err) {

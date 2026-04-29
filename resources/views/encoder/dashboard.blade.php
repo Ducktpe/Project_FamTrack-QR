@@ -37,14 +37,15 @@
         /* ─── Layout ─── */
         .shell {
             display: grid;
-            grid-template-rows: 36px 76px auto auto;
+            grid-template-rows: 36px 76px 1fr 48px;
             grid-template-columns: var(--sidebar-w) 1fr;
             grid-template-areas:
                 "topbar  topbar"
                 "header  header"
                 "sidebar main"
                 "footer  footer";
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
         }
 
         /* ─── TOP UTILITY BAR ─── */
@@ -55,8 +56,6 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 24px;
-            position: sticky;
-            top: 0;
             z-index: 100;
         }
         .topbar-left {
@@ -107,8 +106,6 @@
             align-items: center;
             padding: 0 28px;
             gap: 14px;
-            position: sticky;
-            top: 36px;
             z-index: 90;
         }
 
@@ -151,7 +148,7 @@
         .header-title {
             font-family: 'PT Serif', serif;
             font-size: 18px; font-weight: 700;
-            color: var(--blue-dark); line-height: 1.2;
+            color: var(--blue-dark);
         }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
 
@@ -182,19 +179,18 @@
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay {
-            display: block;
+            display: none !important;
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.45);
-            z-index: 200;
+            z-index: 250;
             opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.25s, visibility 0.25s;
+            transition: opacity 0.25s;
             pointer-events: none;
         }
         .sidebar-overlay.active {
+            display: block !important;
             opacity: 1;
-            visibility: visible;
             pointer-events: auto;
         }
 
@@ -206,11 +202,7 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            position: sticky;
-            top: 112px;
-            height: calc(100vh - 112px);
-            align-self: start;
-            z-index: 10;
+            position: relative;
         }
 
         /* Close button — only shown on mobile */
@@ -338,6 +330,7 @@
             grid-area: main;
             background: var(--gray-50);
             padding: 28px 32px;
+            overflow-y: auto;
         }
 
         .page-titlebar {
@@ -475,8 +468,7 @@
             justify-content: space-between;
             padding: 0 24px;
             gap: 8px;
-            position: relative;
-            z-index: 400;
+            z-index: 100;
         }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
         .footer-left strong { color: rgba(255,255,255,0.7); }
@@ -493,96 +485,6 @@
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
-
-        /* ════════════════════════════════════════
-           RESPONSIVE
-           ════════════════════════════════════════ */
-        @media (max-width: 900px) {
-            .shell {
-                grid-template-rows: 36px auto auto auto;
-                grid-template-columns: 1fr;
-                grid-template-areas:
-                    "topbar"
-                    "header"
-                    "main"
-                    "footer";
-                min-height: 100vh;
-            }
-
-            .sidebar {
-                grid-area: unset;
-                position: fixed;
-                top: 0; left: 0; bottom: 0;
-                height: 100vh;
-                width: var(--sidebar-w);
-                z-index: 300;
-                transform: translateX(-100%);
-                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
-                overflow-y: auto;
-            }
-            .sidebar.open { transform: translateX(0); }
-            /* sidebar-overlay shown only via .active class */
-            .sidebar-close { display: flex; }
-            .sidebar .nav-section-label { padding-top: 56px; }
-
-            .hamburger { display: flex; }
-
-            header { padding: 0 16px; gap: 10px; }
-            .header-logos img { height: 44px; width: 44px; }
-            .header-title { font-size: 15px; }
-            .header-sub { display: none; }
-            .header-user-badge { padding: 6px 10px; gap: 8px; }
-            .user-name { font-size: 12px; }
-
-            .topbar { padding: 0 16px; }
-            .topbar-left { display: none; }
-
-            .main-content { padding: 20px 16px; }
-            .quick-nav { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 640px) {
-            .topbar { justify-content: flex-end; }
-            .clock-date-inline { display: none; }
-            .status-indicator { display: none; }
-
-            header { padding: 0 12px; gap: 8px; }
-            .header-logos img { height: 36px; width: 36px; }
-            .logo-divider { display: none; }
-            .header-logos img:last-child { display: none; }
-            .header-org { display: none; }
-            .header-title { font-size: 13px; line-height: 1.3; }
-            .header-user-badge { padding: 5px 8px; }
-            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
-            .user-name { font-size: 11px; }
-
-            .main-content { padding: 16px 12px; }
-            .page-titlebar { flex-direction: column; align-items: flex-start; }
-            .page-h1 { font-size: 18px; }
-            .page-date { text-align: left; }
-
-            .welcome-card { padding: 16px 18px; gap: 14px; }
-            .welcome-card img { width: 38px; height: 38px; }
-            .welcome-heading { font-size: 16px; }
-            .welcome-desc { display: none; }
-
-            .access-notice { padding: 12px 14px; }
-            .access-notice-text { font-size: 11px; }
-
-            .quick-nav { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .qnav-card { padding: 14px; gap: 8px; }
-            .qnav-title { font-size: 12px; }
-            .qnav-desc { display: none; }
-
-            footer { padding: 0 12px; }
-            .footer-center { display: none; }
-            .footer-left { font-size: 10px; }
-        }
-
-        @media (max-width: 380px) {
-            .quick-nav { grid-template-columns: 1fr; }
-        }
 
         /* ─── STAT CARDS ─── */
         .stats-grid {
@@ -693,6 +595,7 @@
         .progress-fill  { height: 100%; border-radius: 10px; transition: width 0.8s ease; }
 
         /* ─── RECENT TABLE ─── */
+        .recent-mobile-cards { display: none; }
         .recent-table { width: 100%; border-collapse: collapse; font-size: 12px; }
         .recent-table th {
             padding: 8px 12px; background: var(--gray-50);
@@ -729,63 +632,101 @@
         }
 
         /* ════════════════════════════════════════
-           TOPBAR RESPONSIVE
-           ════════════════════════════════════════ */
-        @media (max-width: 768px) {
-            .topbar { padding: 0 12px !important; flex-wrap: nowrap; }
-            .topbar-left { display: none !important; }
-            .topbar-right { gap: 10px !important; margin-left: auto; }
-            .clock-date-inline { display: none !important; }
-            .clock-inline { font-size: 11px !important; }
-        }
-        @media (max-width: 480px) {
-            .status-indicator { display: none !important; }
-        }
-
-        /* ════════════════════════════════════════
-           HEADER BADGE — shrink gracefully
+           RESPONSIVE
            ════════════════════════════════════════ */
         @media (max-width: 900px) {
-            .header-user-badge { padding: 5px 10px !important; gap: 6px !important; }
-            .user-name { font-size: 12px !important; }
-            .user-role { font-size: 9px !important; letter-spacing: 0.3px !important; }
-            .user-avatar { width: 28px !important; height: 28px !important; font-size: 11px !important; }
+            .shell {
+                grid-template-rows: 36px auto 1fr 48px;
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "topbar"
+                    "header"
+                    "main"
+                    "footer";
+                height: 100vh;
+                overflow: hidden;
+            }
+            .sidebar {
+                grid-area: unset;
+                position: fixed;
+                top: 0; left: 0; bottom: 0;
+                width: var(--sidebar-w);
+                z-index: 1200;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+                overflow-y: auto;
+            }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay { display: block !important; z-index: 1100; }
+            .sidebar-close { display: flex; }
+            .sidebar .nav-section-label { padding-top: 56px; }
+            .hamburger { display: flex; }
+            header { padding: 0 16px; gap: 10px; }
+            .header-logos img { height: 44px; width: 44px; }
+            .header-title { font-size: 15px; }
+            .header-sub { display: none; }
+            .header-user-badge { padding: 6px 10px; gap: 8px; }
+            .user-name { font-size: 12px; }
+            .user-role { font-size: 9px; letter-spacing: 0.3px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .topbar { padding: 0 16px; }
+            .topbar-left { display: none; }
+            .main-content { padding: 20px 16px; }
+            .quick-nav { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 720px) {
+            /* ── Hide recent table, show mobile cards ── */
+            .recent-table-wrapper { display: none; }
+            .recent-mobile-cards { display: flex; flex-direction: column; gap: 8px; padding: 12px; }
+
+            .rh-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 6px; border-left: 3px solid var(--blue); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+            .rh-card-name { font-size: 13px; font-weight: 700; color: var(--blue-dark); }
+            .rh-card-sub  { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+            .rh-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
         }
         @media (max-width: 640px) {
-            .header-user-badge { padding: 4px 8px !important; }
-            .user-name { font-size: 11px !important; }
-        }
-
-        /* ════════════════════════════════════════
-           GLOBAL NO HORIZONTAL SCROLL
-           ════════════════════════════════════════ */
-        html, body { overflow-x: clip; max-width: 100vw; }
-        /* ════════════════════════════════════════
-           FOOTER RESPONSIVE
-           ════════════════════════════════════════ */
-        @media (max-width: 768px) {
-            footer {
-                flex-direction: column !important; height: auto !important;
-                min-height: 48px; padding: 10px 16px !important;
-                gap: 4px !important; align-items: flex-start !important;
-                flex-wrap: wrap !important;
-            }
-            .footer-left {
-                font-size: 11px !important; white-space: normal !important;
-                line-height: 1.5 !important; width: 100% !important;
-                overflow: visible !important; text-overflow: unset !important;
-            }
-            .footer-center { display: none !important; }
-            .fb-link { font-size: 11px !important; }
+            .topbar { justify-content: flex-end; }
+            .clock-date-inline { display: none; }
+            .status-indicator { display: none; }
+            header { padding: 0 12px; gap: 8px; }
+            .header-logos img { height: 36px; width: 36px; }
+            .logo-divider { display: none; }
+            .header-logos img:last-child { display: none; }
+            .header-org { display: none; }
+            .header-title { font-size: 13px; line-height: 1.3; }
+            .header-user-badge { padding: 5px 8px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .user-name { font-size: 11px; }
+            .main-content { padding: 16px 12px; }
+            .page-titlebar { flex-direction: column; align-items: flex-start; }
+            .page-h1 { font-size: 18px; }
+            .page-date { text-align: left; }
+            .welcome-card { padding: 16px 18px; gap: 14px; }
+            .welcome-card img { width: 38px; height: 38px; }
+            .welcome-heading { font-size: 16px; }
+            .welcome-desc { display: none; }
+            .access-notice { padding: 12px 14px; }
+            .access-notice-text { font-size: 11px; }
+            .quick-nav { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .qnav-card { padding: 14px; gap: 8px; }
+            .qnav-title { font-size: 12px; }
+            .qnav-desc { display: none; }
+            .encoder-bar-row { grid-template-columns: 120px 1fr 48px; gap: 10px; }
+            .encoder-bar-name { font-size: 11px; }
+            .encoder-bar-count { font-size: 15px; }
+            footer { padding: 0 12px; }
+            .footer-center { display: none; }
+            .footer-left { font-size: 10px; }
         }
         @media (max-width: 480px) {
-            footer { padding: 8px 12px !important; }
-            .footer-left { font-size: 10px !important; }
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .main-content { padding: 10px 8px; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
+            .quick-nav { grid-template-columns: 1fr; }
         }
-
-        /* ── Badge responsive — handled above ── */
-
-        /* ─── ENCODER PRODUCTIVITY CHART ─── */
         .encoder-chart-section {
             margin-bottom: 24px;
         }
@@ -876,14 +817,6 @@
             text-transform: uppercase;
         }
 
-        @media (max-width: 640px) {
-            .encoder-bar-row {
-                grid-template-columns: 120px 1fr 48px;
-                gap: 10px;
-            }
-            .encoder-bar-name { font-size: 11px; }
-            .encoder-bar-count { font-size: 15px; }
-        }
     </style>
 </head>
 <body>
@@ -1530,7 +1463,7 @@
                     <div class="ca-title">Recently Registered</div>
                     <a href="{{ route('encoder.households.index') }}" style="margin-left:auto;font-size:11px;color:var(--blue);text-decoration:none;font-weight:600;">View All →</a>
                 </div>
-                <div style="overflow-x:auto;">
+                <div class="recent-table-wrapper" style="overflow-x:auto;">
                     <table class="recent-table">
                         <thead>
                             <tr>
@@ -1562,6 +1495,27 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                {{-- Mobile cards (shown on ≤720px) --}}
+                <div class="recent-mobile-cards">
+                    @forelse($recentHouseholds as $hh)
+                    <div class="rh-card">
+                        <div>
+                            <div class="rh-card-name">{{ Str::limit($hh->household_head_name, 28) }}</div>
+                            <div class="rh-card-sub">{{ $hh->barangay }} &mdash; {{ $hh->created_at->diffForHumans() }}</div>
+                        </div>
+                        <div class="rh-card-right">
+                            @if($hh->isApproved())
+                                <span class="status-pill pill-approved">✓ Approved</span>
+                            @else
+                                <span class="status-pill pill-pending">⏳ Pending</span>
+                            @endif
+                        </div>
+                    </div>
+                    @empty
+                    <div style="text-align:center;padding:24px;color:var(--gray-400);font-size:12px;">No households registered yet</div>
+                    @endforelse
                 </div>
             </div>
 

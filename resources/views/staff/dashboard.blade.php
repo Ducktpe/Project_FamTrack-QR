@@ -23,6 +23,7 @@
             --gray-600:   #5A6372;
             --gray-800:   #2C3340;
             --red:        #C0392B;
+            --red-pale:   #FEF2F2;
             --sidebar-w:  260px;
         }
 
@@ -50,44 +51,20 @@
         }
 
         /* ─── TOP UTILITY BAR ─── */
-        .topbar {
-            grid-area: topbar;
-            background: var(--blue-dark);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            z-index: 100;
-        }
+        .topbar { grid-area: topbar; background: var(--blue-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; }
         .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.3px; }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
         .clock-inline { font-size: 12px; font-weight: 600; color: var(--yellow); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
         .clock-date-inline { font-size: 11px; color: rgba(255,255,255,0.45); }
         .status-indicator { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.45); }
-        .status-indicator::before {
-            content: ''; width: 6px; height: 6px; border-radius: 50%;
-            background: #4CAF50; box-shadow: 0 0 5px #4CAF50; animation: blink 2s infinite;
-        }
+        .status-indicator::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #4CAF50; box-shadow: 0 0 5px #4CAF50; animation: blink 2s infinite; }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         /* ─── HEADER ─── */
-        header {
-            grid-area: header;
-            background: var(--white);
-            border-bottom: 3px solid var(--yellow);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            display: flex; align-items: center;
-            padding: 0 28px; gap: 14px; z-index: 90;
-        }
-
-        .hamburger {
-            display: none; background: none; border: none; cursor: pointer;
-            padding: 6px; margin-left: -4px; border-radius: 4px;
-            color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s;
-        }
+        header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; }
+        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
         .hamburger:hover { background: var(--blue-pale); }
         .hamburger svg { width: 22px; height: 22px; display: block; }
-
         .header-logos { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
         .header-logos img { height: 54px; width: 54px; object-fit: contain; }
         .logo-divider { width: 1px; height: 44px; background: var(--gray-200); }
@@ -96,60 +73,24 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 14px; background: var(--green-pale);
-            border: 1px solid #BBF7D0; border-radius: 4px; flex-shrink: 0;
-        }
-        .user-avatar {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: var(--green); display: flex; align-items: center; justify-content: center;
-            color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0;
-        }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--green-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ─── NAMECARD BADGE — green for Distribution Staff role ─── */
+        .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--green-pale); border: 1px solid #BBF7D0; border-radius: 4px; flex-shrink: 0; }
+        .admin-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .admin-name { font-size: 13px; font-weight: 600; color: var(--green-dark); line-height: 1.2; }
+        .admin-role { font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
-        .sidebar-overlay {
-            display: none !important; /* Force hide until activated */
-            position: fixed; 
-            inset: 0;
-            background: rgba(0,0,0,0.45); 
-            z-index: 200;
-            opacity: 0; 
-            transition: opacity 0.25s;
-            pointer-events: none; /* Don't block clicks when hidden */
-        }
-        .sidebar-overlay.active {
-            display: block !important;
-            pointer-events: auto; /* Allow clicks when active */
-        }
+        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
+        .sidebar-overlay.active { display: block !important; pointer-events: auto; }
 
         /* ─── SIDEBAR ─── */
-        .sidebar {
-            grid-area: sidebar; background: var(--white);
-            border-right: 1px solid var(--gray-200);
-            display: flex; flex-direction: column;
-            overflow-y: auto; position: relative;
-        }
-        .sidebar-close {
-            display: none; position: absolute; top: 12px; right: 12px;
-            background: var(--gray-100); border: 1px solid var(--gray-200);
-            border-radius: 4px; width: 32px; height: 32px;
-            align-items: center; justify-content: center;
-            cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s;
-        }
-        .sidebar-close:hover { background: #FEF2F2; color: var(--red); }
+        .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
+        .sidebar-close { display: none; position: absolute; top: 12px; right: 12px; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 4px; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s; }
+        .sidebar-close:hover { background: var(--red-pale); color: var(--red); }
         .sidebar-close svg { width: 16px; height: 16px; }
-
         .nav-section-label { padding: 18px 20px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray-400); }
-        .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 11px 20px; font-size: 13.5px; font-weight: 500;
-            color: var(--gray-600); text-decoration: none;
-            border-left: 3px solid transparent;
-            transition: background 0.12s, color 0.12s, border-color 0.12s; cursor: pointer;
-        }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 20px; font-size: 13.5px; font-weight: 500; color: var(--gray-600); text-decoration: none; border-left: 3px solid transparent; transition: background 0.12s, color 0.12s, border-color 0.12s; cursor: pointer; }
         .nav-item:hover { background: var(--gray-50); color: var(--blue); border-left-color: var(--blue-light); }
         .nav-item.active { background: var(--blue-pale); color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
         .nav-item.scanner-primary { background: var(--green-pale); color: var(--green-dark); border-left-color: var(--green); font-weight: 600; }
@@ -164,104 +105,65 @@
         .role-notice-text { font-size: 11px; color: #166534; line-height: 1.5; }
 
         .sidebar-bottom { margin-top: auto; padding: 16px 20px; border-top: 1px solid var(--gray-200); }
-        .logout-btn {
-            width: 100%; font-family: 'Open Sans', sans-serif;
-            font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
-            background: var(--blue); color: var(--white); border: none;
-            padding: 10px 16px; border-radius: 4px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s;
-        }
+        .logout-btn { width: 100%; font-family: 'Open Sans', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; background: var(--blue); color: var(--white); border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
         .logout-btn:hover { background: var(--red); }
 
         /* ─── MAIN ─── */
         .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 28px 32px; }
 
-        .page-titlebar {
-            display: flex; align-items: flex-end; justify-content: space-between;
-            margin-bottom: 20px; padding-bottom: 16px;
-            border-bottom: 1px solid var(--gray-200); gap: 12px;
-        }
+        .page-titlebar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); gap: 12px; }
         .page-breadcrumb { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
         .page-breadcrumb span { color: var(--blue-light); }
         .page-h1 { font-family: 'PT Serif', serif; font-size: 22px; font-weight: 700; color: var(--blue-dark); }
         .page-sub { font-size: 12px; color: var(--gray-600); margin-top: 3px; }
         .page-date { font-size: 12px; color: var(--gray-600); text-align: right; flex-shrink: 0; }
+        .page-date span { display: block; }
         .page-date strong { display: block; font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
 
-        /* Welcome card */
-        .welcome-card { background: var(--blue); border-left: 5px solid var(--yellow); padding: 22px 28px; display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
+        /* ─── WELCOME CARD ─── */
+        .welcome-card { background: var(--blue); border-left: 5px solid var(--yellow); padding: 22px 28px; display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
         .welcome-card img { width: 50px; height: 50px; object-fit: contain; flex-shrink: 0; }
         .welcome-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.55); margin-bottom: 4px; }
         .welcome-heading { font-family: 'PT Serif', serif; font-size: 20px; font-weight: 700; color: var(--white); }
         .welcome-heading em { color: var(--yellow); font-style: normal; }
-        .welcome-desc { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+        .welcome-desc { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; line-height: 1.5; }
 
-        /* PRIMARY SCANNER CTA */
-        .scanner-cta {
-            background: var(--white); border: 1px solid var(--gray-200);
-            border-top: 4px solid var(--green); padding: 32px 28px;
-            display: flex; align-items: center; gap: 28px;
-            margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); flex-wrap: wrap;
-        }
-        .scanner-cta-icon { width: 64px; height: 64px; background: var(--green-pale); border: 2px solid #BBF7D0; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        /* ─── SCANNER CTA ─── */
+        .scanner-cta { background: var(--white); border: 1px solid var(--gray-200); border-top: 4px solid var(--green); padding: 32px 28px; display: flex; align-items: center; gap: 28px; margin-bottom: 20px; flex-wrap: wrap; }
+        .scanner-cta-icon { width: 64px; height: 64px; background: var(--green-pale); border: 2px solid #BBF7D0; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .scanner-cta-icon svg { width: 32px; height: 32px; color: var(--green); }
         .scanner-cta-content { flex: 1; min-width: 0; }
         .scanner-cta-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--green); margin-bottom: 4px; }
         .scanner-cta-title { font-family: 'PT Serif', serif; font-size: 20px; font-weight: 700; color: var(--blue-dark); margin-bottom: 6px; }
         .scanner-cta-desc { font-size: 12px; color: var(--gray-600); line-height: 1.6; }
-        .scanner-cta-btn {
-            flex-shrink: 0; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 10px;
-            background: var(--green); 
-            color: var(--white); 
-            font-family: 'Open Sans', sans-serif;
-            font-size: 13px; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            text-decoration: none; 
-            padding: 14px 28px; 
-            border-radius: 4px; 
-            border: none;
-            transition: background 0.15s, transform 0.1s; 
-            cursor: pointer; 
-            white-space: nowrap;
-            /* ADD THESE LINES FOR MOBILE: */
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            user-select: none;
-            position: relative;
-            z-index: 1;
-        }
-        .scanner-cta-btn:hover { background: var(--green-dark); transform: translateY(-1px); }
+        .scanner-cta-btn { flex-shrink: 0; display: inline-flex; align-items: center; gap: 10px; background: var(--green); color: var(--white); font-family: 'Open Sans', sans-serif; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; padding: 14px 28px; border-radius: 4px; border: none; transition: background 0.15s; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; }
+        .scanner-cta-btn:hover { background: var(--green-dark); }
         .scanner-cta-btn svg { width: 18px; height: 18px; }
 
-        /* Access notice */
-        .access-notice { background: var(--white); border: 1px solid var(--gray-200); border-left: 4px solid var(--blue); padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 12px; }
+        /* ─── ACCESS NOTICE ─── */
+        .access-notice { background: var(--white); border: 1px solid var(--gray-200); border-left: 4px solid var(--blue); padding: 14px 20px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 12px; }
         .access-notice svg { width: 18px; height: 18px; color: var(--blue); flex-shrink: 0; margin-top: 1px; }
         .access-notice-text { font-size: 12px; color: var(--gray-600); line-height: 1.6; }
         .access-notice-text strong { color: var(--blue-dark); }
 
-        /* Workflow */
-        .workflow-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-600); margin-bottom: 14px; }
-        .workflow-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-bottom: 28px; background: var(--white); border: 1px solid var(--gray-200); }
+        /* ─── WORKFLOW ─── */
+        .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 12px; }
+        .workflow-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-bottom: 20px; background: var(--white); border: 1px solid var(--gray-200); }
         .step { padding: 18px 16px; border-right: 1px solid var(--gray-100); }
         .step:last-child { border-right: none; }
         .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--blue); color: var(--white); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; flex-shrink: 0; }
         .step-title { font-size: 12px; font-weight: 600; color: var(--blue-dark); margin-bottom: 4px; }
         .step-desc { font-size: 11px; color: var(--gray-600); line-height: 1.5; }
 
-        /* Alert boxes */
-        .alert-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+        /* ─── ALERT BOXES ─── */
+        .alert-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
         .alert-box { padding: 16px 18px; display: flex; align-items: flex-start; gap: 12px; border: 1px solid; }
         .alert-box.cleared  { background: var(--green-pale); border-color: #BBF7D0; border-left: 4px solid var(--green); }
-        .alert-box.duplicate{ background: #FEF2F2; border-color: #FECACA; border-left: 4px solid var(--red); }
+        .alert-box.duplicate{ background: var(--red-pale); border-color: #FECACA; border-left: 4px solid var(--red); }
         .alert-box svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
         .alert-box.cleared svg  { color: var(--green); }
         .alert-box.duplicate svg{ color: var(--red); }
-        .alert-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+        .alert-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
         .alert-box.cleared .alert-title  { color: var(--green-dark); }
         .alert-box.duplicate .alert-title{ color: var(--red); }
         .alert-desc { font-size: 11px; line-height: 1.5; }
@@ -269,11 +171,7 @@
         .alert-box.duplicate .alert-desc{ color: #7F1D1D; }
 
         /* ─── FOOTER ─── */
-        footer {
-            grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px; gap: 8px; z-index: 100;
-        }
+        footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; z-index: 100; }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
         .footer-left strong { color: rgba(255,255,255,0.7); }
         .footer-center { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 1px; text-transform: uppercase; }
@@ -286,8 +184,10 @@
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
         /* ════════════════════════════════════════
-           RESPONSIVE
+           RESPONSIVE — mirrors quick-create breakpoints exactly
            ════════════════════════════════════════ */
+
+        /* ≤900px — sidebar goes off-canvas */
         @media (max-width: 900px) {
             .shell {
                 grid-template-rows: 36px auto 1fr 48px;
@@ -299,7 +199,7 @@
                 grid-area: unset; position: fixed;
                 top: 0; left: 0; bottom: 0; width: var(--sidebar-w);
                 z-index: 300; transform: translateX(-100%);
-                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
                 box-shadow: 4px 0 20px rgba(0,0,0,0.15);
             }
             .sidebar.open { transform: translateX(0); }
@@ -312,24 +212,21 @@
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
-            .header-user-badge { padding: 6px 10px; gap: 8px; }
-            .user-name { font-size: 12px; }
-            .user-role { display: none; }
+            .header-admin-badge { padding: 6px 10px; gap: 8px; }
+            .admin-name { font-size: 12px; }
+            .admin-role { display: none; }
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
 
             .main-content { padding: 20px 16px; }
-
-            /* Workflow 5-col → 2-col */
             .workflow-steps { grid-template-columns: 1fr 1fr; }
             .step { border-right: none; border-bottom: 1px solid var(--gray-100); }
             .step:last-child { border-bottom: none; }
-
-            /* CTA: button stretches full-width */
             .scanner-cta { padding: 22px 20px; gap: 18px; }
             .scanner-cta-btn { width: 100%; justify-content: center; }
         }
 
+        /* ≤640px — header and content simplify further */
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
@@ -341,12 +238,12 @@
             .header-logos img:last-child { display: none; }
             .header-org { display: none; }
             .header-title { font-size: 13px; line-height: 1.3; }
-            .header-user-badge { padding: 5px 8px; }
-            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
-            .user-name { font-size: 11px; }
+            .header-admin-badge { padding: 5px 8px; }
+            .admin-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .admin-name { font-size: 11px; }
 
             .main-content { padding: 16px 12px; }
-            .page-titlebar { flex-direction: column; align-items: flex-start; }
+            .page-titlebar { flex-direction: column; align-items: flex-start; gap: 8px; }
             .page-h1 { font-size: 18px; }
             .page-date { text-align: left; }
 
@@ -360,15 +257,7 @@
             .scanner-cta-icon svg { width: 24px; height: 24px; }
             .scanner-cta-title { font-size: 16px; }
             .scanner-cta-desc { display: none; }
-            
-            /* CRITICAL: Large touch target for mobile */
-            .scanner-cta-btn { 
-                width: 100%; 
-                justify-content: center;
-                min-height: 56px !important;
-                font-size: 15px;
-                padding: 18px 24px;
-            }
+            .scanner-cta-btn { width: 100%; justify-content: center; min-height: 52px; font-size: 14px; padding: 16px 24px; }
 
             .access-notice { padding: 12px 14px; }
             .access-notice-text { font-size: 11px; }
@@ -381,15 +270,19 @@
             .footer-left { font-size: 10px; }
         }
 
-        @media (max-width: 380px) {
-            .main-content { padding: 12px 10px; }
+        /* ≤480px — tightest shell */
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .main-content { padding: 10px 8px; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
         }
     </style>
 </head>
 <body>
 <div class="shell">
 
-    <!-- SIDEBAR OVERLAY -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
     <!-- TOP UTILITY BAR -->
@@ -404,7 +297,7 @@
 
     <!-- HEADER -->
     <header>
-        <button class="hamburger" onclick="openSidebar()" aria-label="Open navigation">
+        <button class="hamburger" id="hamburgerBtn" onclick="openSidebar()" aria-label="Open navigation">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <line x1="3" y1="6" x2="21" y2="6"/>
                 <line x1="3" y1="12" x2="21" y2="12"/>
@@ -422,11 +315,12 @@
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
-        <div class="header-user-badge">
-            <div class="user-avatar">T</div>
+        <!-- Namecard badge — same structure/colors as quick-create -->
+        <div class="header-admin-badge">
+            <div class="admin-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">{{ auth()->user()->name }}</div>
-                <div class="user-role">Distribution Staff</div>
+                <div class="admin-name">{{ auth()->user()->name }}</div>
+                <div class="admin-role">Distribution Staff</div>
             </div>
         </div>
     </header>
@@ -518,6 +412,7 @@
             </div>
         </div>
 
+        <!-- WELCOME CARD -->
         <div class="welcome-card">
             <img src="{{ asset('images/mdrrmo-logo.png') }}" alt="MDRRMO">
             <div>
@@ -527,6 +422,7 @@
             </div>
         </div>
 
+        <!-- SCANNER CTA -->
         <div class="scanner-cta">
             <div class="scanner-cta-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -554,6 +450,7 @@
             </a>
         </div>
 
+        <!-- ACCESS NOTICE -->
         <div class="access-notice">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"/>
@@ -565,7 +462,8 @@
             </div>
         </div>
 
-        <div class="workflow-title">Distribution Workflow — Step by Step</div>
+        <!-- WORKFLOW STEPS -->
+        <div class="section-label">Distribution Workflow — Step by Step</div>
         <div class="workflow-steps">
             <div class="step">
                 <div class="step-num">1</div>
@@ -594,7 +492,8 @@
             </div>
         </div>
 
-        <div class="workflow-title">Possible Scan Results</div>
+        <!-- SCAN RESULTS -->
+        <div class="section-label">Possible Scan Results</div>
         <div class="alert-row">
             <div class="alert-box cleared">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

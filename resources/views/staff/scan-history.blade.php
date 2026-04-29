@@ -94,18 +94,11 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 14px; background: var(--green-pale);
-            border: 1px solid #BBF7D0; border-radius: 4px; flex-shrink: 0;
-        }
-        .user-avatar {
-            width: 32px; height: 32px; border-radius: 50%; background: var(--green);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0;
-        }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--green-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; }
+        /* ─── NAMECARD BADGE — green for Distribution Staff role ─── */
+        .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--green-pale); border: 1px solid #BBF7D0; border-radius: 4px; flex-shrink: 0; }
+        .admin-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .admin-name { font-size: 13px; font-weight: 600; color: var(--green-dark); line-height: 1.2; }
+        .admin-role { font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
         .sidebar-overlay {
@@ -129,7 +122,7 @@
             align-items: center; justify-content: center;
             cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s;
         }
-        .sidebar-close:hover { background: #FEF2F2; color: var(--red); }
+        .sidebar-close:hover { background: var(--red-pale); color: var(--red); }
         .sidebar-close svg { width: 16px; height: 16px; }
         .nav-section-label { padding: 18px 20px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray-400); }
         .nav-item {
@@ -617,9 +610,9 @@
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
-            .header-user-badge { padding: 6px 10px; gap: 8px; }
-            .user-name { font-size: 12px; }
-            .user-role { display: none; }
+            .header-admin-badge { padding: 6px 10px; gap: 8px; }
+            .admin-name { font-size: 12px; }
+            .admin-role { display: none; }
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
             .main-content { padding: 20px 16px; }
@@ -636,9 +629,9 @@
             .header-logos img:last-child { display: none; }
             .header-org { display: none; }
             .header-title { font-size: 13px; line-height: 1.3; }
-            .header-user-badge { padding: 5px 8px; }
-            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
-            .user-name { font-size: 11px; }
+            .header-admin-badge { padding: 5px 8px; }
+            .admin-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .admin-name { font-size: 11px; }
             .main-content { padding: 16px 12px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; gap: 10px; }
             .page-h1 { font-size: 18px; }
@@ -659,6 +652,14 @@
             .modal { max-width: 100%; margin: 0; border-radius: 0; max-height: 100vh; }
             .modal-backdrop { padding: 0; align-items: flex-end; }
             .modal-row { grid-template-columns: 110px 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .main-content { padding: 10px 8px; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
         }
 
         @media (max-width: 380px) {
@@ -701,11 +702,11 @@
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
-        <div class="header-user-badge">
-            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+        <div class="header-admin-badge">
+            <div class="admin-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">{{ auth()->user()->name }}</div>
-                <div class="user-role">Distribution Staff</div>
+                <div class="admin-name">{{ auth()->user()->name }}</div>
+                <div class="admin-role">Distribution Staff</div>
             </div>
         </div>
     </header>
