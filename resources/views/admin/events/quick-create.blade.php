@@ -341,12 +341,6 @@
         /* ── Crosshair overlay ── */
         .map-ch-wrap { position: relative; overflow: hidden; }
 
-        /* hide the browser/Leaflet hand cursor */
-        .map-ch-wrap,
-        .map-ch-wrap .leaflet-container,
-        .map-ch-wrap .leaflet-grab,
-        .map-ch-wrap .leaflet-dragging .leaflet-grab { cursor: none !important; }
-
         .map-crosshair {
             position: absolute;
             inset: 0;
@@ -898,6 +892,38 @@
             .footer-left { font-size: 10px; }
             .rp-qty-wrap { width: 110px; }
         }
+        /* ─── MAP BLUR OVERLAY (before first click) ─── */
+        .map-unlock-overlay {
+            position: absolute; inset: 0; z-index: 500;
+            backdrop-filter: blur(6px) brightness(0.7);
+            -webkit-backdrop-filter: blur(6px) brightness(0.7);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 10px; cursor: pointer;
+            transition: opacity 0.35s ease;
+            border-radius: 0;
+        }
+        .map-unlock-overlay.hidden {
+            opacity: 0; pointer-events: none;
+        }
+        .map-unlock-icon {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(27,63,122,0.85); border: 2px solid rgba(245,197,24,0.7);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+        }
+        .map-unlock-icon svg { width: 22px; height: 22px; color: var(--yellow); }
+        .map-unlock-text {
+            font-size: 13px; font-weight: 700; color: var(--white);
+            text-align: center; letter-spacing: 0.3px; line-height: 1.5;
+            text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+            padding: 0 16px;
+        }
+        .map-unlock-sub {
+            font-size: 11px; color: rgba(255,255,255,0.7);
+            text-align: center; font-weight: 400;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+
         @media (max-width: 600px) {
             .map-modal { width: 100vw; height: 100vh; max-height: none; border-radius: 0; }
             .map-modal-sidebar { width: 130px; }
@@ -1726,6 +1752,14 @@
                                     </div>
                                     <div class="map-ch-wrap" id="miniMapWrap">
                                         <div id="distMapMini" title="Click to expand to fullscreen"></div>
+                                        <!-- Blur overlay shown before first click -->
+                                        <div class="map-unlock-overlay" id="mapUnlockOverlay" onclick="unlockMap()">
+                                            <div class="map-unlock-icon">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                            </div>
+                                            <div class="map-unlock-text">Click to interact with the map</div>
+                                            <div class="map-unlock-sub">Opens fullscreen · Set distribution pin</div>
+                                        </div>
 <div class="map-crosshair" id="crosshairMini">
                                         <svg id="crosshairMiniSvg" xmlns="http://www.w3.org/2000/svg"></svg>
                                         <svg id="crosshairMiniRadar" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;">
@@ -1833,7 +1867,7 @@
 
 
     <!-- FULLSCREEN MAP MODAL -->
-    <div class="map-modal-overlay" id="mapModalOverlay">
+    <div class="map-modal-overlay" id="mapModalOverlay" onclick="if(event.target===this)closeMapModal()">
         <div class="map-modal" id="mapModal">
             <div class="map-modal-header">
                 <div class="map-modal-title-wrap">
@@ -2198,6 +2232,7 @@
     };
 
     let miniMap = null, fullMap = null;
+    let fullCrosshairCtrl = null;
     let pinMode = false, pinMarker = null, pinMarkerFull = null;
     const miniMarkers = {}, fullMarkers = {};
 
@@ -2335,9 +2370,6 @@
         setTimeout(() => miniMap && miniMap.invalidateSize(true), 50);
         setTimeout(() => miniMap && miniMap.invalidateSize(true), 300);
         setTimeout(() => miniMap && miniMap.invalidateSize(true), 700);
-
-        // ── Crosshair: mini map ──
-        attachCrosshair('crosshairMini', 'miniMapWrap', miniMap);
     }
 
     /* ── Init Full Map ── */
@@ -2347,8 +2379,8 @@
             .setView(_mapCenter, 14);
         addTiles(fullMap);
 
-        // ── Crosshair: full map ──
-        attachCrosshair('crosshairFull', 'fullMapWrap', fullMap);
+        // ── Crosshair: full map — always enabled (modal is click-activated) ──
+        fullCrosshairCtrl = attachCrosshair('crosshairFull', 'fullMapWrap', fullMap, false);
 
         fullMap.on('click', function (e) {
             dropPin(e.latlng.lat, e.latlng.lng);
@@ -2406,6 +2438,13 @@
         });
     }
 
+    /* ── Unlock mini map (remove blur overlay, enable crosshair, open modal) ── */
+    function unlockMap() {
+        const overlay = document.getElementById('mapUnlockOverlay');
+        if (overlay) overlay.classList.add('hidden');
+        openMapModal();
+    }
+
     /* ── Open / Close modal ── */
     function openMapModal() {
         document.getElementById('mapModalOverlay').classList.add('open');
@@ -2433,11 +2472,11 @@
                 });
             }
 
-            const names = selectedBarangays.has('All Barangays') ? allBarangayNames : [...selectedBarangays];
-            if (names.length > 0) {
-                setTimeout(() => flyToBrgy(names[0]), 200);
-            } else {
-                setTimeout(() => fullMap.setView(NAIC_CENTER, 13), 200);
+            // Always open at whatever the mini map is currently showing
+            const miniCenter = miniMap ? miniMap.getCenter() : null;
+            const miniZoom   = miniMap ? miniMap.getZoom()   : 13;
+            if (miniCenter) {
+                fullMap.setView(miniCenter, miniZoom, { animate: false });
             }
         }, 80);
     }
@@ -2448,6 +2487,10 @@
         if (pinMarkerFull) {
             const p = pinMarkerFull.getLatLng();
             syncPinToMini(p.lat, p.lng);
+        }
+        // Keep mini map in sync with wherever the user panned/zoomed in the modal
+        if (fullMap && miniMap) {
+            miniMap.setView(fullMap.getCenter(), fullMap.getZoom(), { animate: false });
         }
     }
 
@@ -2492,33 +2535,59 @@
             pinMarkerFull = L.marker([lat, lng], { icon: makeStarPinIcon(), draggable: true, zIndexOffset: 500 })
                 .addTo(fullMap)
                 .bindPopup('<b>📍 Distribution Point</b><br><small>Drag to adjust</small>').openPopup();
+            pinMarkerFull.on('dragstart', () => { if (fullCrosshairCtrl) fullCrosshairCtrl.lockTo(pinMarkerFull.getLatLng()); });
+            pinMarkerFull.on('drag',      () => { if (fullCrosshairCtrl) fullCrosshairCtrl.lockTo(pinMarkerFull.getLatLng()); });
             pinMarkerFull.on('dragend', () => {
                 const p = pinMarkerFull.getLatLng();
                 updatePinInputs(p.lat, p.lng);
                 syncPinToMini(p.lat, p.lng);
+                lockCrosshairToPin(fullMap, p.lat, p.lng);
             });
+
+            // ── Zoom-in animation: fly to the pinned point ──
+            const currentZoom = fullMap.getZoom();
+            const targetZoom  = Math.max(currentZoom, 17);
+            fullMap.flyTo([lat, lng], targetZoom, { duration: 1.1, easeLinearity: 0.25 });
+
+            // ── Lock crosshair at the pin's screen position after zoom settles ──
+            fullMap.once('moveend', () => lockCrosshairToPin(fullMap, lat, lng));
         }
 
         updatePinInputs(lat, lng);
         pinMode = false;
         updatePinModeUI();
         if (miniMap) miniMap.getContainer().style.cursor = '';
-        if (fullMap) fullMap.getContainer().style.cursor = '';
     }
 
     function syncPinToFull(lat, lng) {
         if (!fullMap) return;
         if (pinMarkerFull) fullMap.removeLayer(pinMarkerFull);
         pinMarkerFull = L.marker([lat, lng], { icon: makeStarPinIcon(), draggable: true, zIndexOffset: 500 }).addTo(fullMap);
-        pinMarkerFull.on('dragend', () => { const p = pinMarkerFull.getLatLng(); updatePinInputs(p.lat, p.lng); syncPinToMini(p.lat, p.lng); });
+        pinMarkerFull.on('dragstart', () => { if (fullCrosshairCtrl) fullCrosshairCtrl.lockTo(pinMarkerFull.getLatLng()); });
+        pinMarkerFull.on('drag',      () => { if (fullCrosshairCtrl) fullCrosshairCtrl.lockTo(pinMarkerFull.getLatLng()); });
+        pinMarkerFull.on('dragend', () => {
+            const p = pinMarkerFull.getLatLng();
+            updatePinInputs(p.lat, p.lng);
+            syncPinToMini(p.lat, p.lng);
+            lockCrosshairToPin(fullMap, p.lat, p.lng);
+        });
     }
 
     function syncPinToMini(lat, lng) {
         if (!miniMap) return;
         if (pinMarker) miniMap.removeLayer(pinMarker);
         pinMarker = L.marker([lat, lng], { icon: makeStarPinIcon(), draggable: true, zIndexOffset: 500 }).addTo(miniMap);
-        pinMarker.on('dragend', () => { const p = pinMarker.getLatLng(); updatePinInputs(p.lat, p.lng); syncPinToFull(p.lat, p.lng); });
+        pinMarker.on('dragend', () => {
+            const p = pinMarker.getLatLng();
+            updatePinInputs(p.lat, p.lng);
+            syncPinToFull(p.lat, p.lng);
+        });
         updatePinInputs(lat, lng);
+    }
+
+    /* ── Lock the full-map crosshair to a geographic coordinate ── */
+    function lockCrosshairToPin(map, lat, lng) {
+        if (fullCrosshairCtrl) fullCrosshairCtrl.lockTo(L.latLng(lat, lng));
     }
 
     /**
@@ -2563,6 +2632,14 @@
         if (pinMarkerFull && fullMap)  { fullMap.removeLayer(pinMarkerFull); pinMarkerFull = null; }
         document.getElementById('pinnedLocationDisplay').classList.remove('show');
         document.getElementById('pinNote').classList.remove('hidden');
+        // Clear the frozen crosshair on the full map
+        const ch = document.getElementById('crosshairFull');
+        const chSvg = document.getElementById('crosshairFullSvg');
+        const chCoords = document.getElementById('crosshairFullCoords');
+        if (ch) ch.classList.remove('visible');
+        if (chSvg) { while (chSvg.firstChild) chSvg.removeChild(chSvg.firstChild); }
+        if (chCoords) chCoords.style.display = 'none';
+        if (fullCrosshairCtrl) fullCrosshairCtrl.unlock();
         const bar = document.getElementById('modalPinBar');
         if (bar) {
             bar.classList.remove('pinned');
@@ -2827,7 +2904,7 @@
        LOCATION CROSSHAIR — MDRRMO Naic theme
        Survey-style reticle · Radar pulse · Fixed coord bar
     ══════════════════════════════════════════════ */
-    function attachCrosshair(chId, wrapId, leafletMap) {
+    function attachCrosshair(chId, wrapId, leafletMap, requireClick) {
         const ch         = document.getElementById(chId);
         const svg        = document.getElementById(chId + 'Svg');
         const radarSvg   = document.getElementById(chId + 'Radar');
@@ -2835,6 +2912,12 @@
         const coords     = document.getElementById(chId + 'Coords');
         const wrap       = document.getElementById(wrapId);
         if (!ch || !svg || !wrap) return;
+
+        // If requireClick=true, crosshair is suppressed until the map is activated
+        let crosshairEnabled = !requireClick;
+        // When lockedLatLng is set, the crosshair stays fixed on that geo-coordinate
+        // regardless of mouse movement, and redraws whenever the map moves/zooms.
+        let lockedLatLng = null;
 
         const BLUE   = '#1B3F7A';
         const YELLOW = '#F5C518';
@@ -2900,8 +2983,31 @@
             coords.style.top        = '';
         }
 
+        // Redraw crosshair at the locked geo-coordinate (called on map move/zoom)
+        function redrawAtLocked() {
+            if (!lockedLatLng || !leafletMap) return;
+            try {
+                const pt   = leafletMap.latLngToContainerPoint(lockedLatLng);
+                const rect = wrap.getBoundingClientRect();
+                drawCrosshair(pt.x, pt.y, rect.width, rect.height);
+                radarRings.forEach(r => { r.setAttribute('cx', pt.x); r.setAttribute('cy', pt.y); });
+                if (coords) {
+                    coords.textContent = lockedLatLng.lat.toFixed(6) + '°N   ' + lockedLatLng.lng.toFixed(6) + '°E';
+                    coords.style.display = 'block';
+                }
+                ch.classList.add('visible');
+            } catch(_) {}
+        }
+
+        if (leafletMap) {
+            leafletMap.on('move zoom moveend zoomend', redrawAtLocked);
+        }
+
         let rafId = null;
         wrap.addEventListener('mousemove', function(e) {
+            if (!crosshairEnabled) return;
+            // If locked to a pin, ignore the mouse — crosshair stays on the pin
+            if (lockedLatLng) return;
             if (rafId) cancelAnimationFrame(rafId);
             rafId = requestAnimationFrame(() => {
                 const rect = wrap.getBoundingClientRect();
@@ -2925,9 +3031,23 @@
 
         wrap.addEventListener('mouseleave', function() {
             if (rafId) cancelAnimationFrame(rafId);
-            ch.classList.remove('visible');
-            if (coords) coords.style.display = 'none';
+            // Only hide crosshair on mouse leave if not locked to a pin
+            if (!lockedLatLng) {
+                ch.classList.remove('visible');
+                if (coords) coords.style.display = 'none';
+            }
         });
+
+        // Expose control functions
+        return {
+            enable:   () => { crosshairEnabled = true; },
+            lockTo:   (latlng) => { lockedLatLng = latlng; redrawAtLocked(); },
+            unlock:   () => {
+                lockedLatLng = null;
+                ch.classList.remove('visible');
+                if (coords) coords.style.display = 'none';
+            }
+        };
     }
 
 
