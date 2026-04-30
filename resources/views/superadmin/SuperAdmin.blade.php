@@ -88,6 +88,7 @@
             "sidebar main";
         height: 100vh;
         overflow: hidden;
+        position: relative;
     }
 
     /* ══ TOP BAR ══ */
@@ -146,9 +147,11 @@
     }
     .hamburger {
         display: none; background: none; border: none; cursor: pointer;
-        padding: 0 14px; color: rgba(255,255,255,.6); flex-shrink: 0;
+        padding: 0 16px; color: rgba(255,255,255,.6); flex-shrink: 0;
         transition: color .15s; border-right: 1px solid rgba(255,255,255,.1);
         align-self: stretch;
+        align-items: center; justify-content: center;
+        min-width: 48px;
     }
     .hamburger:hover { color: var(--white); background: rgba(255,255,255,.06); }
     .hamburger svg { width: 20px; height: 20px; display: block; }
@@ -180,6 +183,7 @@
     .header-text {
         padding: 0 20px; display: flex; flex-direction: column;
         justify-content: center; align-self: stretch;
+        min-width: 0; overflow: hidden;
     }
     .header-org {
         font-size: 10px; font-weight: 700; text-transform: uppercase;
@@ -189,10 +193,13 @@
     .header-title {
         font-family: 'PT Serif', serif; font-size: 20px; font-weight: 700;
         color: var(--white); line-height: 1.1; letter-spacing: -.3px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        max-width: 100%;
     }
     .header-sub {
         font-size: 11px; color: rgba(255,255,255,.4); margin-top: 3px;
         line-height: 1.3; font-weight: 400;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .header-spacer { flex: 1; }
 
@@ -202,6 +209,7 @@
         padding: 0 22px;
         background: rgba(0,0,0,.2);
         flex-shrink: 0; align-self: stretch;
+        min-width: 0;
     }
     .user-avatar-ring {
         width: 36px; height: 36px; border-radius: 50%;
@@ -213,8 +221,11 @@
     .user-badge-name {
         font-size: 13px; font-weight: 700; color: var(--white);
         line-height: 1.2; white-space: nowrap;
+        overflow: hidden; text-overflow: ellipsis; max-width: 140px;
     }
     .user-badge-role { display: flex; align-items: center; gap: 5px; margin-top: 3px; }
+    /* Text block beside avatar — hidden on mobile via media query */
+    .user-badge-text { display: flex; flex-direction: column; min-width: 0; }
     .super-chip {
         background: linear-gradient(90deg, #C89B2A 0%, #F5C518 100%);
         color: var(--blue-dark); font-size: 9px; font-weight: 800;
@@ -229,7 +240,7 @@
     /* ══ SIDEBAR ══ */
     .sidebar-overlay {
         display: none !important; position: fixed; inset: 0;
-        background: rgba(0,0,0,.6); z-index: 200;
+        background: rgba(0,0,0,.6); z-index: 290;
         opacity: 0; transition: opacity .25s; pointer-events: none;
         backdrop-filter: blur(2px);
     }
@@ -731,7 +742,7 @@
 
     /* ── 1100px: tablet landscape ── */
     @media (max-width: 1100px) {
-        .stat-row  { grid-template-columns: repeat(2, 1fr); }
+        .stat-row   { grid-template-columns: repeat(2, 1fr); }
         .quick-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
@@ -740,70 +751,107 @@
         .shell {
             grid-template-rows: var(--topbar-h) var(--header-h) 1fr;
             grid-template-columns: 1fr;
-            grid-template-areas: "topbar" "header" "main";
+            grid-template-areas:
+                "topbar"
+                "header"
+                "main";
+            overflow: visible;
+            height: 100vh;
         }
+        /* Sidebar: full-height overlay, removed from grid flow */
         .sidebar {
-            position: fixed; left: 0;
-            top: calc(var(--topbar-h) + var(--header-h));
-            height: calc(100vh - var(--topbar-h) - var(--header-h));
-            z-index: 200; transform: translateX(-100%);
-            transition: transform .25s cubic-bezier(.4,0,.2,1);
-            box-shadow: 6px 0 24px rgba(0,0,0,.3);
+            grid-area: unset;
+            position: fixed;
+            top: 0; left: 0;
             width: var(--sidebar-w);
+            height: 100vh;
+            z-index: 300;
+            transform: translateX(-100%);
+            transition: transform .25s cubic-bezier(.4,0,.2,1);
+            box-shadow: 6px 0 24px rgba(0,0,0,.35);
         }
         .sidebar.open { transform: translateX(0); }
         .sidebar-close { display: flex; }
         .hamburger { display: flex; }
+        /* Main must scroll independently */
+        .main-content { overflow-y: auto; height: calc(100vh - var(--topbar-h) - var(--header-h)); }
         .main-inner { padding: 18px 16px; }
 
-        /* Tables: convert to card layout */
+        /* ── Table → Card layout ── */
         .table-wrap { overflow: visible; }
         table { display: block; }
         table thead { display: none; }
-        table tbody { display: flex; flex-direction: column; gap: 8px; padding: 10px; }
+        table tbody {
+            display: flex; flex-direction: column; gap: 10px; padding: 12px;
+        }
         table tbody tr {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            flex-direction: column;
             background: var(--white);
             border: 1px solid var(--gray-200) !important;
-            border-radius: 8px;
-            padding: 10px 12px;
-            gap: 8px;
+            border-radius: 10px;
+            padding: 12px 14px;
+            gap: 0;
             box-shadow: 0 1px 4px rgba(0,0,0,.05);
         }
         table tbody tr:hover { background: var(--blue-pale); }
+
+        /* Each cell = label left, value right */
         table tbody td {
             display: flex;
-            flex-direction: column;
-            gap: 2px;
-            padding: 0 !important;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 7px 0 !important;
             border: none !important;
-            font-size: 12px;
+            border-bottom: 1px solid var(--gray-100) !important;
+            font-size: 12.5px;
             color: var(--gray-700);
-            vertical-align: top;
         }
-        table tbody td::before {
+        table tbody td:last-child {
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+        }
+
+        /* data-label becomes left-side label — scoped only to table td */
+        table tbody td[data-label]::before {
             content: attr(data-label);
-            font-size: 9px;
+            font-size: 10px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: .9px;
             color: var(--gray-400);
-            margin-bottom: 2px;
+            flex-shrink: 0;
+            min-width: 95px;
+            line-height: 1.4;
+            align-self: flex-start;
+            padding-top: 1px;
         }
-        /* First cell spans full width and is the "title" of the card */
-        table tbody td:first-child {
-            grid-column: 1 / -1;
-            font-size: 13px;
+
+        /* Account cell: avatar+name block should be right-aligned value */
+        table tbody td[data-label="Account"] { align-items: flex-start; }
+        table tbody td[data-label="Account"] > div { text-align: right; }
+
+        /* Row counter: compact header line, no label */
+        table tbody td[data-label="#"] {
+            justify-content: flex-end;
+            font-size: 10px;
+            color: var(--gray-400);
             font-weight: 700;
-            color: var(--blue-dark);
-            padding-bottom: 6px !important;
-            border-bottom: 1px solid var(--gray-100) !important;
-            margin-bottom: 2px;
+            padding: 2px 0 6px !important;
+            border-bottom: 1px solid var(--gray-200) !important;
         }
-        /* Action cell always full-width at the bottom */
-        table tbody td:last-child { grid-column: 1 / -1; }
-        /* Empty state row stays simple */
+        table tbody td[data-label="#"]::before { display: none; }
+
+        /* Actions cell: right-aligned buttons, no label */
+        table tbody td[data-label="Actions"] {
+            padding-top: 10px !important;
+            justify-content: flex-end;
+        }
+        table tbody td[data-label="Actions"]::before { display: none; }
+
+        /* Empty state row stays clean */
         table tbody tr:has(td[colspan]) {
             display: block;
             border: none !important;
@@ -831,20 +879,30 @@
         .topbar-left { display: none; }
         .clock-date-inline { display: none; }
 
-        /* Header */
-        .header-title { font-size: 15px; }
+        /* Header: compact without overflowing */
+        .header-org   { display: none; }
+        .header-title { font-size: 14px; }
         .header-sub   { display: none; }
-        .header-logo-strip img { height: 38px; width: 38px; }
-        .header-logo-strip { padding: 0 10px; gap: 8px; }
-        .header-user-badge { padding: 0 10px; gap: 8px; }
-        .user-badge-name { font-size: 11.5px; }
+        .header-text  { padding: 0 10px; }
+        .header-logo-strip img { height: 34px; width: 34px; }
+        .header-logo-strip { padding: 0 8px; gap: 6px; }
+        /* Drop second logo on small screens to give title breathing room */
+        .header-logo-strip img:nth-child(n+3),
+        .header-logo-strip .logo-fallback:nth-child(n+3) { display: none !important; }
+        .header-user-badge { padding: 0 12px; gap: 8px; }
+        /* On mobile: hide the name, keep the Super Admin chip */
+        .user-badge-name { display: none; }
         .full-access-text { display: none; }
+        .super-chip { font-size: 8px; padding: 2px 6px; }
 
         /* Main padding */
         .main-inner { padding: 14px 12px; }
 
         /* Page titlebar */
-        .page-titlebar { flex-direction: column; align-items: flex-start; gap: 8px; padding-bottom: 14px; margin-bottom: 16px; }
+        .page-titlebar {
+            flex-direction: column; align-items: flex-start;
+            gap: 8px; padding-bottom: 14px; margin-bottom: 16px;
+        }
         .page-date-badge { flex-direction: row; align-items: center; gap: 6px; }
         .page-date-badge .day::after { content: ','; }
         .page-h1 { font-size: 19px; }
@@ -867,7 +925,7 @@
         .modal-body { padding: 16px 14px; }
 
         /* Panels */
-        .panel-header { padding: 10px 14px; }
+        .panel-header { padding: 10px 14px; flex-wrap: wrap; }
         .panel-title  { font-size: 12px; }
 
         /* Pagination */
@@ -880,27 +938,24 @@
         /* Alerts */
         .alert { font-size: 12px; padding: 10px 12px; }
 
-        /* Panel header action buttons wrap */
-        .panel-header { flex-wrap: wrap; }
-
-        /* Log summary: 2×2 grid */
+        /* Log summary */
         .log-summary { grid-template-columns: repeat(2, 1fr); }
         .log-sum-item { padding: 10px 12px; gap: 8px; }
         .log-sum-val  { font-size: 16px; }
 
-        /* Table cards refinement on small screens */
-        table tbody tr { grid-template-columns: 1fr; }
-        table tbody td:first-child { grid-column: 1; }
-        table tbody td:last-child  { grid-column: 1; }
+        /* Table card label min-width on phones */
+        table tbody td::before { min-width: 80px; }
     }
 
     /* ── 420px: very small phones ── */
     @media (max-width: 420px) {
         .stat-row   { grid-template-columns: 1fr 1fr; }
         .quick-grid { grid-template-columns: 1fr; }
-        .header-org { display: none; }
         .topbar-right { gap: 8px; }
         .main-inner { padding: 12px 10px; }
+        .user-badge-name { max-width: 70px; }
+        .header-title { font-size: 12px; }
+        table tbody td::before { min-width: 70px; }
     }
     </style>
 
@@ -957,7 +1012,7 @@
 
         <div class="header-user-badge">
             <div class="user-avatar-ring">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
-            <div>
+            <div class="user-badge-text">
                 <div class="user-badge-name">{{ Auth::user()->name }}</div>
                 <div class="user-badge-role">
                     <span class="super-chip">Super Admin</span>
