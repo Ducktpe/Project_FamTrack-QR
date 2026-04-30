@@ -235,7 +235,7 @@
             .page-body { padding: 20px 16px 32px; }
         }
 
-        /* ≤640px — header simplifies, back-btn icon-only */
+        /* ≤640px — header simplifies */
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
@@ -247,9 +247,6 @@
             .header-logos img:last-child { display: none; }
             .header-org { display: none; }
             .header-title { font-size: 13px; line-height: 1.3; }
-
-            .back-btn span { display: none; }
-            .back-btn { padding: 7px 10px; }
 
             .header-user-badge { padding: 5px 8px; }
             .user-avatar { width: 28px; height: 28px; font-size: 11px; }
@@ -327,10 +324,6 @@
         </div>
         <div class="header-spacer"></div>
         <div class="header-right">
-            <a href="{{ route('staff.dashboard') }}" class="back-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-                <span>Back to Dashboard</span>
-            </a>
             <div class="header-user-badge">
                 <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
                 <div>
@@ -354,6 +347,11 @@
 
         @if($events->isEmpty())
 
+            <a href="{{ route('staff.dashboard') }}" class="back-btn" style="margin-bottom:16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                <span>Back to Dashboard</span>
+            </a>
+
             <div class="alert-no-event">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
@@ -370,6 +368,11 @@
             </a>
 
         @else
+
+            <a href="{{ route('staff.dashboard') }}" class="back-btn" style="margin-bottom:16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                <span>Back to Dashboard</span>
+            </a>
 
             <div class="stats-row">
                 <div class="stat-card green-top">

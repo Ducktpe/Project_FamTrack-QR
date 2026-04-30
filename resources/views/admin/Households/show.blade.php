@@ -135,16 +135,17 @@
             border: 1px solid var(--gray-200);
             border-top: 4px solid var(--blue);
             padding: 24px 28px;
-            display: flex; align-items: center; gap: 24px;
+            display: flex; align-items: flex-start; gap: 16px;
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
+        .hero-top-row { display: flex; align-items: center; gap: 24px; flex: 1; min-width: 0; }
         .hero-avatar { width: 64px; height: 64px; border-radius: 4px; background: var(--blue-pale); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .hero-avatar svg { width: 30px; height: 30px; color: var(--blue); }
         .hero-info { flex: 1; min-width: 0; }
         .hero-name { font-family: 'PT Serif', serif; font-size: 22px; font-weight: 700; color: var(--blue-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .hero-meta { font-size: 12px; color: var(--gray-600); margin-top: 4px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .hero-meta-sep { color: var(--gray-200); }
+        .hero-meta { font-size: 12px; color: var(--gray-600); margin-top: 4px; display: flex; align-items: baseline; gap: 0; flex-wrap: wrap; }
+        .hero-meta-sep { color: var(--gray-300); padding: 0 6px; }
         .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; }
         .hero-serial { display: flex; align-items: center; gap: 8px; }
         .serial-display { font-family: monospace; font-size: 16px; font-weight: 700; color: var(--blue); letter-spacing: 1.5px; background: var(--blue-pale); border: 1px solid #C7D9F3; padding: 6px 14px; border-radius: 3px; }
@@ -425,9 +426,9 @@
             .page-h1 { font-size: 18px; }
             .titlebar-actions { width: 100%; }
             .back-btn { flex: 1; justify-content: center; }
-            .household-hero { padding: 16px; gap: 14px; }
-            .hero-name { font-size: 18px; }
-            .hero-right { align-items: flex-start; }
+            .household-hero { padding: 16px; gap: 12px; flex-direction: column; align-items: stretch; }
+            .hero-name { font-size: 18px; white-space: normal; }
+            .hero-right { align-items: flex-start; flex-direction: row; flex-wrap: wrap; gap: 8px; width: 100%; }
             .info-grid-3 { grid-template-columns: 1fr; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
@@ -594,25 +595,23 @@
 
         {{-- Hero Identity Card --}}
         <div class="household-hero">
-            <div class="hero-avatar">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/>
-                </svg>
-            </div>
-            <div class="hero-info">
-                <div class="hero-name">{{ $household->household_head_name }}</div>
-                @php $heroHead = $household->members->firstWhere('is_family_head', 1); @endphp
-                <div class="hero-meta">
-                    @if($heroHead)
-                        <span>{{ $heroHead->sex }}</span>
-                        <span class="hero-meta-sep">|</span>
-                        <span>{{ $heroHead->age }} years old</span>
-                        <span class="hero-meta-sep">|</span>
-                        <span>{{ $heroHead->civil_status ?? '—' }}</span>
-                        <span class="hero-meta-sep">|</span>
-                    @endif
-                    <span>{{ $household->barangay }}, {{ $household->municipality }}</span>
+            <div class="hero-top-row">
+                <div class="hero-avatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/>
+                    </svg>
                 </div>
+                <div class="hero-info">
+                    <div class="hero-name">{{ $household->household_head_name }}</div>
+                    @php $heroHead = $household->members->firstWhere('is_family_head', 1); @endphp
+                    <div class="hero-meta">
+                        @if($heroHead)
+                            <span>{{ $heroHead->sex }}<span class="hero-meta-sep"> | </span></span>
+                            <span>{{ $heroHead->age }} years old<span class="hero-meta-sep"> | </span></span>
+                            <span>{{ $heroHead->civil_status ?? '—' }}<span class="hero-meta-sep"> | </span></span>
+                        @endif
+                        <span>{{ $household->barangay }}, {{ $household->municipality }}</span>
+                    </div>
                 <div class="hero-badges">
                     @if($household->isApproved())
                         <span class="badge badge-approved">
@@ -631,6 +630,7 @@
                     @if($household->is_solo_parent)<span class="badge badge-blue">Solo Parent</span>@endif
                 </div>
             </div>
+            </div>{{-- /.hero-top-row --}}
 
             {{-- Right column: serial + scan counter --}}
             <div class="hero-right">

@@ -964,7 +964,7 @@
                 <div class="form-group">
                     <label class="form-label" id="lbl-coord-img">Location Photo <span style="font-weight:400;color:var(--gray-400);text-transform:none;letter-spacing:0;">(optional — map screenshot or on-site photo)</span></label>
                     <div class="img-upload-box" onclick="document.getElementById('coord-img-file').click()">
-                        <input type="file" id="coord-img-file" name="coordinates_image" accept="image/*" onchange="previewCoordImg(event)">
+                        <input type="file" id="coord-img-file" name="coordinates_image" accept="image/*" onchange="previewCoordImg(event)" onclick="event.stopPropagation()">
                         <svg class="img-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                         <div class="img-upload-text" id="img-upload-text">Click to upload location photo</div>
                         <div class="img-upload-sub">JPG, PNG, WEBP — max 5 MB</div>
