@@ -701,7 +701,7 @@
             $dmRecent = $mapEvents->filter(fn($e) => $e->event_date && \Carbon\Carbon::parse($e->event_date)->gte(now()->subDays(30)))->count();
         @endphp
 
-        <div class="dist-map-section">
+        <div class="dist-map-section" id="distMapSection" style="display:none">
             <div class="dist-map-header">
                 <div class="dist-map-title-wrap">
                     <div class="ca-dot"></div>
@@ -834,6 +834,7 @@ function filtQR(brgy,type){
     const hids=filtH(brgy).map(h=>h.id);
     let codes=QR_CODES.filter(q=>hids.includes(q.household_id));
     if(type==='family_head') codes=codes.filter(q=>MEMBERS.find(m=>m.household_id===q.household_id&&m.is_family_head));
+    else if(type==='household') codes=codes.filter(q=>!MEMBERS.find(m=>m.household_id===q.household_id&&m.is_family_head));
     return codes;
 }
 
@@ -1325,6 +1326,13 @@ function refresh(){
         const k=btn.dataset.key; const cfg=SECTOR_CFG.find(x=>x.key===k); const on=PB.active.has(k);
         btn.classList.toggle('on',on); btn.style.background=on?cfg.color:''; btn.style.borderColor=on?'transparent':''; btn.style.color=on?'#fff':'';
     });
+    /* Show/hide the distribution map section */
+    const mapSection=document.getElementById('distMapSection');
+    if(mapSection){
+        const distActive=PB.active.has('distribution');
+        mapSection.style.display=distActive?'':'none';
+        if(distActive){ setTimeout(()=>{ initDashMap(); if(dmMap) dmMap.invalidateSize(true); },80); }
+    }
 }
 
 /* ── Init sector buttons ── */

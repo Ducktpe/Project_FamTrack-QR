@@ -12,6 +12,33 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    /**
+     * Lightweight JSON endpoint for silent polling.
+     * Only returns scalar counts — no JSON payloads.
+     */
+    public function stats()
+    {
+        return response()->json([
+            'totalResidents'  => FamilyMember::count(),
+            'totalHouseholds' => Household::count(),
+            'approvedCount'   => Household::whereNotNull('approved_by')->count(),
+            'totalVulnerable' => Household::where(function ($q) {
+                $q->where('is_4ps_beneficiary', true)
+                  ->orWhere('is_pwd', true)
+                  ->orWhere('is_senior', true)
+                  ->orWhere('is_solo_parent', true);
+            })->count(),
+            'totalQr'         => QrCode::count(),
+            'activeQr'        => QrCode::where('is_active', true)->count(),
+            'inactiveQr'      => QrCode::where('is_active', false)->count(),
+            'totalEvents'     => DistributionEvent::count(),
+            'ongoingEvents'   => DistributionEvent::where('status', 'ongoing')->count(),
+            'upcomingEvents'  => DistributionEvent::where('status', 'upcoming')->count(),
+            'completedEvents' => DistributionEvent::where('status', 'completed')->count(),
+            'cancelledEvents' => DistributionEvent::where('status', 'cancelled')->count(),
+        ]);
+    }
+
     public function index()
     {
         // ── TOP SUMMARY STRIP ─────────────────────────────────────
