@@ -188,14 +188,17 @@
         .table-title { font-size: 13px; font-weight: 600; color: var(--blue-dark); display: flex; align-items: center; gap: 8px; }
         .ca-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); border: 2px solid var(--yellow-dark); flex-shrink: 0; }
         .table-count { font-size: 11px; color: var(--gray-400); }
-        .table-scroll { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 760px; }
+        .table-scroll { overflow-x: hidden; }
+        table { width: 100%; border-collapse: collapse; min-width: 0; }
         thead tr { background: var(--gray-50); border-bottom: 2px solid var(--gray-200); }
-        thead th { padding: 11px 16px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); text-align: left; white-space: nowrap; }
+        thead th { padding: 11px 16px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); text-align: left; white-space: normal; word-break: break-word; }
         tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.1s; }
         tbody tr:last-child { border-bottom: none; }
         tbody tr:hover { background: var(--blue-pale); }
-        tbody td { padding: 12px 16px; font-size: 13px; color: var(--gray-800); vertical-align: middle; }
+        tbody td { padding: 12px 16px; font-size: 13px; color: var(--gray-800); vertical-align: middle; white-space: normal; word-break: break-word; }
+        .action-btns { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-start; }
+        .action-btns button { flex: 1 1 auto; min-width: 100px; }
+        td:last-child { min-width: 0; }
 
         /* --- EVENT CARDS (mobile) --- */
         .event-cards { display: none; flex-direction: column; gap: 10px; padding: 12px; background: var(--gray-100); }

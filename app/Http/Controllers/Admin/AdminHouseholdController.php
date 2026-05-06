@@ -458,7 +458,11 @@ class AdminHouseholdController extends Controller
         try {
             $path = $qrService->generateForFamilyHead($household, $member);
 
-            $member->update(['qr_code_path' => $path]);
+            $member->update([
+                'qr_code_path'    => $path,
+                'qr_generated_at' => now(),
+                'qr_reprint_count' => 0,
+            ]);
 
             AuditLog::log('generated_head_qr_code', [
                 'model'         => 'FamilyMember',
@@ -497,6 +501,8 @@ class AdminHouseholdController extends Controller
         if (!file_exists($downloadPath)) {
             abort(404, 'QR code file not found.');
         }
+
+        $member->increment('qr_reprint_count');
 
         $filename = $serial . '-' . \Illuminate\Support\Str::slug($member->full_name) . '-qr.svg';
 
