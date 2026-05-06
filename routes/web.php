@@ -50,6 +50,7 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('superadmin')->name('sup
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard',  [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/stats', [\App\Http\Controllers\Admin\DashboardController::class, 'stats'])->name('dashboard.stats');
     Route::get('/residents',  [\App\Http\Controllers\Admin\ResidentController::class,  'index'])->name('residents.index');
 
     Route::get('/households',                    [\App\Http\Controllers\Admin\AdminHouseholdController::class, 'index'])    ->name('households.index');

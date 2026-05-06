@@ -685,7 +685,7 @@
             $dmRecent = $mapEvents->filter(fn($e) => $e->event_date && \Carbon\Carbon::parse($e->event_date)->gte(now()->subDays(30)))->count();
         @endphp
 
-        <div class="dist-map-section">
+        <div class="dist-map-section" id="distMapSection" style="display:none">
             <div class="dist-map-header">
                 <div class="dist-map-title-wrap">
                     <div class="ca-dot"></div>
@@ -818,6 +818,7 @@ function filtQR(brgy,type){
     const hids=filtH(brgy).map(h=>h.id);
     let codes=QR_CODES.filter(q=>hids.includes(q.household_id));
     if(type==='family_head') codes=codes.filter(q=>MEMBERS.find(m=>m.household_id===q.household_id&&m.is_family_head));
+    else if(type==='household') codes=codes.filter(q=>!MEMBERS.find(m=>m.household_id===q.household_id&&m.is_family_head));
     return codes;
 }
 
@@ -1087,6 +1088,13 @@ function refresh(){
         const k=btn.dataset.key; const cfg=SECTOR_CFG.find(x=>x.key===k); const on=PB.active.has(k);
         btn.classList.toggle('on',on); btn.style.background=on?cfg.color:''; btn.style.borderColor=on?'transparent':''; btn.style.color=on?'#fff':'';
     });
+    /* Show/hide the distribution map section */
+    const mapSection=document.getElementById('distMapSection');
+    if(mapSection){
+        const distActive=PB.active.has('distribution');
+        mapSection.style.display=distActive?'':'none';
+        if(distActive){ setTimeout(()=>{ initDashMap(); if(dmMap) dmMap.invalidateSize(true); },80); }
+    }
 }
 
 /* ── Init sector buttons ── */
@@ -1186,19 +1194,80 @@ function dmUpdateNotice(){
     const count=dmMarkers.filter(({status,date_raw})=>dmCurrentFilter==='all'?true:dmCurrentFilter==='recent'?(date_raw&&new Date(date_raw)>=now30):(status===dmCurrentFilter)).length;
     document.getElementById('dmNoPin').classList.toggle('show',count===0);
 }
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initDashMap);
-else initDashMap();
+/* initDashMap is called by refresh() when Distribution sector is active */
 
-/* ── Auto-refresh every 30s ── */
-const REFRESH_MS=30_000; const SCROLL_KEY='dash_scroll';
-const mainContent=document.querySelector('.main-content');
-const savedScroll=sessionStorage.getItem(SCROLL_KEY);
-if(savedScroll!==null&&mainContent){ mainContent.scrollTop=parseInt(savedScroll,10); sessionStorage.removeItem(SCROLL_KEY); }
-let remaining=REFRESH_MS/1000;
-const timerEl=document.createElement('span'); timerEl.style.cssText='font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.5px;';
+/* ── Silent polling every 60s (no page reload) ── */
+const POLL_MS = 60_000;
+const timerEl = document.createElement('span');
+timerEl.style.cssText = 'font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.5px;';
 document.querySelector('.topbar-right').prepend(timerEl);
-const countdownInterval=setInterval(()=>{ remaining--; timerEl.textContent=`Refresh in ${remaining}s`; if(remaining<=0){ clearInterval(countdownInterval); if(mainContent) sessionStorage.setItem(SCROLL_KEY,mainContent.scrollTop); location.reload(); } },1000);
-mainContent&&mainContent.addEventListener('scroll',()=>{ remaining=REFRESH_MS/1000; });
+
+let pollRemaining = POLL_MS / 1000;
+let pollPaused = false;
+
+/* Countdown ticker */
+setInterval(() => {
+    if (pollPaused) return;
+    pollRemaining--;
+    timerEl.textContent = `Data syncs in ${pollRemaining}s`;
+    if (pollRemaining <= 0) { pollRemaining = POLL_MS / 1000; silentPoll(); }
+}, 1000);
+
+/* Pause countdown while user is interacting */
+document.querySelector('.main-content') && document.querySelector('.main-content').addEventListener('scroll', () => { pollPaused = true; clearTimeout(window._pollResume); window._pollResume = setTimeout(() => { pollPaused = false; }, 3000); });
+
+function silentPoll() {
+    timerEl.textContent = 'Syncing…';
+    fetch('{{ route("admin.dashboard.stats") }}', {
+        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+    })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(data => {
+        applyStats(data);
+        timerEl.textContent = 'Synced just now';
+        setTimeout(() => { timerEl.textContent = `Data syncs in ${POLL_MS/1000}s`; }, 3000);
+    })
+    .catch(err => {
+        console.warn('Dashboard poll failed:', err);
+        timerEl.textContent = 'Sync failed — retrying';
+    });
+}
+
+function applyStats(d) {
+    /* Strip cards */
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = Number(val).toLocaleString(); };
+
+    /* Update JS data arrays so sector charts also reflect new counts */
+    /* Patch main donut if no sector is active */
+    if (PB.active.size === 0 && pbMainChart) {
+        pbMainChart.data.datasets[0].data = [d.totalResidents, d.totalVulnerable, d.totalEvents, d.totalQr];
+        pbMainChart.update('active');
+    }
+
+    /* Re-render sector buttons counts */
+    document.querySelectorAll('.pb-sbtn').forEach(btn => {
+        const k = btn.dataset.key;
+        const countEl = btn.querySelector('.pb-sbtn-count');
+        if (!countEl) return;
+        if (k === 'population')   countEl.textContent = Number(d.totalResidents).toLocaleString();
+        if (k === 'vulnerable')   countEl.textContent = Number(d.totalVulnerable).toLocaleString();
+        if (k === 'distribution') countEl.textContent = Number(d.totalEvents).toLocaleString();
+        if (k === 'qr')          countEl.textContent = Number(d.totalQr).toLocaleString();
+    });
+
+    /* Strip cards — patch text nodes directly */
+    document.querySelectorAll('.pb-strip-card').forEach(card => {
+        const lbl = card.querySelector('.pb-sl')?.textContent?.trim().toLowerCase();
+        const valEl = card.querySelector('.pb-sv');
+        const subEl = card.querySelector('.pb-ss');
+        if (!valEl) return;
+        if (lbl === 'residents')   { valEl.textContent = Number(d.totalResidents).toLocaleString(); }
+        if (lbl === 'households')  { valEl.textContent = Number(d.totalHouseholds).toLocaleString(); if(subEl) subEl.textContent = Number(d.approvedCount).toLocaleString()+' approved'; }
+        if (lbl === 'vulnerable')  { valEl.textContent = Number(d.totalVulnerable).toLocaleString(); }
+        if (lbl === 'events')      { valEl.textContent = Number(d.totalEvents).toLocaleString(); if(subEl) subEl.textContent = Number(d.ongoingEvents).toLocaleString()+' ongoing'; }
+        if (lbl === 'active qr')   { valEl.textContent = Number(d.activeQr).toLocaleString(); if(subEl) subEl.textContent = 'of '+Number(d.totalQr).toLocaleString()+' total'; }
+    });
+}
 </script>
 </body>
 </html>
