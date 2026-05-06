@@ -186,6 +186,17 @@
         .fade-up:nth-child(2){transition-delay:0.10s} .fade-up:nth-child(3){transition-delay:0.20s} .fade-up:nth-child(4){transition-delay:0.30s}
 
         /* ─── RESPONSIVE ─── */
+        @media (max-width: 1024px) {
+            .footer-main { grid-template-columns: 1fr 1fr; gap: 36px; padding: 48px 40px 32px; }
+            .footer-brand { grid-column: 1 / -1; }
+            .section-wrap { padding: 0 40px; }
+            .mv-grid { gap: 20px; }
+            .team-grid { grid-template-columns: 1fr 1fr; }
+            .team-card.featured { grid-column: span 2; }
+            .system-grid { grid-template-columns: 1fr 1fr; }
+            .contact-grid { grid-template-columns: 1fr 1fr; }
+            .page-hero { padding: 64px 40px 72px; }
+        }
         @media (max-width: 900px) {
             .section-wrap { padding: 0 32px; }
             .mv-grid { grid-template-columns: 1fr; }
@@ -197,24 +208,60 @@
             .footer-main { grid-template-columns: 1fr 1fr; gap: 32px; }
             .page-hero { padding: 56px 32px 64px; }
         }
+        @media (max-width: 768px) {
+            .topbar { padding: 0 20px; height: 30px; }
+            .topbar-left { display: none; }
+            .clock-date { display: none; }
+            nav { padding: 0 20px; height: 64px; }
+            .nav-brand img { height: 40px; width: 40px; }
+            .nav-text-org { display: none; }
+            .nav-text-title { font-size: 14px; }
+            .nav-divider { height: 32px; }
+            .nav-login { padding: 9px 16px; font-size: 11px; }
+            .section-wrap { padding: 0 24px; }
+            .mv-section, .mandate-section, .team-section, .system-section, .contact-section { padding: 64px 0; }
+            .footer-main { grid-template-columns: 1fr; gap: 28px; padding: 40px 24px 24px; }
+            .footer-brand { grid-column: auto; }
+            .footer-bottom { padding: 16px 24px; flex-direction: column; gap: 6px; text-align: center; }
+            .page-hero { padding: 48px 24px 56px; }
+            .fade-left, .fade-right { transform: translateY(24px); }
+            .fade-left.visible, .fade-right.visible { transform: translateY(0); }
+        }
         @media (max-width: 640px) {
             .section-wrap { padding: 0 20px; }
             .topbar { padding: 0 16px; }
             nav { padding: 0 16px; height: 60px; }
             .nav-divider { display: none; }
+            .nav-brand img:last-of-type { display: none; }
             .nav-text-org { display: none; }
             .nav-text-title { font-size: 13px; }
-            .nav-back span { display: none; } .nav-back { padding: 9px 10px; border-radius: 50%; width: 38px; height: 38px; justify-content: center; gap: 0; }
+            .nav-back span { display: none; }
+            .nav-back { padding: 9px 10px; border-radius: 50%; width: 38px; height: 38px; justify-content: center; gap: 0; }
             .team-grid { grid-template-columns: 1fr; }
             .team-card.featured { grid-column: span 1; grid-template-columns: 1fr; text-align: center; }
             .team-card.featured .team-avatar { margin: 0 auto; }
+            .contact-grid { grid-template-columns: 1fr; }
             .footer-main { grid-template-columns: 1fr; padding: 40px 20px 32px; }
             .footer-bottom { padding: 16px 20px; }
-            .page-hero { padding: 48px 20px 56px; }
+            .page-hero { padding: 40px 20px 48px; }
         }
         @media (max-width: 480px) {
-            .topbar { height: 28px; } .status-dot { display: none; }
-            .mv-section, .mandate-section, .team-section, .system-section, .contact-section { padding: 64px 0; }
+            .topbar { height: 28px; }
+            .status-dot { display: none; }
+            .clock { font-size: 11px; }
+            nav { height: 58px; padding: 0 16px; }
+            .nav-brand { gap: 10px; }
+            .nav-brand img { height: 34px; width: 34px; }
+            .nav-divider { display: none; }
+            .nav-text-title { font-size: 13px; }
+            .nav-login span { display: none; }
+            .nav-login { padding: 9px 12px; gap: 0; border-radius: 50%; width: 38px; height: 38px; justify-content: center; }
+            .mv-section, .mandate-section, .team-section, .system-section, .contact-section { padding: 56px 0; }
+            .mv-card { padding: 28px 22px; }
+            .page-hero { padding: 36px 16px 44px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
     </style>
 </head>

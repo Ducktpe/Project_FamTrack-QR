@@ -70,9 +70,8 @@
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         /* ─── HEADER ─── */
-        header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; }
-        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
-        .hamburger:hover { background: var(--blue-pale); }
+        header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; }
+        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 4px; color: var(--blue-dark); }
         .hamburger svg { width: 22px; height: 22px; display: block; }
         .header-logos { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
         .header-logos img { height: 54px; width: 54px; object-fit: contain; }
@@ -82,10 +81,11 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--sky-pale); border: 1px solid var(--sky-border); border-radius: 4px; }
+        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--sky-pale); border: 1px solid var(--sky-border); border-radius: 4px; flex-shrink: 0; }
         .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--sky); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); }
-        .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: 0.5px; }
+        .user-info { min-width: 0; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); line-height: 1.2; white-space: nowrap; }
+        .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
 
         /* ─── READ-ONLY BADGE ─── */
         .readonly-badge {
@@ -102,7 +102,7 @@
         .sidebar-overlay.active { display: block !important; pointer-events: auto; }
 
         /* ─── SIDEBAR ─── */
-        .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; }
+        .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
         .sidebar-close { display: none; position: absolute; top: 12px; right: 12px; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 4px; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s; }
         .sidebar-close:hover { background: #FEF2F2; color: var(--red); }
         .sidebar-close svg { width: 16px; height: 16px; }
@@ -221,22 +221,54 @@
         .pagination-row nav span[aria-disabled="true"], .pagination-row nav span[aria-disabled="true"] > span { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
 
         /* ─── FOOTER ─── */
-        footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; gap: 8px; }
-        .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
+        footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; gap: 8px; height: 48px; overflow: hidden; }
+        .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
         .footer-left strong { color: rgba(255,255,255,0.7); }
-        .footer-center { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 1px; text-transform: uppercase; }
-        .fb-link { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.15s; white-space: nowrap; }
+        .footer-center { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 1px; text-transform: uppercase; flex-shrink: 0; }
+        .fb-link { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.15s; white-space: nowrap; flex-shrink: 0; }
         .fb-link:hover { color: var(--yellow); }
         .fb-link svg { width: 13px; height: 13px; }
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--gray-100); }
-        ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
+        /* ─── MOBILE HOUSEHOLD CARDS (shown at ≤900px) ─── */
+        .hh-mobile-cards { padding: 12px; display: none; }
+        .hh-card {
+            display: flex; flex-direction: column; gap: 0;
+            background: var(--white);
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--gray-200);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+        .hh-card-top {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; gap: 10px;
+            padding: 14px 16px 10px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .hh-card-name { min-width: 0; overflow: hidden; }
+        .hh-card-name strong { display: block; font-size: 14px; font-weight: 700; color: var(--blue-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hh-card-name small { font-size: 11px; color: var(--gray-400); margin-top: 3px; display: block; }
+        .hh-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+        .hh-card-field { display: flex; flex-direction: column; gap: 3px; padding: 10px 16px; border-bottom: 1px solid var(--gray-100); }
+        .hh-card-field:nth-child(odd):not(.full) { border-right: 1px solid var(--gray-100); }
+        .hh-card-field.full { grid-column: 1 / -1; border-right: none; }
+        .hh-card-field-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); }
+        .hh-card-field-val { font-size: 12.5px; color: var(--gray-800); font-weight: 500; line-height: 1.4; }
+        .hh-card-footer {
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            padding: 10px 16px; flex-wrap: wrap;
+            background: var(--gray-50);
+        }
+        .hh-card-serial-wrap { display: flex; flex-direction: column; gap: 2px; }
+        .hh-card-serial { font-family: monospace; font-size: 12px; font-weight: 700; color: var(--blue); letter-spacing: 0.5px; }
+        .hh-card-serial-none { font-size: 11px; color: var(--gray-400); font-style: italic; }
 
         /* ─── RESPONSIVE ─── */
+        /* ≤900px — sidebar off-canvas */
         @media (max-width: 900px) {
-            .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
-            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
+            .shell { grid-template-rows: 36px 76px 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
+            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform .28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,.15); }
             .sidebar.open { transform: translateX(0); }
             .sidebar-overlay { display: block; }
             .sidebar-close { display: flex; }
@@ -255,7 +287,11 @@
             .stats-row { gap: 10px; }
             .stat-card { padding: 14px 16px; gap: 12px; }
             .stat-number { font-size: 26px; }
+            .table-wrap { display: none; }
+            .hh-mobile-cards { display: block; }
         }
+
+        /* ≤640px — header simplifies further */
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
@@ -265,7 +301,11 @@
             .logo-divider { display: none; }
             .header-logos img:last-child { display: none; }
             .header-org { display: none; }
-            .header-title { font-size: 13px; }
+            .header-title { font-size: 13px; line-height: 1.3; }
+            .header-user-badge { padding: 5px 8px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .user-name { font-size: 11px; }
+            .readonly-badge { padding: 5px 9px; font-size: 10px; }
             .main-content { padding: 16px 12px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; }
             .page-h1 { font-size: 18px; }
@@ -274,11 +314,45 @@
             .stat-icon { width: 36px; height: 36px; }
             .stat-icon svg { width: 18px; height: 18px; }
             .stat-number { font-size: 22px; }
+            .stat-label { font-size: 10px; letter-spacing: 0.5px; }
             .filter-bar { flex-wrap: wrap; }
             .filter-search { min-width: 100%; }
+            .filter-count { margin-left: 0; width: 100%; text-align: right; }
             footer { padding: 0 12px; }
-            .footer-center { display: none; }    
+            .footer-center { display: none; }
+            .footer-left { font-size: 10px; }
         }
+
+        /* ≤480px — tightest shell, mirrors audit trail */
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .topbar { height: 28px; padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
+            .header-user-badge { padding: 5px 8px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            /* readonly-badge: icon only */
+            .readonly-badge { padding: 5px 7px; gap: 0; }
+            .readonly-badge-text { display: none; }
+            .main-content { padding: 10px 8px; }
+            .page-h1 { font-size: 16px; }
+            .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+            footer { height: 40px; padding: 0 10px; }
+            .footer-left { font-size: 9px; }
+            .hh-mobile-cards { padding: 8px; }
+            .hh-card { margin-bottom: 8px; }
+            .hh-card-body { grid-template-columns: 1fr; }
+            .hh-card-field:nth-child(odd):not(.full) { border-right: none; }
+        }
+
+        /* ≤380px — single-column stats */
+        @media (max-width: 380px) {
+            .stats-row { grid-template-columns: 1fr; }
+            .main-content { padding: 10px 8px; }
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--gray-100); }
+        ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
         .nav-badge-view { margin-left: auto; background: var(--gray-400); color: var(--white); font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px; }
         .role-notice { margin: 12px 14px; background: var(--purple-pale); border: 1px solid var(--purple-border); border-left: 3px solid var(--purple); padding: 10px 12px; border-radius: 2px; }
         .role-notice-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--purple-dark); margin-bottom: 3px; }
@@ -322,11 +396,11 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
             </svg>
-            Read-Only Access
+            <span class="readonly-badge-text">Read-Only Access</span>
         </span>
         <div class="header-user-badge">
             <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
-            <div>
+            <div class="user-info">
                 <div class="user-name">{{ auth()->user()->name }}</div>
                 <div class="user-role">View-Only Access</div>
             </div>
@@ -607,6 +681,89 @@
                 </table>
             </div>
 
+            {{-- ── Mobile card view (shown at ≤900px when .table-wrap is hidden) ── --}}
+            <div class="hh-mobile-cards">
+                @forelse($households as $household)
+                    @php $scanCount = $household->distributionLogs->count(); @endphp
+                    @php $headMember = $household->members->firstWhere('is_family_head', 1); @endphp
+                    <div class="hh-card hh-row"
+                         data-name="{{ strtolower($household->household_head_name) }}"
+                         data-serial="{{ strtolower($household->serial_code ?? '') }}"
+                         data-barangay="{{ strtolower($household->barangay) }}"
+                         data-status="{{ $household->isApproved() ? 'approved' : 'pending' }}">
+
+                        {{-- Top: name + status badge --}}
+                        <div class="hh-card-top">
+                            <div class="hh-card-name">
+                                <strong>{{ $household->household_head_name }}</strong>
+                                <small>
+                                    @if($headMember) {{ $headMember->sex }}, {{ $headMember->age }} yrs old
+                                    @else —
+                                    @endif
+                                </small>
+                            </div>
+                            @if($household->isApproved())
+                                <span class="badge badge-approved" style="flex-shrink:0;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Approved
+                                </span>
+                            @else
+                                <span class="badge badge-pending" style="flex-shrink:0;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    Pending
+                                </span>
+                            @endif
+                        </div>
+
+                        {{-- Body: field grid --}}
+                        <div class="hh-card-body">
+                            <div class="hh-card-field full">
+                                <span class="hh-card-field-label">Address</span>
+                                <span class="hh-card-field-val">{{ $household->street_purok }}, {{ $household->barangay }}, {{ $household->municipality }}</span>
+                            </div>
+                            <div class="hh-card-field">
+                                <span class="hh-card-field-label">Members</span>
+                                <span class="hh-card-field-val">{{ $household->total_members }} person(s)</span>
+                            </div>
+                            <div class="hh-card-field">
+                                <span class="hh-card-field-label">Encoded By</span>
+                                <span class="hh-card-field-val">{{ $household->encoder->name }}</span>
+                            </div>
+                            <div class="hh-card-field">
+                                <span class="hh-card-field-label">QR Scans</span>
+                                <span class="hh-card-field-val">
+                                    <span class="scan-count-badge {{ $scanCount > 0 ? 'has-scans' : 'no-scans' }}" style="display:inline-flex;">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:11px;height:11px;"><polyline points="23 7 23 1 17 1"/><polyline points="1 17 1 23 7 23"/><polyline points="23 17 23 23 17 23"/><polyline points="1 7 1 1 7 1"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
+                                        {{ $scanCount }} {{ $scanCount > 0 ? ($scanCount !== 1 ? 'scans' : 'scan') : '— none' }}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="hh-card-field">
+                                <span class="hh-card-field-label">Serial Code</span>
+                                <span class="hh-card-field-val">
+                                    @if($household->serial_code)
+                                        <span class="hh-card-serial">{{ $household->serial_code }}</span>
+                                    @else
+                                        <span class="hh-card-serial-none">Not assigned</span>
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
+
+                        {{-- Footer: view button --}}
+                        <div class="hh-card-footer">
+                            <span style="font-size:11px;color:var(--gray-400);">Household #{{ $household->id }}</span>
+                            <a href="{{ route('auditor.households.show', $household) }}" class="btn-view">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                View
+                            </a>
+                        </div>
+                    </div>
+                @empty
+                    <div style="padding:36px;text-align:center;color:var(--gray-400);font-style:italic;">No households found.</div>
+                @endforelse
+            </div>
+
             <div class="pagination-row">
                 {{ $households->appends(['filter' => $filter, 'search' => request('search')])->links() }}
             </div>
@@ -651,16 +808,33 @@
         const search = document.getElementById('searchInput').value.toLowerCase();
         const brgy   = document.getElementById('barangayFilter').value.toLowerCase();
         const status = document.getElementById('statusFilter').value.toLowerCase();
-        const rows   = document.querySelectorAll('.hh-row');
-        let visible  = 0;
-        rows.forEach(row => {
+
+        // Table rows (desktop)
+        const tableRows = document.querySelectorAll('tbody .hh-row');
+        tableRows.forEach(row => {
             const matchSearch = !search || row.dataset.name.includes(search) || row.dataset.serial.includes(search) || row.dataset.barangay.includes(search);
             const matchBrgy   = !brgy   || row.dataset.barangay === brgy;
             const matchStatus = !status || row.dataset.status === status;
+            row.style.display = (matchSearch && matchBrgy && matchStatus) ? '' : 'none';
+        });
+
+        // Mobile cards
+        let visible = 0;
+        const cards = document.querySelectorAll('.hh-mobile-cards .hh-row');
+        cards.forEach(card => {
+            const matchSearch = !search || card.dataset.name.includes(search) || card.dataset.serial.includes(search) || card.dataset.barangay.includes(search);
+            const matchBrgy   = !brgy   || card.dataset.barangay === brgy;
+            const matchStatus = !status || card.dataset.status === status;
             const show = matchSearch && matchBrgy && matchStatus;
-            row.style.display = show ? '' : 'none';
+            card.style.display = show ? 'flex' : 'none';
             if (show) visible++;
         });
+
+        // Fall back to counting table rows if cards aren't rendered (desktop view)
+        if (cards.length === 0) {
+            visible = Array.from(tableRows).filter(r => r.style.display !== 'none').length;
+        }
+
         document.getElementById('visibleCount').textContent = visible;
     }
 </script>

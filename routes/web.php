@@ -35,10 +35,10 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('superadmin')->name('sup
     Route::post('/accounts',                            [SuperAdminController::class, 'accountsStore'])       ->name('accounts.store');
     Route::patch('/accounts/{user}/toggle-status',      [SuperAdminController::class, 'accountsToggleStatus'])->name('accounts.toggle');
     Route::post('/accounts/{user}/resend-invite',       [SuperAdminController::class, 'accountsResendInvite'])->name('accounts.resend');
-    Route::get('/accounts/archived',                      [SuperAdminController::class, 'accountsArchived'])     ->name('accounts.archived');
-    Route::post('/accounts/{id}/restore',                [SuperAdminController::class, 'accountsRestore'])      ->name('accounts.restore');
-    Route::delete('/accounts/{id}/force-delete',         [SuperAdminController::class, 'accountsForceDelete'])  ->name('accounts.force-delete');
-    Route::get('/accounts/{user}',                        [SuperAdminController::class, 'accountsShow'])         ->name('accounts.show');
+    Route::get('/accounts/archived',                    [SuperAdminController::class, 'accountsArchived'])    ->name('accounts.archived');
+    Route::post('/accounts/{id}/restore',               [SuperAdminController::class, 'accountsRestore'])     ->name('accounts.restore');
+    Route::delete('/accounts/{id}/force-delete',        [SuperAdminController::class, 'accountsForceDelete']) ->name('accounts.force-delete');
+    Route::get('/accounts/{user}',                      [SuperAdminController::class, 'accountsShow'])        ->name('accounts.show');
     Route::delete('/accounts/{user}',                   [SuperAdminController::class, 'accountsDestroy'])     ->name('accounts.destroy');
 
     Route::get('/roles',           [SuperAdminController::class, 'rolesIndex'])    ->name('roles.index');
@@ -55,6 +55,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::get('/households',                    [\App\Http\Controllers\Admin\AdminHouseholdController::class, 'index'])    ->name('households.index');
     Route::get('/households/{household}',        [\App\Http\Controllers\Admin\AdminHouseholdController::class, 'show'])     ->name('households.show');
+
+    // ✅ ADDED: Missing edit & update routes
+    Route::get('/households/{household}/edit',   [\App\Http\Controllers\Admin\AdminHouseholdController::class, 'edit'])    ->name('households.edit');
+    Route::patch('/households/{household}',      [\App\Http\Controllers\Admin\AdminHouseholdController::class, 'update'])  ->name('households.update');
+
     Route::post('/households/{household}/approve',   [\App\Http\Controllers\Admin\AdminHouseholdController::class, 'approve'])  ->name('households.approve');
     Route::post('/households/{household}/unapprove', [\App\Http\Controllers\Admin\AdminHouseholdController::class, 'unapprove'])->name('households.unapprove');
     Route::delete('/households/{household}',     [\App\Http\Controllers\Admin\AdminHouseholdController::class, 'destroy'])  ->name('households.destroy');
@@ -171,7 +176,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/distribution/events/{event}/start',              [\App\Http\Controllers\Admin\AdminDistributionEventController::class, 'start'])          ->name('distribution.events.start');
     Route::post('/distribution/events/{event}/end',                [\App\Http\Controllers\Admin\AdminDistributionEventController::class, 'end'])            ->name('distribution.events.end');
     Route::post('/distribution/events/{event}/cancel',             [\App\Http\Controllers\Admin\AdminDistributionEventController::class, 'cancel'])         ->name('distribution.events.cancel');
-    Route::get('/distribution/scan-history',                        [\App\Http\Controllers\Admin\AdminDistributionLogController::class, 'scanHistory'])       ->name('distribution.scan-history');
+    Route::get('/distribution/scan-history',                       [\App\Http\Controllers\Admin\AdminDistributionLogController::class, 'scanHistory'])       ->name('distribution.scan-history');
 
     Route::get('/trail-logs', [\App\Http\Controllers\Admin\AdminTrailController::class, 'index'])->name('traillog.trail');
 });

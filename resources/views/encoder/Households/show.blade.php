@@ -34,14 +34,13 @@
 
         .shell {
             display: grid;
-            grid-template-rows: 36px 76px auto auto;
+            grid-template-rows: 36px 76px 1fr 48px;
             grid-template-columns: var(--sidebar-w) 1fr;
             grid-template-areas: "topbar topbar" "header header" "sidebar main" "footer footer";
-            min-height: 100vh;
-        }
+            height: 100vh; overflow: hidden; }
 
         /* ─── TOPBAR ─── */
-        .topbar { grid-area: topbar; background: var(--blue-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; position: sticky; top: 0; }
+        .topbar { grid-area: topbar; background: var(--blue-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; }
         .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.3px; }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
         .clock-inline { font-size: 12px; font-weight: 600; color: var(--yellow); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
@@ -51,7 +50,7 @@
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         /* ─── HEADER ─── */
-        header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; position: sticky; top: 36px; }
+        header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; }
         .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
         .hamburger:hover { background: var(--blue-pale); }
         .hamburger svg { width: 22px; height: 22px; display: block; }
@@ -71,6 +70,9 @@
             background: #FFF7ED;
             border: 1px solid #D97706; border-radius: 4px;
             flex-shrink: 1; min-width: 0; overflow: hidden;
+        }
+        .header-user-badge > div:not(.user-avatar) {
+            min-width: 0; overflow: hidden;
         }
         .user-avatar {
             width: 32px; height: 32px; border-radius: 50%;
@@ -122,7 +124,7 @@
         .logout-btn:hover { background: var(--red); }
 
         /* ─── MAIN ─── */
-        .main-content { grid-area: main; background: var(--gray-50); padding: 28px 32px; overflow-x: hidden; }
+        .main-content { grid-area: main; background: var(--gray-50); padding: 28px 32px; overflow-y: auto; }
 
         .page-titlebar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); gap: 12px; flex-wrap: wrap; }
         .page-breadcrumb { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
@@ -201,7 +203,7 @@
         .meta-row strong { color: var(--gray-600); }
 
         /* ─── FOOTER ─── */
-        footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; position: relative; z-index: 400; }
+        footer { grid-area: footer; background: var(--blue-dark); border-top: 3px solid var(--yellow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 8px; position: relative; z-index: 400; height: 48px; }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
         .footer-left strong { color: rgba(255,255,255,0.7); }
         .footer-center { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 1px; text-transform: uppercase; }
@@ -221,157 +223,115 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            position: sticky;
-            top: 112px;
-            height: calc(100vh - 112px);
-            align-self: start;
-            z-index: 10;
+            position: relative;
         }
 
-                /* ─── RESPONSIVE ─── */
+        /* ─── RESPONSIVE ─── */
         @media (max-width: 900px) {
-            .shell { grid-template-rows: 36px auto auto auto; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; min-height: 100vh; }
-            .sidebar {
-                position: fixed !important;
-                top: 0 !important; left: 0 !important; bottom: 0 !important;
-                height: 100vh !important;
-                width: var(--sidebar-w);
-                z-index: 300 !important;
-                transform: translateX(-100%);
-                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
-            }
-            .sidebar.open { transform: translateX(0) !important; }
+            .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
+            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; height: 100vh; width: var(--sidebar-w); z-index: 1200; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); overflow-y: auto; }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay { display: block !important; z-index: 1100; }
             .sidebar-close { display: flex !important; }
-            .sidebar .nav-section-label { padding-top: 52px; }
+            .sidebar .nav-section-label { padding-top: 56px; }
             .hamburger { display: flex; }
             header { padding: 0 16px; gap: 10px; }
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
-            .main-content { padding: 20px 16px; overflow-x: hidden; }
+            .header-user-badge { padding: 6px 10px; gap: 8px; }
+            .user-name { font-size: 12px; }
+            .user-role { font-size: 9px; letter-spacing: 0.3px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .topbar { padding: 0 16px; }
+            .topbar-left { display: none; }
+            .main-content { padding: 20px 16px; overflow-y: auto; }
             .field-grid { grid-template-columns: repeat(2, 1fr); }
         }
+
         @media (max-width: 640px) {
+            .topbar { justify-content: flex-end; }
+            .clock-date-inline { display: none; }
+            .status-indicator { display: none; }
             header { padding: 0 12px; gap: 8px; }
             .header-logos img { height: 36px; width: 36px; }
             .logo-divider { display: none; }
             .header-logos img:last-child { display: none; }
             .header-org { display: none; }
-            .header-title { font-size: 13px; }
-            .main-content { padding: 16px 12px; }
-            .field-grid { grid-template-columns: 1fr 1fr; }
-            .field-grid-2 { grid-template-columns: 1fr; }
-            footer { padding: 0 12px; }
-            .footer-center { display: none; }
-        }
-    
-        /* ── Mobile table: allow horizontal scroll within wrapper only ── */
-        .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
-        @media (max-width: 640px) {
-            .field-grid { grid-template-columns: 1fr 1fr; }
-            .field-grid-2 { grid-template-columns: 1fr; }
-            .page-titlebar { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .header-title { font-size: 13px; line-height: 1.3; }
+            .header-user-badge { padding: 5px 8px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .user-name { font-size: 11px; }
+            .main-content { padding: 14px 10px; overflow-y: auto; }
+            .page-titlebar { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .page-h1 { font-size: 18px; }
             .title-actions { width: 100%; }
             .title-actions .btn { flex: 1; justify-content: center; }
-            .main-content { padding: 16px 12px; }
+            .field-grid { grid-template-columns: 1fr 1fr; }
+            .field-grid-2 { grid-template-columns: 1fr; }
+            footer { flex-direction: column; height: auto; min-height: 48px; padding: 10px 12px; gap: 4px; align-items: flex-start; }
+            .footer-center { display: none; }
+            .footer-left { font-size: 10px; white-space: normal; line-height: 1.5; width: 100%; }
         }
-        @media (max-width: 420px) {
-            .field-grid { grid-template-columns: 1fr; }
-            .main-content { padding: 12px 10px; }
-        }
 
-
-
-
-        /* ════════════════════════════════════════
-           TOPBAR RESPONSIVE
-           ════════════════════════════════════════ */
-        @media (max-width: 768px) {
-            .topbar {
-                padding: 0 12px !important;
-                flex-wrap: nowrap;
-            }
-            .topbar-left { display: none !important; }
-            .topbar-right { gap: 10px !important; margin-left: auto; }
-            .clock-date-inline { display: none !important; }
-            .clock-inline { font-size: 11px !important; letter-spacing: 0.5px; }
-        }
         @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .main-content { padding: 10px 8px; overflow-y: auto; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 12px; }
             .status-indicator { display: none !important; }
+            .field-grid { grid-template-columns: 1fr; }
         }
 
-        /* ════════════════════════════════════════
-           GLOBAL NO HORIZONTAL SCROLL
-           ════════════════════════════════════════ */
-        html, body { overflow-x: clip; max-width: 100vw; }
-        @media (max-width: 900px) {
-            .form-card, .nf-card, .nf-body, .nf-body-inner,
-            .form-card-body, .check-group, .form-actions,
-            .page-titlebar, .welcome-card, .access-notice,
-            .stats-grid, .quick-nav, .charts-row, .bottom-row {
-                max-width: 100% !important;
-                box-sizing: border-box !important;
-            }
-            .member-table-wrap {
-                overflow-x: auto !important;
-                -webkit-overflow-scrolling: touch;
-                max-width: 100% !important;
-            }
-            .member-table { min-width: 700px; }
-            .form-input, .form-select, .form-textarea, .form-control {
-                max-width: 100% !important;
-                box-sizing: border-box !important;
-            }
-            #location-map { max-width: 100% !important; width: 100% !important; }
-            .coord-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 100% !important; }
+        @media (max-width: 380px) {
+            .header-user-badge { display: none; }
+            .main-content { padding: 12px 10px; overflow-y: auto; }
         }
+
+        /* ── Mobile table scroll ── */
+        .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+
+        /* ── Member cards (mobile) ── */
+        .member-cards { display: none; flex-direction: column; gap: 10px; padding: 12px 16px; }
+        .member-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-left: 3px solid var(--blue);
+            border-radius: 6px;
+            padding: 12px 14px;
+        }
+        .member-card.is-head { border-left-color: var(--yellow-dark); }
+        .member-card-top {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; gap: 10px;
+            margin-bottom: 8px;
+        }
+        .member-card-name {
+            font-size: 13px; font-weight: 700;
+            color: var(--blue-dark); line-height: 1.3;
+        }
+        .member-card-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+        .member-card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 12px;
+            border-top: 1px solid var(--gray-100);
+            padding-top: 8px;
+            margin-top: 4px;
+        }
+        .member-card-field { display: flex; flex-direction: column; gap: 2px; }
+        .member-card-label {
+            font-size: 9.5px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .7px;
+            color: var(--gray-400);
+        }
+        .member-card-val { font-size: 12px; color: var(--gray-800); }
+        .member-card-val small { display: block; font-size: 10px; color: var(--gray-400); }
+
         @media (max-width: 640px) {
-            .coord-inputs { grid-template-columns: 1fr !important; }
-            .nf-pills { display: none !important; }
-            .nf-card-header { flex-wrap: wrap !important; gap: 6px !important; }
-            .head-panel-grid { grid-template-columns: 1fr !important; }
-        }
-
-        /* ════════════════════════════════════════
-           FOOTER RESPONSIVE
-           ════════════════════════════════════════ */
-        @media (max-width: 768px) {
-            footer {
-                flex-direction: column !important;
-                height: auto !important;
-                min-height: 48px;
-                padding: 10px 16px !important;
-                gap: 4px !important;
-                align-items: flex-start !important;
-                flex-wrap: wrap !important;
-            }
-            .footer-left {
-                font-size: 11px !important;
-                white-space: normal !important;
-                line-height: 1.5 !important;
-                width: 100% !important;
-                overflow: visible !important;
-                text-overflow: unset !important;
-            }
-            .footer-center { display: none !important; }
-            .fb-link { font-size: 11px !important; }
-        }
-        @media (max-width: 480px) {
-            footer { padding: 8px 12px !important; }
-            .footer-left { font-size: 10px !important; }
-        }
-
-        /* ── Badge responsive ── */
-        @media (max-width: 900px) {
-            .header-user-badge { padding: 5px 10px; gap: 6px; }
-            .user-name { font-size: 12px; }
-            .user-role { font-size: 9px; letter-spacing: 0.3px; }
-            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
-        }
-        @media (max-width: 640px) {
-            .header-user-badge { padding: 4px 8px; }
-            .user-name { font-size: 11px; }
+            .table-scroll { display: none !important; }
+            .member-cards { display: flex !important; }
         }
     </style>
 </head>
@@ -716,6 +676,7 @@
                     </div>
                     {{-- Members table --}}
                     @if($nf->members->count() > 0)
+                    {{-- Desktop: scrollable table --}}
                     <div class="table-scroll">
                         <table>
                             <thead>
@@ -792,6 +753,77 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+                    {{-- Mobile: stacked member cards --}}
+                    <div class="member-cards">
+                        @foreach($nf->members as $i => $member)
+                        @php
+                            $empStatus = $member->detail?->employment_status ?? '';
+                            $jobTitle  = $member->detail?->job_title ?? '';
+                            $isStudentEmp = in_array($empStatus, ['Student','Estudyante']);
+                        @endphp
+                        <div class="member-card {{ $member->is_family_head ? 'is-head' : '' }}">
+                            <div class="member-card-top">
+                                <div>
+                                    <div class="member-card-name">
+                                        {{ $member->full_name }}
+                                        @if($member->is_family_head)
+                                            <span style="display:inline-block;background:var(--blue);color:#fff;font-size:8px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px;vertical-align:middle;">HEAD</span>
+                                        @endif
+                                        @if($member->qr_code_path)
+                                            <span style="display:inline-block;background:var(--green-pale);color:var(--green);font-size:8px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:2px;vertical-align:middle;">QR</span>
+                                        @endif
+                                    </div>
+                                    <div class="member-card-badges">
+                                        @if($member->is_pwd) <span class="badge badge-pwd">PWD</span> @endif
+                                        @if($isStudentEmp || $member->is_student) <span class="badge" style="background:#EFF6FF;color:#1D4ED8;font-size:9px;">Student</span> @endif
+                                        @if($member->detail?->is_lgbtqia) <span class="badge" style="background:#FDF4FF;color:#7E22CE;font-size:9px;">LGBTQIA+</span> @endif
+                                    </div>
+                                </div>
+                                <span style="font-size:11px;font-weight:700;color:var(--gray-400);flex-shrink:0;">{{ $i + 1 }}</span>
+                            </div>
+                            <div class="member-card-grid">
+                                <div class="member-card-field">
+                                    <div class="member-card-label">Relationship</div>
+                                    <div class="member-card-val">{{ $member->relationship ?? '—' }}</div>
+                                </div>
+                                <div class="member-card-field">
+                                    <div class="member-card-label">Sex</div>
+                                    <div class="member-card-val">{{ $member->sex ?? '—' }}</div>
+                                </div>
+                                <div class="member-card-field">
+                                    <div class="member-card-label">Birthday / Age</div>
+                                    <div class="member-card-val">
+                                        {{ $member->birthday ? \Carbon\Carbon::parse($member->birthday)->format('M d, Y') : '—' }}
+                                        @if($member->birthday)
+                                            <small>Age {{ \Carbon\Carbon::parse($member->birthday)->age }}</small>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="member-card-field">
+                                    <div class="member-card-label">Civil Status</div>
+                                    <div class="member-card-val">{{ $member->civil_status ?? '—' }}</div>
+                                </div>
+                                <div class="member-card-field">
+                                    <div class="member-card-label">Education</div>
+                                    <div class="member-card-val">{{ $member->educational_attainment ?? '—' }}</div>
+                                </div>
+                                <div class="member-card-field">
+                                    <div class="member-card-label">Employment</div>
+                                    <div class="member-card-val">
+                                        {{ $empStatus ?: '—' }}
+                                        @if($jobTitle) <small>{{ $jobTitle }}</small> @endif
+                                    </div>
+                                </div>
+                                @if($member->detail?->vulnerable_sector)
+                                <div class="member-card-field" style="grid-column: span 2;">
+                                    <div class="member-card-label">Vulnerable Sector</div>
+                                    <div class="member-card-val">{{ $member->detail->vulnerable_sector }}</div>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                        @endforeach
                     </div>
                     @else
                         <div class="empty-members">No members in this nuclear family.</div>

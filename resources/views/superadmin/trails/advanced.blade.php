@@ -69,6 +69,14 @@
 tbody tr.sev-row-high   td:first-child { border-left: 3px solid var(--red); }
 tbody tr.sev-row-medium td:first-child { border-left: 3px solid var(--yellow-dark); }
 tbody tr.sev-row-low    td:first-child { border-left: 3px solid var(--yellow); }
+
+/* ── Advanced: titlebar right side ── */
+@media (max-width: 640px) {
+    .log-summary { grid-template-columns: repeat(3, 1fr); }
+    .log-sum-item { padding: 10px 12px; border-right: none !important; border-bottom: 1px solid var(--gray-200); }
+    .log-sum-item:nth-child(1), .log-sum-item:nth-child(2), .log-sum-item:nth-child(4) { border-right: 1px solid var(--gray-200) !important; }
+    .log-sum-val { font-size: 16px; }
+}
 </style>
 @endpush
 
@@ -234,12 +242,12 @@ tbody tr.sev-row-low    td:first-child { border-left: 3px solid var(--yellow); }
                 @endphp
                 <tr class="{{ $sevRow }}">
 
-                    <td>
+                    <td data-label="Timestamp">
                         <span class="log-ts-date">{{ $log->created_at->format('M d, Y') }}</span>
                         <span class="log-ts-time">{{ $log->created_at->format('H:i:s') }}</span>
                     </td>
 
-                    <td>
+                    <td data-label="User">
                         <div class="log-user">
                             <div class="log-avatar {{ ($log->user_name ?? 'System') === 'System' ? 'sys' : '' }}">
                                 {{ strtoupper(substr($log->user_name ?? 'S', 0, 1)) }}
@@ -253,26 +261,26 @@ tbody tr.sev-row-low    td:first-child { border-left: 3px solid var(--yellow); }
                         </div>
                     </td>
 
-                    <td>
+                    <td data-label="Action">
                         <span class="trail-type {{ $actionClass }}">{{ $log->action }}</span>
                     </td>
 
-                    <td>
+                    <td data-label="Severity">
                         <span class="badge {{ $sevClass }}">
                             <span class="badge-dot"></span>
                             {{ ucfirst($log->severity ?? 'low') }}
                         </span>
                     </td>
 
-                    <td>
+                    <td data-label="Category">
                         <span class="cat-tag">{{ $log->category ?? '—' }}</span>
                     </td>
 
-                    <td style="font-size:12.5px; color:var(--gray-600); max-width:280px;">
+                    <td data-label="Description" style="font-size:12.5px; color:var(--gray-600);">
                         {{ $log->description }}
                     </td>
 
-                    <td>
+                    <td data-label="IP Address">
                         <span class="ip-code">{{ $log->ip_address ?? '—' }}</span>
                     </td>
 

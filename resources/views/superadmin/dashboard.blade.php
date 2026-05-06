@@ -194,16 +194,59 @@
     animation: blink 2s infinite; flex-shrink: 0;
 }
 
-/* Responsive */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: .35; }
+}
+
+/* ══ DASHBOARD RESPONSIVE ══ */
 @media (max-width: 1100px) {
     .dash-stats   { grid-template-columns: repeat(2,1fr); }
     .qnav-grid    { grid-template-columns: repeat(2,1fr); }
     .content-grid { grid-template-columns: 1fr; }
     .info-row     { grid-template-columns: 1fr 1fr; }
 }
-@media (max-width: 768px) {
-    .dash-stats { grid-template-columns: 1fr 1fr; }
-    .info-row   { grid-template-columns: 1fr; }
+
+@media (max-width: 900px) {
+    /* Welcome Banner */
+    .welcome-banner { flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px; }
+    .wb-meta {
+        margin-left: 0; text-align: left; flex-direction: row;
+        flex-wrap: wrap; gap: 12px; width: 100%;
+        border-top: 1px solid rgba(255,255,255,.12); padding-top: 10px;
+    }
+    .wb-meta-item { text-align: left; flex: 1 1 auto; }
+    .wb-heading { font-size: 17px; }
+
+    /* Stat cards */
+    .dash-stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .dash-stat  { padding: 12px 14px; gap: 10px; }
+    .ds-num     { font-size: 22px; }
+    .ds-ico     { width: 34px; height: 34px; }
+
+    /* Quick nav */
+    .qnav-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .qnav-item { padding: 12px; gap: 8px; flex-direction: column; align-items: flex-start; }
+    .qnav-title { font-size: 12px; }
+    .qnav-desc  { font-size: 10.5px; }
+
+    /* Content grid */
+    .content-grid { grid-template-columns: 1fr; gap: 10px; }
+
+    /* Role bar rows */
+    .role-bar-row { padding: 10px 14px; flex-wrap: wrap; gap: 8px; }
+    .rbar-body { width: 100%; }
+    .rbar-pct  { width: auto; }
+
+    /* Recent rows */
+    .recent-row { padding: 10px 14px; gap: 10px; }
+
+    /* Info row */
+    .info-row { grid-template-columns: 1fr; gap: 10px; }
+    .info-card-body { padding: 14px; }
+
+    /* Logged-in card */
+    .li-card-row { flex-direction: column; align-items: flex-start !important; gap: 8px !important; }
 }
 </style>
 @endpush
@@ -219,10 +262,6 @@
         </div>
         <div class="page-h1">Dashboard Overview</div>
         <div class="page-sub">Super Administrator — MDRRMO RBI System, Naic, Cavite</div>
-    </div>
-    <div class="page-date-badge">
-        <span class="day">{{ now()->format('l') }}</span>
-        <span class="full-date">{{ now()->format('F j, Y') }}</span>
     </div>
 </div>
 
@@ -452,39 +491,24 @@
 </div>
 
 {{-- ══ BOTTOM INFO ROW ══ --}}
-<div class="info-row">
+<div class="info-row" style="margin-top:14px;">
 
-    {{-- Logged in as --}}
+    {{-- Logged-in user info --}}
     <div class="info-card">
         <div class="info-card-header">
-            <span style="width:7px;height:7px;border-radius:50%;background:var(--super-mid);flex-shrink:0;"></span>
-            <span class="info-card-title">Logged In As</span>
-        </div>
-        <div class="info-card-body" style="display:flex; align-items:center; gap:14px;">
-            <div class="li-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
-            <div>
-                <div style="font-size:13px; font-weight:700; color:var(--blue-dark);">{{ Auth::user()->name }}</div>
-                <div style="font-size:11px; color:var(--gray-400); margin-top:1px;">{{ Auth::user()->email }}</div>
-                <span style="display:inline-flex;align-items:center;gap:5px;background:var(--super-pale2);color:var(--super-mid);padding:2px 8px;border-radius:3px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;margin-top:6px;border:1px solid var(--super-border);">
-                    <span style="width:5px;height:5px;border-radius:50%;background:var(--super-mid);"></span>
-                    Super Administrator
-                </span>
-            </div>
-        </div>
-    </div>
-
-    {{-- Last login --}}
-    <div class="info-card">
-        <div class="info-card-header">
-            <span style="width:7px;height:7px;border-radius:50%;background:var(--yellow-dark);flex-shrink:0;"></span>
-            <span class="info-card-title">Last Login</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color:var(--blue);flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span class="info-card-title">Logged-in Account</span>
         </div>
         <div class="info-card-body">
-            <div style="font-family:'PT Serif',serif; font-size:22px; font-weight:700; color:var(--blue-dark); line-height:1.1;">
-                {{ Auth::user()->last_login_at ? Auth::user()->last_login_at->format('M d, Y') : 'First login' }}
-            </div>
-            <div style="font-size:12px; color:var(--gray-400); margin-top:4px;">
-                {{ Auth::user()->last_login_at ? Auth::user()->last_login_at->format('h:i A') : 'Welcome to the system' }}
+            <div class="li-card-row" style="display:flex;align-items:center;gap:14px;">
+                <div class="li-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
+                <div style="min-width:0;">
+                    <div style="font-size:13.5px;font-weight:700;color:var(--blue-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ Auth::user()->name }}</div>
+                    <div style="font-size:11px;color:var(--gray-400);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ Auth::user()->email }}</div>
+                    <div style="margin-top:6px;">
+                        <span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;background:var(--super-pale2);color:var(--super-mid);">Super Admin</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -492,15 +516,45 @@
     {{-- System status --}}
     <div class="info-card">
         <div class="info-card-header">
-            <span style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;"></span>
-            <span class="info-card-title">System</span>
+            <div class="sys-status-dot"></div>
+            <span class="info-card-title">System Status</span>
         </div>
         <div class="info-card-body">
-            <div style="font-size:13px; font-weight:700; color:var(--blue-dark);">MDRRMO RBI System</div>
-            <div style="font-size:11px; color:var(--gray-400); margin-top:2px;">Naic, Cavite &nbsp;·&nbsp; PHP {{ PHP_MAJOR_VERSION }}.{{ PHP_MINOR_VERSION }}</div>
-            <div style="display:flex; align-items:center; gap:6px; margin-top:10px; font-size:11px; color:var(--green); font-weight:700;">
-                <span class="sys-status-dot"></span>
-                System Online
+            <div class="sys-status-items" style="display:flex;flex-direction:column;gap:8px;">
+                <div class="sys-status-item" style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:11.5px;color:var(--gray-600);">PHP Version</span>
+                    <span style="font-size:11.5px;font-weight:700;color:var(--blue-dark);">{{ PHP_MAJOR_VERSION }}.{{ PHP_MINOR_VERSION }}</span>
+                </div>
+                <div class="sys-status-item" style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:11.5px;color:var(--gray-600);">Laravel</span>
+                    <span style="font-size:11.5px;font-weight:700;color:var(--blue-dark);">{{ app()->version() }}</span>
+                </div>
+                <div class="sys-status-item" style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:11.5px;color:var(--gray-600);">Environment</span>
+                    <span style="font-size:11.5px;font-weight:700;color:var(--green-dark);">{{ ucfirst(app()->environment()) }}</span>
+                </div>
+                <div class="sys-status-item" style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:11.5px;color:var(--gray-600);">Database</span>
+                    <span style="font-size:11.5px;font-weight:700;color:var(--green-dark);">Connected</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Quick stats footer --}}
+    <div class="info-card">
+        <div class="info-card-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color:var(--blue);flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span class="info-card-title">Account Summary</span>
+        </div>
+        <div class="info-card-body">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                @foreach($stats['by_role'] as $role => $count)
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:11.5px;color:var(--gray-600);">{{ ucfirst($role) }}</span>
+                    <span style="font-size:11.5px;font-weight:700;color:var(--blue-dark);">{{ number_format($count) }}</span>
+                </div>
+                @endforeach
             </div>
         </div>
     </div>

@@ -6,7 +6,12 @@
 <style>
 /* ── Info step list ── */
 .step-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; }
-.step-item { display:flex; align-items:flex-start; gap:12px; font-size:13px; color:var(--gray-600); }
+.step-item {
+    display:flex; align-items:flex-start; gap:12px;
+    font-size:13px; color:var(--gray-600);
+}
+/* Neutralise any table-card ::before that might bleed in */
+.step-item::before { display:none !important; content:none !important; }
 .step-num {
     width:22px; height:22px; border-radius:50%; background:var(--blue); color:#fff;
     font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center;
@@ -24,8 +29,9 @@
     letter-spacing: 1px; color: var(--blue-light); margin-bottom: 5px;
 }
 .email-preview .ep-value {
-    font-family: 'Courier New', monospace; font-size: 14px;
+    font-family: 'Courier New', monospace; font-size: 13px;
     font-weight: 700; color: var(--blue-dark);
+    word-break: break-all; overflow-wrap: anywhere;
 }
 .email-preview .ep-note {
     font-size: 11px; color: var(--blue-light); margin-top: 4px;
@@ -51,6 +57,28 @@
     text-align:center; padding:24px 0;
     color:var(--gray-400); font-size:13px; font-style:italic;
 }
+
+/* ── Create page two-col layout ── */
+.create-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 18px;
+    align-items: start;
+}
+.role-preview-panel {
+    position: sticky;
+    top: calc(var(--topbar-h) + var(--header-h) + 16px);
+}
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+    .create-layout { grid-template-columns: 1fr; }
+    .role-preview-panel { position: static; }
+}
+@media (max-width: 640px) {
+    .step-item { font-size: 12px; }
+    .email-preview .ep-value { font-size: 12px; }
+}
 </style>
 @endpush
 
@@ -74,7 +102,7 @@
     </div>
 </div>
 
-<div style="display:grid; grid-template-columns:1fr 340px; gap:18px; align-items:start;">
+<div class="create-layout">
 
     {{-- ══ FORM PANEL ══ --}}
     <div class="panel">
@@ -135,10 +163,10 @@
                     What happens after sending
                 </div>
                 <ul class="step-list">
-                    <li class="step-item"><span class="step-num">1</span>System generates a unique login email (e.g. <em>adminA001@barangay.gov.ph</em>)</li>
-                    <li class="step-item"><span class="step-num">2</span>Invite sent to their Gmail with a <strong>24-hour setup link</strong></li>
-                    <li class="step-item"><span class="step-num">3</span>User enters their full name and creates their own password</li>
-                    <li class="step-item"><span class="step-num">4</span>Account activates — they log in with the generated email</li>
+                    <li class="step-item"><span class="step-num">1</span><span>System generates a unique login email (e.g. <em>adminA001@barangay.gov.ph</em>)</span></li>
+                    <li class="step-item"><span class="step-num">2</span><span>Invite sent to their Gmail with a <strong>24-hour setup link</strong></span></li>
+                    <li class="step-item"><span class="step-num">3</span><span>User enters their full name and creates their own password</span></li>
+                    <li class="step-item"><span class="step-num">4</span><span>Account activates — they log in with the generated email</span></li>
                 </ul>
             </div>
 
@@ -156,7 +184,7 @@
     </div>
 
     {{-- ══ ROLE PREVIEW PANEL ══ --}}
-    <div class="panel" style="position:sticky; top:calc(var(--topbar-h) + var(--header-h) + 16px);">
+    <div class="panel role-preview-panel">
         <div class="panel-header">
             <div class="panel-title">
                 <span class="panel-dot orange"></span>

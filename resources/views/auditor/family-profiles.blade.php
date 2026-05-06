@@ -49,7 +49,7 @@
 
         .shell {
             display: grid;
-            grid-template-rows: 36px 70px 1fr 48px;
+            grid-template-rows: 36px 76px 1fr 48px;
             grid-template-columns: var(--sidebar-w) 1fr;
             grid-template-areas:
                 "topbar  topbar"
@@ -89,7 +89,6 @@
             padding: 0 28px;
             gap: 14px;
             z-index: 90;
-            overflow: hidden;
         }
         .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
         .hamburger:hover { background: var(--blue-pale); }
@@ -110,6 +109,7 @@
             background: var(--sky-pale);
             border: 1px solid var(--sky-border);
             border-radius: 4px;
+            flex-shrink: 0;
         }
         .user-avatar {
             width: 32px; height: 32px;
@@ -120,8 +120,8 @@
             font-weight: 700; font-size: 13px;
             flex-shrink: 0;
         }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: 0.5px; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--sky-dark); line-height: 1.2; white-space: nowrap; }
+        .user-role { font-size: 10px; color: #0284C7; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
 
         /* ─── READ-ONLY BADGE ─── */
         .readonly-badge {
@@ -465,14 +465,65 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
+        /* ── Mobile profile card — shown only on small screens (≤900px) ── */
+        .profile-mobile-card {
+            display: none;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-100);
+            padding: 14px 16px;
+        }
+        .profile-mobile-card:last-child { border-bottom: none; }
+        .pmc-top {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; gap: 10px;
+            margin-bottom: 8px;
+        }
+        .pmc-name { font-size: 13px; font-weight: 600; color: var(--gray-800); }
+        .pmc-serial {
+            font-family: monospace; font-size: 10px; font-weight: 700;
+            color: var(--blue); background: var(--blue-pale);
+            padding: 2px 7px; border-radius: 3px; border: 1px solid #C5D9F5;
+            margin-top: 3px; display: inline-block;
+        }
+        .pmc-address { font-size: 11px; color: var(--gray-600); margin-top: 3px; line-height: 1.5; }
+        .pmc-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+        .pmc-contact { font-size: 11px; color: var(--gray-600); }
+        .pmc-dob { font-size: 11px; color: var(--gray-400); }
+        .pmc-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+        .pmc-footer {
+            display: flex; align-items: center;
+            justify-content: space-between; gap: 8px; margin-top: 10px;
+        }
+        .profile-mobile-cards { display: none; }
+
         /* ─── RESPONSIVE — ordered largest → smallest ─── */
 
-        /* 900px: sidebar becomes off-canvas drawer */
+        @media (max-width: 1200px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* ≤1100px: hide Sex/DOB and Contact columns, fold into name cell */
+        @media (max-width: 1100px) {
+            .profile-card,
+            .profile-card-header {
+                grid-template-columns: 120px 1fr 180px 90px 76px;
+            }
+            .col-sexdob   { display: none; }
+            .col-contact  { display: none; }
+            .head-sexdob  { display: none; }
+            .head-contact { display: none; }
+            .card-inline-contact { display: block; }
+            .card-inline-dob     { display: block; }
+        }
+
+        /* ≤900px — sidebar off-canvas, header compresses, table→card swap */
         @media (max-width: 900px) {
             .shell {
-                grid-template-rows: 36px 64px 1fr 48px;
+                grid-template-rows: 36px 76px 1fr 48px;
                 grid-template-columns: 1fr;
                 grid-template-areas: "topbar" "header" "main" "footer";
+                height: 100vh;
+                overflow: hidden;
             }
             .sidebar {
                 grid-area: unset;
@@ -488,116 +539,79 @@
             .sidebar-close { display: flex; }
             .sidebar .nav-section-label { padding-top: 52px; }
             .hamburger { display: flex; }
-            /* Header: overflow:visible so readonly badge is never clipped */
-            header {
-                padding: 0 14px;
-                gap: 8px;
-                height: 64px;
-                overflow: visible;
-            }
-            .header-logos img { height: 40px; width: 40px; }
-            .header-title { font-size: 14px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            header { padding: 0 16px; gap: 10px; }
+            .header-logos img { height: 44px; width: 44px; }
+            .header-title { font-size: 15px; }
             .header-sub { display: none; }
-            .header-org { display: none; }
-            .header-user-badge { padding: 6px 10px; gap: 8px; flex-shrink: 0; }
+            .header-user-badge { padding: 6px 10px; gap: 8px; }
             .user-name { font-size: 12px; }
             .user-role { display: none; }
-            /* readonly-badge: keep visible on tablet, slightly smaller */
-            .readonly-badge { padding: 5px 9px; font-size: 10px; letter-spacing: 0.3px; }
-            .topbar { padding: 0 14px; }
+            .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
-            .main-content { padding: 18px 16px; }
-            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .main-content { padding: 20px 16px; }
+            /* Switch to card view — hide desktop grid, show mobile cards */
+            .profile-list-desktop { display: none; }
+            .profile-mobile-cards { display: block; }
+            .profile-mobile-card  { display: block; }
         }
 
-        /* 1100px: hide Sex/DOB and Contact columns, fold into name cell */
-        @media (max-width: 1100px) {
-            .profile-card,
-            .profile-card-header {
-                /* [Serial 120px] [Name] [Tags] [Status] [Action] */
-                grid-template-columns: 120px 1fr 180px 90px 76px;
-            }
-            .col-sexdob  { display: none; }
-            .col-contact { display: none; }
-            .head-sexdob  { display: none; }
-            .head-contact { display: none; }
-            .card-inline-contact { display: block; }
-            .card-inline-dob     { display: block; }
-        }
-
-        /* 720px: also hide Status column */
-        @media (max-width: 720px) {
-            .profile-card,
-            .profile-card-header {
-                /* [Serial 100px] [Name] [Tags] [Action] */
-                grid-template-columns: 100px 1fr 150px 76px;
-            }
-            .col-status  { display: none; }
-            .head-status { display: none; }
-            .card-mobile-status { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
-        }
-
-        /* 520px: full stacked card — no columns at all */
-        @media (max-width: 520px) {
-            .profile-card,
-            .profile-card-header {
-                grid-template-columns: 1fr;
-                row-gap: 8px;
-                padding: 14px 14px;
-            }
-            .profile-card-header { display: none; }
-            .col-sexdob  { display: block; }
-            .col-contact { display: block; }
-            .col-status  { display: none; }
-            .card-inline-contact { display: none !important; }
-            .card-inline-dob     { display: none !important; }
-            /* On stacked cards: hide desktop view-btn, show the full-width mobile action */
-            .view-btn-col > .view-btn { display: none !important; }
-            .card-mobile-status { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-            .card-mobile-action { display: flex !important; }
-            /* Mobile View Profile button — full width */
-            .card-mobile-action .view-btn {
-                display: inline-flex !important;
-                width: 100%;
-                justify-content: center;
-                padding: 9px 16px;
-                font-size: 12px;
-            }
-            .badge-wrap { min-width: unset; }
-            .serial-code { font-size: 10px; }
-        }
-
-        /* 480px: header text clamp + readonly badge icon-only */
-        @media (max-width: 480px) {
-            header { gap: 6px; padding: 0 10px; overflow: visible; }
-            .header-logos img { height: 34px; width: 34px; }
-            .logo-divider { display: none; }
-            .header-logos img:nth-child(3) { display: none; }
-            .header-title { font-size: 13px; }
-            .header-user-badge { padding: 5px 8px; }
-            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
-            .user-name { font-size: 11px; }
-            /* Icon-only: hide the text, keep the lock icon */
-            .readonly-badge { padding: 5px 7px; gap: 0; }
-            .readonly-badge-text { display: none; }
+        /* ≤640px — header simplifies further, topbar collapses */
+        @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
             .status-indicator { display: none; }
-            .main-content { padding: 14px 10px; }
+            header { padding: 0 12px; gap: 8px; }
+            .header-logos img { height: 36px; width: 36px; }
+            .logo-divider { display: none; }
+            .header-logos img:last-child { display: none; }
+            .header-org { display: none; }
+            .header-title { font-size: 13px; line-height: 1.3; }
+            .header-user-badge { padding: 5px 8px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .user-name { font-size: 11px; }
+            .readonly-badge { padding: 5px 9px; font-size: 10px; }
+            .main-content { padding: 16px 12px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; }
             .page-h1 { font-size: 18px; }
-            .stats-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            footer { padding: 0 10px; }
+            .page-date { text-align: left; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .filter-bar { flex-wrap: wrap; }
+            .filter-search { min-width: 100%; }
+            footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
+        }
+
+        /* ≤480px — tightest shell, mirrors audit trail exactly */
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .topbar { height: 28px; padding: 0 10px; }
+            header { padding: 0 8px; gap: 6px; }
+            .header-logos img { height: 34px; width: 34px; }
+            .header-title { font-size: 13px; }
+            .header-user-badge { padding: 5px 8px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            /* readonly-badge: icon only */
+            .readonly-badge { padding: 5px 7px; gap: 0; }
+            .readonly-badge-text { display: none; }
+            .main-content { padding: 10px 8px; }
+            .page-h1 { font-size: 16px; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            footer { height: 40px; padding: 0 10px; }
+            .footer-center { display: none; }
+            .footer-left { font-size: 9px; }
             .modal-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ≤380px — single-column stats */
+        @media (max-width: 380px) {
+            .stats-row { grid-template-columns: 1fr; }
+            .main-content { padding: 10px 8px; }
         }
 
         /* Helpers — hidden by default, shown via media queries above */
         .card-inline-contact { display: none; }
         .card-inline-dob     { display: none; }
-        .card-mobile-status  { display: none; }
-        .card-mobile-action  { display: none; }
     </style>
 </head>
 <body>
@@ -805,72 +819,152 @@
                 <span class="th-badge">{{ $households->total() }} Total Records</span>
             </div>
 
-            {{-- Column header row (hidden on mobile) --}}
-            <div class="profile-card profile-card-header">
-                <div class="col-head"># Serial</div>
-                <div class="col-head">Household Head / Address</div>
-                <div class="col-head col-sexdob head-sexdob">Sex / Birthday</div>
-                <div class="col-head col-contact head-contact">Contact</div>
-                <div class="col-head">Tags</div>
-                <div class="col-head col-status head-status">Status</div>
-                <div class="col-head"></div>
+            {{-- ── Desktop / tablet grid view (hidden at ≤900px) ── --}}
+            <div class="profile-list-desktop">
+                {{-- Column header row --}}
+                <div class="profile-card profile-card-header">
+                    <div class="col-head"># Serial</div>
+                    <div class="col-head">Household Head / Address</div>
+                    <div class="col-head col-sexdob head-sexdob">Sex / Birthday</div>
+                    <div class="col-head col-contact head-contact">Contact</div>
+                    <div class="col-head">Tags</div>
+                    <div class="col-head col-status head-status">Status</div>
+                    <div class="col-head"></div>
+                </div>
+                <div class="profile-list" id="profileList">
+                    @forelse($households as $index => $hh)
+                    @php
+                        $hasStudent = in_array($hh->id, $householdIdsWithStudents);
+                    @endphp
+                    <div class="profile-card"
+                         data-name="{{ strtolower($hh->household_head_name) }}"
+                         data-serial="{{ strtolower($hh->serial_code ?? '') }}"
+                         data-barangay="{{ strtolower($hh->barangay) }}"
+                         data-status="{{ $hh->status }}"
+                         data-student="{{ $hasStudent ? '1' : '0' }}">
+
+                        {{-- Serial --}}
+                        <div class="serial-cell" style="overflow:hidden;min-width:0;">
+                            <div class="card-num">{{ $households->firstItem() + $index }}</div>
+                            <span class="serial-code">{{ $hh->serial_code ?? 'N/A' }}</span>
+                        </div>
+
+                        {{-- Name + Address --}}
+                        <div style="min-width:0;overflow:hidden;">
+                            <div class="household-name">{{ $hh->household_head_name }}</div>
+                            <div class="household-sub">{{ $hh->head_civil_status ? ucfirst($hh->head_civil_status) : '' }}</div>
+                            <div class="address-line">
+                                {{ collect([$hh->location, $hh->street_purok])->filter()->unique()->implode(', ') }}
+                            </div>
+                            <div class="address-line" style="color:var(--gray-400);">
+                                {{ collect([$hh->barangay, $hh->municipality])->filter()->implode(', ') }}
+                            </div>
+                            <div class="card-inline-contact" style="font-size:11px;color:var(--gray-600);margin-top:2px;">
+                                {{ $hh->contact_number ?? '—' }}
+                            </div>
+                            <div class="card-inline-dob" style="font-size:11px;color:var(--gray-400);margin-top:1px;">
+                                {{ $hh->head_sex ?? '' }}
+                                @if($hh->head_birthday) &bull; {{ \Carbon\Carbon::parse($hh->head_birthday)->format('M d, Y') }} @endif
+                            </div>
+                        </div>
+
+                        {{-- Sex / DOB --}}
+                        <div class="col-sexdob">
+                            <div class="col-sex">{{ $hh->head_sex ?? '—' }}</div>
+                            <div class="col-dob">
+                                {{ $hh->head_birthday ? \Carbon\Carbon::parse($hh->head_birthday)->format('M d, Y') : '—' }}
+                            </div>
+                        </div>
+
+                        {{-- Contact --}}
+                        <div class="col-contact" style="overflow:hidden;">
+                            <span style="font-size:12px;color:var(--gray-600);white-space:nowrap;">{{ $hh->contact_number ?? '—' }}</span>
+                        </div>
+
+                        {{-- Beneficiary Tags --}}
+                        <div class="badge-wrap">
+                            @if($hh->is_4ps_beneficiary) <span class="badge badge-4ps">4Ps</span> @endif
+                            @if($hh->is_pwd)             <span class="badge badge-pwd">PWD</span> @endif
+                            @if($hh->is_senior)          <span class="badge badge-senior">Senior</span> @endif
+                            @if($hh->is_solo_parent)     <span class="badge badge-solo">Solo Parent</span> @endif
+                            @if($hasStudent)             <span class="badge badge-student">Student</span> @endif
+                            @if(!$hh->is_4ps_beneficiary && !$hh->is_pwd && !$hh->is_senior && !$hh->is_solo_parent && !$hasStudent)
+                                <span class="badge badge-none">None</span>
+                            @endif
+                        </div>
+
+                        {{-- Status --}}
+                        <div class="col-status">
+                            @if($hh->status === 'active')
+                                <span class="status-active">Active</span>
+                            @else
+                                <span class="status-inactive">{{ ucfirst($hh->status) }}</span>
+                            @endif
+                        </div>
+
+                        {{-- Action --}}
+                        <div class="view-btn-col">
+                            <button class="view-btn" onclick="openModal({{ $hh->id }})">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                View
+                            </button>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="empty-state">
+                        <div class="empty-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <div class="empty-title">No household records found</div>
+                        <div class="empty-sub">There are no registered family profiles in the system yet.</div>
+                    </div>
+                    @endforelse
+                </div>
             </div>
 
-            <div class="profile-list" id="profileList">
-                @forelse($households as $index => $hh)
-                @php
-                    $hasStudent = in_array($hh->id, $householdIdsWithStudents);
-                @endphp
-                <div class="profile-card"
+            {{-- ── Mobile card view (shown at ≤900px when desktop grid is hidden) ── --}}
+            <div class="profile-mobile-cards">
+                @forelse($households as $hh)
+                @php $hasStudent = in_array($hh->id, $householdIdsWithStudents); @endphp
+                <div class="profile-mobile-card profile-card"
                      data-name="{{ strtolower($hh->household_head_name) }}"
                      data-serial="{{ strtolower($hh->serial_code ?? '') }}"
                      data-barangay="{{ strtolower($hh->barangay) }}"
                      data-status="{{ $hh->status }}"
                      data-student="{{ $hasStudent ? '1' : '0' }}">
-
-                    {{-- Serial --}}
-                    <div class="serial-cell" style="overflow:hidden;min-width:0;">
-                        <div class="card-num">{{ $households->firstItem() + $index }}</div>
-                        <span class="serial-code">{{ $hh->serial_code ?? 'N/A' }}</span>
+                    <div class="pmc-top">
+                        <div>
+                            <div class="pmc-name">{{ $hh->household_head_name }}</div>
+                            <span class="pmc-serial">{{ $hh->serial_code ?? 'N/A' }}</span>
+                        </div>
+                        @if($hh->status === 'active')
+                            <span class="status-active">Active</span>
+                        @else
+                            <span class="status-inactive">{{ ucfirst($hh->status) }}</span>
+                        @endif
                     </div>
-
-                    {{-- Name + Address --}}
-                    <div style="min-width:0;overflow:hidden;">
-                        <div class="household-name">{{ $hh->household_head_name }}</div>
-                        <div class="household-sub">{{ $hh->head_civil_status ? ucfirst($hh->head_civil_status) : '' }}</div>
-                        <div class="address-line">
-                            {{-- Column is `location`, not `house_number` — confirmed via SQL schema --}}
-                            {{ collect([$hh->location, $hh->street_purok])->filter()->unique()->implode(', ') }}
-                        </div>
-                        <div class="address-line" style="color:var(--gray-400);">
-                            {{ collect([$hh->barangay, $hh->municipality])->filter()->implode(', ') }}
-                        </div>
-                        {{-- Inline fallbacks shown on ≤1100px when columns are hidden --}}
-                        <div class="card-inline-contact" style="font-size:11px;color:var(--gray-600);margin-top:2px;">
-                            {{ $hh->contact_number ?? '—' }}
-                        </div>
-                        <div class="card-inline-dob" style="font-size:11px;color:var(--gray-400);margin-top:1px;">
-                            {{-- head_sex / head_birthday come from the LEFT JOIN in the controller --}}
-                            {{ $hh->head_sex ?? '' }}
-                            @if($hh->head_birthday) &bull; {{ \Carbon\Carbon::parse($hh->head_birthday)->format('M d, Y') }} @endif
-                        </div>
+                    <div class="pmc-address">
+                        {{ collect([$hh->location, $hh->street_purok, $hh->barangay, $hh->municipality])->filter()->implode(', ') }}
                     </div>
-
-                    {{-- Sex / DOB (joined from family_members head row) --}}
-                    <div class="col-sexdob">
-                        <div class="col-sex">{{ $hh->head_sex ?? '—' }}</div>
-                        <div class="col-dob">
-                            {{ $hh->head_birthday ? \Carbon\Carbon::parse($hh->head_birthday)->format('M d, Y') : '—' }}
-                        </div>
+                    <div class="pmc-meta">
+                        @if($hh->contact_number)
+                            <span class="pmc-contact">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px;"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.0 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>{{ $hh->contact_number }}
+                            </span>
+                        @endif
+                        @if($hh->head_sex || $hh->head_birthday)
+                            <span class="pmc-dob">
+                                {{ $hh->head_sex ?? '' }}@if($hh->head_sex && $hh->head_birthday) &bull; @endif{{ $hh->head_birthday ? \Carbon\Carbon::parse($hh->head_birthday)->format('M d, Y') : '' }}
+                            </span>
+                        @endif
                     </div>
-
-                    {{-- Contact --}}
-                    <div class="col-contact" style="overflow:hidden;">
-                        <span style="font-size:12px;color:var(--gray-600);white-space:nowrap;">{{ $hh->contact_number ?? '—' }}</span>
-                    </div>
-
-                    {{-- Beneficiary Tags + Student badge --}}
-                    <div class="badge-wrap">
+                    <div class="pmc-badges">
                         @if($hh->is_4ps_beneficiary) <span class="badge badge-4ps">4Ps</span> @endif
                         @if($hh->is_pwd)             <span class="badge badge-pwd">PWD</span> @endif
                         @if($hh->is_senior)          <span class="badge badge-senior">Senior</span> @endif
@@ -880,56 +974,18 @@
                             <span class="badge badge-none">None</span>
                         @endif
                     </div>
-
-                    {{-- Status --}}
-                    <div class="col-status">
-                        @if($hh->status === 'active')
-                            <span class="status-active">Active</span>
-                        @else
-                            <span class="status-inactive">{{ ucfirst($hh->status) }}</span>
-                        @endif
-                    </div>
-
-                    {{-- Action column --}}
-                    <div class="view-btn-col">
-                        {{-- Desktop / tablet: compact View button --}}
-                        <button class="view-btn" onclick="openModal({{ $hh->id }})">
+                    <div class="pmc-footer">
+                        <button class="view-btn" onclick="openModal({{ $hh->id }})" style="width:100%;justify-content:center;padding:9px 16px;font-size:12px;">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                                 <circle cx="12" cy="12" r="3"/>
                             </svg>
-                            View
+                            View Profile
                         </button>
-                        {{-- Mobile (≤520px): status pill + full-width View Profile button --}}
-                        <div class="card-mobile-status">
-                            @if($hh->status === 'active')
-                                <span class="status-active">Active</span>
-                            @else
-                                <span class="status-inactive">{{ ucfirst($hh->status) }}</span>
-                            @endif
-                        </div>
-                        <div class="card-mobile-action">
-                            <button class="view-btn" onclick="openModal({{ $hh->id }})">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                    <circle cx="12" cy="12" r="3"/>
-                                </svg>
-                                View Profile
-                            </button>
-                        </div>
                     </div>
                 </div>
                 @empty
-                <div class="empty-state">
-                    <div class="empty-icon-wrap">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                        </svg>
-                    </div>
-                    <div class="empty-title">No household records found</div>
-                    <div class="empty-sub">There are no registered family profiles in the system yet.</div>
-                </div>
+                    <div style="padding:36px;text-align:center;color:var(--gray-400);font-style:italic;">No household records found.</div>
                 @endforelse
             </div>
 
@@ -1140,8 +1196,9 @@ const householdIdsWithStudents = @json($householdIdsWithStudents);
         const search  = document.getElementById('searchInput').value.toLowerCase();
         const brgy    = document.getElementById('barangayFilter').value.toLowerCase();
         const status  = document.getElementById('statusFilter').value.toLowerCase();
-        const cards   = document.querySelectorAll('#profileList .profile-card');
+        const cards   = document.querySelectorAll('.profile-card[data-name], .profile-mobile-card[data-name]');
         let visible   = 0;
+        const seen    = new Set();
 
         cards.forEach(card => {
             const matchSearch  = !search || card.dataset.name.includes(search) || card.dataset.serial.includes(search) || card.dataset.barangay.includes(search);
@@ -1150,7 +1207,11 @@ const householdIdsWithStudents = @json($householdIdsWithStudents);
             const matchStudent = !studentFilterActive || card.dataset.student === '1';
             const show = matchSearch && matchBrgy && matchStatus && matchStudent;
             card.style.display = show ? '' : 'none';
-            if (show) visible++;
+            // Count each household once (desktop + mobile cards share same data)
+            if (show && !seen.has(card.dataset.serial + card.dataset.name)) {
+                seen.add(card.dataset.serial + card.dataset.name);
+                visible++;
+            }
         });
 
         document.getElementById('visibleCount').textContent = visible;

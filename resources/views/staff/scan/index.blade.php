@@ -66,8 +66,8 @@
         .back-btn:hover { background: var(--blue-pale); }
         .back-btn svg { width: 14px; height: 14px; }
         .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--green-pale); border: 1px solid #BBF7D0; border-radius: 4px; flex-shrink: 0; }
-        .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 12px; flex-shrink: 0; }
-        .user-name { font-size: 12px; font-weight: 600; color: var(--green-dark); line-height: 1.2; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .user-name { font-size: 13px; font-weight: 600; color: var(--green-dark); line-height: 1.2; }
         .user-role { font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── PAGE BODY ─── */
@@ -218,44 +218,79 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
+        /* ≤900px — header compresses, role label hides */
         @media (max-width: 900px) {
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
-            .page-header { padding: 0 16px; gap: 10px; height: auto; min-height: 68px; }
+
+            .page-header { padding: 0 16px; gap: 10px; height: 76px; }
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
+
             .header-user-badge { padding: 6px 10px; gap: 8px; }
-            .user-name { font-size: 11px; }
+            .user-name { font-size: 12px; }
             .user-role { display: none; }
+
             .page-body { padding: 20px 16px 32px; }
         }
+
+        /* ≤640px — header simplifies */
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
             .clock-date-inline { display: none; }
             .status-indicator { display: none; }
+
             .page-header { padding: 0 12px; gap: 8px; }
             .header-logos img { height: 36px; width: 36px; }
             .logo-divider { display: none; }
             .header-logos img:last-child { display: none; }
             .header-org { display: none; }
             .header-title { font-size: 13px; line-height: 1.3; }
-            .back-btn span { display: none; }
-            .back-btn { padding: 7px 10px; }
+
             .header-user-badge { padding: 5px 8px; }
-            .user-avatar { width: 26px; height: 26px; font-size: 11px; }
-            .user-name { display: none; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .user-name { font-size: 11px; }
+
             .page-body { padding: 16px 12px 28px; }
+
+            .page-titlebar { flex-direction: column; align-items: flex-start; gap: 8px; }
             .page-h1 { font-size: 18px; }
+            .page-sub { font-size: 11px; }
+
             .stats-row { gap: 10px; }
             .stat-number { font-size: 28px; }
             .stat-card { padding: 14px 12px; }
+
             .btn-row { flex-direction: column; }
-            .btn { flex: none; width: 100%; }
+            .btn { flex: none; width: 100%; min-height: 48px; font-size: 14px; }
+
             .page-footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
         }
+
+        /* ≤480px — tightest shell, mirrors dashboard exactly */
+        @media (max-width: 480px) {
+            .topbar { height: 28px; padding: 0 10px; }
+            .page-header { height: 52px; padding: 0 8px; top: 28px; }
+            .header-title { font-size: 13px; }
+            .back-btn { padding: 6px 8px; }
+
+            .page-body { padding: 10px 8px 20px; }
+            .page-h1 { font-size: 16px; }
+
+            .stat-number { font-size: 24px; }
+            .stat-label { font-size: 10px; }
+
+            .section-card-header { padding: 10px 14px; }
+            .section-card-body { padding: 14px; }
+
+            .page-footer { height: 40px; padding: 0 10px; }
+            .footer-left { font-size: 9px; }
+        }
+
+        /* ≤380px — single-column stats */
         @media (max-width: 380px) {
             .stats-row { grid-template-columns: 1fr; }
         }
@@ -289,10 +324,6 @@
         </div>
         <div class="header-spacer"></div>
         <div class="header-right">
-            <a href="{{ route('staff.dashboard') }}" class="back-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-                <span>Back to Dashboard</span>
-            </a>
             <div class="header-user-badge">
                 <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
                 <div>
@@ -316,6 +347,11 @@
 
         @if($events->isEmpty())
 
+            <a href="{{ route('staff.dashboard') }}" class="back-btn" style="margin-bottom:16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                <span>Back to Dashboard</span>
+            </a>
+
             <div class="alert-no-event">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
@@ -332,6 +368,11 @@
             </a>
 
         @else
+
+            <a href="{{ route('staff.dashboard') }}" class="back-btn" style="margin-bottom:16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                <span>Back to Dashboard</span>
+            </a>
 
             <div class="stats-row">
                 <div class="stat-card green-top">

@@ -66,7 +66,8 @@
 
         /* ── HEADER ── */
         header { grid-area: header; background: var(--white); border-bottom: 3px solid var(--yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 28px; gap: 14px; z-index: 90; }
-        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; }
+        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; border-radius: 4px; color: var(--blue-dark); flex-shrink: 0; transition: background 0.15s; }
+        .hamburger:hover { background: var(--blue-pale); }
         .hamburger svg { width: 22px; height: 22px; display: block; }
         .header-logos { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
         .header-logos img { height: 54px; width: 54px; object-fit: contain; }
@@ -76,16 +77,18 @@
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); line-height: 1.2; }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; }
+        .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; flex-shrink: 0; }
         .admin-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
         .admin-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
         .admin-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ── SIDEBAR ── */
-        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
+        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 250; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
         .sidebar-overlay.active { display: block !important; pointer-events: auto; opacity: 1; }
-        .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; }
-        .sidebar-close { display: none; position: absolute; top: 12px; right: 12px; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 4px; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: var(--gray-600); }
+        .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
+        .sidebar-close { display: none; position: absolute; top: 12px; right: 12px; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 4px; width: 32px; height: 32px; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: var(--gray-600); transition: background 0.15s; }
+        .sidebar-close:hover { background: #FEF2F2; color: #C0392B; }
+        .sidebar-close svg { width: 16px; height: 16px; }
         .nav-section-label { padding: 18px 20px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray-400); }
         .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 20px; font-size: 13.5px; font-weight: 500; color: var(--gray-600); text-decoration: none; border-left: 3px solid transparent; transition: background 0.12s, color 0.12s, border-color 0.12s; }
         .nav-item:hover { background: var(--gray-50); color: var(--blue); border-left-color: var(--blue-light); }
@@ -141,20 +144,21 @@
         .pb-ss { font-size: 10px; color: var(--gray-400); margin-top: 1px; }
 
         /* Main donut + summary row */
-        .pb-top { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
-        .pb-donut-col { flex: 0 0 200px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .pb-donut-wrap { position: relative; width: 185px; height: 185px; }
+        .pb-top { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; }
+        .pb-donut-col { flex: 0 0 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        .pb-donut-wrap { position: relative; width: 280px; height: 280px; }
         .pb-donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-        .pb-dc-val { font-size: 22px; font-weight: 700; color: var(--blue-dark); line-height: 1; font-variant-numeric: tabular-nums; }
+        .pb-dc-val { font-size: 26px; font-weight: 700; color: var(--blue-dark); line-height: 1; font-variant-numeric: tabular-nums; }
         .pb-dc-lbl { font-size: 10px; color: var(--gray-400); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; text-align: center; }
-        .pb-leg { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 200px; }
+        .pb-leg { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 300px; }
         .pb-li { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--gray-600); }
         .pb-lsq { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-        .pb-cards { flex: 1; min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .pb-card { background: var(--white); border: 1px solid var(--gray-200); padding: 10px 13px; border-left: 3px solid #ccc; }
-        .pb-card-l { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); margin-bottom: 3px; }
-        .pb-card-v { font-size: 20px; font-weight: 700; line-height: 1; color: var(--blue-dark); font-variant-numeric: tabular-nums; }
-        .pb-card-s { font-size: 10px; color: var(--gray-400); margin-top: 2px; }
+        .pb-cards-left { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+        .pb-cards-right { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+        .pb-card { background: var(--white); border: 1px solid var(--gray-200); padding: 18px 16px; border-left: 3px solid #ccc; display: flex; flex-direction: column; justify-content: center; flex: 1; }
+        .pb-card-l { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); margin-bottom: 4px; }
+        .pb-card-v { font-size: 22px; font-weight: 700; line-height: 1; color: var(--blue-dark); font-variant-numeric: tabular-nums; }
+        .pb-card-s { font-size: 10px; color: var(--gray-400); margin-top: 3px; }
 
         /* Sector toggle buttons */
         .pb-sector-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
@@ -302,52 +306,57 @@
 
         /* ── Tablet / collapsed sidebar (≤ 900px) ── */
         @media (max-width: 900px) {
-            :root { --sidebar-w: 0px; }
-            .shell {
-                grid-template-columns: 0 1fr;
-                grid-template-rows: 32px 60px 1fr 44px;
-            }
-            .topbar { padding: 0 14px; }
-            .topbar-left { font-size: 10px; }
-            .clock-date-inline { display: none; }
-            .sidebar {
-                position: fixed; left: -270px; top: 0; bottom: 0;
-                width: 256px; transition: left .25s; z-index: 300;
-                box-shadow: 4px 0 20px rgba(0,0,0,0.15);
-            }
-            .sidebar.open { left: 0; }
-            .hamburger { display: flex; }
+            .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
+            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 1200; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
+            .sidebar.open { transform: translateX(0); left: 0; }
+            .sidebar-overlay { display: block !important; z-index: 1100; }
             .sidebar-close { display: flex; }
-            header { padding: 0 14px; gap: 10px; }
-            .header-logos img { height: 42px; width: 42px; }
+            .sidebar .nav-section-label { padding-top: 52px; }
+            .hamburger { display: flex; }
+            .topbar { padding: 0 16px; }
+            .topbar-left { display: none; }
+            header { padding: 0 16px; gap: 10px; }
+            .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
-            .header-org, .header-sub { display: none; }
+            .header-sub { display: none; }
+            .header-admin-badge { padding: 6px 10px; gap: 8px; }
+            .admin-name { font-size: 12px; }
+            .admin-role { display: none; }
+            .main-content { padding: 20px 16px; }
             .pb-strip { grid-template-columns: repeat(3, 1fr); gap: 8px; }
             .quick-nav { grid-template-columns: repeat(4, 1fr); gap: 8px; }
         }
 
-        /* ── Large mobile (≤ 680px) ── */
-        @media (max-width: 680px) {
-            .shell { grid-template-rows: 32px 56px 1fr 42px; }
-            .main-content { padding: 12px 10px; }
+        /* ── Large mobile (≤ 640px) ── */
+        @media (max-width: 640px) {
+            .topbar { justify-content: flex-end; }
+            .clock-date-inline, .status-indicator { display: none; }
+            .shell { grid-template-rows: 36px auto 1fr 48px; }
+            .main-content { padding: 16px 12px; }
             /* Header */
-            header { padding: 0 10px; gap: 8px; }
-            .header-logos img { height: 38px; width: 38px; }
-            .logo-divider { display: none; }
-            .header-title { font-size: 14px; line-height: 1.2; }
-            .header-admin-badge { display: none; }
+            header { padding: 0 12px; gap: 8px; }
+            .header-logos img { height: 36px; width: 36px; }
+            .logo-divider, .header-logos img:last-child, .header-org { display: none; }
+            .header-title { font-size: 13px; line-height: 1.3; }
+            .header-admin-badge { padding: 5px 8px; }
+            .admin-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .admin-name { font-size: 11px; }
+            /* Page titlebar */
+            .page-titlebar { flex-direction: column; align-items: flex-start; }
+            .page-h1 { font-size: 18px; }
+            .page-date { text-align: left; }
             /* Welcome */
             .welcome-card { padding: 12px 14px; gap: 10px; }
             .welcome-card img { width: 36px; height: 36px; }
             .welcome-heading { font-size: 15px; }
-            .welcome-desc { display: none; }
-            .welcome-label { display: none; }
+            .welcome-desc, .welcome-label { display: none; }
             /* Quick nav */
             .quick-nav { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
             .qnav-desc { display: none; }
             .qnav-card { padding: 12px 14px; gap: 6px; }
             /* Summary strip */
             .pb-strip { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
+            .pb-strip-card--qr { grid-column: 1 / -1; max-width: 50%; justify-self: center; width: 100%; }
             .pb-strip-card { padding: 10px 11px; gap: 8px; }
             .pb-si { width: 28px; height: 28px; }
             .pb-si svg { width: 14px; height: 14px; }
@@ -355,11 +364,12 @@
             .pb-sl { font-size: 9px; }
             /* Donut + cards top row */
             .pb-top { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 12px; }
-            .pb-donut-col { flex: none; width: 100%; align-items: center; }
-            .pb-donut-wrap { width: 160px; height: 160px; }
-            .pb-dc-val { font-size: 18px; }
-            .pb-cards { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-            .pb-card { padding: 8px 10px; }
+            .pb-donut-col { flex: none; width: 100%; align-items: center; order: -1; }
+            .pb-donut-wrap { width: 220px; height: 220px; }
+            .pb-dc-val { font-size: 20px; }
+            .pb-cards-left { flex-direction: row; gap: 8px; }
+            .pb-cards-right { flex-direction: row; gap: 8px; }
+            .pb-card { padding: 10px 12px; flex: 1; }
             .pb-card-v { font-size: 17px; }
             /* Sector buttons */
             .pb-sector-row { grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 10px; }
@@ -388,6 +398,7 @@
             /* Footer */
             footer { padding: 0 12px; }
             .footer-center { display: none; }
+            .footer-left { font-size: 10px; }
             .fb-link { font-size: 10px; }
         }
 
@@ -404,6 +415,7 @@
             .header-title { font-size: 13px; }
             /* Strip: 2 col but tighter */
             .pb-strip { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+            .pb-strip-card--qr { grid-column: 1 / -1; max-width: 50%; justify-self: center; width: 100%; }
             .pb-strip-card { padding: 8px 10px; gap: 7px; }
             .pb-ss { display: none; }
             /* Donut smaller */
@@ -415,8 +427,10 @@
             .pb-sbtn-lbl { display: none; }
             .pb-sbtn-count { font-size: 13px; }
             .pb-sbtn svg { width: 16px; height: 16px; }
-            /* Cards 1 col */
-            .pb-cards { grid-template-columns: repeat(2, 1fr); }
+            /* Cards: donut top, cards side by side */
+            .pb-donut-col { order: -1; }
+            .pb-cards-left { flex-direction: row; }
+            .pb-cards-right { flex-direction: row; }
             /* Cross */
             .pb-cross-grid { grid-template-columns: 1fr 1fr; }
             /* Quick nav 2 col */
@@ -436,8 +450,8 @@
     </style>
 </head>
 <body>
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <div class="shell">
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
     <!-- TOPBAR -->
     <div class="topbar">
@@ -596,7 +610,7 @@
                 <div class="pb-si" style="background:#FFFAE6"><svg viewBox="0 0 24 24" fill="none" stroke="#BA7517" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
                 <div><div class="pb-sl">Events</div><div class="pb-sv" style="color:#BA7517">{{ number_format($totalEvents) }}</div><div class="pb-ss">{{ number_format($ongoingEvents) }} ongoing</div></div>
             </div>
-            <div class="pb-strip-card" style="border-top-color:#1D9E75">
+            <div class="pb-strip-card pb-strip-card--qr" style="border-top-color:#1D9E75">
                 <div class="pb-si" style="background:#DCFCE7"><svg viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
                 <div><div class="pb-sl">Active QR</div><div class="pb-sv" style="color:#1D9E75">{{ number_format($activeQr) }}</div><div class="pb-ss">of {{ number_format($totalQr) }} total</div></div>
             </div>
@@ -604,6 +618,10 @@
 
         {{-- Main donut + summary cards --}}
         <div class="pb-top">
+            <div class="pb-cards-left">
+                <div class="pb-card" style="border-left-color:#1B3F7A"><div class="pb-card-l">Residents</div><div class="pb-card-v">{{ number_format($totalResidents) }}</div><div class="pb-card-s">Family members</div></div>
+                <div class="pb-card" style="border-left-color:#7C3AED"><div class="pb-card-l">Vulnerable HH</div><div class="pb-card-v">{{ number_format($totalVulnerable) }}</div><div class="pb-card-s">4Ps · PWD · Senior · Solo</div></div>
+            </div>
             <div class="pb-donut-col">
                 <div class="pb-donut-wrap">
                     <canvas id="pbMainDonut"></canvas>
@@ -614,10 +632,8 @@
                 </div>
                 <div class="pb-leg" id="pbMainLeg"></div>
             </div>
-            <div class="pb-cards" id="pbCards">
-                <div class="pb-card" style="border-left-color:#1B3F7A"><div class="pb-card-l">Residents</div><div class="pb-card-v">{{ number_format($totalResidents) }}</div><div class="pb-card-s">Family members</div></div>
+            <div class="pb-cards-right" id="pbCards">
                 <div class="pb-card" style="border-left-color:#2459A8"><div class="pb-card-l">Households</div><div class="pb-card-v">{{ number_format($totalHouseholds) }}</div><div class="pb-card-s">{{ number_format($approvedCount) }} approved</div></div>
-                <div class="pb-card" style="border-left-color:#7C3AED"><div class="pb-card-l">Vulnerable HH</div><div class="pb-card-v">{{ number_format($totalVulnerable) }}</div><div class="pb-card-s">4Ps · PWD · Senior · Solo</div></div>
                 <div class="pb-card" style="border-left-color:#1D9E75"><div class="pb-card-l">Active QR</div><div class="pb-card-v">{{ number_format($activeQr) }}</div><div class="pb-card-s">of {{ number_format($totalQr) }} issued</div></div>
             </div>
         </div>
@@ -780,7 +796,7 @@ const SECTOR_CFG = [
 const STATUS_COLORS = { upcoming:'#2459A8', ongoing:'#16A34A', completed:'#6B7280', cancelled:'#C0392B' };
 
 /* ── State ── */
-const PB = { active: new Set(), brgy:'All', qrType:'all', chartType:'bar' };
+const PB = { active: new Set(), brgy:'All', qrType:'all', chartType:'bar', sexFilter:new Set(), ageFilter:new Set(), housingFilter:new Set(), vulnFilter:new Set(), distFilter:new Set(), _lastKeys:'' };
 
 /* Full official barangay list for Naic, Cavite */
 const BRGYS = [
@@ -872,16 +888,19 @@ function updateDonut(){
 /* ── Update summary cards ── */
 function updateCards(){
     const keys=[...PB.active]; const lastKey=keys[keys.length-1]||null;
-    const container=document.getElementById('pbCards');
-    if(!lastKey){ return; } // keep default
-    const h=filtH(PB.brgy); const hids=h.map(x=>x.id); const m=memOfH(hids);
+    const leftCol=document.querySelector('.pb-cards-left');
+    const rightCol=document.getElementById('pbCards');
+    if(!lastKey){ return; }
+    const h=filtH(PB.brgy); const hids=h.map(x=>x.id);
+    const mAll=memOfH(hids);
+    const m = PB.sexFilter.size===0 ? mAll : mAll.filter(x=>PB.sexFilter.has(x.sex));
     let cards=[];
     if(lastKey==='population'){
         cards=[
             {l:'Residents',v:m.length.toLocaleString(),s:'in '+(PB.brgy==='All'?'all barangays':PB.brgy),c:'#1B3F7A'},
             {l:'Households',v:h.length.toLocaleString(),s:h.filter(x=>x.approved).length+' approved',c:'#2459A8'},
-            {l:'Male',v:m.filter(x=>x.sex==='Male').length.toLocaleString(),s:Math.round(m.filter(x=>x.sex==='Male').length/Math.max(m.length,1)*100)+'%',c:'#1B3F7A'},
-            {l:'Female',v:m.filter(x=>x.sex==='Female').length.toLocaleString(),s:Math.round(m.filter(x=>x.sex==='Female').length/Math.max(m.length,1)*100)+'%',c:'#85B7EB'},
+            {l:'Male',v:mAll.filter(x=>x.sex==='Male').length.toLocaleString(),s:Math.round(mAll.filter(x=>x.sex==='Male').length/Math.max(mAll.length,1)*100)+'%',c:'#1B3F7A'},
+            {l:'Female',v:mAll.filter(x=>x.sex==='Female').length.toLocaleString(),s:Math.round(mAll.filter(x=>x.sex==='Female').length/Math.max(mAll.length,1)*100)+'%',c:'#DB2777'},
         ];
     } else if(lastKey==='vulnerable'){
         cards=[
@@ -907,7 +926,9 @@ function updateCards(){
             {l:'Unique HH',v:new Set(codes.map(x=>x.household_id)).size+'',s:'with QR codes',c:'#2459A8'},
         ];
     }
-    container.innerHTML=cards.map(c=>`<div class="pb-card" style="border-left-color:${c.c}"><div class="pb-card-l">${c.l}</div><div class="pb-card-v" style="color:${c.c}">${c.v}</div><div class="pb-card-s">${c.s}</div></div>`).join('');
+    const cardHTML=c=>`<div class="pb-card" style="border-left-color:${c.c}"><div class="pb-card-l">${c.l}</div><div class="pb-card-v" style="color:${c.c}">${c.v}</div><div class="pb-card-s">${c.s}</div></div>`;
+    if(leftCol) leftCol.innerHTML=[cards[0],cards[2]].filter(Boolean).map(cardHTML).join('');
+    if(rightCol) rightCol.innerHTML=[cards[1],cards[3]].filter(Boolean).map(cardHTML).join('');
 }
 
 /* ── Explore zone ── */
@@ -916,110 +937,313 @@ function updateExplore(){
     const title=document.getElementById('pbEzTitle');
     const controls=document.getElementById('pbEzControls');
     const body=document.getElementById('pbEzBody');
-
-    Object.values(pbDetCharts).forEach(c=>{ try{c.destroy();}catch(e){} });
-    pbDetCharts={};
-    if(pbLeafMap){ pbLeafMap.remove(); pbLeafMap=null; }
-    const existCross=document.getElementById('pbCross'); if(existCross) existCross.remove();
+    const keysStr=keys.join(',');
+    const sectorsChanged=(PB._lastKeys!==keysStr);
 
     if(keys.length===0){
+        // Full reset when all sectors deselected
+        Object.values(pbDetCharts).forEach(c=>{ try{c.destroy();}catch(e){} });
+        pbDetCharts={};
+        if(pbLeafMap){ pbLeafMap.remove(); pbLeafMap=null; }
+        const existCross=document.getElementById('pbCross'); if(existCross) existCross.remove();
         title.textContent='Select a sector above to explore data'; controls.innerHTML='';
         body.innerHTML=`<div class="pb-empty" style="flex:1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Click a sector button to explore its data</div>`;
+        PB._lastKeys='';
         return;
     }
 
     const names=keys.map(k=>SECTOR_CFG.find(x=>x.key===k).label);
     title.textContent=names.join(' + ')+' — detailed view';
 
-    buildControls(controls, keys);
+    if(sectorsChanged){
+        // Sectors changed — destroy everything and rebuild structure + controls fresh
+        Object.values(pbDetCharts).forEach(c=>{ try{c.destroy();}catch(e){} });
+        pbDetCharts={};
+        if(pbLeafMap){ pbLeafMap.remove(); pbLeafMap=null; }
+        const existCross=document.getElementById('pbCross'); if(existCross) existCross.remove();
 
-    body.innerHTML=''; body.className='pb-ez-body pb-slide';
-    keys.forEach(key=>{ const col=document.createElement('div'); col.className='pb-col'; col.innerHTML=`<div class="pb-col-head"><div class="pb-col-dot" style="background:${SECTOR_CFG.find(x=>x.key===key).color}"></div><div class="pb-col-title">${SECTOR_CFG.find(x=>x.key===key).label}</div><div class="pb-col-sub">${PB.brgy==='All'?'All barangays':PB.brgy}</div></div><div id="pbCol-${key}"></div>`; body.appendChild(col); });
+        buildControls(controls, keys);
+        PB._lastKeys=keysStr;
 
-    if(keys.includes('distribution')){
-        const mr=document.createElement('div'); mr.className='pb-map-row';
-        mr.innerHTML=`<div class="pb-map-leg">${Object.entries(STATUS_COLORS).map(([s,c])=>`<span class="pb-li"><span class="pb-lsq" style="background:${c};border-radius:50%"></span>${s}</span>`).join('')}</div><div id="pbMap"></div>`;
-        body.appendChild(mr); setTimeout(initPbMap,80);
+        body.innerHTML=''; body.className='pb-ez-body pb-slide';
+        keys.forEach(key=>{ const col=document.createElement('div'); col.className='pb-col'; col.innerHTML=`<div class="pb-col-head"><div class="pb-col-dot" style="background:${SECTOR_CFG.find(x=>x.key===key).color}"></div><div class="pb-col-title">${SECTOR_CFG.find(x=>x.key===key).label}</div><div class="pb-col-sub">${PB.brgy==='All'?'All barangays':PB.brgy}</div></div><div id="pbCol-${key}"></div>`; body.appendChild(col); });
+
+        if(keys.includes('distribution')){
+            const mr=document.createElement('div'); mr.className='pb-map-row';
+            mr.innerHTML=`<div class="pb-map-leg">${Object.entries(STATUS_COLORS).map(([s,c])=>`<span class="pb-li"><span class="pb-lsq" style="background:${c};border-radius:50%"></span>${s}</span>`).join('')}</div><div id="pbMap"></div>`;
+            body.appendChild(mr); setTimeout(initPbMap,80);
+        }
+    } else {
+        // Only a filter changed — destroy charts but keep the column DOM structure intact
+        Object.values(pbDetCharts).forEach(c=>{ try{c.destroy();}catch(e){} });
+        pbDetCharts={};
+        if(pbLeafMap){ pbLeafMap.remove(); pbLeafMap=null; }
+        const existCross=document.getElementById('pbCross'); if(existCross) existCross.remove();
+        // Update the barangay subtitle in each column header
+        keys.forEach(key=>{
+            const colEl=document.getElementById('pbCol-'+key);
+            if(colEl){
+                const sub=colEl.closest('.pb-col')&&colEl.closest('.pb-col').querySelector('.pb-col-sub');
+                if(sub) sub.textContent=PB.brgy==='All'?'All barangays':PB.brgy;
+            }
+        });
+        // Re-add map row for distribution if missing
+        if(keys.includes('distribution')&&!document.getElementById('pbMap')){
+            const mr=document.createElement('div'); mr.className='pb-map-row';
+            mr.innerHTML=`<div class="pb-map-leg">${Object.entries(STATUS_COLORS).map(([s,c])=>`<span class="pb-li"><span class="pb-lsq" style="background:${c};border-radius:50%"></span>${s}</span>`).join('')}</div><div id="pbMap"></div>`;
+            body.appendChild(mr); setTimeout(initPbMap,80);
+        } else if(keys.includes('distribution')){
+            setTimeout(initPbMap,80);
+        }
     }
 
     if(keys.length>=2) buildCross(keys);
     keys.forEach(key=>renderCol(key));
 }
 
+function makeSwitcherSingle(options, currentSet, onChange){
+    // Single-select version: only one value active at a time; clicking active value deselects
+    const sw=document.createElement('div');
+    sw.style.cssText='display:flex;gap:3px;border:1px solid var(--gray-200);border-radius:5px;overflow:hidden;padding:2px;background:var(--gray-50);flex-wrap:wrap;';
+    function applyStyles(){
+        sw.querySelectorAll('button[data-val]').forEach(b=>{
+            const val=b.dataset.val; const col=b.dataset.col;
+            const isAll=(val==='__all__');
+            const active=isAll?(currentSet.size===0):currentSet.has(val);
+            b.style.background=active?col:'transparent';
+            b.style.color=active?'#fff':'var(--gray-600)';
+        });
+    }
+    const allBtn=document.createElement('button');
+    allBtn.dataset.val='__all__'; allBtn.dataset.col='#1B3F7A';
+    allBtn.style.cssText='padding:3px 10px;border:none;border-radius:3px;font-size:11px;font-weight:600;cursor:pointer;font-family:Open Sans,sans-serif;transition:all .15s;white-space:nowrap;';
+    allBtn.textContent='All';
+    allBtn.addEventListener('click',()=>{ currentSet.clear(); applyStyles(); onChange(currentSet); });
+    sw.appendChild(allBtn);
+    options.forEach(([val,label,col])=>{
+        if(val==='All') return;
+        const c=col||'#1B3F7A';
+        const b=document.createElement('button');
+        b.dataset.val=val; b.dataset.col=c;
+        b.style.cssText='padding:3px 10px;border:none;border-radius:3px;font-size:11px;font-weight:600;cursor:pointer;font-family:Open Sans,sans-serif;transition:all .15s;white-space:nowrap;';
+        b.textContent=label;
+        b.addEventListener('click',()=>{
+            if(currentSet.has(val)){ currentSet.clear(); } // toggle off
+            else { currentSet.clear(); currentSet.add(val); } // switch to this one
+            applyStyles(); onChange(currentSet);
+        });
+        sw.appendChild(b);
+    });
+    applyStyles();
+    return sw;
+}
+function makeSwitcher(options, currentSet, onChange){
+    // currentSet is a Set of active values; empty Set = "All" (no filter)
+    const sw=document.createElement('div');
+    sw.style.cssText='display:flex;gap:3px;border:1px solid var(--gray-200);border-radius:5px;overflow:hidden;padding:2px;background:var(--gray-50);flex-wrap:wrap;';
+
+    function applyStyles(){
+        sw.querySelectorAll('button[data-val]').forEach(b=>{
+            const val=b.dataset.val;
+            const col=b.dataset.col;
+            const isAll=(val==='__all__');
+            const active=isAll?(currentSet.size===0):currentSet.has(val);
+            b.style.background=active?col:'transparent';
+            b.style.color=active?'#fff':'var(--gray-600)';
+        });
+    }
+
+    // "All" button
+    const allBtn=document.createElement('button');
+    allBtn.dataset.val='__all__'; allBtn.dataset.col='#1B3F7A';
+    allBtn.style.cssText='padding:3px 10px;border:none;border-radius:3px;font-size:11px;font-weight:600;cursor:pointer;font-family:Open Sans,sans-serif;transition:all .15s;white-space:nowrap;';
+    allBtn.textContent='All';
+    allBtn.addEventListener('click',()=>{ currentSet.clear(); applyStyles(); onChange(currentSet); });
+    sw.appendChild(allBtn);
+
+    options.forEach(([val,label,col])=>{
+        if(val==='All') return; // skip if caller passed an All option
+        const c=col||'#1B3F7A';
+        const b=document.createElement('button');
+        b.dataset.val=val; b.dataset.col=c;
+        b.style.cssText='padding:3px 10px;border:none;border-radius:3px;font-size:11px;font-weight:600;cursor:pointer;font-family:Open Sans,sans-serif;transition:all .15s;white-space:nowrap;';
+        b.textContent=label;
+        b.addEventListener('click',()=>{
+            if(currentSet.has(val)) currentSet.delete(val); else currentSet.add(val);
+            if(currentSet.size===0){} // show All active
+            applyStyles();
+            onChange(currentSet);
+        });
+        sw.appendChild(b);
+    });
+    applyStyles();
+    return sw;
+}
+function addFilterRow(container, label, sw){
+    const wrap=document.createElement('div'); wrap.className='pb-frow';
+    const lbl=document.createElement('span'); lbl.className='pb-flbl'; lbl.textContent=label;
+    wrap.appendChild(lbl); wrap.appendChild(sw); container.appendChild(wrap);
+}
+
 function buildControls(container, keys){
     container.innerHTML='';
+    // Barangay (population, vulnerable, qr)
     if(keys.some(k=>['population','vulnerable','qr'].includes(k))){
         const activeColor=keys.length===1?SECTOR_CFG.find(x=>x.key===keys[0]).color:'#1B3F7A';
         const wrap=document.createElement('div'); wrap.className='pb-frow';
         const lbl=document.createElement('span'); lbl.className='pb-flbl'; lbl.textContent='Barangay:';
         const sel=document.createElement('select'); sel.className='pb-select'; sel.id='pbBrgySelect';
         sel.style.borderColor=activeColor;
-        BRGYS.forEach(b=>{
-            const opt=document.createElement('option'); opt.value=b; opt.textContent=b==='All'?'All Barangays':b;
-            if(b===PB.brgy) opt.selected=true;
-            sel.appendChild(opt);
-        });
+        BRGYS.forEach(b=>{ const opt=document.createElement('option'); opt.value=b; opt.textContent=b==='All'?'All Barangays':b; if(b===PB.brgy) opt.selected=true; sel.appendChild(opt); });
         sel.addEventListener('change',()=>{ PB.brgy=sel.value; refresh(); });
         wrap.appendChild(lbl); wrap.appendChild(sel); container.appendChild(wrap);
     }
-
-    if(keys.includes('qr')){
-        const wrap=document.createElement('div'); wrap.className='pb-frow';
-        const lbl2=document.createElement('span'); lbl2.className='pb-flbl'; lbl2.textContent='QR type:';
-        const sw=document.createElement('div'); sw.style.cssText='display:flex;gap:3px;border:1px solid var(--gray-200);border-radius:5px;overflow:hidden;padding:2px;background:var(--gray-50);';
-        [['all','All QR'],['household','Household QR'],['family_head','Family Head QR']].forEach(([val,lbl])=>{
-            const b=document.createElement('button');
-            b.style.cssText='padding:3px 10px;border:none;border-radius:3px;font-size:11px;font-weight:600;cursor:pointer;font-family:Open Sans,sans-serif;transition:all .15s;background:transparent;color:var(--gray-600);';
-            b.textContent=lbl;
-            if(val===PB.qrType){ b.style.background='#1D9E75'; b.style.color='#fff'; }
-            b.addEventListener('click',()=>{
-                PB.qrType=val;
-                sw.querySelectorAll('button').forEach(x=>{ x.style.background='transparent'; x.style.color='var(--gray-600)'; });
-                b.style.background='#1D9E75'; b.style.color='#fff';
-                refresh();
-            });
-            sw.appendChild(b);
-        });
-        wrap.appendChild(lbl2); wrap.appendChild(sw); container.appendChild(wrap);
+    // Population: sex + age group + housing
+    if(keys.includes('population')){
+        addFilterRow(container,'Sex:',makeSwitcherSingle(
+            [['Male','Male','#1B3F7A'],['Female','Female','#DB2777']],
+            PB.sexFilter, ()=>refresh()
+        ));
+        addFilterRow(container,'Age Group:',makeSwitcher(
+            [['Children 0-12','Children','#2459A8'],['Teen 13-17','Teen','#2459A8'],['Adult 18-59','Adult','#2459A8'],['Senior 60+','Senior','#2459A8']],
+            PB.ageFilter, ()=>refresh()
+        ));
+        addFilterRow(container,'Housing:',makeSwitcher(
+            [['Single','Single','#2459A8'],['Duplex','Duplex','#2459A8'],['Apartment/Condominium','Apt/Condo','#2459A8'],['Townhouse','Townhouse','#2459A8'],['Improvised','Improvised','#2459A8'],['Mixed Use','Mixed Use','#2459A8'],['Other','Other','#2459A8']],
+            PB.housingFilter, ()=>refresh()
+        ));
     }
-
+    // Vulnerable: type
+    if(keys.includes('vulnerable')){
+        addFilterRow(container,'Type:',makeSwitcher(
+            [['4Ps','4Ps','#1B3F7A'],['PWD','PWD','#7C3AED'],['Senior','Senior','#D97706'],['Solo Parent','Solo Parent','#DB2777']],
+            PB.vulnFilter, ()=>refresh()
+        ));
+    }
+    // Distribution: status
+    if(keys.includes('distribution')){
+        addFilterRow(container,'Status:',makeSwitcher(
+            [['upcoming','Upcoming','#2459A8'],['ongoing','Ongoing','#16A34A'],['completed','Completed','#6B7280'],['cancelled','Cancelled','#C0392B']],
+            PB.distFilter, ()=>refresh()
+        ));
+    }
+    // QR type
+    if(keys.includes('qr')){
+        addFilterRow(container,'QR Type:',makeSwitcher(
+            [['all','All QR','#1D9E75'],['household','Household','#1D9E75'],['family_head','Family Head','#1D9E75']],
+            PB.qrType, v=>{ PB.qrType=v; refresh(); }
+        ));
+    }
+    // Chart type toggle
     if(!keys.every(k=>k==='distribution')){
         const ct=document.createElement('div'); ct.className='pb-ct';
         ct.innerHTML=`<button class="pb-ctb${PB.chartType==='bar'?' on':''}" id="pbCtBar" title="Bar"><svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9" fill="currentColor" style="stroke:none"/><rect x="10" y="7" width="4" height="14" fill="currentColor" style="stroke:none"/><rect x="17" y="3" width="4" height="18" fill="currentColor" style="stroke:none"/></svg></button>
         <button class="pb-ctb${PB.chartType==='doughnut'?' on':''}" id="pbCtPie" title="Donut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" style="fill:currentColor;stroke:none"/></svg></button>`;
         container.appendChild(ct);
-        ct.querySelector('#pbCtBar').addEventListener('click',()=>{ PB.chartType='bar'; refresh(); });
-        ct.querySelector('#pbCtPie').addEventListener('click',()=>{ PB.chartType='doughnut'; refresh(); });
+        ct.querySelector('#pbCtBar').addEventListener('click',()=>{
+            PB.chartType='bar';
+            ct.querySelector('#pbCtBar').classList.add('on');
+            ct.querySelector('#pbCtPie').classList.remove('on');
+            refresh();
+        });
+        ct.querySelector('#pbCtPie').addEventListener('click',()=>{
+            PB.chartType='doughnut';
+            ct.querySelector('#pbCtPie').classList.add('on');
+            ct.querySelector('#pbCtBar').classList.remove('on');
+            refresh();
+        });
     }
 }
 
 function renderCol(key){
     const el=document.getElementById('pbCol-'+key); if(!el) return;
-    const h=filtH(PB.brgy); const hids=h.map(x=>x.id); const m=memOfH(hids); const det=detOfM(m.map(x=>x.id));
     const cfg=SECTOR_CFG.find(x=>x.key===key);
 
     if(key==='population'){
-        const ageD=countBy(m,x=>ageGroup(x.birthday)); const housingD=countBy(h,x=>x.housing);
-        el.innerHTML=`<div class="pb-col-sublabel">Age groups</div>${PB.chartType==='bar'?barH(ageD,cfg.color):`<div class="pb-chart-area"><canvas id="pbChart-pop-age"></canvas></div>`}
-        <div class="pb-col-sublabel" style="margin-top:14px">Housing type</div>${PB.chartType==='bar'?barH(housingD,'#2459A8'):`<div class="pb-chart-area"><canvas id="pbChart-pop-house"></canvas></div>`}`;
-        if(PB.chartType==='doughnut'){ pbDetCharts['pop-age']=mkPie('pbChart-pop-age',Object.keys(ageD),Object.values(ageD),['#1B3F7A','#2459A8','#85B7EB','#EAF0FA']); pbDetCharts['pop-house']=mkPie('pbChart-pop-house',Object.keys(housingD),Object.values(housingD),['#2459A8','#1B3F7A','#85B7EB','#B5D4F4','#0C447C']); }
+        const h=filtH(PB.brgy); const hids=h.map(x=>x.id); const mAll=memOfH(hids);
+
+        // --- Sex filter (Set-based, empty = All) ---
+        const mSex = PB.sexFilter.size===0 ? mAll : mAll.filter(x=>PB.sexFilter.has(x.sex));
+
+        // --- Age filter on top of sex filter ---
+        const mAge = PB.ageFilter.size===0 ? mSex : mSex.filter(x=>PB.ageFilter.has(ageGroup(x.birthday)));
+
+        // --- Sex chart: show only selected, or both if none selected ---
+        const male=mAll.filter(x=>x.sex==='Male').length, female=mAll.filter(x=>x.sex==='Female').length;
+        const sexAll={'Male':male,'Female':female};
+        const sexD = PB.sexFilter.size===0 ? sexAll
+            : Object.fromEntries(Object.entries(sexAll).filter(([k])=>PB.sexFilter.has(k)));
+
+        // --- Age groups: always all 4, filtered by sexFilter only ---
+        const AGE_GROUPS=['Children 0-12','Teen 13-17','Adult 18-59','Senior 60+'];
+        const ageRaw=countBy(mSex,x=>ageGroup(x.birthday));
+        const ageAllD={}; AGE_GROUPS.forEach(g=>{ ageAllD[g]=ageRaw[g]||0; });
+        const ageD = PB.ageFilter.size===0 ? ageAllD
+            : Object.fromEntries(Object.entries(ageAllD).filter(([k])=>PB.ageFilter.has(k)));
+
+        // --- Housing: filtered by sexFilter + ageFilter ---
+        const filteredHids=new Set(mAge.map(x=>x.household_id));
+        const hFiltered=h.filter(x=>filteredHids.has(x.id));
+        const HOUSING_TYPES=['Single','Duplex','Apartment/Condominium','Townhouse','Improvised','Mixed Use','Other'];
+        const housingRaw=countBy(hFiltered,x=>x.housing?x.housing.trim().replace(/^./,c=>c.toUpperCase()):null);
+        const housingAllD={}; HOUSING_TYPES.forEach(t=>{ housingAllD[t]=housingRaw[t]||0; });
+        Object.keys(housingRaw).forEach(k=>{ if(!(k in housingAllD)) housingAllD[k]=housingRaw[k]; });
+        const housingD = PB.housingFilter.size===0 ? housingAllD
+            : Object.fromEntries(Object.entries(housingAllD).filter(([k])=>PB.housingFilter.has(k)));
+
+        el.innerHTML=
+            `<div class="pb-col-sublabel">Population Sex</div>`
+            +(PB.chartType==='bar'?barH2(sexD,'#1B3F7A','#DB2777'):`<div class="pb-chart-area"><canvas id="pbChart-pop-sex"></canvas></div>`)
+            +`<div class="pb-col-sublabel" style="margin-top:14px">Age Groups</div>`
+            +(PB.chartType==='bar'?barH(ageD,cfg.color):`<div class="pb-chart-area"><canvas id="pbChart-pop-age"></canvas></div>`)
+            +`<div class="pb-col-sublabel" style="margin-top:14px">Housing Type</div>`
+            +(PB.chartType==='bar'?barH(housingD,'#2459A8'):`<div class="pb-chart-area"><canvas id="pbChart-pop-house"></canvas></div>`);
+        if(PB.chartType==='doughnut'){
+            pbDetCharts['pop-sex']  =mkPie('pbChart-pop-sex',  Object.keys(sexD),  Object.values(sexD),  ['#1B3F7A','#DB2777']);
+            pbDetCharts['pop-age']  =mkPie('pbChart-pop-age',  Object.keys(ageD),  Object.values(ageD),  ['#1B3F7A','#2459A8','#85B7EB','#EAF0FA','#CBD5E1']);
+            pbDetCharts['pop-house']=mkPie('pbChart-pop-house',Object.keys(housingD),Object.values(housingD),['#2459A8','#1B3F7A','#85B7EB','#B5D4F4','#0C447C','#EAF0FA','#64748B']);
+        }
     }
     else if(key==='vulnerable'){
-        const vD={'4Ps':h.filter(x=>x.is_4ps).length,'PWD':h.filter(x=>x.is_pwd).length,'Senior':h.filter(x=>x.is_senior).length,'Solo Parent':h.filter(x=>x.is_solo).length};
-        const empD=countBy(det,x=>x.employment_status);
-        el.innerHTML=`<div class="pb-col-sublabel">Vulnerable households</div>${PB.chartType==='bar'?barH(vD,cfg.color):`<div class="pb-chart-area"><canvas id="pbChart-vuln-cat"></canvas></div>`}
-        <div class="pb-col-sublabel" style="margin-top:14px">Employment status</div>${PB.chartType==='bar'?barH(empD,'#6D28D9'):`<div class="pb-chart-area"><canvas id="pbChart-vuln-emp"></canvas></div>`}`;
-        if(PB.chartType==='doughnut'){ pbDetCharts['vuln-cat']=mkPie('pbChart-vuln-cat',Object.keys(vD),Object.values(vD),['#1B3F7A','#7C3AED','#D97706','#DB2777']); pbDetCharts['vuln-emp']=mkPie('pbChart-vuln-emp',Object.keys(empD),Object.values(empD),['#6D28D9','#7C3AED','#A78BFA','#C4B5FD','#3C3489']); }
+        const h=filtH(PB.brgy);
+        // Apply vulnFilter
+        const vulnMap={'4Ps':x=>x.is_4ps,'PWD':x=>x.is_pwd,'Senior':x=>x.is_senior,'Solo Parent':x=>x.is_solo};
+        const hFiltered = PB.vulnFilter.size===0 ? h
+            : h.filter(x=>[...PB.vulnFilter].some(v=>vulnMap[v]&&vulnMap[v](x)));
+        const hids=hFiltered.map(x=>x.id); const m=memOfH(hids); const det=detOfM(m.map(x=>x.id));
+        // Always show all 4 vuln types from full h
+        const vAllD={'4Ps':h.filter(x=>x.is_4ps).length,'PWD':h.filter(x=>x.is_pwd).length,'Senior':h.filter(x=>x.is_senior).length,'Solo Parent':h.filter(x=>x.is_solo).length};
+        const vD = PB.vulnFilter.size===0 ? vAllD : Object.fromEntries(Object.entries(vAllD).filter(([k])=>PB.vulnFilter.has(k)));
+        // Employment: always show known statuses
+        const EMP_STATUSES=['Employed','Self-employed','Unemployed','Student','Retired','OFW'];
+        const empRaw=countBy(det,x=>x.employment_status);
+        const empD={}; EMP_STATUSES.forEach(s=>{ empD[s]=empRaw[s]||0; });
+        Object.keys(empRaw).forEach(k=>{ if(k&&!(k in empD)) empD[k]=empRaw[k]; });
+        el.innerHTML=`<div class="pb-col-sublabel">Vulnerable Households</div>${PB.chartType==='bar'?barH(vD,cfg.color):`<div class="pb-chart-area"><canvas id="pbChart-vuln-cat"></canvas></div>`}
+        <div class="pb-col-sublabel" style="margin-top:14px">Employment Status${PB.vulnFilter!=='All'?' ('+PB.vulnFilter+')':''}</div>${PB.chartType==='bar'?barH(empD,'#6D28D9'):`<div class="pb-chart-area"><canvas id="pbChart-vuln-emp"></canvas></div>`}`;
+        if(PB.chartType==='doughnut'){ pbDetCharts['vuln-cat']=mkPie('pbChart-vuln-cat',Object.keys(vD),Object.values(vD),['#1B3F7A','#7C3AED','#D97706','#DB2777']); pbDetCharts['vuln-emp']=mkPie('pbChart-vuln-emp',Object.keys(empD),Object.values(empD),['#6D28D9','#7C3AED','#A78BFA','#C4B5FD','#3C3489','#D97706']); }
     }
     else if(key==='distribution'){
-        const evs=filtE(PB.brgy); const bySt=countBy(evs,e=>e.status); const byScan=countBy(evs,e=>e.scan_mode);
-        el.innerHTML=`<div class="pb-col-sublabel">By status</div>${barH(bySt,cfg.color,true)}<div class="pb-col-sublabel" style="margin-top:14px">Scan mode</div>${barH(byScan,'#EF9F27')}`;
+        const evsAll=filtE(PB.brgy);
+        const evs = PB.distFilter.size===0 ? evsAll : evsAll.filter(e=>PB.distFilter.has(e.status));
+        // Always show all statuses
+        const STATUS_LIST=['upcoming','ongoing','completed','cancelled'];
+        const byStRaw=countBy(evsAll,e=>e.status);
+        const byStAll={}; STATUS_LIST.forEach(s=>{ byStAll[s]=byStRaw[s]||0; });
+        const bySt = PB.distFilter.size===0 ? byStAll : Object.fromEntries(Object.entries(byStAll).filter(([k])=>PB.distFilter.has(k)));
+        // Scan modes: always show both
+        const scanRaw=countBy(evs,e=>e.scan_mode);
+        const byScan={'household':scanRaw['household']||0,'family_head':scanRaw['family_head']||0};
+        Object.keys(scanRaw).forEach(k=>{ if(!(k in byScan)) byScan[k]=scanRaw[k]; });
+        el.innerHTML=`<div class="pb-col-sublabel">By Status</div>${barH(bySt,cfg.color,true)}<div class="pb-col-sublabel" style="margin-top:14px">Scan Mode${PB.distFilter!=='All'?' ('+PB.distFilter+')':''}</div>${barH(byScan,'#EF9F27')}`;
     }
     else if(key==='qr'){
-        const codes=filtQR(PB.brgy,PB.qrType); const byBrgy=countBy(codes,q=>{ const hh=HOUSEHOLDS.find(x=>x.id===q.household_id); return hh?hh.barangay:'Unknown'; });
+        const codes=filtQR(PB.brgy,PB.qrType);
+        const byBrgy=countBy(codes,q=>{ const hh=HOUSEHOLDS.find(x=>x.id===q.household_id); return hh?hh.barangay:'Unknown'; });
+        // Always show Active and Inactive even if 0
         const stD={'Active':codes.filter(x=>x.is_active).length,'Inactive':codes.filter(x=>!x.is_active).length};
-        el.innerHTML=`<div class="pb-col-sublabel">QR status</div>${PB.chartType==='bar'?barH(stD,cfg.color):`<div class="pb-chart-area"><canvas id="pbChart-qr-st"></canvas></div>`}
-        <div class="pb-col-sublabel" style="margin-top:14px">QR per barangay</div>${barH(byBrgy,'#0F6E56')}`;
+        el.innerHTML=`<div class="pb-col-sublabel">QR Status</div>${PB.chartType==='bar'?barH(stD,cfg.color):`<div class="pb-chart-area"><canvas id="pbChart-qr-st"></canvas></div>`}
+        <div class="pb-col-sublabel" style="margin-top:14px">QR per Barangay</div>${barH(byBrgy,'#0F6E56')}`;
         if(PB.chartType==='doughnut'){ pbDetCharts['qr-st']=mkPie('pbChart-qr-st',Object.keys(stD),Object.values(stD),['#1D9E75','#C0392B']); }
     }
 }
@@ -1073,9 +1297,23 @@ function initPbMap(){
 }
 
 /* ── Helpers ── */
+function barHFocus(data,color,activeSet){
+    // activeSet is a Set; empty = show all, otherwise show only selected keys
+    const filtered = (!activeSet||activeSet.size===0) ? data
+        : Object.fromEntries(Object.entries(data).filter(([k])=>activeSet.has(k)));
+    const vals=Object.values(filtered); const max=Math.max(...vals,1);
+    return `<div class="pb-bar-list">${Object.entries(filtered).map(([n,v])=>
+        `<div class="pb-br"><div class="pb-bn" title="${n}">${n}</div><div class="pb-bt"><div class="pb-bf" style="width:${Math.round(v/max*100)}%;background:${color}"></div></div><div class="pb-bv">${v.toLocaleString()}</div></div>`
+    ).join('')}</div>`;
+}
 function barH(data,color,statusColor=false){
     const vals=Object.values(data); const max=Math.max(...vals,1);
     return `<div class="pb-bar-list">${Object.entries(data).map(([n,v])=>`<div class="pb-br"><div class="pb-bn" title="${n}">${n}</div><div class="pb-bt"><div class="pb-bf" style="width:${Math.round(v/max*100)}%;background:${statusColor?(STATUS_COLORS[n]||color):color}"></div></div><div class="pb-bv">${v.toLocaleString()}</div></div>`).join('')}</div>`;
+}
+function barH2(data,colorM,colorF){
+    const vals=Object.values(data); const max=Math.max(...vals,1);
+    const colors={'Male':colorM,'Female':colorF};
+    return `<div class="pb-bar-list">${Object.entries(data).map(([n,v])=>`<div class="pb-br"><div class="pb-bn" title="${n}" style="color:${colors[n]||colorM};font-weight:700;">● ${n}</div><div class="pb-bt"><div class="pb-bf" style="width:${Math.round(v/max*100)}%;background:${colors[n]||colorM}"></div></div><div class="pb-bv" style="color:${colors[n]||colorM}">${v.toLocaleString()}</div></div>`).join('')}</div>`;
 }
 function mkPie(id,labels,data,colors){
     const el=document.getElementById(id); if(!el) return null;
@@ -1101,7 +1339,17 @@ function refresh(){
 document.querySelectorAll('.pb-sbtn').forEach(btn=>{
     btn.addEventListener('click',()=>{
         const k=btn.dataset.key;
-        if(PB.active.has(k)) PB.active.delete(k); else PB.active.add(k);
+        if(PB.active.has(k)){
+            PB.active.delete(k);
+        } else {
+            PB.active.add(k);
+            // Reset filters for the newly activated sector so they start fresh
+            if(k==='population')   { PB.sexFilter=new Set(); PB.ageFilter=new Set(); PB.housingFilter=new Set(); }
+            if(k==='vulnerable')   { PB.vulnFilter=new Set(); }
+            if(k==='distribution') { PB.distFilter=new Set(); }
+            if(k==='qr')           { PB.qrType='all'; }
+        }
+        PB._lastKeys=''; // force controls rebuild on next render
         refresh();
     });
 });
@@ -1194,80 +1442,10 @@ function dmUpdateNotice(){
     const count=dmMarkers.filter(({status,date_raw})=>dmCurrentFilter==='all'?true:dmCurrentFilter==='recent'?(date_raw&&new Date(date_raw)>=now30):(status===dmCurrentFilter)).length;
     document.getElementById('dmNoPin').classList.toggle('show',count===0);
 }
-/* initDashMap is called by refresh() when Distribution sector is active */
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initDashMap);
+else initDashMap();
 
-/* ── Silent polling every 60s (no page reload) ── */
-const POLL_MS = 60_000;
-const timerEl = document.createElement('span');
-timerEl.style.cssText = 'font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.5px;';
-document.querySelector('.topbar-right').prepend(timerEl);
 
-let pollRemaining = POLL_MS / 1000;
-let pollPaused = false;
-
-/* Countdown ticker */
-setInterval(() => {
-    if (pollPaused) return;
-    pollRemaining--;
-    timerEl.textContent = `Data syncs in ${pollRemaining}s`;
-    if (pollRemaining <= 0) { pollRemaining = POLL_MS / 1000; silentPoll(); }
-}, 1000);
-
-/* Pause countdown while user is interacting */
-document.querySelector('.main-content') && document.querySelector('.main-content').addEventListener('scroll', () => { pollPaused = true; clearTimeout(window._pollResume); window._pollResume = setTimeout(() => { pollPaused = false; }, 3000); });
-
-function silentPoll() {
-    timerEl.textContent = 'Syncing…';
-    fetch('{{ route("admin.dashboard.stats") }}', {
-        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
-    })
-    .then(r => r.ok ? r.json() : Promise.reject(r.status))
-    .then(data => {
-        applyStats(data);
-        timerEl.textContent = 'Synced just now';
-        setTimeout(() => { timerEl.textContent = `Data syncs in ${POLL_MS/1000}s`; }, 3000);
-    })
-    .catch(err => {
-        console.warn('Dashboard poll failed:', err);
-        timerEl.textContent = 'Sync failed — retrying';
-    });
-}
-
-function applyStats(d) {
-    /* Strip cards */
-    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = Number(val).toLocaleString(); };
-
-    /* Update JS data arrays so sector charts also reflect new counts */
-    /* Patch main donut if no sector is active */
-    if (PB.active.size === 0 && pbMainChart) {
-        pbMainChart.data.datasets[0].data = [d.totalResidents, d.totalVulnerable, d.totalEvents, d.totalQr];
-        pbMainChart.update('active');
-    }
-
-    /* Re-render sector buttons counts */
-    document.querySelectorAll('.pb-sbtn').forEach(btn => {
-        const k = btn.dataset.key;
-        const countEl = btn.querySelector('.pb-sbtn-count');
-        if (!countEl) return;
-        if (k === 'population')   countEl.textContent = Number(d.totalResidents).toLocaleString();
-        if (k === 'vulnerable')   countEl.textContent = Number(d.totalVulnerable).toLocaleString();
-        if (k === 'distribution') countEl.textContent = Number(d.totalEvents).toLocaleString();
-        if (k === 'qr')          countEl.textContent = Number(d.totalQr).toLocaleString();
-    });
-
-    /* Strip cards — patch text nodes directly */
-    document.querySelectorAll('.pb-strip-card').forEach(card => {
-        const lbl = card.querySelector('.pb-sl')?.textContent?.trim().toLowerCase();
-        const valEl = card.querySelector('.pb-sv');
-        const subEl = card.querySelector('.pb-ss');
-        if (!valEl) return;
-        if (lbl === 'residents')   { valEl.textContent = Number(d.totalResidents).toLocaleString(); }
-        if (lbl === 'households')  { valEl.textContent = Number(d.totalHouseholds).toLocaleString(); if(subEl) subEl.textContent = Number(d.approvedCount).toLocaleString()+' approved'; }
-        if (lbl === 'vulnerable')  { valEl.textContent = Number(d.totalVulnerable).toLocaleString(); }
-        if (lbl === 'events')      { valEl.textContent = Number(d.totalEvents).toLocaleString(); if(subEl) subEl.textContent = Number(d.ongoingEvents).toLocaleString()+' ongoing'; }
-        if (lbl === 'active qr')   { valEl.textContent = Number(d.activeQr).toLocaleString(); if(subEl) subEl.textContent = 'of '+Number(d.totalQr).toLocaleString()+' total'; }
-    });
-}
 </script>
 </body>
 </html>

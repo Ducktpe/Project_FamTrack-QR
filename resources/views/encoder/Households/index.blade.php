@@ -40,15 +40,14 @@
 
         .shell {
             display: grid;
-            grid-template-rows: 36px 76px auto auto;
+            grid-template-rows: 36px 76px 1fr 48px;
             grid-template-columns: var(--sidebar-w) 1fr;
             grid-template-areas:
                 "topbar  topbar"
                 "header  header"
                 "sidebar main"
                 "footer  footer";
-            min-height: 100vh;
-        }
+            height: 100vh; overflow: hidden; }
 
         /* ─── TOP UTILITY BAR ─── */
         .topbar {
@@ -56,7 +55,6 @@
             background: var(--blue-dark);
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 24px; z-index: 100;
-            position: sticky; top: 0;
         }
         .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
@@ -84,8 +82,7 @@
             border-bottom: 3px solid var(--yellow);
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             display: flex; align-items: center;
-            padding: 0 28px; gap: 14px;
-            position: sticky; top: 36px; z-index: 90;
+            padding: 0 28px; gap: 14px; z-index: 90;
         }
 
         .hamburger {
@@ -257,7 +254,7 @@
             grid-area: main;
             background: var(--gray-50);
             padding: 28px 32px;
-            overflow-x: clip;
+            overflow-y: auto;
         }
 
         .page-titlebar {
@@ -661,6 +658,7 @@
             display: flex; align-items: center;
             justify-content: space-between;
             padding: 0 24px; gap: 8px; position: relative; z-index: 400;
+            height: 48px;
         }
         .footer-left { font-size: 11px; color: rgba(255,255,255,0.4); }
         .footer-left strong { color: rgba(255,255,255,0.7); }
@@ -680,10 +678,15 @@
 
         @media (max-width: 900px) {
             .shell {
-                grid-template-rows: 36px auto auto auto;
+                grid-template-rows: 36px auto 1fr 48px;
                 grid-template-columns: 1fr;
-                grid-template-areas: "topbar" "header" "main" "footer";
-                min-height: 100vh;
+                grid-template-areas:
+                    "topbar"
+                    "header"
+                    "main"
+                    "footer";
+                height: 100vh;
+                overflow: hidden;
             }
             /* sidebar-overlay shown only via .active class */
             .hamburger { display: flex; }
@@ -693,10 +696,12 @@
             .header-sub { display: none; }
             .header-user-badge { padding: 6px 10px; gap: 8px; }
             .user-name { font-size: 12px; }
+            .user-role { font-size: 9px; letter-spacing: 0.3px; }
+            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
-            .main-content { padding: 20px 16px; overflow-x: hidden; }
-            .stats-row { grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+            .main-content { padding: 20px 16px; overflow-y: auto; }
+            .stats-row { grid-template-columns: 1fr 1fr; gap: 10px; }
             .stat-card { padding: 14px 16px; gap: 12px; }
             .stat-number { font-size: 26px; }
             .stat-icon { width: 36px; height: 36px; }
@@ -716,14 +721,16 @@
             .header-user-badge { padding: 5px 8px; }
             .user-avatar { width: 28px; height: 28px; font-size: 11px; }
             .user-name { font-size: 11px; }
-            .main-content { padding: 16px 12px; }
+            .main-content { padding: 16px 12px; overflow-y: auto; }
             .page-titlebar { flex-direction: column; align-items: flex-start; gap: 10px; }
             .page-h1 { font-size: 18px; }
             .titlebar-actions { width: 100%; }
             .back-btn, .btn-register { flex: 1; justify-content: center; }
-            .stats-row { grid-template-columns: 1fr; gap: 10px; }
-            .stat-card { padding: 14px 18px; }
-            .stat-number { font-size: 30px; }
+            .stats-row { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .stat-card { padding: 14px 16px; gap: 12px; }
+            .stat-number { font-size: 26px; }
+            .stat-icon { width: 36px; height: 36px; }
+            .stat-icon svg { width: 18px; height: 18px; }
             .encoder-note { font-size: 11px; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
@@ -733,21 +740,30 @@
             .hh-cards { display: flex !important; }
         }
 
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .main-content { padding: 10px 8px; overflow-y: auto; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 12px; }
+            .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+        }
         @media (max-width: 380px) {
-            .main-content { padding: 12px 10px; }
+            .main-content { padding: 12px 10px; overflow-y: auto; }
         }
     
         /* ── Household mobile cards (hidden on desktop) ── */
         .hh-cards {
             display: none;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
         .hh-card {
             background: var(--white);
             border: 1px solid var(--gray-200);
-            border-radius: 8px;
-            padding: 14px 16px;
+            border-left: 3px solid var(--blue);
+            border-radius: 6px;
+            padding: 12px 14px;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -759,7 +775,7 @@
             gap: 10px;
         }
         .hh-card-name {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: var(--blue-dark);
             line-height: 1.3;
@@ -812,53 +828,39 @@
         /* ════════════════════════════════════════
            SIDEBAR — ALWAYS VISIBLE ON DESKTOP
            ════════════════════════════════════════ */
-        .sidebar {
+                .sidebar {
             grid-area: sidebar;
             background: var(--white);
             border-right: 1px solid var(--gray-200);
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            /* Stick below topbar+header (36px + 76px = 112px) */
-            position: sticky;
-            top: 112px;
-            height: calc(100vh - 112px);
-            align-self: start;
-            z-index: 10;
+            position: relative;
         }
         /* Mobile: sidebar becomes a slide-in drawer */
         @media (max-width: 900px) {
             .sidebar {
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                bottom: 0 !important;
-                height: 100vh !important;
+                grid-area: unset;
+                position: fixed;
+                top: 0; left: 0; bottom: 0;
+                height: 100vh;
                 width: var(--sidebar-w);
-                z-index: 300;
+                z-index: 1200;
                 transform: translateX(-100%);
                 transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
                 box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+                overflow-y: auto;
             }
-            .sidebar.open { transform: translateX(0) !important; }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay { display: block !important; z-index: 1100; }
             .sidebar-close { display: flex !important; }
-            .sidebar .nav-section-label { padding-top: 52px; }
+            .sidebar .nav-section-label { padding-top: 56px; }
         }
         
 
         /* ════════════════════════════════════════
            TOPBAR RESPONSIVE
            ════════════════════════════════════════ */
-        @media (max-width: 768px) {
-            .topbar {
-                padding: 0 12px !important;
-                flex-wrap: nowrap;
-            }
-            .topbar-left { display: none !important; }
-            .topbar-right { gap: 10px !important; margin-left: auto; }
-            .clock-date-inline { display: none !important; }
-            .clock-inline { font-size: 11px !important; letter-spacing: 0.5px; }
-        }
         @media (max-width: 480px) {
             .status-indicator { display: none !important; }
         }
@@ -898,43 +900,19 @@
         /* ════════════════════════════════════════
            FOOTER RESPONSIVE
            ════════════════════════════════════════ */
-        @media (max-width: 768px) {
+        @media (max-width: 640px) {
             footer {
-                flex-direction: column !important;
-                height: auto !important;
+                flex-direction: column;
+                height: auto;
                 min-height: 48px;
-                padding: 10px 16px !important;
-                gap: 4px !important;
-                align-items: flex-start !important;
-                flex-wrap: wrap !important;
+                padding: 10px 12px;
+                gap: 4px;
+                align-items: flex-start;
             }
-            .footer-left {
-                font-size: 11px !important;
-                white-space: normal !important;
-                line-height: 1.5 !important;
-                width: 100% !important;
-                overflow: visible !important;
-                text-overflow: unset !important;
-            }
-            .footer-center { display: none !important; }
-            .fb-link { font-size: 11px !important; }
-        }
-        @media (max-width: 480px) {
-            footer { padding: 8px 12px !important; }
-            .footer-left { font-size: 10px !important; }
+            .footer-left { font-size: 10px; white-space: normal; line-height: 1.5; width: 100%; }
+            .footer-center { display: none; }
         }
 
-        /* ── Badge responsive ── */
-        @media (max-width: 900px) {
-            .header-user-badge { padding: 5px 10px; gap: 6px; }
-            .user-name { font-size: 12px; }
-            .user-role { font-size: 9px; letter-spacing: 0.3px; }
-            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
-        }
-        @media (max-width: 640px) {
-            .header-user-badge { padding: 4px 8px; }
-            .user-name { font-size: 11px; }
-        }
     </style>
 </head>
 <body>

@@ -26,7 +26,7 @@
             --gray-400:   #9AA3B0;
             --gray-600:   #5A6372;
             --gray-800:   #2C3340;
-            --sidebar-w:  260px;
+            --sidebar-w:  256px;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,6 +49,7 @@
                 "sidebar main"
                 "footer  footer";
             height: 100vh;
+            overflow: hidden;
         }
 
         /* ─── TOP UTILITY BAR ─── */
@@ -58,7 +59,7 @@
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 24px; z-index: 100;
         }
-        .topbar-left { font-size: 11px; color: rgba(255,255,255,0.5); }
+        .topbar-left { font-size: 11px; color: rgba(255,255,255,0.55); }
         .topbar-right { display: flex; align-items: center; gap: 20px; }
         .clock-inline { font-size: 12px; font-weight: 600; color: var(--yellow); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
         .clock-date-inline { font-size: 11px; color: rgba(255,255,255,0.45); }
@@ -82,18 +83,18 @@
         .header-logos img { height: 54px; width: 54px; object-fit: contain; }
         .logo-divider { width: 1px; height: 44px; background: var(--gray-200); }
         .header-text { margin-left: 4px; }
-        .header-org { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 2px; }
+        .header-org { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 2px; }
         .header-title { font-family: 'PT Serif', serif; font-size: 18px; font-weight: 700; color: var(--blue-dark); }
         .header-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
         .header-spacer { flex: 1; }
-        .header-user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; flex-shrink: 0; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.2; }
-        .user-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
+        .header-admin-badge { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--blue-pale); border: 1px solid var(--gray-200); border-radius: 4px; flex-shrink: 0; }
+        .admin-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .admin-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); }
+        .admin-role { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* ─── SIDEBAR OVERLAY ─── */
-        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
-        .sidebar-overlay.active { display: block !important; pointer-events: auto; }
+        .sidebar-overlay { display: none !important; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 250; opacity: 0; transition: opacity 0.25s; pointer-events: none; }
+        .sidebar-overlay.active { display: block !important; pointer-events: auto; opacity: 1; }
 
         /* ─── SIDEBAR ─── */
         .sidebar { grid-area: sidebar; background: var(--white); border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow-y: auto; position: relative; }
@@ -112,7 +113,7 @@
         .logout-btn:hover { background: var(--red); }
 
         /* ─── MAIN ─── */
-        .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 28px 32px; }
+        .main-content { grid-area: main; background: var(--gray-50); overflow-y: auto; padding: 24px 28px; }
 
         /* ─── PAGE TITLEBAR ─── */
         .page-titlebar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); gap: 12px; }
@@ -134,16 +135,17 @@
             border: 1px solid var(--gray-200);
             border-top: 4px solid var(--blue);
             padding: 24px 28px;
-            display: flex; align-items: center; gap: 24px;
+            display: flex; align-items: flex-start; gap: 16px;
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
+        .hero-top-row { display: flex; align-items: center; gap: 24px; flex: 1; min-width: 0; }
         .hero-avatar { width: 64px; height: 64px; border-radius: 4px; background: var(--blue-pale); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .hero-avatar svg { width: 30px; height: 30px; color: var(--blue); }
         .hero-info { flex: 1; min-width: 0; }
         .hero-name { font-family: 'PT Serif', serif; font-size: 22px; font-weight: 700; color: var(--blue-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .hero-meta { font-size: 12px; color: var(--gray-600); margin-top: 4px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .hero-meta-sep { color: var(--gray-200); }
+        .hero-meta { font-size: 12px; color: var(--gray-600); margin-top: 4px; display: flex; align-items: baseline; gap: 0; flex-wrap: wrap; }
+        .hero-meta-sep { color: var(--gray-300); padding: 0 6px; }
         .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; }
         .hero-serial { display: flex; align-items: center; gap: 8px; }
         .serial-display { font-family: monospace; font-size: 16px; font-weight: 700; color: var(--blue); letter-spacing: 1.5px; background: var(--blue-pale); border: 1px solid #C7D9F3; padding: 6px 14px; border-radius: 3px; }
@@ -356,9 +358,9 @@
         }
         @media (max-width: 900px) {
             .shell { grid-template-rows: 36px auto 1fr 48px; grid-template-columns: 1fr; grid-template-areas: "topbar" "header" "main" "footer"; height: 100vh; overflow: hidden; }
-            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 300; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
+            .sidebar { grid-area: unset; position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 1200; transform: translateX(-100%); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
             .sidebar.open { transform: translateX(0); }
-            .sidebar-overlay { display: block; }
+            .sidebar-overlay { display: block !important; z-index: 1100; }
             .sidebar-close { display: flex; }
             .sidebar .nav-section-label { padding-top: 52px; }
             .hamburger { display: flex; }
@@ -366,9 +368,9 @@
             .header-logos img { height: 44px; width: 44px; }
             .header-title { font-size: 15px; }
             .header-sub { display: none; }
-            .header-user-badge { padding: 6px 10px; gap: 8px; }
-            .user-name { font-size: 12px; }
-            .user-role { display: none; }
+            .header-admin-badge { padding: 6px 10px; gap: 8px; }
+            .admin-name { font-size: 12px; }
+            .admin-role { display: none; }
             .topbar { padding: 0 16px; }
             .topbar-left { display: none; }
             .main-content { padding: 20px 16px; }
@@ -377,6 +379,34 @@
         @media (max-width: 720px) {
             .info-grid { grid-template-columns: 1fr; }
             .info-grid-3 { grid-template-columns: 1fr 1fr; }
+
+            /* ── Hide tables, show cards on mobile ── */
+            .table-wrapper { display: none; }
+            .mobile-cards { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
+
+            /* Member cards */
+            .m-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 6px; overflow: hidden; }
+            .m-card.is-head { border-top: 3px solid var(--blue); }
+            .m-card-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--gray-50); border-bottom: 1px solid var(--gray-100); gap: 8px; flex-wrap: wrap; }
+            .m-card-name { font-size: 13px; font-weight: 700; color: var(--blue-dark); }
+            .m-card-badges { display: flex; gap: 4px; flex-wrap: wrap; }
+            .m-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+            .m-card-row { padding: 8px 14px; border-bottom: 1px solid var(--gray-100); }
+            .m-card-row:nth-child(odd) { border-right: 1px solid var(--gray-100); }
+            .m-card-row:last-child, .m-card-row:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+            .m-card-row.full { grid-column: 1 / -1; border-right: none; }
+            .m-card-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--gray-400); margin-bottom: 3px; }
+            .m-card-value { font-size: 12px; color: var(--gray-800); font-weight: 500; line-height: 1.4; }
+
+            /* Distribution log cards */
+            .d-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 6px; border-left: 3px solid var(--green); padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+            .d-card-event { font-size: 13px; font-weight: 700; color: var(--blue-dark); }
+            .d-card-sub { font-size: 10px; color: var(--gray-400); font-weight: 400; }
+            .d-card-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
+            .d-card-field { }
+            .d-card-field-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--gray-400); margin-bottom: 2px; }
+            .d-card-field-value { font-size: 11px; color: var(--gray-800); font-weight: 500; }
+            .d-card-items { font-size: 11px; color: var(--gray-600); background: var(--gray-50); border: 1px solid var(--gray-100); border-radius: 4px; padding: 6px 10px; margin-top: 2px; }
         }
         @media (max-width: 640px) {
             .topbar { justify-content: flex-end; }
@@ -388,21 +418,28 @@
             .header-logos img:last-child { display: none; }
             .header-org { display: none; }
             .header-title { font-size: 13px; line-height: 1.3; }
-            .header-user-badge { padding: 5px 8px; }
-            .user-avatar { width: 28px; height: 28px; font-size: 11px; }
-            .user-name { font-size: 11px; }
+            .header-admin-badge { padding: 5px 8px; }
+            .admin-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .admin-name { font-size: 11px; }
             .main-content { padding: 16px 12px; }
             .page-titlebar { flex-direction: column; align-items: flex-start; gap: 10px; }
             .page-h1 { font-size: 18px; }
             .titlebar-actions { width: 100%; }
             .back-btn { flex: 1; justify-content: center; }
-            .household-hero { padding: 16px; gap: 14px; }
-            .hero-name { font-size: 18px; }
-            .hero-right { align-items: flex-start; }
+            .household-hero { padding: 16px; gap: 12px; flex-direction: column; align-items: stretch; }
+            .hero-name { font-size: 18px; white-space: normal; }
+            .hero-right { align-items: flex-start; flex-direction: row; flex-wrap: wrap; gap: 8px; width: 100%; }
             .info-grid-3 { grid-template-columns: 1fr; }
             footer { padding: 0 12px; }
             .footer-center { display: none; }
             .footer-left { font-size: 10px; }
+        }
+        @media (max-width: 480px) {
+            .shell { grid-template-rows: 28px 52px 1fr 40px; }
+            .main-content { padding: 10px 8px; }
+            .topbar { padding: 0 10px; }
+            header { padding: 0 8px; }
+            .header-title { font-size: 13px; }
         }
     </style>
 </head>
@@ -439,11 +476,11 @@
             <div class="header-sub">Municipal Disaster Risk Reduction and Management Office</div>
         </div>
         <div class="header-spacer"></div>
-        <div class="header-user-badge">
-            <div class="user-avatar">A</div>
+        <div class="header-admin-badge">
+            <div class="admin-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
             <div>
-                <div class="user-name">{{ auth()->user()->name ?? 'Admin' }}</div>
-                <div class="user-role">Full Access</div>
+                <div class="admin-name">{{ auth()->user()->name ?? 'Admin' }}</div>
+                <div class="admin-role">Full Access</div>
             </div>
         </div>
     </header>
@@ -461,14 +498,50 @@
                 <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
                 <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
             </svg>
-            Dashboard
+            Dashboard Overview
+        </a>
+        <a href="{{ route('admin.events.quick-create') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            Distribution Events
+        </a>
+        <a href="{{ route('admin.distribution.logs') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                <rect x="9" y="3" width="6" height="4" rx="1"/>
+                <line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>
+            </svg>
+            Distribution Logs
+        </a>
+        <a href="{{ route('admin.residents.index') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
+            </svg>
+            List of Residents
         </a>
         <a href="{{ route('admin.households.index') }}" class="nav-item active" onclick="closeSidebar()">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                <path d="M9 22V12h6v10"/>
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/>
             </svg>
-            Households
+            List of Households
+        </a>
+        <a href="{{ route('admin.traillog.trail') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Trail Logs
+        </a>
+        <a href="{{ route('admin.distribution.scan-history') }}" class="nav-item" onclick="closeSidebar()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 7 23 1 17 1"/><polyline points="1 17 1 23 7 23"/>
+                <polyline points="23 17 23 23 17 23"/><polyline points="1 7 1 1 7 1"/>
+                <rect x="8" y="8" width="8" height="8" rx="1"/>
+            </svg>
+            Staff Scan History
         </a>
         <hr class="sidebar-sep">
         <div class="sidebar-bottom">
@@ -489,13 +562,15 @@
 
         <div class="page-titlebar">
             <div>
-                <div class="page-breadcrumb">Home / <span>Dashboard</span></div>
-                <div class="page-h1">Dashboard Overview</div>
-                <div class="page-sub">Barangay Family Track QR Relief Distribution System — MDRRMO Naic, Cavite</div>
+                <div class="page-breadcrumb">Home / <span>Households</span> / <span>{{ $household->household_head_name }}</span></div>
+                <div class="page-h1">Household Profile</div>
+                <div class="page-sub">Viewing record for {{ $household->household_head_name }} — {{ $household->barangay }}, {{ $household->municipality }}</div>
             </div>
-            <div class="page-date">
-                <span>Today</span>
-                <strong id="main-date">—</strong>
+            <div class="titlebar-actions">
+                <a href="{{ route('admin.households.index') }}" class="back-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back to Households
+                </a>
             </div>
         </div>
 
@@ -520,25 +595,23 @@
 
         {{-- Hero Identity Card --}}
         <div class="household-hero">
-            <div class="hero-avatar">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/>
-                </svg>
-            </div>
-            <div class="hero-info">
-                <div class="hero-name">{{ $household->household_head_name }}</div>
-                @php $heroHead = $household->members->firstWhere('is_family_head', 1); @endphp
-                <div class="hero-meta">
-                    @if($heroHead)
-                        <span>{{ $heroHead->sex }}</span>
-                        <span class="hero-meta-sep">|</span>
-                        <span>{{ $heroHead->age }} years old</span>
-                        <span class="hero-meta-sep">|</span>
-                        <span>{{ $heroHead->civil_status ?? '—' }}</span>
-                        <span class="hero-meta-sep">|</span>
-                    @endif
-                    <span>{{ $household->barangay }}, {{ $household->municipality }}</span>
+            <div class="hero-top-row">
+                <div class="hero-avatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/>
+                    </svg>
                 </div>
+                <div class="hero-info">
+                    <div class="hero-name">{{ $household->household_head_name }}</div>
+                    @php $heroHead = $household->members->firstWhere('is_family_head', 1); @endphp
+                    <div class="hero-meta">
+                        @if($heroHead)
+                            <span>{{ $heroHead->sex }}<span class="hero-meta-sep"> | </span></span>
+                            <span>{{ $heroHead->age }} years old<span class="hero-meta-sep"> | </span></span>
+                            <span>{{ $heroHead->civil_status ?? '—' }}<span class="hero-meta-sep"> | </span></span>
+                        @endif
+                        <span>{{ $household->barangay }}, {{ $household->municipality }}</span>
+                    </div>
                 <div class="hero-badges">
                     @if($household->isApproved())
                         <span class="badge badge-approved">
@@ -557,6 +630,7 @@
                     @if($household->is_solo_parent)<span class="badge badge-blue">Solo Parent</span>@endif
                 </div>
             </div>
+            </div>{{-- /.hero-top-row --}}
 
             {{-- Right column: serial + scan counter --}}
             <div class="hero-right">
@@ -805,6 +879,93 @@
                             </tbody>
                         </table>
                     </div>
+
+                    {{-- Mobile card view (shown when table is hidden on small screens) --}}
+                    <div class="mobile-cards" style="display:none;">
+                        @foreach($nf->members as $mi => $member)
+                        @php $det = $member->detail; @endphp
+                        <div class="m-card {{ $member->is_family_head ? 'is-head' : '' }}">
+                            <div class="m-card-header">
+                                <div>
+                                    <div class="m-card-name">
+                                        {{ $member->full_name }}
+                                        @if($member->is_family_head)
+                                            <span class="member-head-badge" style="margin-left:5px;">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                                Head
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="m-card-badges">
+                                    @if($det && $det->is_lgbtqia)<span class="badge" style="background:#FDF4FF;color:#7E22CE;border:1px solid #E9D5FF;font-size:9px;">LGBTQIA+</span>@endif
+                                    @if($member->is_pwd)<span class="badge badge-blue" style="font-size:9px;">PWD</span>@endif
+                                    @if($member->is_student)<span class="badge badge-gray" style="font-size:9px;">Student</span>@endif
+                                    @if($member->is_senior_citizen)<span class="badge badge-blue" style="font-size:9px;">Senior</span>@endif
+                                </div>
+                            </div>
+                            <div class="m-card-body">
+                                <div class="m-card-row">
+                                    <div class="m-card-label">Relationship</div>
+                                    <div class="m-card-value">{{ $member->relationship ?? '—' }}</div>
+                                </div>
+                                <div class="m-card-row">
+                                    <div class="m-card-label">Sex / Age</div>
+                                    <div class="m-card-value">{{ $member->sex ?? '—' }}{{ $member->age !== null ? ', '.$member->age.' y/o' : '' }}</div>
+                                </div>
+                                <div class="m-card-row">
+                                    <div class="m-card-label">Birthday</div>
+                                    <div class="m-card-value">{{ $member->birthday ? $member->birthday->format('M d, Y') : '—' }}</div>
+                                </div>
+                                <div class="m-card-row">
+                                    <div class="m-card-label">Civil Status</div>
+                                    <div class="m-card-value">{{ $member->civil_status ?? '—' }}</div>
+                                </div>
+                                <div class="m-card-row full">
+                                    <div class="m-card-label">Education</div>
+                                    <div class="m-card-value">{{ $member->educational_attainment ?? '—' }}</div>
+                                </div>
+                                <div class="m-card-row full">
+                                    <div class="m-card-label">Employment</div>
+                                    <div class="m-card-value">
+                                        @if($det && $det->employment_status)
+                                            <span class="emp-badge emp-{{ Str::slug($det->employment_status,'_') }}">{{ $det->employment_status }}</span>
+                                            @if($det->job_title)<div style="font-size:10px;color:var(--gray-600);margin-top:2px;">{{ $det->job_title }}</div>@endif
+                                        @else —
+                                        @endif
+                                    </div>
+                                </div>
+                                @if($det && $det->vulnerable_sector && $det->vulnerable_sector !== 'None')
+                                <div class="m-card-row full">
+                                    <div class="m-card-label">Vulnerable Sector</div>
+                                    <div class="m-card-value">
+                                        <span class="badge badge-blue" style="font-size:9px;">{{ $det->vulnerable_sector }}</span>
+                                        @if($det->vuln_registered !== null)<span style="font-size:10px;color:var(--gray-600);margin-left:4px;">{{ $det->vuln_registered ? '✓ Registered' : '✗ Not Registered' }}</span>@endif
+                                    </div>
+                                </div>
+                                @endif
+                                @if($member->philhealth_no)
+                                <div class="m-card-row full">
+                                    <div class="m-card-label">PhilHealth No.</div>
+                                    <div class="m-card-value">{{ $member->philhealth_no }}</div>
+                                </div>
+                                @endif
+                                @if($member->is_family_head)
+                                <div class="m-card-row full">
+                                    <div class="m-card-label">QR Code</div>
+                                    <div class="m-card-value">
+                                        @if($member->qr_code_path)
+                                            <span class="qr-type-tag qr-tag-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="14" y1="14" x2="14" y2="21"/></svg>Has QR</span>
+                                        @else
+                                            <span class="qr-type-tag qr-tag-none">No QR</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
                     @else
                         <div class="no-members">No members in this nuclear family.</div>
                     @endif
@@ -1009,6 +1170,46 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+
+                    {{-- Mobile card view for distribution logs --}}
+                    <div class="mobile-cards" style="display:none;">
+                        @foreach($household->distributionLogs->sortByDesc('distributed_at') as $li => $log)
+                        <div class="d-card">
+                            <div class="d-card-event">
+                                {{ $log->event?->event_name ?? '—' }}
+                                @if($log->event)
+                                    <span class="d-card-sub"> — {{ ucfirst($log->event->status) }}</span>
+                                @endif
+                            </div>
+                            <div class="d-card-meta">
+                                <div class="d-card-field">
+                                    <div class="d-card-field-label">Serial Code</div>
+                                    <div class="d-card-field-value">
+                                        <code style="background:var(--blue-pale);padding:2px 6px;border-radius:3px;font-size:11px;color:var(--blue);">{{ $log->serial_code ?? '—' }}</code>
+                                    </div>
+                                </div>
+                                <div class="d-card-field">
+                                    <div class="d-card-field-label">Distributed By</div>
+                                    <div class="d-card-field-value">{{ $log->staff?->name ?? '—' }}</div>
+                                </div>
+                                <div class="d-card-field" style="grid-column:1/-1;">
+                                    <div class="d-card-field-label">Date & Time</div>
+                                    <div class="d-card-field-value">{{ $log->distributed_at?->setTimezone('Asia/Manila')->format('M d, Y g:i A') ?? '—' }}</div>
+                                </div>
+                            </div>
+                            @if(($log->items_received && count($log->items_received)) || $log->goods_detail)
+                            <div class="d-card-items">
+                                <span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--gray-400);display:block;margin-bottom:3px;">Items Received</span>
+                                @if($log->items_received && count($log->items_received))
+                                    {{ collect($log->items_received)->map(fn($item) => ($item['qty'] ?? '') . ' ' . ($item['name'] ?? $item['key'] ?? ''))->implode(', ') }}
+                                @else
+                                    {{ $log->goods_detail }}
+                                @endif
+                            </div>
+                            @endif
+                        </div>
+                        @endforeach
                     </div>
                 </div>
                 @endif
@@ -1270,7 +1471,7 @@
 
     </main>
 
-    <!-- FOOTER -->
+     <!-- FOOTER -->
     <footer>
         <div class="footer-left">
             &copy; <span id="footer-year"></span> <strong>MDRRMO Naic, Cavite</strong> &mdash; Municipal Disaster Risk Reduction and Management Office
@@ -1315,6 +1516,19 @@
     updateClock();
     setInterval(updateClock, 1000);
     document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // Toggle table vs card view based on screen width
+    function applyCardView() {
+        const isMobile = window.innerWidth <= 720;
+        document.querySelectorAll('.table-wrapper').forEach(el => {
+            el.style.display = isMobile ? 'none' : '';
+        });
+        document.querySelectorAll('.mobile-cards').forEach(el => {
+            el.style.display = isMobile ? 'flex' : 'none';
+        });
+    }
+    applyCardView();
+    window.addEventListener('resize', applyCardView);
 
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');

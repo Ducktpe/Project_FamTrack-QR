@@ -64,6 +64,27 @@
 /* ── Log table timestamp ── */
 .log-ts { font-size: 11px; color: var(--gray-400); white-space: nowrap; line-height: 1.5; }
 .log-ts strong { color: var(--gray-700); font-size: 12px; display: block; }
+
+/* ── Show page two-column layout ── */
+.show-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+    .show-two-col { grid-template-columns: 1fr; }
+    .detail-key { font-size: 10px; }
+    .detail-val { font-size: 12px; }
+    .detail-val.mono { font-size: 11px; }
+    .acct-hero-name { font-size: 16px; }
+}
+@media (max-width: 640px) {
+    /* Page action buttons wrap nicely */
+    .show-action-bar { flex-wrap: wrap; justify-content: flex-start !important; }
+    .detail-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .detail-val { text-align: left; }
+    .acct-hero { padding: 14px; gap: 12px; }
+    .acct-hero-avatar { width: 44px; height: 44px; font-size: 16px; }
+    .priv-list { padding: 12px 14px; }
+}
 </style>
 @endpush
 
@@ -81,7 +102,7 @@
         <div class="page-h1">Account Details</div>
         <div class="page-sub">Full profile and activity for this system account.</div>
     </div>
-    <div style="display:flex; gap:8px; align-items:center; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end;">
+    <div style="display:flex; gap:8px; align-items:center; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end;" class="show-action-bar">
         <a href="{{ route('superadmin.accounts.index') }}" class="btn btn-ghost btn-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             Back
@@ -122,7 +143,7 @@
 </div>
 
 {{-- ══ TWO-COLUMN LAYOUT ══ --}}
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px;">
+<div class="show-two-col">
 
     {{-- ── LEFT COLUMN ── --}}
     <div style="display:flex; flex-direction:column; gap:18px;">
@@ -283,13 +304,13 @@
             <tbody>
                 @forelse($auditLogs as $log)
                 <tr>
-                    <td>
+                    <td data-label="Timestamp">
                         <div class="log-ts">
                             {{ $log->created_at->format('M d, Y') }}
                             <strong>{{ $log->created_at->format('h:i A') }}</strong>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Action">
                         @php
                             $cls = match(true) {
                                 str_starts_with($log->action, 'created'),
@@ -306,8 +327,8 @@
                         @endphp
                         <span class="trail-type {{ $cls }}">{{ $log->action }}</span>
                     </td>
-                    <td style="font-size:12px; color:var(--gray-600); max-width:320px;">{{ $log->description }}</td>
-                    <td><span class="ip-code">{{ $log->ip_address ?? '—' }}</span></td>
+                    <td data-label="Description" style="font-size:12px; color:var(--gray-600); max-width:320px;">{{ $log->description }}</td>
+                    <td data-label="IP Address"><span class="ip-code">{{ $log->ip_address ?? '—' }}</span></td>
                 </tr>
                 @empty
                 <tr>
