@@ -79,6 +79,24 @@
     .step-item { font-size: 12px; }
     .email-preview .ep-value { font-size: 12px; }
 }
+
+/* ── Send Invite Confirm Modal ── */
+.inv-modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; }
+.inv-modal-backdrop.show { display:flex; }
+.inv-modal-box { background:var(--white); border-radius:6px; box-shadow:0 8px 32px rgba(0,0,0,0.22); width:100%; max-width:420px; margin:16px; overflow:hidden; animation:invModalIn .18s ease; }
+@keyframes invModalIn { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+.inv-modal-header { padding:18px 22px 14px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--gray-100); }
+.inv-modal-icon { width:40px; height:40px; border-radius:50%; background:#EFF6FF; color:var(--blue); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.inv-modal-icon svg { width:18px; height:18px; }
+.inv-modal-title { font-family:'PT Serif',serif; font-size:16px; font-weight:700; color:var(--blue-dark); }
+.inv-modal-body  { padding:14px 22px 20px; font-size:13px; color:var(--gray-600); line-height:1.65; }
+.inv-modal-body strong { color:var(--gray-800); }
+.inv-modal-footer { padding:12px 22px; background:var(--gray-50); border-top:1px solid var(--gray-100); display:flex; justify-content:flex-end; gap:8px; }
+.inv-modal-btn { font-family:'Open Sans',sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:9px 20px; border-radius:3px; border:none; cursor:pointer; transition:background .15s; }
+.inv-modal-btn-cancel { background:var(--white); color:var(--gray-600); border:1px solid var(--gray-200); }
+.inv-modal-btn-cancel:hover { background:var(--gray-100); }
+.inv-modal-btn-send { background:var(--blue); color:var(--white); }
+.inv-modal-btn-send:hover { background:var(--blue-dark); }
 </style>
 @endpush
 
@@ -114,7 +132,7 @@
             <span class="super-only-badge">Super Admin Only</span>
         </div>
 
-        <form method="POST" action="{{ route('superadmin.accounts.store') }}" style="padding:22px;">
+        <form id="inviteForm" method="POST" action="{{ route('superadmin.accounts.store') }}" style="padding:22px;">
             @csrf
 
             {{-- Gmail --}}
@@ -175,7 +193,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     Back
                 </a>
-                <button type="submit" class="btn btn-super">
+                <button type="button" class="btn btn-super" onclick="openInviteModal()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                     Send Invite
                 </button>
@@ -196,6 +214,26 @@
         </div>
     </div>
 
+</div>
+
+
+{{-- ══ SEND INVITE CONFIRM MODAL ══ --}}
+<div class="inv-modal-backdrop" id="inviteModal">
+    <div class="inv-modal-box">
+        <div class="inv-modal-header">
+            <div class="inv-modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <div class="inv-modal-title">Send Account Invite</div>
+        </div>
+        <div class="inv-modal-body" id="inviteModalBody">
+            Are you sure you want to send this invite?
+        </div>
+        <div class="inv-modal-footer">
+            <button class="inv-modal-btn inv-modal-btn-cancel" onclick="closeInviteModal()">Cancel</button>
+            <button class="inv-modal-btn inv-modal-btn-send" onclick="document.getElementById('inviteForm').submit()">Send Invite</button>
+        </div>
+    </div>
 </div>
 
 @endsection
@@ -254,6 +292,47 @@ const roleCounts = {
 function getNextCode(count) {
     return String.fromCharCode(65 + Math.floor(count / 999)) + String((count % 999) + 1).padStart(3, '0');
 }
+
+function openInviteModal() {
+    const form   = document.getElementById('inviteForm');
+    const email  = form.querySelector('#personal_email').value.trim();
+    const role   = form.querySelector('#role').value;
+    const roleLabel = role ? (rolePreviews[role]?.label || role) : null;
+
+    if (!email || !role) {
+        // Let native HTML5 validation handle empty fields
+        form.reportValidity();
+        return;
+    }
+
+    const previewEmail = document.getElementById('emailPreviewValue')?.textContent || '';
+
+    document.getElementById('inviteModalBody').innerHTML =
+        `Send an invite to <strong>${email}</strong> as <strong>${roleLabel}</strong>?` +
+        (previewEmail
+            ? `<br><span style="font-size:12px;color:var(--gray-400);margin-top:6px;display:block;">
+                Generated login email: <span style="font-family:monospace;color:var(--blue-dark);">${previewEmail}</span>
+               </span>`
+            : '') +
+        `<span style="font-size:12px;color:var(--gray-400);display:block;margin-top:4px;">
+            A 24-hour setup link will be sent to their Gmail.
+         </span>`;
+
+    document.getElementById('inviteModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeInviteModal() {
+    document.getElementById('inviteModal').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('inviteModal').addEventListener('click', function(e) {
+    if (e.target === this) closeInviteModal();
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeInviteModal();
+});
 
 document.getElementById('role').addEventListener('change', function () {
     const role = this.value;

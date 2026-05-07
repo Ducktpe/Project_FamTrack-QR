@@ -637,6 +637,13 @@
             return 'general';
         }
         $typeLabels = ['auth' => 'Auth / Login', 'household' => 'Household', 'distribution' => 'Distribution', 'qr' => 'QR / Scan', 'general' => 'General'];
+        function getSeverity($log) {
+            if (!empty($log->severity)) return strtolower($log->severity);
+            $action = strtolower($log->action ?? '');
+            if (str_contains($action, 'delete') || str_contains($action, 'force') || str_contains($action, 'destroy') || str_contains($action, 'permanent')) return 'high';
+            if (str_contains($action, 'approve') || str_contains($action, 'reject') || str_contains($action, 'archive') || str_contains($action, 'restore') || str_contains($action, 'update') || str_contains($action, 'edit')) return 'medium';
+            return 'low';
+        }
         @endphp
 
         <!-- Stats -->
@@ -664,22 +671,34 @@
         </div>
 
         <!-- Filter Bar -->
+        <form method="GET" action="{{ request()->url() }}" id="filterForm">
         <div class="filter-bar">
             <span class="filter-label">Filter</span>
             <div class="filter-search">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input type="text" id="searchInput" placeholder="Search user, action, description…" oninput="filterTable()">
+                <input type="text" id="searchInput" name="search" placeholder="Search user, action, description…"
+                    value="{{ request('search') }}"
+                    oninput="clearTimeout(window._st);window._st=setTimeout(()=>document.getElementById('filterForm').submit(),400)">
             </div>
-            <select class="filter-select" id="typeFilter" onchange="filterTable()">
+            <select class="filter-select" id="typeFilter" name="category" onchange="document.getElementById('filterForm').submit()">
                 <option value="">All Activity Types</option>
-                <option value="auth">Auth / Login</option>
-                <option value="household">Household</option>
-                <option value="distribution">Distribution</option>
-                <option value="qr">QR / Scan</option>
-                <option value="general">General</option>
+                <option value="auth"         {{ request('category') === 'auth'         ? 'selected' : '' }}>Auth / Login</option>
+                <option value="household"    {{ request('category') === 'household'    ? 'selected' : '' }}>Household</option>
+                <option value="distribution" {{ request('category') === 'distribution' ? 'selected' : '' }}>Distribution</option>
+                <option value="qr"           {{ request('category') === 'qr'           ? 'selected' : '' }}>QR / Scan</option>
             </select>
+            <select class="filter-select" id="severityFilter" name="severity" onchange="document.getElementById('filterForm').submit()">
+                <option value="">All Severities</option>
+                <option value="high"   {{ request('severity') === 'high'   ? 'selected' : '' }}>🔴 High</option>
+                <option value="medium" {{ request('severity') === 'medium' ? 'selected' : '' }}>🟠 Medium</option>
+                <option value="low"    {{ request('severity') === 'low'    ? 'selected' : '' }}>🟢 Low</option>
+            </select>
+            @if(request()->hasAny(['search','category','severity','date_from','date_to']))
+                <a href="{{ request()->url() }}" class="filter-select" style="text-decoration:none;color:var(--red);border-color:#FECACA;background:var(--red-pale);white-space:nowrap;">✕ Clear</a>
+            @endif
             <span class="filter-count">Showing <strong id="visibleCount">{{ $logs->count() }}</strong> of {{ $logs->total() }}</span>
         </div>
+        </form>
 
         <!-- Table -->
         <div class="table-wrap">
@@ -704,10 +723,12 @@
                         @forelse($logs as $log)
                             @php
                                 $actionType = getActionType($log->action);
+                                $severity   = getSeverity($log);
                             @endphp
                             <tr class="audit-row"
                                 data-search="{{ strtolower(($log->user_name ?? '') . ' ' . $log->action . ' ' . ($log->description ?? '') . ' ' . ($log->affected_name ?? '')) }}"
-                                data-type="{{ $actionType }}">
+                                data-type="{{ $actionType }}"
+                                data-severity="{{ $severity }}">
                                 <td style="white-space:nowrap;font-size:11px;color:var(--gray-600);">
                                     {{ $log->created_at->format('M d, Y') }}<br>
                                     <strong style="color:var(--gray-800);">{{ $log->created_at->format('h:i:s A') }}</strong>
@@ -1457,21 +1478,9 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSidebar(); closeModalDirect(); } });
 
     function filterTable() {
-        const search = document.getElementById('searchInput').value.toLowerCase();
-        const type   = document.getElementById('typeFilter').value;
-        const rows   = document.querySelectorAll('.audit-row');
-        let visible  = 0;
-        rows.forEach(row => {
-            const matchSearch = !search || row.dataset.search.includes(search);
-            const matchType   = !type   || row.dataset.type === type;
-            const show = matchSearch && matchType;
-            row.style.display = show ? '' : 'none';
-            const next = row.nextElementSibling;
-            if (next && next.classList.contains('details-row')) {
-                next.style.display = show ? (next.dataset.open ? '' : 'none') : 'none';
-            }
-            if (show) visible++;
-        });
+        const rows = document.querySelectorAll('.audit-row');
+        let visible = 0;
+        rows.forEach(row => { if (row.style.display !== 'none') visible++; });
         document.getElementById('visibleCount').textContent = visible;
     }
 
@@ -1502,6 +1511,8 @@
     function closeModal(e) {
         if (e.target === document.getElementById('detailsModal')) closeModalDirect();
     }
+
+    // Severity filter is now applied server-side via the GET form.
 
     // ── Rebuild pagination cleanly ──
     (function normalizePagination() {

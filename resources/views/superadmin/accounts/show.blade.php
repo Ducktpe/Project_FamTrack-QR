@@ -85,6 +85,34 @@
     .acct-hero-avatar { width: 44px; height: 44px; font-size: 16px; }
     .priv-list { padding: 12px 14px; }
 }
+
+/* ── Action Modals ── */
+.acct-modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; }
+.acct-modal-backdrop.show { display:flex; }
+.acct-modal-box { background:var(--white); border-radius:6px; box-shadow:0 8px 32px rgba(0,0,0,0.22); width:100%; max-width:420px; margin:16px; overflow:hidden; animation:acctModalIn .18s ease; }
+@keyframes acctModalIn { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+.acct-modal-header { padding:18px 22px 14px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--gray-100); }
+.acct-modal-icon { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.acct-modal-icon svg { width:18px; height:18px; }
+.acct-modal-icon.toggle-on   { background:var(--green-pale); color:var(--green); }
+.acct-modal-icon.toggle-off  { background:var(--gray-100);   color:var(--gray-500); }
+.acct-modal-icon.resend      { background:#EFF6FF;            color:var(--blue); }
+.acct-modal-icon.archive     { background:var(--red-pale);    color:var(--red); }
+.acct-modal-title { font-family:'PT Serif',serif; font-size:16px; font-weight:700; color:var(--blue-dark); }
+.acct-modal-body  { padding:14px 22px 20px; font-size:13px; color:var(--gray-600); line-height:1.65; }
+.acct-modal-body strong { color:var(--gray-800); }
+.acct-modal-footer { padding:12px 22px; background:var(--gray-50); border-top:1px solid var(--gray-100); display:flex; justify-content:flex-end; gap:8px; }
+.acct-modal-btn { font-family:'Open Sans',sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:9px 20px; border-radius:3px; border:none; cursor:pointer; transition:background .15s; }
+.acct-modal-btn-cancel  { background:var(--white); color:var(--gray-600); border:1px solid var(--gray-200); }
+.acct-modal-btn-cancel:hover { background:var(--gray-100); }
+.acct-modal-btn-confirm-green { background:var(--green); color:var(--white); }
+.acct-modal-btn-confirm-green:hover { background:var(--green-dark); }
+.acct-modal-btn-confirm-gray  { background:var(--gray-500); color:var(--white); }
+.acct-modal-btn-confirm-gray:hover  { filter:brightness(.9); }
+.acct-modal-btn-confirm-blue  { background:var(--blue); color:var(--white); }
+.acct-modal-btn-confirm-blue:hover  { background:var(--blue-dark); }
+.acct-modal-btn-confirm-red   { background:var(--red); color:var(--white); }
+.acct-modal-btn-confirm-red:hover   { filter:brightness(.9); }
 </style>
 @endpush
 
@@ -109,36 +137,27 @@
         </a>
 
         @if($user->is_setup_complete)
-        <form method="POST" action="{{ route('superadmin.accounts.toggle', $user) }}" class="d-inline">
-            @csrf @method('PATCH')
-            <button type="submit" class="btn btn-sm {{ $user->status === 'active' ? 'btn-ghost' : 'btn-primary' }}"
-                onclick="return confirm('{{ $user->status === 'active' ? 'Deactivate' : 'Activate' }} this account?')">
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                {{ $user->status === 'active' ? 'Deactivate' : 'Activate' }}
-            </button>
-        </form>
+        <button type="button" class="btn btn-sm {{ $user->status === 'active' ? 'btn-ghost' : 'btn-primary' }}"
+            onclick="openToggleModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            {{ $user->status === 'active' ? 'Deactivate' : 'Activate' }}
+        </button>
         @endif
 
         @if(!$user->is_setup_complete)
-        <form method="POST" action="{{ route('superadmin.accounts.resend', $user) }}" class="d-inline">
-            @csrf
-            <button type="submit" class="btn btn-primary btn-sm"
-                onclick="return confirm('Resend invite to {{ $user->personal_email }}?')">
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                Resend Invite
-            </button>
-        </form>
+        <button type="button" class="btn btn-primary btn-sm"
+            onclick="openResendModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            Resend Invite
+        </button>
         @endif
 
-        <form method="POST" action="{{ route('superadmin.accounts.destroy', $user) }}" class="d-inline">
-            @csrf @method('DELETE')
-            <button type="submit" class="btn btn-sm"
-                style="background:var(--red-pale);color:var(--red);border:1px solid #FECACA;"
-                onclick="return confirm('Archive account {{ addslashes($user->email) }}?')">
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12"/></svg>
-                Archive
-            </button>
-        </form>
+        <button type="button" class="btn btn-sm"
+            style="background:var(--red-pale);color:var(--red);border:1px solid #FECACA;"
+            onclick="openArchiveModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12"/></svg>
+            Archive
+        </button>
     </div>
 </div>
 
@@ -339,5 +358,126 @@
         </table>
     </div>
 </div>
+
+
+{{-- ══ TOGGLE MODAL ══ --}}
+<div class="acct-modal-backdrop" id="toggleModal">
+    <div class="acct-modal-box">
+        <div class="acct-modal-header">
+            @if($user->status === 'active')
+            <div class="acct-modal-icon toggle-off">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <div class="acct-modal-title">Deactivate Account</div>
+            @else
+            <div class="acct-modal-icon toggle-on">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+            </div>
+            <div class="acct-modal-title">Activate Account</div>
+            @endif
+        </div>
+        <div class="acct-modal-body">
+            @if($user->status === 'active')
+                Deactivate account <strong>{{ $user->email }}</strong>?<br>
+                <span style="font-size:12px;color:var(--gray-400);margin-top:6px;display:block;">
+                    The user will be logged out and will not be able to log in until reactivated.
+                </span>
+            @else
+                Activate account <strong>{{ $user->email }}</strong>?<br>
+                <span style="font-size:12px;color:var(--gray-400);margin-top:6px;display:block;">
+                    The user will be able to log in immediately after activation.
+                </span>
+            @endif
+        </div>
+        <div class="acct-modal-footer">
+            <button class="acct-modal-btn acct-modal-btn-cancel" onclick="closeAcctModal('toggleModal')">Cancel</button>
+            @if($user->status === 'active')
+            <button class="acct-modal-btn acct-modal-btn-confirm-gray" onclick="document.getElementById('toggleForm').submit()">Deactivate</button>
+            @else
+            <button class="acct-modal-btn acct-modal-btn-confirm-green" onclick="document.getElementById('toggleForm').submit()">Activate</button>
+            @endif
+        </div>
+    </div>
+</div>
+
+{{-- ══ RESEND INVITE MODAL ══ --}}
+<div class="acct-modal-backdrop" id="resendModal">
+    <div class="acct-modal-box">
+        <div class="acct-modal-header">
+            <div class="acct-modal-icon resend">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <div class="acct-modal-title">Resend Invite</div>
+        </div>
+        <div class="acct-modal-body">
+            Resend the invitation email to <strong>{{ $user->personal_email }}</strong>?<br>
+            <span style="font-size:12px;color:var(--gray-400);margin-top:6px;display:block;">
+                A new setup link will be sent to the user's personal Gmail.
+            </span>
+        </div>
+        <div class="acct-modal-footer">
+            <button class="acct-modal-btn acct-modal-btn-cancel" onclick="closeAcctModal('resendModal')">Cancel</button>
+            <button class="acct-modal-btn acct-modal-btn-confirm-blue" onclick="document.getElementById('resendForm').submit()">Send Invite</button>
+        </div>
+    </div>
+</div>
+
+{{-- ══ ARCHIVE MODAL ══ --}}
+<div class="acct-modal-backdrop" id="archiveModal">
+    <div class="acct-modal-box">
+        <div class="acct-modal-header">
+            <div class="acct-modal-icon archive">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12"/></svg>
+            </div>
+            <div class="acct-modal-title">Archive Account</div>
+        </div>
+        <div class="acct-modal-body">
+            Archive account <strong>{{ $user->email }}</strong>?<br>
+            <span style="font-size:12px;color:var(--gray-400);margin-top:6px;display:block;">
+                The account will be soft-deleted and moved to the archived accounts list. It can be restored later.
+            </span>
+        </div>
+        <div class="acct-modal-footer">
+            <button class="acct-modal-btn acct-modal-btn-cancel" onclick="closeAcctModal('archiveModal')">Cancel</button>
+            <button class="acct-modal-btn acct-modal-btn-confirm-red" onclick="document.getElementById('archiveForm').submit()">Archive</button>
+        </div>
+    </div>
+</div>
+
+{{-- Hidden forms --}}
+<form id="toggleForm"  method="POST" action="{{ route('superadmin.accounts.toggle',  $user) }}" style="display:none;">@csrf @method('PATCH')</form>
+<form id="resendForm"  method="POST" action="{{ route('superadmin.accounts.resend',  $user) }}" style="display:none;">@csrf</form>
+<form id="archiveForm" method="POST" action="{{ route('superadmin.accounts.destroy', $user) }}" style="display:none;">@csrf @method('DELETE')</form>
+
+@push('scripts')
+<script>
+    function openToggleModal()  { openAcctModal('toggleModal');  }
+    function openResendModal()  { openAcctModal('resendModal');  }
+    function openArchiveModal() { openAcctModal('archiveModal'); }
+
+    function openAcctModal(id) {
+        document.getElementById(id).classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeAcctModal(id) {
+        document.getElementById(id).classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    // Close on backdrop click
+    document.querySelectorAll('.acct-modal-backdrop').forEach(el => {
+        el.addEventListener('click', function(e) {
+            if (e.target === this) closeAcctModal(this.id);
+        });
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape')
+            document.querySelectorAll('.acct-modal-backdrop.show')
+                .forEach(el => closeAcctModal(el.id));
+    });
+</script>
+@endpush
 
 @endsection

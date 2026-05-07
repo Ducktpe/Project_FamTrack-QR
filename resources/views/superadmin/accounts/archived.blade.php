@@ -48,6 +48,28 @@
     .archive-notice { flex-direction: column; gap: 10px; padding: 12px 14px; font-size: 12px; }
     .archive-notice-icon { width: 30px; height: 30px; }
 }
+
+/* ── Action Modals ── */
+.arch-modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; }
+.arch-modal-backdrop.show { display:flex; }
+.arch-modal-box { background:var(--white); border-radius:6px; box-shadow:0 8px 32px rgba(0,0,0,0.22); width:100%; max-width:420px; margin:16px; overflow:hidden; animation:archModalIn .18s ease; }
+@keyframes archModalIn { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+.arch-modal-header { padding:18px 22px 14px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--gray-100); }
+.arch-modal-icon { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.arch-modal-icon svg { width:18px; height:18px; }
+.arch-modal-icon.restore  { background:var(--green-pale); color:var(--green); }
+.arch-modal-icon.delete   { background:var(--red-pale);   color:var(--red);   }
+.arch-modal-title { font-family:'PT Serif',serif; font-size:16px; font-weight:700; color:var(--blue-dark); }
+.arch-modal-body  { padding:14px 22px 20px; font-size:13px; color:var(--gray-600); line-height:1.65; }
+.arch-modal-body strong { color:var(--gray-800); }
+.arch-modal-footer { padding:12px 22px; background:var(--gray-50); border-top:1px solid var(--gray-100); display:flex; justify-content:flex-end; gap:8px; }
+.arch-modal-btn { font-family:'Open Sans',sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:9px 20px; border-radius:3px; border:none; cursor:pointer; transition:background .15s; }
+.arch-modal-btn-cancel  { background:var(--white); color:var(--gray-600); border:1px solid var(--gray-200); }
+.arch-modal-btn-cancel:hover  { background:var(--gray-100); }
+.arch-modal-btn-restore { background:var(--green); color:var(--white); }
+.arch-modal-btn-restore:hover { background:var(--green-dark); }
+.arch-modal-btn-delete  { background:var(--red);   color:var(--white); }
+.arch-modal-btn-delete:hover  { filter:brightness(.9); }
 </style>
 @endpush
 
@@ -192,22 +214,22 @@
                     <td data-label="Actions">
                         <div class="action-btns" style="justify-content:center;">
                             {{-- Restore --}}
-                            <form method="POST" action="{{ route('superadmin.accounts.restore', $u->id) }}" class="d-inline">
-                                @csrf
-                                <button type="submit" class="icon-btn restore" title="Restore Account"
-                                    onclick="return confirm('Restore account {{ addslashes($u->email) }}? It will be set to inactive.')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                                </button>
-                            </form>
+                            <button type="button" class="icon-btn restore" title="Restore Account"
+                                onclick="openRestoreModal(
+                                    '{{ route('superadmin.accounts.restore', $u->id) }}',
+                                    '{{ addslashes($u->email) }}'
+                                )">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            </button>
 
                             {{-- Permanent Delete --}}
-                            <form method="POST" action="{{ route('superadmin.accounts.force-delete', $u->id) }}" class="d-inline">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="icon-btn perma-delete" title="Permanently Delete"
-                                    onclick="return confirm('PERMANENTLY delete {{ addslashes($u->email) }}? This CANNOT be undone.')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
-                            </form>
+                            <button type="button" class="icon-btn perma-delete" title="Permanently Delete"
+                                onclick="openDeleteModal(
+                                    '{{ route('superadmin.accounts.force-delete', $u->id) }}',
+                                    '{{ addslashes($u->email) }}'
+                                )">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -247,5 +269,102 @@
     @endif
 
 </div>
+
+
+{{-- ══ RESTORE MODAL ══ --}}
+<div class="arch-modal-backdrop" id="restoreModal">
+    <div class="arch-modal-box">
+        <div class="arch-modal-header">
+            <div class="arch-modal-icon restore">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </div>
+            <div class="arch-modal-title">Restore Account</div>
+        </div>
+        <div class="arch-modal-body" id="restoreModalBody"></div>
+        <div class="arch-modal-footer">
+            <button class="arch-modal-btn arch-modal-btn-cancel" onclick="closeArchModal('restoreModal')">Cancel</button>
+            <button class="arch-modal-btn arch-modal-btn-restore" onclick="submitArchForm('restoreForm')">Restore</button>
+        </div>
+    </div>
+</div>
+
+{{-- ══ PERMANENT DELETE MODAL ══ --}}
+<div class="arch-modal-backdrop" id="deleteModal">
+    <div class="arch-modal-box">
+        <div class="arch-modal-header">
+            <div class="arch-modal-icon delete">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </div>
+            <div class="arch-modal-title">Permanently Delete</div>
+        </div>
+        <div class="arch-modal-body" id="deleteModalBody"></div>
+        <div class="arch-modal-footer">
+            <button class="arch-modal-btn arch-modal-btn-cancel" onclick="closeArchModal('deleteModal')">Cancel</button>
+            <button class="arch-modal-btn arch-modal-btn-delete" onclick="submitArchForm('deleteForm')">Delete Permanently</button>
+        </div>
+    </div>
+</div>
+
+{{-- Hidden forms --}}
+<form id="restoreForm" method="POST" style="display:none;">
+    @csrf
+</form>
+<form id="deleteForm" method="POST" style="display:none;">
+    @csrf @method('DELETE')
+</form>
+
+@push('scripts')
+<script>
+    function openRestoreModal(url, email) {
+        document.getElementById('restoreForm').action = url;
+        document.getElementById('restoreModalBody').innerHTML =
+            `Restore account <strong>${email}</strong>?<br>
+             <span style="font-size:12px;color:var(--gray-400);margin-top:6px;display:block;">
+                The account will be set to <strong>inactive</strong> and the user will need to log in to reactivate.
+             </span>`;
+        openArchModal('restoreModal');
+    }
+
+    function openDeleteModal(url, email) {
+        document.getElementById('deleteForm').action = url;
+        document.getElementById('deleteModalBody').innerHTML =
+            `<strong style="color:var(--red);">This action cannot be undone.</strong><br><br>
+             Permanently delete account <strong>${email}</strong>?<br>
+             <span style="font-size:12px;color:var(--gray-400);margin-top:6px;display:block;">
+                All data associated with this account will be <strong>irreversibly removed</strong> from the system.
+             </span>`;
+        openArchModal('deleteModal');
+    }
+
+    function openArchModal(id) {
+        document.getElementById(id).classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeArchModal(id) {
+        document.getElementById(id).classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    function submitArchForm(formId) {
+        document.getElementById(formId).submit();
+    }
+
+    // Close on backdrop click
+    document.querySelectorAll('.arch-modal-backdrop').forEach(el => {
+        el.addEventListener('click', function(e) {
+            if (e.target === this) closeArchModal(this.id);
+        });
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.arch-modal-backdrop.show')
+                .forEach(el => closeArchModal(el.id));
+        }
+    });
+</script>
+@endpush
 
 @endsection

@@ -11,14 +11,18 @@ class AuditTrailController extends Controller
 {
     public function index(Request $request)
     {
-        // Get all super_admin user IDs — confirmed column: users.role (enum)
         $superAdminIds = User::where('role', 'super_admin')->pluck('id');
 
-        $query = AuditLog::with('user')->latest('created_at')
-            ->where(function ($q) use ($superAdminIds) {
+        $query = AuditLog::with('user')->latest('created_at');
+
+        // When filtering by severity, include ALL users so super_admin
+        // high-severity actions are visible to the auditor.
+        if (!$request->filled('severity')) {
+            $query->where(function ($q) use ($superAdminIds) {
                 $q->whereNotIn('user_id', $superAdminIds)
-                  ->orWhereNull('user_id'); // keep System/null-user entries
+                  ->orWhereNull('user_id');
             });
+        }
 
         if ($request->filled('search')) {
             $s = $request->search;
@@ -32,7 +36,45 @@ class AuditTrailController extends Controller
         }
 
         if ($request->filled('category')) {
-            $query->where('category', $request->category);
+            $cat = $request->category;
+
+            // 'auth', 'household', 'distribution' are real DB category values — filter directly.
+            // 'qr' and 'general' are derived from action names in the blade (not stored in DB),
+            // so we filter by action keywords instead.
+            if ($cat === 'qr') {
+                $query->where(function ($q) {
+                    $q->where('action', 'like', '%qr%')
+                      ->orWhere('action', 'like', '%scan%')
+                      ->orWhere('action', 'like', '%serial%');
+                });
+            } elseif ($cat === 'general') {
+                // General = everything that doesn't match the other four types
+                $query->where(function ($q) {
+                    $q->where('category', 'general')
+                      ->orWhere(function ($q2) {
+                          // Fallback: action doesn't match any known keyword group
+                          $q2->whereNotIn('category', ['auth', 'household', 'distribution'])
+                             ->where('action', 'not like', '%qr%')
+                             ->where('action', 'not like', '%scan%')
+                             ->where('action', 'not like', '%serial%')
+                             ->where('action', 'not like', '%login%')
+                             ->where('action', 'not like', '%logout%')
+                             ->where('action', 'not like', '%register%')
+                             ->where('action', 'not like', '%password%')
+                             ->where('action', 'not like', '%household%')
+                             ->where('action', 'not like', '%member%')
+                             ->where('action', 'not like', '%family%')
+                             ->where('action', 'not like', '%distribution%')
+                             ->where('action', 'not like', '%event%')
+                             ->where('action', 'not like', '%ayuda%')
+                             ->where('action', 'not like', '%relief%')
+                             ->where('action', 'not like', '%distributed%');
+                      });
+                });
+            } else {
+                // auth / household / distribution — stored directly in category column
+                $query->where('category', $cat);
+            }
         }
 
         if ($request->filled('severity')) {
