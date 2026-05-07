@@ -390,6 +390,24 @@
         ::-webkit-scrollbar-track { background: var(--gray-100); }
         ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
+        /* ─── CUSTOM CONFIRM MODAL ─── */
+        .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; pointer-events:none; }
+        .modal-backdrop.show { display:flex; pointer-events:auto; }
+        .modal-box { background:var(--white); border-radius:6px; box-shadow:0 8px 32px rgba(0,0,0,0.22); width:100%; max-width:400px; margin:16px; overflow:hidden; animation:modalIn .18s ease; }
+        @keyframes modalIn { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+        .modal-header { padding:18px 22px 14px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--gray-100); }
+        .modal-icon { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .modal-icon svg { width:18px; height:18px; }
+        .modal-icon.confirm { background:var(--green-pale); color:var(--green); }
+        .modal-title { font-family:'PT Serif',serif; font-size:16px; font-weight:700; color:var(--blue-dark); }
+        .modal-body { padding:14px 22px 20px; font-size:13px; color:var(--gray-600); line-height:1.6; }
+        .modal-footer { padding:12px 22px; background:var(--gray-50); border-top:1px solid var(--gray-100); display:flex; justify-content:flex-end; gap:8px; }
+        .modal-btn { font-family:'Open Sans',sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:9px 20px; border-radius:3px; border:none; cursor:pointer; transition:background .15s; }
+        .modal-btn-cancel { background:var(--white); color:var(--gray-600); border:1px solid var(--gray-200); }
+        .modal-btn-cancel:hover { background:var(--gray-100); }
+        .modal-btn-confirm { background:var(--green); color:var(--white); }
+        .modal-btn-confirm:hover { background:var(--green-dark); }
+
         /* ─── RESPONSIVE ─── */
         /* ─── HOUSEHOLD CARDS (mobile) ─── */
         .household-cards { display: none; flex-direction: column; gap: 10px; padding: 12px; background: var(--gray-100); }
@@ -850,6 +868,7 @@
                                             <button type="button" class="btn-approve"
                                                 data-approve-url="{{ route('admin.households.approve', $household) }}"
                                                 data-household-id="{{ $household->id }}"
+                                                data-household-name="{{ $household->household_head_name }}"
                                                 onclick="approveHousehold(this)">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                                                 Approve
@@ -992,6 +1011,7 @@
                             <button type="button" class="btn-approve" style="flex:1;justify-content:center;"
                                 data-approve-url="{{ route('admin.households.approve', $household) }}"
                                 data-household-id="{{ $household->id }}"
+                                data-household-name="{{ $household->household_head_name }}"
                                 onclick="approveHousehold(this)">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                                 Approve
@@ -1188,8 +1208,28 @@
         `;
     })();
 
-    async function approveHousehold(btn) {
-        if (!confirm('Approve this household and generate QR serial code?')) return;
+    /* ── Approve modal state ── */
+    let _pendingApproveBtn = null;
+
+    function approveHousehold(btn) {
+        const name = btn.dataset.householdName || 'this household';
+        _pendingApproveBtn = btn;
+        document.getElementById('approveModalBody').innerHTML =
+            `Approve <strong>${name}</strong> and generate a QR serial code? This action will lock the record for editing.`;
+        document.getElementById('approveModal').classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeApproveModal() {
+        document.getElementById('approveModal').classList.remove('show');
+        document.body.style.overflow = '';
+        _pendingApproveBtn = null;
+    }
+
+    async function confirmApprove() {
+        const btn = _pendingApproveBtn;
+        closeApproveModal();
+        if (!btn) return;
 
         const url = btn.dataset.approveUrl;
         btn.disabled = true;
@@ -1251,6 +1291,12 @@
         }
     }
 
+    // Close modal on backdrop click
+    document.getElementById('approveModal').addEventListener('click', function(e) {
+        if (e.target === this) closeApproveModal();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeApproveModal(); });
+
     function showFlash(msg) {
         const flash = document.createElement('div');
         flash.className = 'alert-success';
@@ -1260,5 +1306,23 @@
         setTimeout(() => flash.remove(), 3000);
     }
 </script>
+
+<!-- ── APPROVE CONFIRM MODAL ── -->
+<div class="modal-backdrop" id="approveModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-icon confirm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="modal-title">Approve Household</div>
+        </div>
+        <div class="modal-body" id="approveModalBody">Are you sure you want to approve this household?</div>
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-cancel" onclick="closeApproveModal()">Cancel</button>
+            <button class="modal-btn modal-btn-confirm" onclick="confirmApprove()">Approve</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

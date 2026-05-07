@@ -73,6 +73,34 @@
 /* ── Responsive ── */
 @media (max-width: 1200px) { .acct-stats { grid-template-columns: repeat(3,1fr); } }
 @media (max-width: 768px)  { .acct-stats { grid-template-columns: repeat(2,1fr); } }
+
+/* ── Action Modals ── */
+.idx-modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; }
+.idx-modal-backdrop.show { display:flex; }
+.idx-modal-box { background:var(--white); border-radius:6px; box-shadow:0 8px 32px rgba(0,0,0,0.22); width:100%; max-width:420px; margin:16px; overflow:hidden; animation:idxModalIn .18s ease; }
+@keyframes idxModalIn { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+.idx-modal-header { padding:18px 22px 14px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--gray-100); }
+.idx-modal-icon { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.idx-modal-icon svg { width:18px; height:18px; }
+.idx-modal-icon.resend   { background:#EFF6FF; color:var(--blue); }
+.idx-modal-icon.toggle   { background:var(--green-pale); color:var(--green); }
+.idx-modal-icon.deactive { background:var(--gray-100); color:var(--gray-500); }
+.idx-modal-icon.archive  { background:var(--red-pale); color:var(--red); }
+.idx-modal-title { font-family:'PT Serif',serif; font-size:16px; font-weight:700; color:var(--blue-dark); }
+.idx-modal-body  { padding:14px 22px 20px; font-size:13px; color:var(--gray-600); line-height:1.65; }
+.idx-modal-body strong { color:var(--gray-800); }
+.idx-modal-footer { padding:12px 22px; background:var(--gray-50); border-top:1px solid var(--gray-100); display:flex; justify-content:flex-end; gap:8px; }
+.idx-modal-btn { font-family:'Open Sans',sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:9px 20px; border-radius:3px; border:none; cursor:pointer; transition:background .15s; }
+.idx-modal-btn-cancel { background:var(--white); color:var(--gray-600); border:1px solid var(--gray-200); }
+.idx-modal-btn-cancel:hover { background:var(--gray-100); }
+.idx-modal-btn-blue   { background:var(--blue); color:var(--white); }
+.idx-modal-btn-blue:hover  { background:var(--blue-dark); }
+.idx-modal-btn-green  { background:var(--green); color:var(--white); }
+.idx-modal-btn-green:hover { background:var(--green-dark); }
+.idx-modal-btn-gray   { background:var(--gray-500); color:var(--white); }
+.idx-modal-btn-gray:hover  { filter:brightness(.9); }
+.idx-modal-btn-red    { background:var(--red); color:var(--white); }
+.idx-modal-btn-red:hover   { filter:brightness(.9); }
 </style>
 @endpush
 
@@ -304,33 +332,34 @@
                             </a>
 
                             @if(!$u->is_setup_complete)
-                            <form method="POST" action="{{ route('superadmin.accounts.resend', $u) }}" class="d-inline">
-                                @csrf
-                                <button type="submit" class="icon-btn edit" title="Resend Invite"
-                                    onclick="return confirm('Resend invite to {{ $u->personal_email }}?')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                </button>
-                            </form>
+                            <button type="button" class="icon-btn edit" title="Resend Invite"
+                                onclick="openIdxResendModal(
+                                    '{{ route('superadmin.accounts.resend', $u) }}',
+                                    '{{ addslashes($u->personal_email) }}'
+                                )">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </button>
                             @endif
 
                             @if($u->is_setup_complete)
-                            <form method="POST" action="{{ route('superadmin.accounts.toggle', $u) }}" class="d-inline">
-                                @csrf @method('PATCH')
-                                <button type="submit" class="icon-btn lock"
-                                    title="{{ $u->status === 'active' ? 'Deactivate' : 'Activate' }}"
-                                    onclick="return confirm('{{ $u->status === 'active' ? 'Deactivate' : 'Activate' }} {{ addslashes($u->name) }}?')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                                </button>
-                            </form>
+                            <button type="button" class="icon-btn lock"
+                                title="{{ $u->status === 'active' ? 'Deactivate' : 'Activate' }}"
+                                onclick="openIdxToggleModal(
+                                    '{{ route('superadmin.accounts.toggle', $u) }}',
+                                    '{{ addslashes($u->name) }}',
+                                    '{{ $u->status }}'
+                                )">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            </button>
                             @endif
 
-                            <form method="POST" action="{{ route('superadmin.accounts.destroy', $u) }}" class="d-inline">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="icon-btn delete" title="Archive Account"
-                                    onclick="return confirm('Archive account {{ addslashes($u->email) }}?')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12"/></svg>
-                                </button>
-                            </form>
+                            <button type="button" class="icon-btn delete" title="Archive Account"
+                                onclick="openIdxArchiveModal(
+                                    '{{ route('superadmin.accounts.destroy', $u) }}',
+                                    '{{ addslashes($u->email) }}'
+                                )">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12"/></svg>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -366,5 +395,131 @@
     @endif
 
 </div>
+
+
+{{-- ══ RESEND MODAL ══ --}}
+<div class="idx-modal-backdrop" id="idxResendModal">
+    <div class="idx-modal-box">
+        <div class="idx-modal-header">
+            <div class="idx-modal-icon resend">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <div class="idx-modal-title">Resend Invite</div>
+        </div>
+        <div class="idx-modal-body" id="idxResendBody"></div>
+        <div class="idx-modal-footer">
+            <button class="idx-modal-btn idx-modal-btn-cancel" onclick="closeIdxModal('idxResendModal')">Cancel</button>
+            <button class="idx-modal-btn idx-modal-btn-blue" onclick="document.getElementById('idxResendForm').submit()">Send Invite</button>
+        </div>
+    </div>
+</div>
+
+{{-- ══ TOGGLE MODAL ══ --}}
+<div class="idx-modal-backdrop" id="idxToggleModal">
+    <div class="idx-modal-box">
+        <div class="idx-modal-header">
+            <div class="idx-modal-icon" id="idxToggleIcon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <div class="idx-modal-title" id="idxToggleTitle"></div>
+        </div>
+        <div class="idx-modal-body" id="idxToggleBody"></div>
+        <div class="idx-modal-footer">
+            <button class="idx-modal-btn idx-modal-btn-cancel" onclick="closeIdxModal('idxToggleModal')">Cancel</button>
+            <button class="idx-modal-btn" id="idxToggleConfirmBtn" onclick="document.getElementById('idxToggleForm').submit()"></button>
+        </div>
+    </div>
+</div>
+
+{{-- ══ ARCHIVE MODAL ══ --}}
+<div class="idx-modal-backdrop" id="idxArchiveModal">
+    <div class="idx-modal-box">
+        <div class="idx-modal-header">
+            <div class="idx-modal-icon archive">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12"/></svg>
+            </div>
+            <div class="idx-modal-title">Archive Account</div>
+        </div>
+        <div class="idx-modal-body" id="idxArchiveBody"></div>
+        <div class="idx-modal-footer">
+            <button class="idx-modal-btn idx-modal-btn-cancel" onclick="closeIdxModal('idxArchiveModal')">Cancel</button>
+            <button class="idx-modal-btn idx-modal-btn-red" onclick="document.getElementById('idxArchiveForm').submit()">Archive</button>
+        </div>
+    </div>
+</div>
+
+{{-- Hidden forms --}}
+<form id="idxResendForm"  method="POST" style="display:none;">@csrf</form>
+<form id="idxToggleForm"  method="POST" style="display:none;">@csrf @method('PATCH')</form>
+<form id="idxArchiveForm" method="POST" style="display:none;">@csrf @method('DELETE')</form>
+
+@push('scripts')
+<script>
+    function openIdxResendModal(url, email) {
+        document.getElementById('idxResendForm').action = url;
+        document.getElementById('idxResendBody').innerHTML =
+            `Resend the invitation email to <strong>${email}</strong>?<br>
+             <span style="font-size:12px;color:var(--gray-400);margin-top:6px;display:block;">
+                A new setup link will be sent to the user's personal Gmail.
+             </span>`;
+        openIdxModal('idxResendModal');
+    }
+
+    function openIdxToggleModal(url, name, status) {
+        const isActive = status === 'active';
+        document.getElementById('idxToggleForm').action = url;
+        document.getElementById('idxToggleTitle').textContent = isActive ? 'Deactivate Account' : 'Activate Account';
+
+        const icon = document.getElementById('idxToggleIcon');
+        icon.className = 'idx-modal-icon ' + (isActive ? 'deactive' : 'toggle');
+
+        document.getElementById('idxToggleBody').innerHTML = isActive
+            ? `Deactivate account for <strong>${name}</strong>?<br>
+               <span style="font-size:12px;color:var(--gray-400);margin-top:6px;display:block;">
+                   The user will be logged out and unable to log in until reactivated.
+               </span>`
+            : `Activate account for <strong>${name}</strong>?<br>
+               <span style="font-size:12px;color:var(--gray-400);margin-top:6px;display:block;">
+                   The user will be able to log in immediately after activation.
+               </span>`;
+
+        const btn = document.getElementById('idxToggleConfirmBtn');
+        btn.textContent = isActive ? 'Deactivate' : 'Activate';
+        btn.className = 'idx-modal-btn ' + (isActive ? 'idx-modal-btn-gray' : 'idx-modal-btn-green');
+
+        openIdxModal('idxToggleModal');
+    }
+
+    function openIdxArchiveModal(url, email) {
+        document.getElementById('idxArchiveForm').action = url;
+        document.getElementById('idxArchiveBody').innerHTML =
+            `Archive account <strong>${email}</strong>?<br>
+             <span style="font-size:12px;color:var(--gray-400);margin-top:6px;display:block;">
+                The account will be soft-deleted and moved to the archived list. It can be restored later.
+             </span>`;
+        openIdxModal('idxArchiveModal');
+    }
+
+    function openIdxModal(id) {
+        document.getElementById(id).classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeIdxModal(id) {
+        document.getElementById(id).classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.idx-modal-backdrop').forEach(el => {
+        el.addEventListener('click', function(e) {
+            if (e.target === this) closeIdxModal(this.id);
+        });
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape')
+            document.querySelectorAll('.idx-modal-backdrop.show')
+                .forEach(el => closeIdxModal(el.id));
+    });
+</script>
+@endpush
 
 @endsection

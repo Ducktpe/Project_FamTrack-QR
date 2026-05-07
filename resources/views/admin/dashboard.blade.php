@@ -172,10 +172,10 @@
         .pb-sbtn.on .pb-sbtn-dot { opacity: 1; }
 
         /* Explore zone */
-        .pb-ez { background: var(--white); border: 1px solid var(--gray-200); margin-bottom: 24px; border-radius: 6px; overflow: hidden; }
+        .pb-ez { background: var(--white); border: 1px solid var(--gray-200); margin-bottom: 24px; border-radius: 6px; overflow: hidden; overflow-x: hidden; }
         .pb-ez-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 12px 16px; border-bottom: 2px solid var(--gray-100); background: linear-gradient(to right, var(--gray-50), var(--white)); }
         .pb-ez-title { font-size: 12px; font-weight: 700; color: var(--blue-dark); letter-spacing: 0.3px; }
-        .pb-ez-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .pb-ez-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; max-width: 100%; }
         .pb-frow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
         .pb-flbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--gray-400); white-space: nowrap; }
         .pb-select { height: 30px; padding: 0 28px 0 10px; border-radius: 5px; border: 1px solid var(--gray-200); background: var(--white); font-size: 11px; font-weight: 600; color: var(--gray-800); cursor: pointer; font-family: 'Open Sans', sans-serif; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239AA3B0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; transition: border-color .15s, box-shadow .15s; min-width: 160px; }
@@ -192,13 +192,13 @@
         .pb-ctb svg { width: 13px; height: 13px; stroke: var(--gray-400); fill: none; stroke-width: 2; }
 
         /* Explore body */
-        .pb-ez-body { display: flex; min-height: 260px; }
-        .pb-col { flex: 1; min-width: 0; padding: 14px 16px; border-right: 1px solid var(--gray-100); }
+        .pb-ez-body { display: flex; min-height: 260px; flex-wrap: wrap; align-content: flex-start; width: 100%; overflow-x: hidden; }
+        .pb-col { flex: 1 1 260px; min-width: 260px; padding: 14px 16px; border-right: 1px solid var(--gray-100); }
         .pb-col:last-child { border-right: none; }
-        .pb-col-head { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--gray-100); }
+        .pb-col-head { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--gray-100); flex-wrap: wrap; }
         .pb-col-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
         .pb-col-title { font-size: 12px; font-weight: 600; color: var(--blue-dark); }
-        .pb-col-sub { font-size: 10px; color: var(--gray-400); margin-left: auto; }
+        .pb-col-sub { font-size: 10px; color: var(--gray-400); margin-left: auto; min-width: 0; }
         .pb-chart-area { position: relative; width: 100%; height: 200px; margin-bottom: 10px; }
         .pb-bar-list { display: flex; flex-direction: column; gap: 7px; }
         .pb-br { display: grid; grid-template-columns: 100px 1fr 34px; align-items: center; gap: 6px; }
@@ -228,6 +228,12 @@
         /* Empty state */
         .pb-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 260px; color: var(--gray-400); font-size: 12px; gap: 8px; width: 100%; }
         .pb-empty svg { width: 28px; height: 28px; opacity: .25; }
+
+        /* Consolidated multi-sector view */
+        #pbConsolidated { display: flex; flex-direction: column; gap: 14px; padding: 14px 16px; width: 100%; }
+        #pbConsolidated > div { animation: pbsli 0.25s ease; }
+        #pbMultiSectorChart { max-height: 240px; }
+
 
         /* Status badges */
         .status-badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -380,10 +386,13 @@
             .pb-ez-head { padding: 10px 12px; gap: 8px; flex-direction: column; align-items: flex-start; }
             .pb-ez-controls { width: 100%; }
             .pb-select { min-width: 0; width: 100%; }
-            .pb-ez-body { flex-direction: column; }
+            .pb-ez-body { flex-direction: column; min-height: auto; }
             .pb-col { border-right: none; border-bottom: 1px solid var(--gray-100); padding: 12px; }
             .pb-col:last-child { border-bottom: none; }
             .pb-br { grid-template-columns: 75px 1fr 30px; }
+            #pbConsolidated { padding: 12px !important; }
+            #pbConsolidated > div:first-child { grid-template-columns: 1fr 1fr !important; }
+
             /* Cross insight */
             .pb-cross-grid { grid-template-columns: repeat(2, 1fr); }
             /* Map */
@@ -442,6 +451,9 @@
             .pb-strip { grid-template-columns: repeat(2, 1fr); }
             .pb-sector-row { grid-template-columns: repeat(2, 1fr); }
             .pb-sbtn-lbl { display: none; }
+            #pbConsolidated > div:first-child { grid-template-columns: 1fr !important; }
+            #pbConsolidated > div:nth-child(3) { grid-template-columns: 1fr !important; }
+
         }
 
         /* slide-in animation */
@@ -796,7 +808,9 @@ const SECTOR_CFG = [
 const STATUS_COLORS = { upcoming:'#2459A8', ongoing:'#16A34A', completed:'#6B7280', cancelled:'#C0392B' };
 
 /* ── State ── */
-const PB = { active: new Set(), brgy:'All', qrType:'all', chartType:'bar', sexFilter:new Set(), ageFilter:new Set(), housingFilter:new Set(), vulnFilter:new Set(), distFilter:new Set(), _lastKeys:'' };
+const PB = { active: new Set(), brgy:'All', qrType:new Set(), chartType:'bar', sexFilter:new Set(), ageFilter:new Set(), housingFilter:new Set(), vulnFilter:new Set(), distFilter:new Set(), _lastKeys:'' };
+/* Helper: get the active QR type string ('all','household','family_head') from the Set */
+function getQrType(){ return PB.qrType.size===0 ? 'all' : [...PB.qrType][0]; }
 
 /* Full official barangay list for Naic, Cavite */
 const BRGYS = [
@@ -826,6 +840,10 @@ function ageGroup(bday){
     return 'Senior 60+';
 }
 function countBy(arr,fn){ const o={}; arr.forEach(x=>{ const k=fn(x)||'Unknown'; o[k]=(o[k]||0)+1; }); return o; }
+function normalizeHousing(value){
+    if(!value) return '';
+    return value.trim().replace(/\s+/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+}
 function filtE(brgy){
     if(brgy==='All') return EVENTS;
     return EVENTS.filter(e=>e.barangay.includes('All Barangays')||e.barangay.includes(brgy));
@@ -833,8 +851,14 @@ function filtE(brgy){
 function filtQR(brgy,type){
     const hids=filtH(brgy).map(h=>h.id);
     let codes=QR_CODES.filter(q=>hids.includes(q.household_id));
-    if(type==='family_head') codes=codes.filter(q=>MEMBERS.find(m=>m.household_id===q.household_id&&m.is_family_head));
-    else if(type==='household') codes=codes.filter(q=>!MEMBERS.find(m=>m.household_id===q.household_id&&m.is_family_head));
+    const t = (typeof type === 'string') ? type : getQrType();
+    if(t==='family_head'){
+        const headHids=new Set(MEMBERS.filter(m=>m.is_family_head).map(m=>m.household_id));
+        codes=codes.filter(q=>headHids.has(q.household_id));
+    } else if(t==='household'){
+        // Every QR code is household-linked, so household mode shows all household QR cards.
+        codes=codes;
+    }
     return codes;
 }
 
@@ -853,7 +877,7 @@ function donutData(key){
         return {labels:Object.keys(bs),data:Object.values(bs),colors:Object.keys(bs).map(s=>STATUS_COLORS[s]||'#888')};
     }
     if(key==='qr'){
-        const codes=filtQR(PB.brgy,PB.qrType);
+        const codes=filtQR(PB.brgy,getQrType());
         const a=codes.filter(x=>x.is_active).length, i=codes.filter(x=>!x.is_active).length;
         return {labels:['Active','Inactive'],data:[a,i],colors:['#1D9E75','#C0392B']};
     }
@@ -918,9 +942,9 @@ function updateCards(){
             {l:'Family Head Scan',v:evs.filter(e=>e.scan_mode==='family_head').length+'',s:'QR scan mode',c:'#7C3AED'},
         ];
     } else if(lastKey==='qr'){
-        const codes=filtQR(PB.brgy,PB.qrType);
+        const codes=filtQR(PB.brgy,getQrType());
         cards=[
-            {l:'Total QR',v:codes.length.toLocaleString(),s:PB.qrType==='all'?'All types':PB.qrType+' QR',c:'#1D9E75'},
+            {l:'Total QR',v:codes.length.toLocaleString(),s:getQrType()==='all'?'All types':getQrType()+' QR',c:'#1D9E75'},
             {l:'Active',v:codes.filter(x=>x.is_active).length.toLocaleString(),s:Math.round(codes.filter(x=>x.is_active).length/Math.max(codes.length,1)*100)+'% rate',c:'#16A34A'},
             {l:'Inactive',v:codes.filter(x=>!x.is_active).length+'',s:'Deactivated',c:'#C0392B'},
             {l:'Unique HH',v:new Set(codes.map(x=>x.household_id)).size+'',s:'with QR codes',c:'#2459A8'},
@@ -956,7 +980,7 @@ function updateExplore(){
     title.textContent=names.join(' + ')+' — detailed view';
 
     if(sectorsChanged){
-        // Sectors changed — destroy everything and rebuild structure + controls fresh
+        // Sectors changed — destroy everything and rebuild
         Object.values(pbDetCharts).forEach(c=>{ try{c.destroy();}catch(e){} });
         pbDetCharts={};
         if(pbLeafMap){ pbLeafMap.remove(); pbLeafMap=null; }
@@ -966,39 +990,241 @@ function updateExplore(){
         PB._lastKeys=keysStr;
 
         body.innerHTML=''; body.className='pb-ez-body pb-slide';
-        keys.forEach(key=>{ const col=document.createElement('div'); col.className='pb-col'; col.innerHTML=`<div class="pb-col-head"><div class="pb-col-dot" style="background:${SECTOR_CFG.find(x=>x.key===key).color}"></div><div class="pb-col-title">${SECTOR_CFG.find(x=>x.key===key).label}</div><div class="pb-col-sub">${PB.brgy==='All'?'All barangays':PB.brgy}</div></div><div id="pbCol-${key}"></div>`; body.appendChild(col); });
-
-        if(keys.includes('distribution')){
-            const mr=document.createElement('div'); mr.className='pb-map-row';
-            mr.innerHTML=`<div class="pb-map-leg">${Object.entries(STATUS_COLORS).map(([s,c])=>`<span class="pb-li"><span class="pb-lsq" style="background:${c};border-radius:50%"></span>${s}</span>`).join('')}</div><div id="pbMap"></div>`;
-            body.appendChild(mr); setTimeout(initPbMap,80);
+        
+        // NEW: Use consolidated layout for multiple sectors, column layout for single
+        if(keys.length===1){
+            // Single sector: show detailed column view as before
+            keys.forEach(key=>{ const col=document.createElement('div'); col.className='pb-col'; col.innerHTML=`<div class="pb-col-head"><div class="pb-col-dot" style="background:${SECTOR_CFG.find(x=>x.key===key).color}"></div><div class="pb-col-title">${SECTOR_CFG.find(x=>x.key===key).label}</div><div class="pb-col-sub">${PB.brgy==='All'?'All barangays':PB.brgy}</div></div><div id="pbCol-${key}"></div>`; body.appendChild(col); });
+        } else {
+            // Multiple sectors: show consolidated comparison view
+            renderConsolidatedView(body, keys);
         }
+
+        // Don't add map to explore zone — keep it only in main distribution section below
     } else {
-        // Only a filter changed — destroy charts but keep the column DOM structure intact
+        // Only a filter changed
         Object.values(pbDetCharts).forEach(c=>{ try{c.destroy();}catch(e){} });
         pbDetCharts={};
         if(pbLeafMap){ pbLeafMap.remove(); pbLeafMap=null; }
         const existCross=document.getElementById('pbCross'); if(existCross) existCross.remove();
-        // Update the barangay subtitle in each column header
-        keys.forEach(key=>{
-            const colEl=document.getElementById('pbCol-'+key);
-            if(colEl){
-                const sub=colEl.closest('.pb-col')&&colEl.closest('.pb-col').querySelector('.pb-col-sub');
-                if(sub) sub.textContent=PB.brgy==='All'?'All barangays':PB.brgy;
-            }
-        });
-        // Re-add map row for distribution if missing
-        if(keys.includes('distribution')&&!document.getElementById('pbMap')){
-            const mr=document.createElement('div'); mr.className='pb-map-row';
-            mr.innerHTML=`<div class="pb-map-leg">${Object.entries(STATUS_COLORS).map(([s,c])=>`<span class="pb-li"><span class="pb-lsq" style="background:${c};border-radius:50%"></span>${s}</span>`).join('')}</div><div id="pbMap"></div>`;
-            body.appendChild(mr); setTimeout(initPbMap,80);
-        } else if(keys.includes('distribution')){
-            setTimeout(initPbMap,80);
+        
+        if(keys.length===1){
+            // Single sector: update columns
+            keys.forEach(key=>{
+                const colEl=document.getElementById('pbCol-'+key);
+                if(colEl){
+                    const sub=colEl.closest('.pb-col')&&colEl.closest('.pb-col').querySelector('.pb-col-sub');
+                    if(sub) sub.textContent=PB.brgy==='All'?'All barangays':PB.brgy;
+                }
+            });
+        } else {
+            // Multiple sectors: refresh consolidated view
+            const consViewEl = document.getElementById('pbConsolidated');
+            if(consViewEl) consViewEl.remove();
+            renderConsolidatedView(body, keys, true);
         }
+        
+
     }
 
-    if(keys.length>=2) buildCross(keys);
-    keys.forEach(key=>renderCol(key));
+    if(keys.length===1){
+        buildCross(keys);
+        keys.forEach(key=>renderCol(key));
+    } else {
+        renderConsolidatedCharts(keys);
+    }
+}
+
+/* NEW: Consolidated view for multiple sectors */
+function renderConsolidatedView(body, keys, isUpdate=false){
+    const consDiv=document.createElement('div'); 
+    consDiv.id='pbConsolidated'; 
+    consDiv.style.cssText='display:flex;flex-direction:column;gap:14px;padding:14px 16px;width:100%;';
+    
+    // Key metrics comparison grid
+    const h=filtH(PB.brgy); const hids=h.map(x=>x.id); const m=memOfH(hids); const evs=filtE(PB.brgy); const codes=filtQR(PB.brgy,getQrType());
+    const metricsCards = buildMultiSectorMetrics(keys, {h,hids,m,evs,codes});
+    
+    // Add metrics grid
+    const metricsDiv=document.createElement('div');
+    metricsDiv.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;';
+    metricsCards.forEach(card=>{
+        const cardEl=document.createElement('div');
+        cardEl.style.cssText=`background:#fff;border:1px solid var(--gray-200);border-left:3px solid ${card.color};padding:14px;border-radius:4px;`;
+        cardEl.innerHTML=`<div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-400);margin-bottom:4px">${card.label}</div>
+            <div style="font-size:20px;font-weight:700;color:${card.color};margin-bottom:2px;font-variant-numeric:tabular-nums">${card.value}</div>
+            <div style="font-size:10px;color:var(--gray-600)">${card.sublabel}</div>`;
+        metricsDiv.appendChild(cardEl);
+    });
+    consDiv.appendChild(metricsDiv);
+    
+    // Consolidated chart (if applicable)
+    const chartDiv=document.createElement('div');
+    chartDiv.style.cssText='background:#fff;border:1px solid var(--gray-200);padding:12px;border-radius:4px;';
+    const chartCanvas=document.createElement('canvas');
+    chartCanvas.id='pbMultiSectorChart';
+    chartDiv.appendChild(chartCanvas);
+    consDiv.appendChild(chartDiv);
+    
+    // Detailed breakdown cards
+    const breakdownDiv=document.createElement('div');
+    breakdownDiv.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;';
+    
+    keys.forEach(key=>{
+        const sectorDiv=document.createElement('div');
+        sectorDiv.style.cssText=`background:#fff;border:1px solid var(--gray-200);border-radius:4px;overflow:hidden;`;
+        const cfg=SECTOR_CFG.find(x=>x.key===key);
+        sectorDiv.innerHTML=`<div style="background:${cfg.color};color:#fff;padding:10px 12px;font-weight:700;font-size:12px">${cfg.label}</div><div id="pbSector-${key}" style="padding:12px"></div>`;
+        breakdownDiv.appendChild(sectorDiv);
+    });
+    consDiv.appendChild(breakdownDiv);
+    
+    body.appendChild(consDiv);
+    
+    // Render sector breakdowns
+    keys.forEach(key=>renderSectorBreakdown(key));
+}
+
+function buildMultiSectorMetrics(keys, data){
+    const {h,hids,m,evs,codes}=data;
+    const cards=[];
+    
+    // Apply filters to data
+    const mFiltered = (PB.sexFilter.size===0 && PB.ageFilter.size===0 && PB.housingFilter.size===0) ? m 
+        : m.filter(x=>{
+            const sexOk = PB.sexFilter.size===0 || PB.sexFilter.has(x.sex);
+            const ageOk = PB.ageFilter.size===0 || PB.ageFilter.has(ageGroup(x.birthday));
+            const hh = HOUSEHOLDS.find(hh=>hh.id===x.household_id);
+            const housingOk = PB.housingFilter.size===0 || !hh || !hh.housing || PB.housingFilter.has(normalizeHousing(hh.housing));
+            return sexOk && ageOk && housingOk;
+        });
+    
+    const hFiltered = (PB.vulnFilter.size===0 && PB.housingFilter.size===0) ? h
+        : h.filter(hh=>{
+            const vulnOk = PB.vulnFilter.size===0 || (hh.is_4ps||hh.is_pwd||hh.is_senior||hh.is_solo);
+            const housingOk = PB.housingFilter.size===0 || !hh.housing || PB.housingFilter.has(normalizeHousing(hh.housing));
+            return vulnOk && housingOk;
+        });
+    
+    const evsFiltered = PB.distFilter.size===0 ? evs : evs.filter(e=>PB.distFilter.has(e.status));
+    const codesFiltered = codes; // QR filters handled separately by getQrType()
+    
+    keys.forEach(key=>{
+        const cfg=SECTOR_CFG.find(x=>x.key===key);
+        if(key==='population'){
+            cards.push({label:'Total Residents',value:mFiltered.length.toLocaleString(),sublabel:'Family members',color:cfg.color});
+            cards.push({label:'Approved HH',value:hFiltered.filter(x=>x.approved).length.toLocaleString(),sublabel:'Ready for aid',color:'#16A34A'});
+        } else if(key==='vulnerable'){
+            const vulnCount=hFiltered.filter(x=>x.is_4ps||x.is_pwd||x.is_senior||x.is_solo).length;
+            cards.push({label:'Vulnerable HH',value:vulnCount.toLocaleString(),sublabel:`${Math.round(vulnCount/Math.max(hFiltered.length,1)*100)}% of households`,color:cfg.color});
+        } else if(key==='distribution'){
+            cards.push({label:'Total Events',value:evsFiltered.length.toLocaleString(),sublabel:`${evsFiltered.filter(e=>e.status==='ongoing').length} ongoing`,color:cfg.color});
+        } else if(key==='qr'){
+            const activeCount=codesFiltered.filter(x=>x.is_active).length;
+            cards.push({label:'Active QR Codes',value:activeCount.toLocaleString(),sublabel:`${Math.round(activeCount/Math.max(codesFiltered.length,1)*100)}% active`,color:cfg.color});
+        }
+    });
+    
+    // Cross-sector insight cards
+    if(keys.includes('population')&&keys.includes('vulnerable')){
+        const vulnHH=hFiltered.filter(x=>x.is_4ps||x.is_pwd||x.is_senior||x.is_solo);
+        cards.push({label:'Vulnerable Rate',value:Math.round(vulnHH.length/Math.max(hFiltered.length,1)*100)+'%',sublabel:'of all households',color:'#7C3AED'});
+    }
+    if(keys.includes('vulnerable')&&keys.includes('qr')){
+        const vulnHH=hFiltered.filter(x=>x.is_4ps||x.is_pwd||x.is_senior||x.is_solo);
+        const coverage=codesFiltered.filter(q=>vulnHH.map(x=>x.id).includes(q.household_id)&&q.is_active).length;
+        cards.push({label:'QR Coverage (Vuln)',value:Math.round(coverage/Math.max(vulnHH.length,1)*100)+'%',sublabel:'vulnerable with active QR',color:'#1D9E75'});
+    }
+    if(keys.includes('population')&&keys.includes('distribution')){
+        cards.push({label:'Events Planned',value:evsFiltered.length.toLocaleString(),sublabel:`for ${hFiltered.length} households`,color:'#BA7517'});
+    }
+    
+    return cards;
+}
+
+function renderSectorBreakdown(key){
+    const el=document.getElementById('pbSector-'+key); if(!el) return;
+    const h=filtH(PB.brgy); const hids=h.map(x=>x.id); const m=memOfH(hids); const evs=filtE(PB.brgy); const codes=filtQR(PB.brgy,getQrType());
+    
+    // Apply active filters
+    const mFiltered = (PB.sexFilter.size===0 && PB.ageFilter.size===0 && PB.housingFilter.size===0) ? m 
+        : m.filter(x=>{
+            const sexOk = PB.sexFilter.size===0 || PB.sexFilter.has(x.sex);
+            const ageOk = PB.ageFilter.size===0 || PB.ageFilter.has(ageGroup(x.birthday));
+            const hh = HOUSEHOLDS.find(hh=>hh.id===x.household_id);
+            const housingOk = PB.housingFilter.size===0 || !hh || !hh.housing || PB.housingFilter.has(normalizeHousing(hh.housing));
+            return sexOk && ageOk && housingOk;
+        });
+    
+    const hFiltered = (PB.vulnFilter.size===0 && PB.housingFilter.size===0) ? h
+        : h.filter(hh=>{
+            const vulnOk = PB.vulnFilter.size===0 || (hh.is_4ps||hh.is_pwd||hh.is_senior||hh.is_solo);
+            const housingOk = PB.housingFilter.size===0 || !hh.housing || PB.housingFilter.has(normalizeHousing(hh.housing));
+            return vulnOk && housingOk;
+        });
+    
+    const evsFiltered = PB.distFilter.size===0 ? evs : evs.filter(e=>PB.distFilter.has(e.status));
+    
+    let html='';
+    if(key==='population'){
+        const male=mFiltered.filter(x=>x.sex==='Male').length, female=mFiltered.filter(x=>x.sex==='Female').length;
+        html=`<div style="margin-bottom:8px"><span style="font-size:10px;color:var(--gray-600)">Male:</span> <span style="font-weight:700">${male.toLocaleString()}</span></div>
+              <div style="margin-bottom:8px"><span style="font-size:10px;color:var(--gray-600)">Female:</span> <span style="font-weight:700">${female.toLocaleString()}</span></div>
+              <div style="margin-bottom:8px"><span style="font-size:10px;color:var(--gray-600)">Households:</span> <span style="font-weight:700">${hFiltered.length.toLocaleString()}</span></div>`;
+    } else if(key==='vulnerable'){
+        const cats=['4Ps','PWD','Senior','Solo Parent'];
+        const getVal=(t)=>hFiltered.filter(x=>(t==='4Ps'?x.is_4ps:t==='PWD'?x.is_pwd:t==='Senior'?x.is_senior:x.is_solo)).length;
+        html=cats.map(t=>`<div style="margin-bottom:6px;display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--gray-600)">${t}:</span> <span style="font-weight:700">${getVal(t).toLocaleString()}</span></div>`).join('');
+    } else if(key==='distribution'){
+        const stats=['upcoming','ongoing','completed','cancelled'];
+        html=stats.map(s=>`<div style="margin-bottom:6px;display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--gray-600)">${s.charAt(0).toUpperCase()+s.slice(1)}:</span> <span style="font-weight:700">${evsFiltered.filter(e=>e.status===s).length}</span></div>`).join('');
+    } else if(key==='qr'){
+        const active=codes.filter(x=>x.is_active).length;
+        html=`<div style="margin-bottom:6px;display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--gray-600)">Active:</span> <span style="font-weight:700">${active.toLocaleString()}</span></div>
+              <div style="margin-bottom:6px;display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--gray-600)">Inactive:</span> <span style="font-weight:700">${(codes.length-active).toLocaleString()}</span></div>
+              <div style="margin-bottom:6px;display:flex;justify-content:space-between"><span style="font-size:10px;color:var(--gray-600)">Coverage:</span> <span style="font-weight:700">${Math.round(active/Math.max(codes.length,1)*100)}%</span></div>`;
+    }
+    el.innerHTML=html;
+}
+
+function renderConsolidatedCharts(keys){
+    const h=filtH(PB.brgy); const hids=h.map(x=>x.id); const m=memOfH(hids); const evs=filtE(PB.brgy); const codes=filtQR(PB.brgy,getQrType());
+    
+    // Apply active filters
+    const mFiltered = (PB.sexFilter.size===0 && PB.ageFilter.size===0 && PB.housingFilter.size===0) ? m 
+        : m.filter(x=>{
+            const sexOk = PB.sexFilter.size===0 || PB.sexFilter.has(x.sex);
+            const ageOk = PB.ageFilter.size===0 || PB.ageFilter.has(ageGroup(x.birthday));
+            const hh = HOUSEHOLDS.find(hh=>hh.id===x.household_id);
+            const housingOk = PB.housingFilter.size===0 || !hh || !hh.housing || PB.housingFilter.has(normalizeHousing(hh.housing));
+            return sexOk && ageOk && housingOk;
+        });
+    
+    const hFiltered = (PB.vulnFilter.size===0 && PB.housingFilter.size===0) ? h
+        : h.filter(hh=>{
+            const vulnOk = PB.vulnFilter.size===0 || (hh.is_4ps||hh.is_pwd||hh.is_senior||hh.is_solo);
+            const housingOk = PB.housingFilter.size===0 || !hh.housing || PB.housingFilter.has(normalizeHousing(hh.housing));
+            return vulnOk && housingOk;
+        });
+    
+    const evsFiltered = PB.distFilter.size===0 ? evs : evs.filter(e=>PB.distFilter.has(e.status));
+    
+    const datasets=[];
+    keys.forEach((key,idx)=>{
+        if(key==='population') datasets.push(mFiltered.length);
+        else if(key==='vulnerable') datasets.push(hFiltered.filter(x=>x.is_4ps||x.is_pwd||x.is_senior||x.is_solo).length);
+        else if(key==='distribution') datasets.push(evsFiltered.length);
+        else if(key==='qr') datasets.push(codes.filter(q=>hids.includes(q.household_id)).length);
+    });
+    
+    const canvasEl=document.getElementById('pbMultiSectorChart');
+    if(canvasEl&&datasets.length>0){
+        pbDetCharts['multi']=new Chart(canvasEl,{
+            type:'bar',
+            data:{labels:keys.map(k=>SECTOR_CFG.find(x=>x.key===k).label),datasets:[{label:'Count',data:datasets,backgroundColor:keys.map(k=>SECTOR_CFG.find(x=>x.key===k).color),borderWidth:0}]},
+            options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
+        });
+    }
 }
 
 function makeSwitcherSingle(options, currentSet, onChange){
@@ -1079,15 +1305,29 @@ function makeSwitcher(options, currentSet, onChange){
     applyStyles();
     return sw;
 }
-function addFilterRow(container, label, sw){
-    const wrap=document.createElement('div'); wrap.className='pb-frow';
-    const lbl=document.createElement('span'); lbl.className='pb-flbl'; lbl.textContent=label;
-    wrap.appendChild(lbl); wrap.appendChild(sw); container.appendChild(wrap);
+function addFilterRow(container,label,control){
+    container.className='pb-frow';
+    const lbl=document.createElement('span');
+    lbl.className='pb-flbl';
+    lbl.textContent=label;
+    container.appendChild(lbl);
+    container.appendChild(control);
+    return container;
+}
+function addFilterGroup(container,title,rows){
+    const group=document.createElement('div');
+    group.style.cssText='border:1px solid var(--gray-200);border-radius:10px;background:#fff;padding:12px;margin-bottom:12px;';
+    const head=document.createElement('div');
+    head.style.cssText='font-size:12px;font-weight:700;color:#111827;margin-bottom:10px;';
+    head.textContent=title;
+    group.appendChild(head);
+    rows.forEach(row=>group.appendChild(row));
+    container.appendChild(group);
 }
 
 function buildControls(container, keys){
     container.innerHTML='';
-    // Barangay (population, vulnerable, qr)
+    // Barangay selector applies to all sector filters that use barangay scoping
     if(keys.some(k=>['population','vulnerable','qr'].includes(k))){
         const activeColor=keys.length===1?SECTOR_CFG.find(x=>x.key===keys[0]).color:'#1B3F7A';
         const wrap=document.createElement('div'); wrap.className='pb-frow';
@@ -1098,43 +1338,57 @@ function buildControls(container, keys){
         sel.addEventListener('change',()=>{ PB.brgy=sel.value; refresh(); });
         wrap.appendChild(lbl); wrap.appendChild(sel); container.appendChild(wrap);
     }
-    // Population: sex + age group + housing
+
     if(keys.includes('population')){
-        addFilterRow(container,'Sex:',makeSwitcherSingle(
+        const rows=[];
+        const row1=document.createElement('div'); addFilterRow(row1,'Sex:',makeSwitcherSingle(
             [['Male','Male','#1B3F7A'],['Female','Female','#DB2777']],
             PB.sexFilter, ()=>refresh()
         ));
-        addFilterRow(container,'Age Group:',makeSwitcher(
+        rows.push(row1);
+        const row2=document.createElement('div'); addFilterRow(row2,'Age Group:',makeSwitcher(
             [['Children 0-12','Children','#2459A8'],['Teen 13-17','Teen','#2459A8'],['Adult 18-59','Adult','#2459A8'],['Senior 60+','Senior','#2459A8']],
             PB.ageFilter, ()=>refresh()
         ));
-        addFilterRow(container,'Housing:',makeSwitcher(
+        rows.push(row2);
+        const row3=document.createElement('div'); addFilterRow(row3,'Housing:',makeSwitcher(
             [['Single','Single','#2459A8'],['Duplex','Duplex','#2459A8'],['Apartment/Condominium','Apt/Condo','#2459A8'],['Townhouse','Townhouse','#2459A8'],['Improvised','Improvised','#2459A8'],['Mixed Use','Mixed Use','#2459A8'],['Other','Other','#2459A8']],
             PB.housingFilter, ()=>refresh()
         ));
+        rows.push(row3);
+        addFilterGroup(container,'Population Filters',rows);
     }
-    // Vulnerable: type
+
     if(keys.includes('vulnerable')){
-        addFilterRow(container,'Type:',makeSwitcher(
+        const rows=[];
+        const row=document.createElement('div'); addFilterRow(row,'Type:',makeSwitcher(
             [['4Ps','4Ps','#1B3F7A'],['PWD','PWD','#7C3AED'],['Senior','Senior','#D97706'],['Solo Parent','Solo Parent','#DB2777']],
             PB.vulnFilter, ()=>refresh()
         ));
+        rows.push(row);
+        addFilterGroup(container,'Vulnerable Filters',rows);
     }
-    // Distribution: status
+
     if(keys.includes('distribution')){
-        addFilterRow(container,'Status:',makeSwitcher(
+        const rows=[];
+        const row=document.createElement('div'); addFilterRow(row,'Status:',makeSwitcher(
             [['upcoming','Upcoming','#2459A8'],['ongoing','Ongoing','#16A34A'],['completed','Completed','#6B7280'],['cancelled','Cancelled','#C0392B']],
             PB.distFilter, ()=>refresh()
         ));
+        rows.push(row);
+        addFilterGroup(container,'Distribution Filters',rows);
     }
-    // QR type
+
     if(keys.includes('qr')){
-        addFilterRow(container,'QR Type:',makeSwitcher(
+        const rows=[];
+        const row=document.createElement('div'); addFilterRow(row,'QR Type:',makeSwitcherSingle(
             [['all','All QR','#1D9E75'],['household','Household','#1D9E75'],['family_head','Family Head','#1D9E75']],
-            PB.qrType, v=>{ PB.qrType=v; refresh(); }
+            PB.qrType, ()=>{ refresh(); }
         ));
+        rows.push(row);
+        addFilterGroup(container,'QR Filters',rows);
     }
-    // Chart type toggle
+
     if(!keys.every(k=>k==='distribution')){
         const ct=document.createElement('div'); ct.className='pb-ct';
         ct.innerHTML=`<button class="pb-ctb${PB.chartType==='bar'?' on':''}" id="pbCtBar" title="Bar"><svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9" fill="currentColor" style="stroke:none"/><rect x="10" y="7" width="4" height="14" fill="currentColor" style="stroke:none"/><rect x="17" y="3" width="4" height="18" fill="currentColor" style="stroke:none"/></svg></button>
@@ -1185,7 +1439,7 @@ function renderCol(key){
         const filteredHids=new Set(mAge.map(x=>x.household_id));
         const hFiltered=h.filter(x=>filteredHids.has(x.id));
         const HOUSING_TYPES=['Single','Duplex','Apartment/Condominium','Townhouse','Improvised','Mixed Use','Other'];
-        const housingRaw=countBy(hFiltered,x=>x.housing?x.housing.trim().replace(/^./,c=>c.toUpperCase()):null);
+        const housingRaw=countBy(hFiltered,x=>x.housing?normalizeHousing(x.housing):null);
         const housingAllD={}; HOUSING_TYPES.forEach(t=>{ housingAllD[t]=housingRaw[t]||0; });
         Object.keys(housingRaw).forEach(k=>{ if(!(k in housingAllD)) housingAllD[k]=housingRaw[k]; });
         const housingD = PB.housingFilter.size===0 ? housingAllD
@@ -1220,7 +1474,7 @@ function renderCol(key){
         const empD={}; EMP_STATUSES.forEach(s=>{ empD[s]=empRaw[s]||0; });
         Object.keys(empRaw).forEach(k=>{ if(k&&!(k in empD)) empD[k]=empRaw[k]; });
         el.innerHTML=`<div class="pb-col-sublabel">Vulnerable Households</div>${PB.chartType==='bar'?barH(vD,cfg.color):`<div class="pb-chart-area"><canvas id="pbChart-vuln-cat"></canvas></div>`}
-        <div class="pb-col-sublabel" style="margin-top:14px">Employment Status${PB.vulnFilter!=='All'?' ('+PB.vulnFilter+')':''}</div>${PB.chartType==='bar'?barH(empD,'#6D28D9'):`<div class="pb-chart-area"><canvas id="pbChart-vuln-emp"></canvas></div>`}`;
+        <div class="pb-col-sublabel" style="margin-top:14px">Employment Status${PB.vulnFilter.size>0?' ('+[...PB.vulnFilter].join(', ')+')':''}</div>${PB.chartType==='bar'?barH(empD,'#6D28D9'):`<div class="pb-chart-area"><canvas id="pbChart-vuln-emp"></canvas></div>`}`;
         if(PB.chartType==='doughnut'){ pbDetCharts['vuln-cat']=mkPie('pbChart-vuln-cat',Object.keys(vD),Object.values(vD),['#1B3F7A','#7C3AED','#D97706','#DB2777']); pbDetCharts['vuln-emp']=mkPie('pbChart-vuln-emp',Object.keys(empD),Object.values(empD),['#6D28D9','#7C3AED','#A78BFA','#C4B5FD','#3C3489','#D97706']); }
     }
     else if(key==='distribution'){
@@ -1235,10 +1489,10 @@ function renderCol(key){
         const scanRaw=countBy(evs,e=>e.scan_mode);
         const byScan={'household':scanRaw['household']||0,'family_head':scanRaw['family_head']||0};
         Object.keys(scanRaw).forEach(k=>{ if(!(k in byScan)) byScan[k]=scanRaw[k]; });
-        el.innerHTML=`<div class="pb-col-sublabel">By Status</div>${barH(bySt,cfg.color,true)}<div class="pb-col-sublabel" style="margin-top:14px">Scan Mode${PB.distFilter!=='All'?' ('+PB.distFilter+')':''}</div>${barH(byScan,'#EF9F27')}`;
+        el.innerHTML=`<div class="pb-col-sublabel">By Status</div>${barH(bySt,cfg.color,true)}<div class="pb-col-sublabel" style="margin-top:14px">Scan Mode${PB.distFilter.size>0?' ('+[...PB.distFilter].join(', ')+')':''}</div>${barH(byScan,'#EF9F27')}`;
     }
     else if(key==='qr'){
-        const codes=filtQR(PB.brgy,PB.qrType);
+        const codes=filtQR(PB.brgy,getQrType());
         const byBrgy=countBy(codes,q=>{ const hh=HOUSEHOLDS.find(x=>x.id===q.household_id); return hh?hh.barangay:'Unknown'; });
         // Always show Active and Inactive even if 0
         const stD={'Active':codes.filter(x=>x.is_active).length,'Inactive':codes.filter(x=>!x.is_active).length};
@@ -1249,7 +1503,7 @@ function renderCol(key){
 }
 
 function buildCross(keys){
-    const h=filtH(PB.brgy); const hids=h.map(x=>x.id); const m=memOfH(hids); const evs=filtE(PB.brgy); const codes=filtQR(PB.brgy,PB.qrType);
+    const h=filtH(PB.brgy); const hids=h.map(x=>x.id); const m=memOfH(hids); const evs=filtE(PB.brgy); const codes=filtQR(PB.brgy,getQrType());
     const cards=[];
     if(keys.includes('population')&&keys.includes('vulnerable')){
         const vulnHH=h.filter(x=>x.is_4ps||x.is_pwd||x.is_senior||x.is_solo);
@@ -1336,23 +1590,32 @@ function refresh(){
 }
 
 /* ── Init sector buttons ── */
-document.querySelectorAll('.pb-sbtn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-        const k=btn.dataset.key;
-        if(PB.active.has(k)){
-            PB.active.delete(k);
-        } else {
-            PB.active.add(k);
-            // Reset filters for the newly activated sector so they start fresh
-            if(k==='population')   { PB.sexFilter=new Set(); PB.ageFilter=new Set(); PB.housingFilter=new Set(); }
-            if(k==='vulnerable')   { PB.vulnFilter=new Set(); }
-            if(k==='distribution') { PB.distFilter=new Set(); }
-            if(k==='qr')           { PB.qrType='all'; }
-        }
-        PB._lastKeys=''; // force controls rebuild on next render
-        refresh();
+function initDashboard(){
+    document.querySelectorAll('.pb-sbtn').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+            const k=btn.dataset.key;
+            if(PB.active.has(k)){
+                PB.active.delete(k);
+            } else {
+                PB.active.add(k);
+                // Reset filters for the newly activated sector so they start fresh
+                // IMPORTANT: clear() mutates in place so existing closure references stay valid
+                if(k==='population')   { PB.sexFilter.clear(); PB.ageFilter.clear(); PB.housingFilter.clear(); }
+                if(k==='vulnerable')   { PB.vulnFilter.clear(); }
+                if(k==='distribution') { PB.distFilter.clear(); }
+                if(k==='qr')           { PB.qrType.clear(); }
+            }
+            PB._lastKeys=''; // force controls rebuild on next render
+            refresh();
+        });
     });
-});
+    refresh();
+}
+if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', initDashboard);
+} else {
+    initDashboard();
+}
 
 /* ── Init main donut ── */
 pbMainChart=new Chart(document.getElementById('pbMainDonut'),{

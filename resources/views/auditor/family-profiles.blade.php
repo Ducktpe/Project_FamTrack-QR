@@ -256,6 +256,28 @@
         .filter-toggle-btn:hover { background: var(--teal); color: var(--white); border-color: var(--teal); }
         .filter-toggle-btn.active { background: var(--teal); color: var(--white); border-color: var(--teal); }
 
+        /* Tag filter buttons */
+        .tag-filter-group { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+        .tag-filter-btn {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 11px; border-radius: 3px; font-size: 11px; font-weight: 700;
+            cursor: pointer; border: 1px solid; background: transparent;
+            font-family: 'Open Sans', sans-serif; transition: all .15s; white-space: nowrap;
+        }
+        .tag-filter-btn svg { width: 11px; height: 11px; flex-shrink: 0; }
+        .tag-filter-btn.btn-4ps    { color: #1A7A4A; border-color: #A8D8BE; }
+        .tag-filter-btn.btn-4ps.active    { background: #EAF5EF; }
+        .tag-filter-btn.btn-4ps:hover     { background: #EAF5EF; }
+        .tag-filter-btn.btn-pwd    { color: #BF6000; border-color: #FFD08A; }
+        .tag-filter-btn.btn-pwd.active    { background: #FFF3E0; }
+        .tag-filter-btn.btn-pwd:hover     { background: #FFF3E0; }
+        .tag-filter-btn.btn-senior { color: var(--blue); border-color: #C5D9F5; }
+        .tag-filter-btn.btn-senior.active { background: #EAF0FA; }
+        .tag-filter-btn.btn-senior:hover  { background: #EAF0FA; }
+        .tag-filter-btn.btn-solo   { color: var(--purple-dark); border-color: var(--purple-border); }
+        .tag-filter-btn.btn-solo.active   { background: var(--purple-pale); }
+        .tag-filter-btn.btn-solo:hover    { background: var(--purple-pale); }
+
         .filter-count {
             font-size: 12px;
             color: var(--gray-400);
@@ -800,6 +822,13 @@
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
             </select>
+            {{-- Tag filters --}}
+            <div class="tag-filter-group" id="tagFilterGroup">
+                <button class="tag-filter-btn btn-4ps"    data-tag="4ps"    onclick="toggleTagFilter(this)" type="button">4Ps</button>
+                <button class="tag-filter-btn btn-pwd"    data-tag="pwd"    onclick="toggleTagFilter(this)" type="button">PWD</button>
+                <button class="tag-filter-btn btn-senior" data-tag="senior" onclick="toggleTagFilter(this)" type="button">Senior</button>
+                <button class="tag-filter-btn btn-solo"   data-tag="solo"   onclick="toggleTagFilter(this)" type="button">Solo Parent</button>
+            </div>
             {{-- Student filter: based on employment_status = 'Student' in family_member_details --}}
             <button class="filter-toggle-btn" id="studentFilterBtn" onclick="toggleStudentFilter()" type="button">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -841,7 +870,8 @@
                          data-serial="{{ strtolower($hh->serial_code ?? '') }}"
                          data-barangay="{{ strtolower($hh->barangay) }}"
                          data-status="{{ $hh->status }}"
-                         data-student="{{ $hasStudent ? '1' : '0' }}">
+                         data-student="{{ $hasStudent ? '1' : '0' }}"
+                         data-tags="{{ implode(' ', array_filter(['4ps' => $hh->is_4ps_beneficiary ? '4ps' : '', 'pwd' => $hh->is_pwd ? 'pwd' : '', 'senior' => $hh->is_senior ? 'senior' : '', 'solo' => $hh->is_solo_parent ? 'solo' : ''])) }}">
 
                         {{-- Serial --}}
                         <div class="serial-cell" style="overflow:hidden;min-width:0;">
@@ -937,7 +967,8 @@
                      data-serial="{{ strtolower($hh->serial_code ?? '') }}"
                      data-barangay="{{ strtolower($hh->barangay) }}"
                      data-status="{{ $hh->status }}"
-                     data-student="{{ $hasStudent ? '1' : '0' }}">
+                     data-student="{{ $hasStudent ? '1' : '0' }}"
+                     data-tags="{{ implode(' ', array_filter(['4ps' => $hh->is_4ps_beneficiary ? '4ps' : '', 'pwd' => $hh->is_pwd ? 'pwd' : '', 'senior' => $hh->is_senior ? 'senior' : '', 'solo' => $hh->is_solo_parent ? 'solo' : ''])) }}">
                     <div class="pmc-top">
                         <div>
                             <div class="pmc-name">{{ $hh->household_head_name }}</div>
@@ -1191,6 +1222,20 @@ const householdIdsWithStudents = @json($householdIdsWithStudents);
         filterTable();
     }
 
+    // ─── Tag Filter Toggle ───
+    const activeTagFilters = new Set();
+    function toggleTagFilter(btn) {
+        const tag = btn.dataset.tag;
+        if (activeTagFilters.has(tag)) {
+            activeTagFilters.delete(tag);
+            btn.classList.remove('active');
+        } else {
+            activeTagFilters.add(tag);
+            btn.classList.add('active');
+        }
+        filterTable();
+    }
+
     // ─── Filter ───
     function filterTable() {
         const search  = document.getElementById('searchInput').value.toLowerCase();
@@ -1205,7 +1250,10 @@ const householdIdsWithStudents = @json($householdIdsWithStudents);
             const matchBrgy    = !brgy   || card.dataset.barangay === brgy;
             const matchStatus  = !status || card.dataset.status === status;
             const matchStudent = !studentFilterActive || card.dataset.student === '1';
-            const show = matchSearch && matchBrgy && matchStatus && matchStudent;
+            // Tag filters: card must have ALL active tags (AND logic)
+            const cardTags = card.dataset.tags ? card.dataset.tags.split(' ').filter(Boolean) : [];
+            const matchTags = activeTagFilters.size === 0 || [...activeTagFilters].every(t => cardTags.includes(t));
+            const show = matchSearch && matchBrgy && matchStatus && matchStudent && matchTags;
             card.style.display = show ? '' : 'none';
             // Count each household once (desktop + mobile cards share same data)
             if (show && !seen.has(card.dataset.serial + card.dataset.name)) {

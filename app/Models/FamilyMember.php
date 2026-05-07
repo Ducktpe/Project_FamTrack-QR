@@ -13,6 +13,8 @@ class FamilyMember extends Model
         'household_id',
         'nuclear_family_id',
         'qr_code_path',       // personal QR for the family head
+        'qr_generated_at',    // timestamp when the family head QR was generated
+        'qr_reprint_count',   // number of times the QR has been downloaded
         'is_family_head',     // true = this member is the head of their nuclear family
         'full_name',
         'relationship',
@@ -27,10 +29,12 @@ class FamilyMember extends Model
     ];
 
     protected $casts = [
-        'birthday'       => 'date',
-        'is_pwd'         => 'boolean',
-        'is_student'     => 'boolean',
-        'is_family_head' => 'boolean',
+        'birthday'          => 'date',
+        'qr_generated_at'   => 'datetime',
+        'qr_reprint_count'  => 'integer',
+        'is_pwd'            => 'boolean',
+        'is_student'        => 'boolean',
+        'is_family_head'    => 'boolean',
     ];
 
     // ── Relationships ────────────────────────────────────

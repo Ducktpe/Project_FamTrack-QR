@@ -227,21 +227,23 @@
         .no-members { padding: 32px; text-align: center; color: var(--gray-400); font-style: italic; font-size: 13px; }
 
         /* ─── QR CARD ─── */
-        .qr-card { padding: 20px; text-align: center; }
-        .qr-frame { display: inline-block; padding: 10px; background: var(--white); margin-bottom: 12px; }
+        .qr-card { padding: 20px; text-align: center; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 12px; margin-bottom: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .qr-card + .qr-card { border-top: 1px dashed var(--gray-200); padding-top: 24px; margin-top: 16px; }
+        .qr-frame { display: inline-flex; padding: 10px; background: var(--white); margin-bottom: 0; border-radius: 12px; box-shadow: 0 0 0 1px rgba(0,0,0,0.04); }
         .qr-frame-household { border: 2px solid var(--blue-pale); }
         .qr-frame-head { border: 2px solid #DDD6FE; }
-        .qr-frame img { width: 160px; height: 160px; display: block; }
-        .qr-serial { font-family: monospace; font-size: 14px; font-weight: 700; color: var(--blue); letter-spacing: 1.5px; margin-bottom: 3px; }
-        .qr-name { font-size: 12px; color: var(--gray-600); margin-bottom: 6px; }
-        .qr-type-pill { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; margin-bottom: 6px; }
+        .qr-frame img { width: 160px; max-width: 100%; height: auto; display: block; object-fit: contain; }
+        .qr-serial { font-family: monospace; font-size: 14px; font-weight: 700; color: var(--blue); letter-spacing: 1.5px; margin-bottom: 3px; word-break: break-all; }
+        .qr-name { font-size: 12px; color: var(--gray-600); margin-bottom: 6px; line-height: 1.4; }
+        .qr-type-pill { display: inline-flex; align-items: center; justify-content: center; padding: 4px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; margin-bottom: 6px; white-space: nowrap; }
         .qr-pill-household { background: var(--blue-pale); color: var(--blue); border: 1px solid #C7D9F3; }
         .qr-pill-head { background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; }
-        .qr-meta { font-size: 11px; color: var(--gray-400); line-height: 1.6; }
-        .qr-placeholder { padding: 24px 20px; text-align: center; background: var(--gray-50); border: 2px dashed var(--gray-200); margin: 0 16px 16px; }
+        .qr-meta { font-size: 11px; color: var(--gray-500); line-height: 1.6; }
+        .qr-placeholder { padding: 24px 20px; text-align: center; background: var(--gray-50); border: 2px dashed var(--gray-200); border-radius: 12px; margin: 0 0 16px; }
         .qr-placeholder-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
         .qr-placeholder-icon svg { width: 20px; height: 20px; color: var(--gray-400); }
         .qr-placeholder p { font-size: 12px; color: var(--gray-400); margin-bottom: 8px; }
+        .qr-placeholder + .qr-placeholder { margin-top: 16px; border-top: 1px dashed var(--gray-200); padding-top: 18px; }
         .qr-must-approve { font-size: 12px; font-weight: 700; color: var(--red); }
 
         /* QR section sub-labels */
@@ -1027,10 +1029,39 @@
                             </div>
                         </div>
                         @if($household->latitude && $household->longitude)
+                        @php
+                            // Decimal → DMS helper
+                            $dmsConvert = function(float $dec, bool $isLat): string {
+                                $dir = $isLat ? ($dec >= 0 ? 'N' : 'S') : ($dec >= 0 ? 'E' : 'W');
+                                $abs = abs($dec);
+                                $d   = (int) floor($abs);
+                                $mFull = ($abs - $d) * 60;
+                                $m   = (int) floor($mFull);
+                                $s   = number_format(($mFull - $m) * 60, 4);
+                                return "{$d}° {$m}′ {$s}″ {$dir}";
+                            };
+                            $dmsLat = $dmsConvert((float) $household->latitude,  true);
+                            $dmsLng = $dmsConvert((float) $household->longitude, false);
+                        @endphp
                         <div style="margin-top:12px;">
-                            <div class="info-item" style="border-left-color:#16A34A;">
+                            <div class="info-item" style="border-left-color:#16A34A;padding-bottom:14px;">
                                 <div class="info-label">GPS Coordinates</div>
-                                <div class="info-value mono">{{ $household->latitude }}, {{ $household->longitude }}</div>
+                                <div class="info-value mono" style="margin-bottom:10px;">{{ $household->latitude }}, {{ $household->longitude }}</div>
+                                {{-- DMS Display --}}
+                                <div style="border-top:1px dashed var(--gray-200);padding-top:10px;display:flex;flex-direction:column;gap:5px;">
+                                    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#16A34A;margin-bottom:2px;display:flex;align-items:center;gap:5px;">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+                                        DMS Format
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:8px;background:var(--gray-50);border:1px solid var(--gray-100);padding:6px 10px;border-radius:3px;">
+                                        <span style="font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;width:24px;">Lat</span>
+                                        <span style="font-family:monospace;font-size:12px;color:var(--gray-800);">{{ $dmsLat }}</span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:8px;background:var(--gray-50);border:1px solid var(--gray-100);padding:6px 10px;border-radius:3px;">
+                                        <span style="font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;width:24px;">Lng</span>
+                                        <span style="font-family:monospace;font-size:12px;color:var(--gray-800);">{{ $dmsLng }}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         @endif
@@ -1288,22 +1319,20 @@
                     @else
                         @foreach($allFamilyHeads as $familyHead)
                             @if($familyHead->qr_code_path)
-                                <div class="qr-card" style="{{ !$loop->first ? 'border-top:1px dashed var(--gray-200);padding-top:16px;' : '' }}">
+                                <div class="qr-card">
                                     <div class="qr-frame qr-frame-head">
                                         <img src="{{ asset('storage/' . $familyHead->qr_code_path) }}" alt="Family Head QR Code">
                                     </div>
-                                    <div class="qr-serial" style="color:#6D28D9;">{{ basename($familyHead->qr_code_path, '.svg') }}</div>
+                                    <div class="qr-serial" style="color:#6D28D9;">{{ $familyHead->member_code ?? basename($familyHead->qr_code_path, '.svg') }}</div>
                                     <div class="qr-name">{{ $familyHead->full_name }}</div>
                                     <div class="qr-type-pill qr-pill-head">👤 Family Head</div>
-                                    <div class="qr-meta">Linked to household record</div>
-                                    <a href="{{ route('admin.households.qr.download-head', [$household, $familyHead]) }}"
-                                       style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:6px 12px;background:#F5F3FF;color:#6D28D9;border:1px solid #DDD6FE;border-radius:3px;font-size:11px;font-weight:700;text-decoration:none;">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                        Download
-                                    </a>
+                                    <div class="qr-meta">
+                                        Generated: {{ $familyHead->qr_generated_at ? \Carbon\Carbon::parse($familyHead->qr_generated_at)->format('M d, Y') : 'N/A' }}<br>
+                                        Reprint Count: {{ $familyHead->qr_reprint_count ?? 0 }}
+                                    </div>
                                 </div>
                             @else
-                                <div class="qr-placeholder" style="{{ !$loop->first ? 'border-top:1px dashed var(--gray-200);margin-top:8px;' : '' }}">
+                                <div class="qr-placeholder">
                                     <div class="qr-placeholder-icon" style="background:#F5F3FF;">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.5">
                                             <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
@@ -1312,14 +1341,7 @@
                                     <p style="font-size:12px;color:var(--gray-600);font-weight:600;">{{ $familyHead->full_name }}</p>
                                     <p>Family Head QR not generated yet.</p>
                                     @if($household->isApproved())
-                                        <form method="POST" action="{{ route('admin.households.qr.generate-head', [$household, $familyHead]) }}" style="margin-top:8px;">
-                                            @csrf
-                                            <button type="button" class="btn-action btn-action-approve" style="background:#7C3AED;font-size:11px;padding:8px 12px;"
-                                                onclick="openModal('head-qr', this.closest('form'), 'Generate Family Head QR', 'Generate a personal QR code for <strong>{{ $familyHead->full_name }}</strong>? This QR will be linked to their family head record.', 'Generate QR', 'purple')">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="14" y2="21"/><line x1="14" y1="14" x2="21" y2="14"/></svg>
-                                                Generate Head QR
-                                            </button>
-                                        </form>
+
                                     @else
                                         <p class="qr-must-approve">Approve household first</p>
                                     @endif

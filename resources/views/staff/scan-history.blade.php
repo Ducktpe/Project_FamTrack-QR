@@ -994,21 +994,28 @@
                                         $remarksStr     = $toStr($log->remarks             ?? null);
                                         $barangayStr    = $toStr($log->household->barangay ?? null);
 
-                                        // Format relief_items as "Name (qty unit)" strings
-                                        $rawItems = $log->event->relief_items ?? null;
+                                        // Use items_received from the log (object-keyed JSON: {canned_goods:{name,qty,unit},...})
+                                        // Fallback to event->relief_items if items_received is empty
+                                        $rawItems = $log->items_received ?? $log->event->relief_items ?? null;
+                                        if (is_string($rawItems)) {
+                                            $decoded = json_decode($rawItems, true);
+                                            $rawItems = is_array($decoded) ? $decoded : null;
+                                        }
                                         if (is_array($rawItems)) {
-                                            $formattedItems = array_map(function($item) {
+                                            $formattedItems = [];
+                                            foreach ($rawItems as $key => $item) {
                                                 if (is_array($item)) {
-                                                    $name = $item['name'] ?? 'Item';
+                                                    $name = $item['name'] ?? ucwords(str_replace('_', ' ', $key));
                                                     $qty  = $item['qty']  ?? '';
                                                     $unit = $item['unit'] ?? '';
-                                                    return trim("{$name}" . ($qty ? " — {$qty} {$unit}" : ''));
+                                                    $formattedItems[] = trim("{$name}" . ($qty ? " — {$qty} {$unit}" : ''));
+                                                } else {
+                                                    $formattedItems[] = (string) $item;
                                                 }
-                                                return (string) $item;
-                                            }, $rawItems);
+                                            }
                                             $reliefItemsStr = implode('||', $formattedItems);
                                         } else {
-                                            $reliefItemsStr = $toStr($rawItems);
+                                            $reliefItemsStr = '';
                                         }
                                 @endphp
                                 <td style="color:var(--gray-400);font-size:12px;">
@@ -1126,20 +1133,28 @@
                         $goodsDetailStr = $toStr($log->goods_detail        ?? null);
                         $remarksStr     = $toStr($log->remarks             ?? null);
                         $barangayStr    = $toStr($log->household->barangay ?? null);
-                        $rawItems = $log->event->relief_items ?? null;
+                        // Use items_received from the log (object-keyed JSON: {canned_goods:{name,qty,unit},...})
+                        // Fallback to event->relief_items if items_received is empty
+                        $rawItems = $log->items_received ?? $log->event->relief_items ?? null;
+                        if (is_string($rawItems)) {
+                            $decoded = json_decode($rawItems, true);
+                            $rawItems = is_array($decoded) ? $decoded : null;
+                        }
                         if (is_array($rawItems)) {
-                            $formattedItems = array_map(function($item) {
+                            $formattedItems = [];
+                            foreach ($rawItems as $key => $item) {
                                 if (is_array($item)) {
-                                    $name = $item['name'] ?? 'Item';
+                                    $name = $item['name'] ?? ucwords(str_replace('_', ' ', $key));
                                     $qty  = $item['qty']  ?? '';
                                     $unit = $item['unit'] ?? '';
-                                    return trim("{$name}" . ($qty ? " — {$qty} {$unit}" : ''));
+                                    $formattedItems[] = trim("{$name}" . ($qty ? " — {$qty} {$unit}" : ''));
+                                } else {
+                                    $formattedItems[] = (string) $item;
                                 }
-                                return (string) $item;
-                            }, $rawItems);
+                            }
                             $reliefItemsStr = implode('||', $formattedItems);
                         } else {
-                            $reliefItemsStr = $toStr($rawItems);
+                            $reliefItemsStr = '';
                         }
                     @endphp
                     <div class="mobile-card">
